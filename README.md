@@ -47,7 +47,7 @@ The website should be able to query the players based on their Win score, their 
 In the middle of each semester, we host our traditional BFF tournament. It is a single elimination tournament, where each match is decided by a best of 3. Registered people sign-up before hand and each participant is randomly assigned a partner. Each team can give themselves a team name, which is optional.
 
 A website should display a tree-based structure of the current state of the tournament. The leaf nodes contain information about the teams. The internal nodes contain information about the matches, including the score of the games, the dates played, and the overall winner. Here is a simple example: 
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/aigagror/CS-411-BFF/blob/master/Sketch.png)
 
 
 ## Registrations
@@ -74,7 +74,7 @@ People register on two tiers:
 Members should be able to be queried based on name, netID and/or e-mail. Many people try to sneak into our club during playtime, and so it is important to quickly query members.
 
 ### Security and Accounts
-Create accounts for each user. 
+Create accounts for each user. If users who have already registered are creating an account, they should be able to link their account to their registration (e.g. providing the e-mail that they used to register)
 (OAuth login)
 
 
