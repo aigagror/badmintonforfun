@@ -58,6 +58,7 @@ People would express which skills they would like to train on
 * Smash
 * Parry
 * Drop
+
 People would volunteer to coach players.
 
 The system would pair a trainer with a trainee or a trainee with a trainee with complimenting skills (e.g. smash and parry)
