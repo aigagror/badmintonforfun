@@ -49,6 +49,20 @@ In the middle of each semester, we host our traditional BFF tournament. It is a 
 A website should display a tree-based structure of the current state of the tournament. The leaf nodes contain information about the teams. The internal nodes contain information about the matches, including the score of the games, the dates played, and the overall winner. Here is a simple example: 
 ![alt text](https://github.com/aigagror/CS-411-BFF/blob/master/Sketch.png)
 
+## Training System
+### Goal
+Allow people to coach each other on certain skills in badminton. Help break the ice between players.
+
+People would express which skills they would like to train on 
+* Form
+* Smash
+* Parry
+* Drop
+People would volunteer to coach players.
+
+The system would pair a trainer with a trainee or a trainee with a trainee with complimenting skills (e.g. smash and parry)
+
+Trainers can give a short critique or rating on each trainee
 
 ## Registrations
 Registering for BFF requires a set of information
