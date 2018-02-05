@@ -8,7 +8,7 @@ The goal of this system is to provide a method for matching players of similar s
 
 With every type of ranking system, there is also the glory of being at the top amongst your peers.
 
-It is also meant to provide a convenient way for people to keep track and view their own as well as other people’s statistics. 
+It is also meant to provide a convenient way for people to keep track and view their own statistics as well as other people’s.
 
 ### The System
 The System organizes the matches and records the results of each match. The system is only active during play time. During play, people sign into the system with their e-mail whenever they want to participate. People may also sign out at anytime. (Only official members of BFF may participate)
@@ -54,10 +54,13 @@ A website should display a tree-based structure of the current state of the tour
 Allow people to coach each other on certain skills in badminton. Help break the ice between players.
 
 People would express which skills they would like to train on 
+* General
 * Form
-* Smash
+* Clear
 * Parry
+* Smash
 * Drop
+* Serve
 
 People would volunteer to coach players.
 
