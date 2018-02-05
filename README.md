@@ -1,33 +1,5 @@
 # CS-411-BFF
 
-## Registrations
-Registering for BFF requires a set of information
-* Name
-* Nickname (optional)
-* NetID and/or phone number (depending on whether you are a UIUC student or not)
-* E-mail address
-
-People register on two tiers: 
-1. Interested
-2. Membership
-
-|                                       | Interested                                      | Membership                |
-|---------------------------------------|-------------------------------------------------|---------------------------|
-| **Cost**                              | Free                                            | Membership Fee (e.g. $25) |
-| **Duration**                          | Forever (unless unsubscribed from mailing list) | One semester. After that, their registration is downgraded to Interested. Can be renewed for next semester |
-| **Can play badminton**                | No                                              | Yes                       |
-| **Cost to participate in tournaments**| Some small fee (e.g. $5)                        | Free                      |
-| **Will receive e-mails**              | Yes                                             | Yes                       |
-| **Can use the new Rank Play system**  | No                                              | Yes                       |
-
-### Checking Members
-Members should be able to be queried based on name, netID and/or e-mail. Many people try to sneak into our club during playtime, and so it is important to quickly query members.
-
-### Security and Accounts
-Create accounts for each user. 
-(OAuth login)
-
-
 ## Badminton Ranked Play
 *We will reserve one or two courts for ranked play. Participation is OPTIONAL. No one is pressured to play rank.*
 
@@ -69,6 +41,41 @@ Both players are put back into the system’s queue to be paired with another ra
 A website will display the list of players who were part of the system. 
 
 The website should be able to query the players based on their Win score, their Feared score, a given time frame, number of matches, and/or their name.  
+
+
+## Tournaments
+In the middle of each semester, we host our traditional BFF tournament. It is a single elimination tournament, where each match is decided by a best of 3. Registered people sign-up before hand and each participant is randomly assigned a partner. Each team can give themselves a team name, which is optional.
+
+A website should display a tree-based structure of the current state of the tournament. The leaf nodes contain information about the teams. The internal nodes contain information about the matches, including the score of the games, the dates played, and the overall winner. Here is a simple example: 
+![alt text](http://url/to/img.png)
+
+
+## Registrations
+Registering for BFF requires a set of information
+* Name
+* Nickname (optional)
+* NetID and/or phone number (depending on whether you are a UIUC student or not)
+* E-mail address
+
+People register on two tiers: 
+1. Interested
+2. Membership
+
+|                                       | Interested                                      | Membership                |
+|---------------------------------------|-------------------------------------------------|---------------------------|
+| **Cost**                              | Free                                            | Membership Fee (e.g. $25) |
+| **Duration**                          | Forever (unless unsubscribed from mailing list) | One semester. After that, their registration is downgraded to Interested. Can be renewed for next semester |
+| **Can play badminton**                | No                                              | Yes                       |
+| **Cost to participate in tournaments**| Some small fee (e.g. $5)                        | Free                      |
+| **Will receive e-mails**              | Yes                                             | Yes                       |
+| **Can use the new Rank Play system**  | No                                              | Yes                       |
+
+### Checking Members
+Members should be able to be queried based on name, netID and/or e-mail. Many people try to sneak into our club during playtime, and so it is important to quickly query members.
+
+### Security and Accounts
+Create accounts for each user. 
+(OAuth login)
 
 
 ## The Board
