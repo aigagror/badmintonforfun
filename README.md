@@ -1,4 +1,4 @@
-# CS-411-BFF
+# Documentation
 
 ## Badminton Ranked Play
 *We will reserve one or two courts for ranked play. Participation is OPTIONAL. No one is pressured to play rank.*
