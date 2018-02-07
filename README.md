@@ -38,9 +38,12 @@ Nothing happens and nothing is recorded.
 Both players are put back into the system’s queue to be paired with another random player. 
 
 ### Showing the Rankings
-A website will display the list of players who were part of the system. 
+A webpage will display the list of players who were part of the system. 
 
-The website should be able to query the players based on their Win score, their Feared score, a given time frame, number of matches, and/or their name.  
+The webpage should be able to query the players based on their Win score, their Feared score, a given time frame, number of matches, and/or their name.  
+
+### Showing the Games
+Matches will be video recorded unless one of the players votes to not record the game. A webpage will show highlights of the game curated by the board members.
 
 
 ## Tournaments
