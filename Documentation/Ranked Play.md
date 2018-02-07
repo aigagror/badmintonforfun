@@ -20,7 +20,7 @@ The following is a list of each scenario when the system has paired two people.
 ### Both people challenge each other
 The pair shall play a match. The winner receives a point towards their “Win” score. The loser gets nothing.
 
-The players, score, and date of the match shall be recorded. 
+The players, score, and date of the match shall be recorded. A video recording of the game may also be recorded (see below for more details) 
 
 Only certain players (e.g. board members) can record and submit the result of matches.
 
