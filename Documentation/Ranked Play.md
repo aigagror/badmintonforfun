@@ -1,12 +1,10 @@
 # Badminton Ranked Play
 *We will reserve one or two courts for ranked play. Participation is OPTIONAL. No one is pressured to play rank.*
 
-## Goal
-The goal of this system is to provide a method for matching players of similar skill level while also breaking the ice between people who don’t know each other very well. 
-
-With every type of ranking system, there is also the glory of being at the top amongst your peers.
-
-It is also meant to provide a convenient way for people to keep track and view their own statistics as well as other people’s.
+## Goals
+* Hold an official record of matches for everyone to see (certain data can be made private by request of a player involved)
+* Match players of similar skill level and break the ice between players who don't normally play against each other
+* Provide glory for those who want to demonstrate that they are a beast at badminton
 
 ## The System
 The System organizes the matches and records the results of each match. The system is only active during play time. During play, people sign into the system with their e-mail whenever they want to participate. People may also sign out at anytime. (Only official members of BFF may participate)
