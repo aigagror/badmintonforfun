@@ -1,15 +1,18 @@
 $pad: 15px;
 $grid-columns: 12;
 $col-slug: ".col";
+$col-center-slug: ".col-center";
+$col-offset-slug: ".col-offset";
+$row-offset-slug: ".row-offset";
 
 $response-booster: (
-  /* Pixels, column mult, padding mult */
-    extra-small: (319px, 2.0, 0.3),
-    small: (479px, 1.8, 0.6),
-    small-medium: (719px, 1.6, 1.0),
-    medium: (1023px, 1.4, 1.0),
-    normal: (1199px, 1.0, 1.0),
-    large: (1599px, 1.0, 1.0)
+    /* Pixels, column mult, padding mult */
+    extra-small: (320px, 2.0, 0.3),
+    small: (480px, 1.8, 0.6),
+    small-medium: (720px, 1.6, 1.0),
+    medium: (1024px, 1.4, 1.0),
+    normal: (1200px, 1.0, 1.0),
+    large: (1600px, 1.0, 1.0)
 );
 
 .grid{
@@ -39,11 +42,28 @@ $response-booster: (
 @each $name, $value in $response-booster {
   $adjusted-padding: calculating-padding($value);
 
-  @media only screen and (min-width: #{nth($value, 1)})  {
+  @media only screen and (min-width: #{nth($value, 1)-1})  {
     @for $i from 1 through $grid-columns {
       $adjusted-percentage: calculate-adjusted-percentage($value, $i);
+      $column-multiplier: nth($value, 2);
       #{$col-slug}-#{$i} {
         width: calc( #{$adjusted-percentage} - #{$adjusted-padding} * 2);
+      }
+
+      $centering: ($grid-columns - $i) / 2;
+      $adjusted-center-percentage: calculate-adjusted-percentage($value, $centering);
+
+      #{$col-center-slug}-#{$i} {
+        margin-left: calc( #{$adjusted-center-percentage} / #{$column-multiplier});
+        width: calc( #{$adjusted-percentage} - #{$adjusted-padding} * 2);
+      }
+
+      #{$col-offset-slug}-#{$i} {
+        margin-left: calc( #{$adjusted-percentage} / #{$column-multiplier});
+      }
+
+      #{$row-offset-slug}-#{$i} {
+        margin-top: calc( #{$adjusted-percentage} / (#{$column-multiplier} * 2));
       }
     }
     [class*='col-'] {

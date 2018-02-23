@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "Contains code for the 411 frontend",
   "main": "index.js",
+  "watch": {
+    "test": "{src,test}/*.js"
+  },
   "scripts": {
     "webpack": "webpack --config webpack.config.js",
+    "watch": "onchange '*js' 'src/**/*.ts*' 'src/**/*.scss' 'src/**/*.html' -v -i -- npm run webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -20,6 +24,7 @@
     "css-loader": "^0.28.10",
     "extract-text-webpack-plugin": "^3.0.2",
     "node-sass": "^4.7.2",
+    "onchange": "^3.3.0",
     "sass-loader": "^6.0.6",
     "source-map-loader": "^0.2.3",
     "style-loader": "^0.20.2",
