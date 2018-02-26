@@ -4,6 +4,7 @@ $col-slug: ".col";
 $col-center-slug: ".col-center";
 $col-offset-slug: ".col-offset";
 $row-offset-slug: ".row-offset";
+$row-height-slug: ".row";
 
 $response-booster: (
     /* Pixels, column mult, padding mult */
@@ -64,6 +65,9 @@ $response-booster: (
 
       #{$row-offset-slug}-#{$i} {
         margin-top: calc( #{$adjusted-percentage} / (#{$column-multiplier} * 2));
+      }
+      #{$row-height-slug}-#{$i} {
+        height: calc( #{$adjusted-percentage} / (#{$column-multiplier} * 2));
       }
     }
     [class*='col-'] {

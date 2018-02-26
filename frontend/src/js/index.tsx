@@ -1,13 +1,14 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Hello } from "./components/Hello";
-
-/* Keep these in here for the time being */
-import '../sass/grid.scss';
-import '../sass/style.scss';
+import { Button } from "./components/Button";
 
 ReactDOM.render(
-    <Hello compiler="TypeScript" framework="React" />,
-    document.getElementById("example")
+    <Button text="Members" href="/members.html"/>,
+    document.querySelector("member-button")
+);
+
+ReactDOM.render(
+    <Button text="Interested" href="/interested.html"/>,
+    document.querySelector("interested-button")
 );
