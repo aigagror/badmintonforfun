@@ -7,8 +7,9 @@ $row-offset-slug: ".row-offset";
 $row-height-slug: ".row";
 
 $response-booster: (
-    /* Pixels, column mult, padding mult */
-    extra-small: (320px, 2.0, 0.3),
+  // TODO: New column for offset adjustment
+    /* Pixels, column mult, padding mult*/
+    extra-small: (320px, 2.0, 0.4),
     small: (480px, 1.8, 0.6),
     small-medium: (720px, 1.6, 1.0),
     medium: (1024px, 1.4, 1.0),
@@ -42,6 +43,7 @@ $response-booster: (
 
 @each $name, $value in $response-booster {
   $adjusted-padding: calculating-padding($value);
+  $padding-multiplier: nth($value, 3);
 
   @media only screen and (min-width: #{nth($value, 1)-1})  {
     @for $i from 1 through $grid-columns {
@@ -54,13 +56,8 @@ $response-booster: (
       $centering: ($grid-columns - $i) / 2;
       $adjusted-center-percentage: calculate-adjusted-percentage($value, $centering);
 
-      #{$col-center-slug}-#{$i} {
-        margin-left: calc( #{$adjusted-center-percentage} / #{$column-multiplier});
-        width: calc( #{$adjusted-percentage} - #{$adjusted-padding} * 2);
-      }
-
       #{$col-offset-slug}-#{$i} {
-        margin-left: calc( #{$adjusted-percentage} / #{$column-multiplier});
+        margin-left: calc( (#{$adjusted-percentage} - #{$adjusted-padding} * 2) * #{$padding-multiplier});
       }
 
       #{$row-offset-slug}-#{$i} {
