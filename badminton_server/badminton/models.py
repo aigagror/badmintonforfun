@@ -16,7 +16,7 @@ class Interested(models.Model):
 
 
 class Member(Interested):
-    level = models.IntegerField(min_value=0, default=0)
+    level = models.IntegerField(default=0)
     private = models.BooleanField(default=False)
     dateJoined = models.DateField('date joined')
 
@@ -27,5 +27,5 @@ class BoardMember(Member):
         ('TREASURER', 'Treasurer'),
         ('OFFICER', 'Officer'),
     )
-    job = models.CharField(choices=JOBS)
+    job = models.CharField(max_length=64, choices=JOBS)
 
