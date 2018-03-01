@@ -18,6 +18,16 @@ QUEUE_TYPE = (
         ('KOTH', 'King of the Hill'),
     )
 
+class Queue(models.Model):
+    type = models.CharField(max_length=64, choices=QUEUE_TYPE)
+
+class Court(models.Model):
+    number = models.IntegerField()
+    queue = models.ForeignKey(Queue, on_delete=models.SET_NULL)
+
+class Tournament(models.Model):
+    date = models.DateField('date of tournament')
+
 class Interested(models.Model):
     name = models.CharField(max_length=64)
     formerBoardMember = models.BooleanField(default=False)
@@ -31,6 +41,7 @@ class Member(Interested):
     level = models.IntegerField(default=0)
     private = models.BooleanField(default=False)
     dateJoined = models.DateField('date joined')
+    queue = models.ForeignKey(Queue, on_delete=models.SET_NULL)
 
 
 class BoardMember(Member):
@@ -50,11 +61,8 @@ class Campaign(models.Model):
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
     campaigner = models.ForeignKey(Member, on_delete=models.CASCADE)
 
-class Queue(models.Model):
-    type = models.CharField(max_length=64, choices=QUEUE_TYPE)
-
 class Team(models.Model):
-    memberA = models.ForeignKey(Member, on_delete=models.CASCADE)
+    memberA = models.ForeignKey(Member, on_delete=models.PROTECT)
     memberB = models.ForeignKey(Member, on_delete=models.SET_NULL)
 
 class Match(models.Model):
@@ -63,6 +71,8 @@ class Match(models.Model):
     scoreB = models.IntegerField()
     teamA = models.ForeignKey(Team, on_delete=models.SET_NULL)
     teamB = models.ForeignKey(Team, on_delete=models.SET_NULL)
+    court = models.ForeignKey(Court, on_delete=models.SET_NULL)
+    tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL)
 
 class FinishedMatch(Match):
     endDate = models.DateTimeField('date ended')
