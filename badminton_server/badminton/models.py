@@ -23,7 +23,7 @@ class Queue(models.Model):
 
 class Court(models.Model):
     number = models.IntegerField()
-    queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True)
+    queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Tournament(models.Model):
     date = models.DateField('date of tournament')
@@ -41,7 +41,7 @@ class Member(Interested):
     level = models.IntegerField(default=0)
     private = models.BooleanField(default=False)
     dateJoined = models.DateField('date joined')
-    queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True)
+    queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class BoardMember(Member):
@@ -63,7 +63,7 @@ class Campaign(models.Model):
 
 class Team(models.Model):
     memberA = models.ForeignKey(Member, related_name='memberA', on_delete=models.PROTECT)
-    memberB = models.ForeignKey(Member, related_name='memberB', on_delete=models.SET_NULL, null=True)
+    memberB = models.ForeignKey(Member, related_name='memberB', on_delete=models.SET_NULL, null=True, blank=True)
 
 class Match(models.Model):
     startDate = models.DateTimeField('date started')
@@ -71,8 +71,8 @@ class Match(models.Model):
     scoreB = models.IntegerField()
     teamA = models.ForeignKey(Team, related_name='teamA', on_delete=models.SET_NULL, null=True)
     teamB = models.ForeignKey(Team, related_name='teamB', on_delete=models.SET_NULL, null=True)
-    court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True)
-    tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True)
+    court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True, blank=True)
+    tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True)
 
 class FinishedMatch(Match):
     endDate = models.DateTimeField('date ended')
