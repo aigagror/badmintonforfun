@@ -28,6 +28,7 @@
     "html-webpack-plugin": "^2.30.1",
     "node-sass": "^4.7.2",
     "onchange": "^3.3.0",
+    "react-google-login": "^3.0.4",
     "sass-loader": "^6.0.6",
     "source-map-loader": "^0.2.3",
     "style-loader": "^0.20.2",
