@@ -13,32 +13,12 @@
     <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/badminton/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="26" lean-forward="false" selection-start-line="2" selection-start-column="26" selection-end-line="2" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="admin.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/badminton/admin.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="21" />
+            <state relative-caret-position="210">
+              <caret line="28" column="29" lean-forward="true" selection-start-line="28" selection-start-column="29" selection-end-line="28" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -47,8 +27,8 @@
       <file leaf-file-name="admin.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/admin.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="31" lean-forward="false" selection-start-line="9" selection-start-column="31" selection-end-line="9" selection-end-column="31" />
+            <state relative-caret-position="90">
+              <caret line="6" column="31" lean-forward="false" selection-start-line="6" selection-start-column="31" selection-end-line="6" selection-end-column="31" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
               </folding>
@@ -56,63 +36,94 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/urls.py">
+      <file leaf-file-name="0001_initial.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api/migrations/0001_initial.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/badminton/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/badminton/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/api/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="1995">
+              <caret line="134" column="26" lean-forward="false" selection-start-line="134" selection-start-column="25" selection-end-line="134" selection-end-column="26" />
               <folding>
-                <element signature="e#0#35#0" expanded="true" />
+                <marker date="1520106346813" expanded="true" signature="272:408" ph="CREATE TABLE... api_campaign" />
+                <marker date="1520106346813" expanded="true" signature="462:563" ph="CREATE TABLE... api_court" />
+                <marker date="1520106346813" expanded="true" signature="617:679" ph="CREATE TABLE... api_election" />
+                <marker date="1520106346813" expanded="true" signature="733:870" ph="CREATE TABLE... api_interested" />
+                <marker date="1520106346813" expanded="true" signature="924:1083" ph="CREATE TABLE... api_match" />
+                <marker date="1520106346813" expanded="true" signature="1137:1203" ph="CREATE TABLE... api_queue" />
+                <marker date="1520106346813" expanded="true" signature="1257:1330" ph="CREATE TABLE... api_team" />
+                <marker date="1520106346813" expanded="true" signature="1384:1448" ph="CREATE TABLE... api_tournament" />
+                <marker date="1520106346813" expanded="true" signature="1502:1669" ph="CREATE TABLE... api_finishedmatch" />
+                <marker date="1520106346813" expanded="true" signature="1723:1951" ph="CREATE TABLE... api_member" />
+                <marker date="1520106346813" expanded="true" signature="2005:2136" ph="CREATE TABLE... api_votes" />
+                <marker date="1520106346813" expanded="true" signature="2190:2240" ph="ALTER TABLE &quot;api_match&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="2256:2500" ph="CREATE TABLE... api_match" />
+                <marker date="1520106346813" expanded="true" signature="2516:2664" ph="INSERT INTO &quot;api_match&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="2592:2664" ph="SELECT &quot;id&quot;,... api_match__old" />
+                <marker date="1520106346813" expanded="true" signature="2680:2707" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="2847:2897" ph="ALTER TABLE &quot;api_match&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="2913:3241" ph="CREATE TABLE... api_match" />
+                <marker date="1520106346813" expanded="true" signature="3257:3429" ph="INSERT INTO &quot;api_match&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="3345:3429" ph="SELECT &quot;id&quot;,... api_match__old" />
+                <marker date="1520106346813" expanded="true" signature="3445:3472" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="3698:3748" ph="ALTER TABLE &quot;api_match&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="3764:4176" ph="CREATE TABLE... api_match" />
+                <marker date="1520106346813" expanded="true" signature="4192:4388" ph="INSERT INTO &quot;api_match&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="4292:4388" ph="SELECT &quot;id&quot;,... api_match__old" />
+                <marker date="1520106346813" expanded="true" signature="4404:4431" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="4743:4793" ph="ALTER TABLE &quot;api_match&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="4809:5315" ph="CREATE TABLE... api_match" />
+                <marker date="1520106346813" expanded="true" signature="5331:5556" ph="INSERT INTO &quot;api_match&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="5448:5556" ph="SELECT &quot;id&quot;,... api_match__old" />
+                <marker date="1520106346813" expanded="true" signature="5572:5599" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="6007:6057" ph="ALTER TABLE &quot;api_court&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="6073:6265" ph="CREATE TABLE... api_court" />
+                <marker date="1520106346813" expanded="true" signature="6281:6383" ph="INSERT INTO &quot;api_court&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="6334:6383" ph="SELECT &quot;id&quot;,... api_court__old" />
+                <marker date="1520106346813" expanded="true" signature="6399:6426" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="6566:6622" ph="ALTER TABLE &quot;api_campaign&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="6638:6868" ph="CREATE TABLE... api_campaign" />
+                <marker date="1520106346813" expanded="true" signature="6884:7007" ph="INSERT INTO &quot;api_campaign&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="6949:7007" ph="SELECT &quot;id&quot;,... api_campaign__old" />
+                <marker date="1520106346813" expanded="true" signature="7023:7053" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="7205:7391" ph="CREATE TABLE... api_boardmember" />
+                <marker date="1520106346813" expanded="true" signature="7445:7495" ph="ALTER TABLE &quot;api_votes&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="7511:7748" ph="CREATE TABLE... api_votes" />
+                <marker date="1520106346813" expanded="true" signature="7764:7864" ph="INSERT INTO &quot;api_votes&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="7816:7864" ph="SELECT &quot;elec... api_votes__old" />
+                <marker date="1520106346813" expanded="true" signature="7880:7907" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="8047:8097" ph="ALTER TABLE &quot;api_votes&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="8113:8467" ph="CREATE TABLE... api_votes" />
+                <marker date="1520106346813" expanded="true" signature="8483:8607" ph="INSERT INTO &quot;api_votes&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="8547:8607" ph="SELECT &quot;elec... api_votes__old" />
+                <marker date="1520106346813" expanded="true" signature="8623:8650" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="8790:8838" ph="ALTER TABLE &quot;api_team&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="8854:9039" ph="CREATE TABLE... api_team" />
+                <marker date="1520106346813" expanded="true" signature="9055:9137" ph="INSERT INTO &quot;api_team&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="9099:9137" ph="SELECT &quot;id&quot;,... api_team__old" />
+                <marker date="1520106346813" expanded="true" signature="9153:9179" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="9321:9369" ph="ALTER TABLE &quot;api_team&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="9385:9678" ph="CREATE TABLE... api_team" />
+                <marker date="1520106346813" expanded="true" signature="9694:9804" ph="INSERT INTO &quot;api_team&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="9752:9804" ph="SELECT &quot;id&quot;,... api_team__old" />
+                <marker date="1520106346813" expanded="true" signature="9820:9846" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="10076:10128" ph="ALTER TABLE &quot;api_member&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="10144:10463" ph="CREATE TABLE... api_member" />
+                <marker date="1520106346813" expanded="true" signature="10479:10661" ph="INSERT INTO &quot;api_member&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="10572:10661" ph="SELECT &quot;inte... api_member__old" />
+                <marker date="1520106346813" expanded="true" signature="10677:10705" ph="DROP TABLE &quot;... " />
+                <marker date="1520106346813" expanded="true" signature="10847:10903" ph="ALTER TABLE &quot;api_campaign&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="10919:11264" ph="CREATE TABLE... api_campaign" />
+                <marker date="1520106346813" expanded="true" signature="11280:11435" ph="INSERT INTO &quot;api_campaign&quot;... " />
+                <marker date="1520106346813" expanded="true" signature="11362:11435" ph="SELECT &quot;id&quot;,... api_campaign__old" />
+                <marker date="1520106346813" expanded="true" signature="11451:11481" ph="DROP TABLE &quot;... " />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="apps.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/apps.py">
+      <file leaf-file-name="output.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/output.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/badminton_server/settings.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="33" column="23" lean-forward="false" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
+            <state relative-caret-position="95">
+              <caret line="107" column="33" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -125,6 +136,10 @@
       <find>CASCADE</find>
       <find>SET_NULL</find>
       <find>null=True</find>
+      <find>unique</find>
+      <find>api_campaign</find>
+      <find>votes</find>
+      <find>class Meta</find>
     </findStrings>
     <replaceStrings>
       <replace>SET_NULL, null=True</replace>
@@ -136,10 +151,11 @@
       <list>
         <option value="$PROJECT_DIR$/badminton_server/urls.py" />
         <option value="$PROJECT_DIR$/badminton/models.py" />
-        <option value="$PROJECT_DIR$/api/models.py" />
         <option value="$PROJECT_DIR$/badminton/admin.py" />
         <option value="$PROJECT_DIR$/badminton_server/settings.py" />
         <option value="$PROJECT_DIR$/api/admin.py" />
+        <option value="$PROJECT_DIR$/api/models.py" />
+        <option value="$PROJECT_DIR$/api/migrations/0001_initial.py" />
       </list>
     </option>
   </component>
@@ -150,8 +166,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="34" />
-    <option name="y" value="24" />
+    <option name="x" value="17" />
+    <option name="y" value="23" />
     <option name="width" value="1406" />
     <option name="height" value="762" />
   </component>
@@ -185,12 +201,109 @@
             <path>
               <item name="Root" type="cbb8eebc:String" user="Root" />
               <item name="badminton_server" type="cbb8eebc:String" user="badminton_server" />
+              <item name="api" type="cbb8eebc:String" user="api" />
+              <item name="migrations" type="cbb8eebc:String" user="migrations" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="badminton_server" type="cbb8eebc:String" user="badminton_server" />
               <item name="badminton" type="cbb8eebc:String" user="badminton" />
             </path>
             <path>
               <item name="Root" type="cbb8eebc:String" user="Root" />
               <item name="badminton_server" type="cbb8eebc:String" user="badminton_server" />
+              <item name="badminton" type="cbb8eebc:String" user="badminton" />
+              <item name="migrations" type="cbb8eebc:String" user="migrations" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
               <item name="badminton_server" type="cbb8eebc:String" user="badminton_server" />
+              <item name="badminton_server" type="cbb8eebc:String" user="badminton_server" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
+              <item name="/" type="cbb8eebc:String" user="/" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
+              <item name="/" type="cbb8eebc:String" user="/" />
+              <item name="Library" type="cbb8eebc:String" user="Library" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
+              <item name="/" type="cbb8eebc:String" user="/" />
+              <item name="Library" type="cbb8eebc:String" user="Library" />
+              <item name="Frameworks" type="cbb8eebc:String" user="Frameworks" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
+              <item name="/" type="cbb8eebc:String" user="/" />
+              <item name="Library" type="cbb8eebc:String" user="Library" />
+              <item name="Frameworks" type="cbb8eebc:String" user="Frameworks" />
+              <item name="Python.framework" type="cbb8eebc:String" user="Python.framework" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
+              <item name="/" type="cbb8eebc:String" user="/" />
+              <item name="Library" type="cbb8eebc:String" user="Library" />
+              <item name="Frameworks" type="cbb8eebc:String" user="Frameworks" />
+              <item name="Python.framework" type="cbb8eebc:String" user="Python.framework" />
+              <item name="Versions" type="cbb8eebc:String" user="Versions" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
+              <item name="/" type="cbb8eebc:String" user="/" />
+              <item name="Library" type="cbb8eebc:String" user="Library" />
+              <item name="Frameworks" type="cbb8eebc:String" user="Frameworks" />
+              <item name="Python.framework" type="cbb8eebc:String" user="Python.framework" />
+              <item name="Versions" type="cbb8eebc:String" user="Versions" />
+              <item name="3.6" type="cbb8eebc:String" user="3.6" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
+              <item name="/" type="cbb8eebc:String" user="/" />
+              <item name="Library" type="cbb8eebc:String" user="Library" />
+              <item name="Frameworks" type="cbb8eebc:String" user="Frameworks" />
+              <item name="Python.framework" type="cbb8eebc:String" user="Python.framework" />
+              <item name="Versions" type="cbb8eebc:String" user="Versions" />
+              <item name="3.6" type="cbb8eebc:String" user="3.6" />
+              <item name="lib" type="cbb8eebc:String" user="lib" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
+              <item name="/" type="cbb8eebc:String" user="/" />
+              <item name="Library" type="cbb8eebc:String" user="Library" />
+              <item name="Frameworks" type="cbb8eebc:String" user="Frameworks" />
+              <item name="Python.framework" type="cbb8eebc:String" user="Python.framework" />
+              <item name="Versions" type="cbb8eebc:String" user="Versions" />
+              <item name="3.6" type="cbb8eebc:String" user="3.6" />
+              <item name="lib" type="cbb8eebc:String" user="lib" />
+              <item name="python3.6" type="cbb8eebc:String" user="python3.6" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="External Dependencies" type="cbb8eebc:String" user="External Dependencies" />
+              <item name="/" type="cbb8eebc:String" user="/" />
+              <item name="Library" type="cbb8eebc:String" user="Library" />
+              <item name="Frameworks" type="cbb8eebc:String" user="Frameworks" />
+              <item name="Python.framework" type="cbb8eebc:String" user="Python.framework" />
+              <item name="Versions" type="cbb8eebc:String" user="Versions" />
+              <item name="3.6" type="cbb8eebc:String" user="3.6" />
+              <item name="lib" type="cbb8eebc:String" user="lib" />
+              <item name="python3.6" type="cbb8eebc:String" user="python3.6" />
+              <item name="site-packages" type="cbb8eebc:String" user="site-packages" />
             </path>
           </expand>
           <select />
@@ -233,7 +346,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
@@ -291,27 +404,28 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="34" y="24" width="1406" height="762" extended-state="0" />
+    <frame x="17" y="23" width="1406" height="762" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3289855" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3289855" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24964438" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -326,65 +440,7 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/db/models/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#53#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/manage.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/badminton_server/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/badminton/migrations/0001_initial.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="20" column="61" lean-forward="true" selection-start-line="20" selection-start-column="61" selection-end-line="20" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/badminton_server/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/badminton/apps.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/badminton/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/tests.py">
+    <entry file="file://$PROJECT_DIR$/api/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -416,25 +472,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/apps.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/badminton_server/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="33" column="23" lean-forward="false" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/admin.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
+        <state relative-caret-position="120">
           <caret line="9" column="31" lean-forward="false" selection-start-line="9" selection-start-column="31" selection-end-line="9" selection-end-column="31" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
@@ -446,7 +486,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -454,7 +493,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -462,6 +500,21 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/apps.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton_server/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="33" column="23" lean-forward="false" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
           <folding />
         </state>
       </provider>
@@ -470,9 +523,243 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/db/models/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton_server/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton/migrations/0001_initial.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="20" column="61" lean-forward="true" selection-start-line="20" selection-start-column="61" selection-end-line="20" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton/apps.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton_server/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="33" column="23" lean-forward="false" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/apps.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton/migrations/0003_auto_20180301_0150.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton_server/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton_server/wsgi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/manage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton/admin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/badminton/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="107" column="33" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/migrations/0001_initial.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1995">
+          <caret line="134" column="26" lean-forward="false" selection-start-line="134" selection-start-column="25" selection-end-line="134" selection-end-column="26" />
           <folding>
-            <element signature="e#0#35#0" expanded="true" />
+            <marker date="1520106346813" expanded="true" signature="272:408" ph="CREATE TABLE... api_campaign" />
+            <marker date="1520106346813" expanded="true" signature="462:563" ph="CREATE TABLE... api_court" />
+            <marker date="1520106346813" expanded="true" signature="617:679" ph="CREATE TABLE... api_election" />
+            <marker date="1520106346813" expanded="true" signature="733:870" ph="CREATE TABLE... api_interested" />
+            <marker date="1520106346813" expanded="true" signature="924:1083" ph="CREATE TABLE... api_match" />
+            <marker date="1520106346813" expanded="true" signature="1137:1203" ph="CREATE TABLE... api_queue" />
+            <marker date="1520106346813" expanded="true" signature="1257:1330" ph="CREATE TABLE... api_team" />
+            <marker date="1520106346813" expanded="true" signature="1384:1448" ph="CREATE TABLE... api_tournament" />
+            <marker date="1520106346813" expanded="true" signature="1502:1669" ph="CREATE TABLE... api_finishedmatch" />
+            <marker date="1520106346813" expanded="true" signature="1723:1951" ph="CREATE TABLE... api_member" />
+            <marker date="1520106346813" expanded="true" signature="2005:2136" ph="CREATE TABLE... api_votes" />
+            <marker date="1520106346813" expanded="true" signature="2190:2240" ph="ALTER TABLE &quot;api_match&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="2256:2500" ph="CREATE TABLE... api_match" />
+            <marker date="1520106346813" expanded="true" signature="2516:2664" ph="INSERT INTO &quot;api_match&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="2592:2664" ph="SELECT &quot;id&quot;,... api_match__old" />
+            <marker date="1520106346813" expanded="true" signature="2680:2707" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="2847:2897" ph="ALTER TABLE &quot;api_match&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="2913:3241" ph="CREATE TABLE... api_match" />
+            <marker date="1520106346813" expanded="true" signature="3257:3429" ph="INSERT INTO &quot;api_match&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="3345:3429" ph="SELECT &quot;id&quot;,... api_match__old" />
+            <marker date="1520106346813" expanded="true" signature="3445:3472" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="3698:3748" ph="ALTER TABLE &quot;api_match&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="3764:4176" ph="CREATE TABLE... api_match" />
+            <marker date="1520106346813" expanded="true" signature="4192:4388" ph="INSERT INTO &quot;api_match&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="4292:4388" ph="SELECT &quot;id&quot;,... api_match__old" />
+            <marker date="1520106346813" expanded="true" signature="4404:4431" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="4743:4793" ph="ALTER TABLE &quot;api_match&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="4809:5315" ph="CREATE TABLE... api_match" />
+            <marker date="1520106346813" expanded="true" signature="5331:5556" ph="INSERT INTO &quot;api_match&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="5448:5556" ph="SELECT &quot;id&quot;,... api_match__old" />
+            <marker date="1520106346813" expanded="true" signature="5572:5599" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="6007:6057" ph="ALTER TABLE &quot;api_court&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="6073:6265" ph="CREATE TABLE... api_court" />
+            <marker date="1520106346813" expanded="true" signature="6281:6383" ph="INSERT INTO &quot;api_court&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="6334:6383" ph="SELECT &quot;id&quot;,... api_court__old" />
+            <marker date="1520106346813" expanded="true" signature="6399:6426" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="6566:6622" ph="ALTER TABLE &quot;api_campaign&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="6638:6868" ph="CREATE TABLE... api_campaign" />
+            <marker date="1520106346813" expanded="true" signature="6884:7007" ph="INSERT INTO &quot;api_campaign&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="6949:7007" ph="SELECT &quot;id&quot;,... api_campaign__old" />
+            <marker date="1520106346813" expanded="true" signature="7023:7053" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="7205:7391" ph="CREATE TABLE... api_boardmember" />
+            <marker date="1520106346813" expanded="true" signature="7445:7495" ph="ALTER TABLE &quot;api_votes&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="7511:7748" ph="CREATE TABLE... api_votes" />
+            <marker date="1520106346813" expanded="true" signature="7764:7864" ph="INSERT INTO &quot;api_votes&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="7816:7864" ph="SELECT &quot;elec... api_votes__old" />
+            <marker date="1520106346813" expanded="true" signature="7880:7907" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="8047:8097" ph="ALTER TABLE &quot;api_votes&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="8113:8467" ph="CREATE TABLE... api_votes" />
+            <marker date="1520106346813" expanded="true" signature="8483:8607" ph="INSERT INTO &quot;api_votes&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="8547:8607" ph="SELECT &quot;elec... api_votes__old" />
+            <marker date="1520106346813" expanded="true" signature="8623:8650" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="8790:8838" ph="ALTER TABLE &quot;api_team&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="8854:9039" ph="CREATE TABLE... api_team" />
+            <marker date="1520106346813" expanded="true" signature="9055:9137" ph="INSERT INTO &quot;api_team&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="9099:9137" ph="SELECT &quot;id&quot;,... api_team__old" />
+            <marker date="1520106346813" expanded="true" signature="9153:9179" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="9321:9369" ph="ALTER TABLE &quot;api_team&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="9385:9678" ph="CREATE TABLE... api_team" />
+            <marker date="1520106346813" expanded="true" signature="9694:9804" ph="INSERT INTO &quot;api_team&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="9752:9804" ph="SELECT &quot;id&quot;,... api_team__old" />
+            <marker date="1520106346813" expanded="true" signature="9820:9846" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="10076:10128" ph="ALTER TABLE &quot;api_member&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="10144:10463" ph="CREATE TABLE... api_member" />
+            <marker date="1520106346813" expanded="true" signature="10479:10661" ph="INSERT INTO &quot;api_member&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="10572:10661" ph="SELECT &quot;inte... api_member__old" />
+            <marker date="1520106346813" expanded="true" signature="10677:10705" ph="DROP TABLE &quot;... " />
+            <marker date="1520106346813" expanded="true" signature="10847:10903" ph="ALTER TABLE &quot;api_campaign&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="10919:11264" ph="CREATE TABLE... api_campaign" />
+            <marker date="1520106346813" expanded="true" signature="11280:11435" ph="INSERT INTO &quot;api_campaign&quot;... " />
+            <marker date="1520106346813" expanded="true" signature="11362:11435" ph="SELECT &quot;id&quot;,... api_campaign__old" />
+            <marker date="1520106346813" expanded="true" signature="11451:11481" ph="DROP TABLE &quot;... " />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/admin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="31" lean-forward="false" selection-start-line="6" selection-start-column="31" selection-end-line="6" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="28" column="29" lean-forward="true" selection-start-line="28" selection-start-column="29" selection-end-line="28" selection-end-column="29" />
+          <folding />
         </state>
       </provider>
     </entry>
