@@ -15,19 +15,20 @@ QUEUE_TYPE = (
     )
 
 class Queue(models.Model):
-    type = models.CharField(max_length=64, choices=QUEUE_TYPE)
+    type = models.CharField(max_length=64, choices=QUEUE_TYPE, primary_key=True)
 
 class Court(models.Model):
+    id = models.AutoField(primary_key=True)
     number = models.IntegerField()
     queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Tournament(models.Model):
-    date = models.DateField('date of tournament')
+    date = models.DateField('date of tournament', primary_key=True)
 
 class Interested(models.Model):
     name = models.CharField(max_length=64)
     formerBoardMember = models.BooleanField(default=False)
-    email = models.EmailField()
+    email = models.EmailField(primary_key=True)
 
     def __str__(self):
         return self.name
@@ -44,12 +45,12 @@ class BoardMember(Member):
     job = models.CharField(max_length=64, choices=JOBS)
 
 class Election(models.Model):
-    date = models.DateField('date of the election')
+    date = models.DateField('date of the election', primary_key=True)
 
 class Votes(models.Model):
     votee = models.ForeignKey(Member, related_name='votee', on_delete=models.SET_NULL, null=True)
-    election = models.ForeignKey(Election, on_delete=models.CASCADE)
-    voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE)
+    election = models.ForeignKey(Election, on_delete=models.CASCADE, primary_key=True)
+    voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE, unique=True)
 
 class Campaign(models.Model):
     job = models.CharField(max_length=64, choices=JOBS)
@@ -58,10 +59,13 @@ class Campaign(models.Model):
     campaigner = models.ForeignKey(Member, on_delete=models.CASCADE)
 
 class Team(models.Model):
+    class Meta:
+        unique_together = (('memberA', 'memberB'),)
     memberA = models.ForeignKey(Member, related_name='memberA', on_delete=models.PROTECT)
     memberB = models.ForeignKey(Member, related_name='memberB', on_delete=models.SET_NULL, null=True, blank=True)
 
 class Match(models.Model):
+    id = models.AutoField(primary_key=True)
     startDate = models.DateTimeField('date started')
     scoreA = models.IntegerField()
     scoreB = models.IntegerField()

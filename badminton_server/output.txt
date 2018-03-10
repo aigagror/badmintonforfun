@@ -1,0 +1,158 @@
+BEGIN;
+--
+-- Create model Campaign
+--
+CREATE TABLE "api_campaign" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "job" varchar(64) NOT NULL, "pitch" varchar(500) NOT NULL);
+--
+-- Create model Court
+--
+CREATE TABLE "api_court" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "number" integer NOT NULL);
+--
+-- Create model Election
+--
+CREATE TABLE "api_election" ("date" date NOT NULL PRIMARY KEY);
+--
+-- Create model Interested
+--
+CREATE TABLE "api_interested" ("name" varchar(64) NOT NULL, "formerBoardMember" bool NOT NULL, "email" varchar(254) NOT NULL PRIMARY KEY);
+--
+-- Create model Match
+--
+CREATE TABLE "api_match" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "startDate" datetime NOT NULL, "scoreA" integer NOT NULL, "scoreB" integer NOT NULL);
+--
+-- Create model Queue
+--
+CREATE TABLE "api_queue" ("type" varchar(64) NOT NULL PRIMARY KEY);
+--
+-- Create model Team
+--
+CREATE TABLE "api_team" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT);
+--
+-- Create model Tournament
+--
+CREATE TABLE "api_tournament" ("date" date NOT NULL PRIMARY KEY);
+--
+-- Create model FinishedMatch
+--
+CREATE TABLE "api_finishedmatch" ("match_ptr_id" integer NOT NULL PRIMARY KEY REFERENCES "api_match" ("id") DEFERRABLE INITIALLY DEFERRED, "endDate" datetime NOT NULL);
+--
+-- Create model Member
+--
+CREATE TABLE "api_member" ("interested_ptr_id" varchar(254) NOT NULL PRIMARY KEY REFERENCES "api_interested" ("email") DEFERRABLE INITIALLY DEFERRED, "level" integer NOT NULL, "private" bool NOT NULL, "dateJoined" date NOT NULL);
+--
+-- Create model Votes
+--
+CREATE TABLE "api_votes" ("election_id" date NOT NULL PRIMARY KEY REFERENCES "api_election" ("date") DEFERRABLE INITIALLY DEFERRED);
+--
+-- Add field court to match
+--
+ALTER TABLE "api_match" RENAME TO "api_match__old";
+CREATE TABLE "api_match" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "startDate" datetime NOT NULL, "scoreA" integer NOT NULL, "scoreB" integer NOT NULL, "court_id" integer NULL REFERENCES "api_court" ("id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_match" ("id", "startDate", "scoreA", "scoreB", "court_id") SELECT "id", "startDate", "scoreA", "scoreB", NULL FROM "api_match__old";
+DROP TABLE "api_match__old";
+CREATE INDEX "api_match_court_id_a29eb307" ON "api_match" ("court_id");
+--
+-- Add field teamA to match
+--
+ALTER TABLE "api_match" RENAME TO "api_match__old";
+CREATE TABLE "api_match" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "startDate" datetime NOT NULL, "scoreA" integer NOT NULL, "scoreB" integer NOT NULL, "court_id" integer NULL REFERENCES "api_court" ("id") DEFERRABLE INITIALLY DEFERRED, "teamA_id" integer NULL REFERENCES "api_team" ("id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_match" ("id", "startDate", "scoreA", "scoreB", "court_id", "teamA_id") SELECT "id", "startDate", "scoreA", "scoreB", "court_id", NULL FROM "api_match__old";
+DROP TABLE "api_match__old";
+CREATE INDEX "api_match_court_id_a29eb307" ON "api_match" ("court_id");
+CREATE INDEX "api_match_teamA_id_089d86d0" ON "api_match" ("teamA_id");
+--
+-- Add field teamB to match
+--
+ALTER TABLE "api_match" RENAME TO "api_match__old";
+CREATE TABLE "api_match" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "startDate" datetime NOT NULL, "scoreA" integer NOT NULL, "scoreB" integer NOT NULL, "court_id" integer NULL REFERENCES "api_court" ("id") DEFERRABLE INITIALLY DEFERRED, "teamA_id" integer NULL REFERENCES "api_team" ("id") DEFERRABLE INITIALLY DEFERRED, "teamB_id" integer NULL REFERENCES "api_team" ("id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_match" ("id", "startDate", "scoreA", "scoreB", "court_id", "teamA_id", "teamB_id") SELECT "id", "startDate", "scoreA", "scoreB", "court_id", "teamA_id", NULL FROM "api_match__old";
+DROP TABLE "api_match__old";
+CREATE INDEX "api_match_court_id_a29eb307" ON "api_match" ("court_id");
+CREATE INDEX "api_match_teamA_id_089d86d0" ON "api_match" ("teamA_id");
+CREATE INDEX "api_match_teamB_id_aa95c558" ON "api_match" ("teamB_id");
+--
+-- Add field tournament to match
+--
+ALTER TABLE "api_match" RENAME TO "api_match__old";
+CREATE TABLE "api_match" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "startDate" datetime NOT NULL, "scoreA" integer NOT NULL, "scoreB" integer NOT NULL, "court_id" integer NULL REFERENCES "api_court" ("id") DEFERRABLE INITIALLY DEFERRED, "teamA_id" integer NULL REFERENCES "api_team" ("id") DEFERRABLE INITIALLY DEFERRED, "teamB_id" integer NULL REFERENCES "api_team" ("id") DEFERRABLE INITIALLY DEFERRED, "tournament_id" date NULL REFERENCES "api_tournament" ("date") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_match" ("id", "startDate", "scoreA", "scoreB", "court_id", "teamA_id", "teamB_id", "tournament_id") SELECT "id", "startDate", "scoreA", "scoreB", "court_id", "teamA_id", "teamB_id", NULL FROM "api_match__old";
+DROP TABLE "api_match__old";
+CREATE INDEX "api_match_court_id_a29eb307" ON "api_match" ("court_id");
+CREATE INDEX "api_match_teamA_id_089d86d0" ON "api_match" ("teamA_id");
+CREATE INDEX "api_match_teamB_id_aa95c558" ON "api_match" ("teamB_id");
+CREATE INDEX "api_match_tournament_id_a1d7d958" ON "api_match" ("tournament_id");
+--
+-- Add field queue to court
+--
+ALTER TABLE "api_court" RENAME TO "api_court__old";
+CREATE TABLE "api_court" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "number" integer NOT NULL, "queue_id" varchar(64) NULL REFERENCES "api_queue" ("type") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_court" ("id", "number", "queue_id") SELECT "id", "number", NULL FROM "api_court__old";
+DROP TABLE "api_court__old";
+CREATE INDEX "api_court_queue_id_19f8c937" ON "api_court" ("queue_id");
+--
+-- Add field election to campaign
+--
+ALTER TABLE "api_campaign" RENAME TO "api_campaign__old";
+CREATE TABLE "api_campaign" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "job" varchar(64) NOT NULL, "pitch" varchar(500) NOT NULL, "election_id" date NOT NULL REFERENCES "api_election" ("date") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_campaign" ("id", "job", "pitch", "election_id") SELECT "id", "job", "pitch", NULL FROM "api_campaign__old";
+DROP TABLE "api_campaign__old";
+CREATE INDEX "api_campaign_election_id_63547c39" ON "api_campaign" ("election_id");
+--
+-- Create model BoardMember
+--
+CREATE TABLE "api_boardmember" ("member_ptr_id" varchar(254) NOT NULL PRIMARY KEY REFERENCES "api_member" ("interested_ptr_id") DEFERRABLE INITIALLY DEFERRED, "job" varchar(64) NOT NULL);
+--
+-- Add field votee to votes
+--
+ALTER TABLE "api_votes" RENAME TO "api_votes__old";
+CREATE TABLE "api_votes" ("election_id" date NOT NULL PRIMARY KEY REFERENCES "api_election" ("date") DEFERRABLE INITIALLY DEFERRED, "votee_id" varchar(254) NULL REFERENCES "api_member" ("interested_ptr_id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_votes" ("election_id", "votee_id") SELECT "election_id", NULL FROM "api_votes__old";
+DROP TABLE "api_votes__old";
+CREATE INDEX "api_votes_votee_id_fbb696e1" ON "api_votes" ("votee_id");
+--
+-- Add field voter to votes
+--
+ALTER TABLE "api_votes" RENAME TO "api_votes__old";
+CREATE TABLE "api_votes" ("election_id" date NOT NULL PRIMARY KEY REFERENCES "api_election" ("date") DEFERRABLE INITIALLY DEFERRED, "votee_id" varchar(254) NULL REFERENCES "api_member" ("interested_ptr_id") DEFERRABLE INITIALLY DEFERRED, "voter_id" varchar(254) NOT NULL UNIQUE REFERENCES "api_member" ("interested_ptr_id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_votes" ("election_id", "votee_id", "voter_id") SELECT "election_id", "votee_id", NULL FROM "api_votes__old";
+DROP TABLE "api_votes__old";
+CREATE INDEX "api_votes_votee_id_fbb696e1" ON "api_votes" ("votee_id");
+--
+-- Add field memberA to team
+--
+ALTER TABLE "api_team" RENAME TO "api_team__old";
+CREATE TABLE "api_team" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "memberA_id" varchar(254) NOT NULL REFERENCES "api_member" ("interested_ptr_id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_team" ("id", "memberA_id") SELECT "id", NULL FROM "api_team__old";
+DROP TABLE "api_team__old";
+CREATE INDEX "api_team_memberA_id_e3632ce2" ON "api_team" ("memberA_id");
+--
+-- Add field memberB to team
+--
+ALTER TABLE "api_team" RENAME TO "api_team__old";
+CREATE TABLE "api_team" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "memberA_id" varchar(254) NOT NULL REFERENCES "api_member" ("interested_ptr_id") DEFERRABLE INITIALLY DEFERRED, "memberB_id" varchar(254) NULL REFERENCES "api_member" ("interested_ptr_id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_team" ("id", "memberA_id", "memberB_id") SELECT "id", "memberA_id", NULL FROM "api_team__old";
+DROP TABLE "api_team__old";
+CREATE INDEX "api_team_memberA_id_e3632ce2" ON "api_team" ("memberA_id");
+CREATE INDEX "api_team_memberB_id_896e1ec0" ON "api_team" ("memberB_id");
+--
+-- Add field queue to member
+--
+ALTER TABLE "api_member" RENAME TO "api_member__old";
+CREATE TABLE "api_member" ("interested_ptr_id" varchar(254) NOT NULL PRIMARY KEY REFERENCES "api_interested" ("email") DEFERRABLE INITIALLY DEFERRED, "level" integer NOT NULL, "private" bool NOT NULL, "dateJoined" date NOT NULL, "queue_id" varchar(64) NULL REFERENCES "api_queue" ("type") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_member" ("interested_ptr_id", "level", "private", "dateJoined", "queue_id") SELECT "interested_ptr_id", "level", "private", "dateJoined", NULL FROM "api_member__old";
+DROP TABLE "api_member__old";
+CREATE INDEX "api_member_queue_id_ace500c5" ON "api_member" ("queue_id");
+--
+-- Add field campaigner to campaign
+--
+ALTER TABLE "api_campaign" RENAME TO "api_campaign__old";
+CREATE TABLE "api_campaign" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "job" varchar(64) NOT NULL, "pitch" varchar(500) NOT NULL, "election_id" date NOT NULL REFERENCES "api_election" ("date") DEFERRABLE INITIALLY DEFERRED, "campaigner_id" varchar(254) NOT NULL REFERENCES "api_member" ("interested_ptr_id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "api_campaign" ("id", "job", "pitch", "election_id", "campaigner_id") SELECT "id", "job", "pitch", "election_id", NULL FROM "api_campaign__old";
+DROP TABLE "api_campaign__old";
+CREATE INDEX "api_campaign_election_id_63547c39" ON "api_campaign" ("election_id");
+CREATE INDEX "api_campaign_campaigner_id_81d97c76" ON "api_campaign" ("campaigner_id");
+--
+-- Alter unique_together for team (1 constraint(s))
+--
+CREATE UNIQUE INDEX api_team_memberA_id_memberB_id_411c1e78_uniq ON "api_team" ("memberA_id", "memberB_id");
+COMMIT;
