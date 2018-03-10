@@ -1,5 +1,5 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require('path');
 module.exports = {
     entry: {
@@ -43,17 +43,7 @@ module.exports = {
             filename: 'css/[name].css',
             allChunks: true,
         }),
-
-        new HtmlWebpackPlugin({
-          title: 'Welcome',
-          template: 'src/templates/index.html',
-          filename: 'index.html'
-        }),
-        new HtmlWebpackPlugin({
-          title: 'Interested',
-          template: 'src/templates/interested.html',
-          filename: 'interested.html'
-        })
+        new CopyWebpackPlugin([ { from: 'src/templates', to: 'html' } ], {debug: 'info'}),
     ],
 
     externals: {

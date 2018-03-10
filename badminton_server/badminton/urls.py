@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include, path
+from .views import js_server, css_server, template_server
 
 urlpatterns = [
+	path('js/<path:js_file>', js_server),
+	path('css/<path:css_file>', css_server),
+	path('<str:template>', template_server),
 ]

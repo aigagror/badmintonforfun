@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import { GoogleLogin } from 'react-google-login';
 import { Button } from "./components/Button";
 
-const responseGoogle = (response) => {
+const responseGoogle = (response: any) => {
   console.log(response);
 }
 

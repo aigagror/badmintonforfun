@@ -1,43 +1,14 @@
+{% load badminton_filters %}
+
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8" />
-<meta http-equiv="x-ua-compatible" content="ie=edge"> <!-- † -->
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        {% include_fragment 'head.html' %}
 
-<!--
-  Allows control over where resources are loaded from.
-  Place as early in the <head> as possible, as the tag  
-  only applies to resources that are declared after it.
--->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'">
-
-<!-- Name of web application (only should be used if the website is used as an app) -->
-<meta name="application-name" content="Application Name">
-
-<!-- Theme Color for Chrome, Firefox OS and Opera -->
-<meta name="theme-color" content="#4285f4">
-
-<link rel="stylesheet" type="text/css" href="src/css/main.css">
-<meta property="og:image" content="">
-<meta property="og:description" content="Badminton for fun application">
-<meta property="og:title" content="Badminton for Fun">
-<meta name="twitter:title" content="Badminton for Fun">
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-<!-- third-generation iPad with high-resolution Retina display: -->
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://developer.cdn.mozilla.net/static/img/favicon144.a6e4162070f4.png">
-<!-- iPhone with high-resolution Retina display: -->
-<link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://developer.cdn.mozilla.net/static/img/favicon114.0e9fabd44f85.png">
-<!-- first- and second-generation iPad: -->
-<link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://developer.cdn.mozilla.net/static/img/favicon72.8ff9d87c82a0.png">
-<!-- non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
-<link rel="apple-touch-icon-precomposed" href="https://developer.cdn.mozilla.net/static/img/favicon57.a2490b9a2d76.png">
-<!-- basic favicon -->
-<link rel="shortcut icon" href="https://developer.cdn.mozilla.net/static/img/favicon32.e02854fdcf73.png">
         <title>Landing</title>
         <meta name="author" content="Bhuvan Venkatesh">
         <meta name="description" content="Badminton for fun memeber page.">
-    <link href="css/css.css" rel="stylesheet"></head>
+    </head>
     <body>
 
     <div class="grid row row-offset-1">
@@ -68,16 +39,12 @@
         </div>
     </div>
 
-        <!-- Dependencies -->
-        <script src="./node_modules/react/umd/react.development.js"></script>
-        <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
-        <script src="https://apis.google.com/js/platform.js"></script>
+        {% resolve_global 'react' %}
+        {% resolve_global 'react-dom' %}
+        {% resolve_global 'google-platform' %}
 
-        <!-- Main -->
-        <script src="./dist/js/index.js"></script>
+        {% resolve_js_local 'index.js' %}
 
-        <footer>
-  © University of Illinois 2018
-</footer>
-    <script type="text/javascript" src="js/index.js"></script><script type="text/javascript" src="js/interested.js"></script><script type="text/javascript" src="js/css.js"></script></body>
+        {% include_fragment 'foot.html' %}
+    </body>
 </html>

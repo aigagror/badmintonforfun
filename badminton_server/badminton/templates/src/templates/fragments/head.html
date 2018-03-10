@@ -1,3 +1,5 @@
+{% load badminton_filters %}
+
 <meta charset="utf-8" />
 <meta http-equiv="x-ua-compatible" content="ie=edge"> <!-- † -->
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -15,7 +17,8 @@
 <!-- Theme Color for Chrome, Firefox OS and Opera -->
 <meta name="theme-color" content="#4285f4">
 
-<link rel="stylesheet" type="text/css" href="src/css/main.css">
+{% resolve_css_local 'index.css' %}
+
 <meta property="og:image" content="">
 <meta property="og:description" content="Badminton for fun application">
 <meta property="og:title" content="Badminton for Fun">
