@@ -1,0 +1,77 @@
+$pad: 15px;
+$grid-columns: 12;
+$col-slug: ".col";
+$col-center-slug: ".col-center";
+$col-offset-slug: ".col-offset";
+$row-offset-slug: ".row-offset";
+$row-height-slug: ".row";
+
+$response-booster: (
+  // TODO: New column for offset adjustment
+    /* Pixels, column mult, padding mult*/
+    extra-small: (320px, 2.0, 0.4),
+    small: (480px, 1.8, 0.6),
+    small-medium: (720px, 1.6, 1.0),
+    medium: (1024px, 1.4, 1.0),
+    normal: (1200px, 1.0, 1.0),
+    large: (1600px, 1.0, 1.0)
+);
+
+.grid{
+    width: 100%;    
+}
+
+/*-- our cleafix hack -- */ 
+.row:before, 
+.row:after {
+    content:"";
+    display: table ;
+    clear:both;
+}
+
+@function calculating-padding($value){
+  $padding-multiplier: nth($value, 3);
+  @return $pad * $padding-multiplier;
+}
+
+@function calculate-adjusted-percentage($value, $i) {
+  $width-percent: percentage($i/$grid-columns);
+  $column-multiplier: nth($value, 2);
+  $adjusted: min($width-percent * $column-multiplier, 100%);
+  @return $adjusted;
+}
+
+@each $name, $value in $response-booster {
+  $adjusted-padding: calculating-padding($value);
+  $padding-multiplier: nth($value, 3);
+
+  @media only screen and (min-width: #{nth($value, 1)-1})  {
+    @for $i from 1 through $grid-columns {
+      $adjusted-percentage: calculate-adjusted-percentage($value, $i);
+      $column-multiplier: nth($value, 2);
+      #{$col-slug}-#{$i} {
+        width: calc( #{$adjusted-percentage} - #{$adjusted-padding} * 2);
+      }
+
+      $centering: ($grid-columns - $i) / 2;
+      $adjusted-center-percentage: calculate-adjusted-percentage($value, $centering);
+
+      #{$col-offset-slug}-#{$i} {
+        margin-left: calc( (#{$adjusted-percentage} - #{$adjusted-padding} * 2) * #{$padding-multiplier});
+      }
+
+      #{$row-offset-slug}-#{$i} {
+        margin-top: calc( #{$adjusted-percentage} / (#{$column-multiplier} * 2));
+      }
+      #{$row-height-slug}-#{$i} {
+        height: calc( #{$adjusted-percentage} / (#{$column-multiplier} * 2));
+      }
+    }
+    [class*='col-'] {
+      float: left; 
+      min-height: 1px; 
+      /*-- our gutter -- */
+      padding: 0 #{$adjusted-padding} 0 #{$adjusted-padding}; 
+    }
+  }
+}
