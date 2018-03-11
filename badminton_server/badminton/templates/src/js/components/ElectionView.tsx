@@ -17,16 +17,21 @@ abstract class HigherOrderComponent {
 
 class ElectionCandidate extends HigherOrderComponent {
 	person: any;
-
-	constructor(person: any) {
+	role: string;
+	constructor(person: any, role: string) {
 		super();
 		this.person = person;
+		this.role = role;
 	}
 
 	render() {
 		return (<div>
 			<p>Name: {this.person.name}</p>
 			<p>Pitch: {this.person.pitch}</p>
+			{this.person.voted ? 
+				<input type="radio" name={this.role} value={this.person.id} checked /> :
+				<input type="radio" name={this.role} value={this.person.id} />
+			}
 			</div>
 			);
 	}
@@ -35,23 +40,24 @@ class ElectionCandidate extends HigherOrderComponent {
 class ElectionRole extends HigherOrderComponent {
 	role: string;
 	candidates: ElectionCandidate[];
-
+	selected: any;
 	constructor(name: string, candidates: any) {
 		super();
 		this.role = name;
 		this.candidates = [];
 		for (let i in candidates) {
 			let candidate = candidates[i];
-			const obj = new ElectionCandidate(candidate);
+			const obj = new ElectionCandidate(candidate, this.role);
 			this.candidates.push(obj);
 		}
+		this.selected = null;
 	}
 
 	render() {
 		return (<div>
 			<h3>{this.role}</h3>
 			{
-				this.candidates.map((key, idx) =>{
+				this.candidates.map((key, idx) => {
 					return key.render();
 				})
 			}
@@ -73,18 +79,28 @@ class ElectionUp extends HigherOrderComponent {
 			let elem = this.order[key];
 			this.campaigns.push(new ElectionRole(elem, data.campaigns[elem]));
 		}
+		this.submitVotes = this.submitVotes.bind(this);
 	}
 
 	up() {
 		return true;
 	}
 
+	submitVotes(event: any) {
+		event.preventDefault();
+		for(let key in this.order) {
+			let elem = this.order[key];
+			console.log("For: " + elem + " Userid: " + event.target[elem].value);
+		}
+	}
+
 	render() {
-		return (<div>{
+		return (<form onSubmit={this.submitVotes}>{
 			this.campaigns.map((campaign: any, idx: number) => { 
 				return campaign.render() 
 			})
-		}</div>);
+		}<button type="submit">Submit Votes</button>
+		</form>);
 	}
 }
 
@@ -151,7 +167,6 @@ export class ElectionView extends React.Component<any, any> {
 
 
 	switch(event: Event) {
-		console.log(event);
 		if (this.state.election !== LoadingState.Loaded) {
 			return;
 		} else if (this.state.election_data.up()) {

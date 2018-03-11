@@ -6,11 +6,15 @@
 		"president": [
 			{
 				"name": "Ed",
+				"id": 12345,
+				"voted": true,
 				"pitch": "lorem ipsum 1"
 			},
 
 			{
 				"name": "Bhuvan",
+				"id": 12346,
+				"voted": false,
 				"pitch": "lorem ipsum 2"
 			}
 		], 
@@ -18,10 +22,14 @@
 		"treasurer": [
 			{
 				"name": "Bhuvan",
+				"id": 12347,
+				"voted": false,
 				"pitch": "lorem ipsum 2"
 			},
 			{
 				"name": "Bhuvan",
+				"id": 12348,
+				"voted": false,
 				"pitch": "lorem ipsum 2"
 			}
 		], 
@@ -29,10 +37,14 @@
 		"vice_president": [
 			{
 				"name": "Bhuvan",
+				"id": 12349,
+				"voted": true,
 				"pitch": "lorem ipsum 2"
 			},
 			{
 				"name": "Bhuvan",
+				"id": 12351,
+				"voted": false,
 				"pitch": "lorem ipsum 2"
 			}
 		], 
@@ -40,6 +52,8 @@
 		"outreach": [
 			{
 				"name": "Bhuvan",
+				"id": 123422,
+				"voted": false,
 				"pitch": "lorem ipsum 2"
 			}
 		]

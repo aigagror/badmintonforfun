@@ -999,9 +999,10 @@ var HigherOrderComponent = /** @class */ (function () {
 }());
 var ElectionCandidate = /** @class */ (function (_super) {
     __extends(ElectionCandidate, _super);
-    function ElectionCandidate(person) {
+    function ElectionCandidate(person, role) {
         var _this = _super.call(this) || this;
         _this.person = person;
+        _this.role = role;
         return _this;
     }
     ElectionCandidate.prototype.render = function () {
@@ -1011,7 +1012,10 @@ var ElectionCandidate = /** @class */ (function (_super) {
                 this.person.name),
             React.createElement("p", null,
                 "Pitch: ",
-                this.person.pitch)));
+                this.person.pitch),
+            this.person.voted ?
+                React.createElement("input", { type: "radio", name: this.role, value: this.person.id, checked: true }) :
+                React.createElement("input", { type: "radio", name: this.role, value: this.person.id })));
     };
     return ElectionCandidate;
 }(HigherOrderComponent));
@@ -1023,9 +1027,10 @@ var ElectionRole = /** @class */ (function (_super) {
         _this.candidates = [];
         for (var i in candidates) {
             var candidate = candidates[i];
-            var obj = new ElectionCandidate(candidate);
+            var obj = new ElectionCandidate(candidate, _this.role);
             _this.candidates.push(obj);
         }
+        _this.selected = null;
         return _this;
     }
     ElectionRole.prototype.render = function () {
@@ -1047,15 +1052,25 @@ var ElectionUp = /** @class */ (function (_super) {
             var elem = _this.order[key];
             _this.campaigns.push(new ElectionRole(elem, data.campaigns[elem]));
         }
+        _this.submitVotes = _this.submitVotes.bind(_this);
         return _this;
     }
     ElectionUp.prototype.up = function () {
         return true;
     };
+    ElectionUp.prototype.submitVotes = function (event) {
+        event.preventDefault();
+        for (var key in this.order) {
+            var elem = this.order[key];
+            console.log("For: " + elem + " Userid: " + event.target[elem].value);
+        }
+    };
     ElectionUp.prototype.render = function () {
-        return (React.createElement("div", null, this.campaigns.map(function (campaign, idx) {
-            return campaign.render();
-        })));
+        return (React.createElement("form", { onSubmit: this.submitVotes },
+            this.campaigns.map(function (campaign, idx) {
+                return campaign.render();
+            }),
+            React.createElement("button", { type: "submit" }, "Submit Votes")));
     };
     return ElectionUp;
 }(HigherOrderComponent));
@@ -1107,7 +1122,6 @@ var ElectionView = /** @class */ (function (_super) {
         });
     };
     ElectionView.prototype.switch = function (event) {
-        console.log(event);
         if (this.state.election !== LoadingState.Loaded) {
             return;
         }
