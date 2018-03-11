@@ -1,0 +1,47 @@
+{
+	"_comment": "status can either be true or false, candidates is a list of candidate people who are running for roles in the form of role:[person]",
+	"status": true,
+	"order": ["president", "treasurer", "vice_president", "outreach"],
+	"campaigns": {
+		"president": [
+			{
+				"name": "Ed",
+				"pitch": "lorem ipsum 1"
+			},
+
+			{
+				"name": "Bhuvan",
+				"pitch": "lorem ipsum 2"
+			}
+		], 
+
+		"treasurer": [
+			{
+				"name": "Bhuvan",
+				"pitch": "lorem ipsum 2"
+			},
+			{
+				"name": "Bhuvan",
+				"pitch": "lorem ipsum 2"
+			}
+		], 
+
+		"vice_president": [
+			{
+				"name": "Bhuvan",
+				"pitch": "lorem ipsum 2"
+			},
+			{
+				"name": "Bhuvan",
+				"pitch": "lorem ipsum 2"
+			}
+		], 
+
+		"outreach": [
+			{
+				"name": "Bhuvan",
+				"pitch": "lorem ipsum 2"
+			}
+		]
+	}
+}

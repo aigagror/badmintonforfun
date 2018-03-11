@@ -19,6 +19,6 @@ ReactDOM.render(
 );
 
 ReactDOM.render(
-    <Button text="Interested" href="/interested.html"/>,
+    <Button text="Interested" href="./interested.html"/>,
     document.querySelector("interested-button")
 );

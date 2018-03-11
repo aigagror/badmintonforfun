@@ -6,9 +6,10 @@ from django.utils.safestring import mark_safe
 
 register = template.Library()
 
-script_template = Template('<script src="{{ script_name }}"></script>')
-script_checksum_template = Template("<script src='{{ script_name }}', checkusm='{{ checksum }}'"
-"crossorigin='anonymous'></script>")
+script_template = Template('<script src="{{ script_name }}" type="text/javascript"></script>')
+script_checksum_template = Template("<script src='{{ script_name }}', checksum='{{ checksum }}'"
+"crossorigin='anonymous' type='text/javascript'></script>")
+script_anonymous_template = Template("<script src='{{ script_name }}' crossorigin='anonymous' type='text/javascript'></script>")
 
 css_template = Template('<link rel="stylesheet" type="text/css" href="{{ stylesheet }}">')
 
@@ -19,7 +20,10 @@ def resolve_global(resource):
 
     res = GLOBAL_RESOURCES[resource]
     if not res.checksum:
-        string = script_template.render(Context({'script_name': res.url}))
+        if res.anonymous:
+            string = script_anonymous_template.render(Context({'script_name': res.url}))
+        else:
+            string = script_template.render(Context({'script_name': res.url}))
     else:
         string = script_checksum_template.render(Context({'script_name': res.url, 'checksum': res.checksum}))
 
@@ -40,3 +44,8 @@ def include_fragment(context, resource):
     with open(os.path.join(FRAGMENTS_PATH, resource), "r") as f:
         template = Template(f.read())
         return template.render(context)
+
+@register.simple_tag(name="resolve_api")
+def resolve_api(resource):
+    resource = "./mock/resource"
+    return mark_safe(resource)

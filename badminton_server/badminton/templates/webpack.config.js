@@ -5,6 +5,7 @@ module.exports = {
     entry: {
         'index': path.resolve(__dirname, 'src/js/index.tsx'),
         'interested': path.resolve(__dirname, 'src/js/interested.tsx'),
+        'election': path.resolve(__dirname, 'src/js/election.tsx'),
         'css': path.resolve(__dirname, 'src/js/css.tsx'),
     },
     output: {
