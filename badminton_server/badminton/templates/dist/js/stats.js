@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 38);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1840,7 +1840,13 @@ module.exports = function spread(callback) {
 /* 29 */,
 /* 30 */,
 /* 31 */,
-/* 32 */
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1848,12 +1854,12 @@ module.exports = function spread(callback) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(9);
-var InterestedForm_1 = __webpack_require__(33);
-ReactDOM.render(React.createElement(InterestedForm_1.InterestedForm, null), document.querySelector("interest-form"));
+var StatView_1 = __webpack_require__(39);
+ReactDOM.render(React.createElement(StatView_1.StatView, null), document.querySelector("stat-view"));
 
 
 /***/ }),
-/* 33 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1871,65 +1877,29 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
-var email_name = "email";
-var api_url = "/mock/interested.json";
-var InterestedForm = /** @class */ (function (_super) {
-    __extends(InterestedForm, _super);
-    function InterestedForm(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
-            message: null,
-            title: null
-        };
-        _this.handleSubmit = _this.handleSubmit.bind(_this);
-        _this.resetState = _this.resetState.bind(_this);
-        return _this;
+var stat_urls = "/mock/stats.json";
+var StatView = /** @class */ (function (_super) {
+    __extends(StatView, _super);
+    function StatView(props) {
+        return _super.call(this, props) || this;
     }
-    InterestedForm.prototype.handleSubmit = function (event) {
-        var _this = this;
-        event.preventDefault();
-        axios_1.default.get(api_url, {
-            params: {
-                email: event.target[email_name].value
-            }
+    StatView.prototype.componentDidMount = function () {
+        axios_1.default.get(stat_urls)
+            .then(function (res) {
+            console.log(res);
         })
-            .then(function (response) {
-            _this.setState({
-                message: response.data.message,
-                title: response.data.title
-            });
-        })
-            .catch(function (error) {
-            console.log(error);
+            .catch(function (res) {
+            console.log(res);
         });
     };
-    InterestedForm.prototype.resetState = function () {
-        this.setState({
-            message: null,
-            title: null
-        });
+    StatView.prototype.render = function () {
+        return React.createElement("p", null, "Hello!");
     };
-    InterestedForm.prototype.render = function () {
-        return (React.createElement(React.Fragment, null,
-            React.createElement("form", { onSubmit: this.handleSubmit },
-                React.createElement("div", { className: "col-center-4" },
-                    React.createElement("label", null,
-                        "Email:",
-                        React.createElement("input", { type: "text", id: "email", name: email_name, placeholder: "netid@illinois.edu" }))),
-                React.createElement("div", { className: "col-center-4" },
-                    React.createElement("input", { type: "submit", value: "Submit", className: "big-button" }))),
-            this.state.message !== null ?
-                React.createElement("div", { className: "message-div" },
-                    React.createElement("h4", null, this.state.title),
-                    React.createElement("p", null, this.state.message),
-                    React.createElement("button", { onClick: this.resetState }, "Ok")) :
-                React.createElement("div", null)));
-    };
-    return InterestedForm;
+    return StatView;
 }(React.Component));
-exports.InterestedForm = InterestedForm;
+exports.StatView = StatView;
 
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=interested.js.map
+//# sourceMappingURL=stats.js.map

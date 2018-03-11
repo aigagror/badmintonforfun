@@ -1,18 +1,14 @@
 import * as React from "react";
 import {Slider} from "./Slider";
 import axios from 'axios';
+import {HigherOrderComponent} from '../common/ComponentSubclasses';
+
+const election_url = '/mock/election_happening.json';
+const election_not_url = '/mock/electionless.json';
 
 enum LoadingState {
     Loading,
     Loaded,
-}
-
-abstract class HigherOrderComponent {
-	constructor() {
-		this.render = this.render.bind(this);
-	}
-
-	abstract render(): any;
 }
 
 class ElectionCandidate extends HigherOrderComponent {
@@ -40,7 +36,6 @@ class ElectionCandidate extends HigherOrderComponent {
 class ElectionRole extends HigherOrderComponent {
 	role: string;
 	candidates: ElectionCandidate[];
-	selected: any;
 	constructor(name: string, candidates: any) {
 		super();
 		this.role = name;
@@ -50,7 +45,6 @@ class ElectionRole extends HigherOrderComponent {
 			const obj = new ElectionCandidate(candidate, this.role);
 			this.candidates.push(obj);
 		}
-		this.selected = null;
 	}
 
 	render() {
@@ -66,10 +60,17 @@ class ElectionRole extends HigherOrderComponent {
 	}
 }
 
-class ElectionUp extends HigherOrderComponent {
-	candidates: any;
+abstract class ElectionData extends HigherOrderComponent {
+	constructor() {
+		super();
+	}
+
+	abstract up(): boolean;
+}
+
+class ElectionUp extends ElectionData {
 	order: string[];
-	campaigns: any;
+	campaigns: ElectionRole[];
 
 	constructor(data: any) {
 		super();
@@ -96,7 +97,7 @@ class ElectionUp extends HigherOrderComponent {
 
 	render() {
 		return (<form onSubmit={this.submitVotes}>{
-			this.campaigns.map((campaign: any, idx: number) => { 
+			this.campaigns.map((campaign: ElectionRole, idx: number) => { 
 				return campaign.render() 
 			})
 		}<button type="submit">Submit Votes</button>
@@ -104,11 +105,11 @@ class ElectionUp extends HigherOrderComponent {
 	}
 }
 
-class ElectionDown extends HigherOrderComponent {
+class ElectionDown extends ElectionData {
 	message: string;
-	constructor(data: any) {
+	constructor(message: string) {
 		super();
-		this.message = data.message;
+		this.message = message;
 	}
 
 	up() {
@@ -120,24 +121,14 @@ class ElectionDown extends HigherOrderComponent {
 	}
 }
 
-type ElectionData = ElectionUp | ElectionDown;
-
 interface ElectionState {
 	election: LoadingState;
 	election_data?: ElectionData;
 }
 
-export interface ElectionProps { 
-}
+export class ElectionView extends React.Component<{}, ElectionState> {
 
-const election_url = '/mock/election_happening.json';
-const election_not_url = '/mock/electionless.json'
-
-
-
-export class ElectionView extends React.Component<any, any> {
-
-	constructor(props: ElectionProps) {
+	constructor(props: any) {
 	    super(props);
 	    this.state = {
 	    	election: LoadingState.Loading,
@@ -156,7 +147,7 @@ export class ElectionView extends React.Component<any, any> {
 				if (status) {
 					pack = new ElectionUp(res.data);
 				} else {
-					pack = new ElectionDown(res.data);
+					pack = new ElectionDown(res.data.message);
 				}
 				_this_ref.setState({
 					election_data: pack,

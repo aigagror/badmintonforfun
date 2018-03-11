@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 34);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,8 +70,8 @@
 "use strict";
 
 
-var bind = __webpack_require__(4);
-var isBuffer = __webpack_require__(20);
+var bind = __webpack_require__(3);
+var isBuffer = __webpack_require__(12);
 
 /*global toString:true*/
 
@@ -381,19 +381,13 @@ module.exports = React;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(22);
+var normalizeHeaderName = __webpack_require__(14);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -409,10 +403,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   }
   return adapter;
 }
@@ -487,10 +481,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +502,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -698,19 +692,19 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(23);
-var buildURL = __webpack_require__(25);
-var parseHeaders = __webpack_require__(26);
-var isURLSameOrigin = __webpack_require__(27);
-var createError = __webpack_require__(7);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(28);
+var settle = __webpack_require__(15);
+var buildURL = __webpack_require__(17);
+var parseHeaders = __webpack_require__(18);
+var isURLSameOrigin = __webpack_require__(19);
+var createError = __webpack_require__(6);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(20);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -807,7 +801,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(29);
+      var cookies = __webpack_require__(21);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -883,16 +877,16 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(24);
+var enhanceError = __webpack_require__(16);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -911,7 +905,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -923,7 +917,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -949,260 +943,28 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 9 */
+/***/ (function(module, exports) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(2);
-var ElectionView_1 = __webpack_require__(16);
-ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
-
+module.exports = ReactDOM;
 
 /***/ }),
-/* 16 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var Slider_1 = __webpack_require__(17);
-var axios_1 = __webpack_require__(18);
-var LoadingState;
-(function (LoadingState) {
-    LoadingState[LoadingState["Loading"] = 0] = "Loading";
-    LoadingState[LoadingState["Loaded"] = 1] = "Loaded";
-})(LoadingState || (LoadingState = {}));
-var HigherOrderComponent = /** @class */ (function () {
-    function HigherOrderComponent() {
-        this.render = this.render.bind(this);
-    }
-    return HigherOrderComponent;
-}());
-var ElectionCandidate = /** @class */ (function (_super) {
-    __extends(ElectionCandidate, _super);
-    function ElectionCandidate(person, role) {
-        var _this = _super.call(this) || this;
-        _this.person = person;
-        _this.role = role;
-        return _this;
-    }
-    ElectionCandidate.prototype.render = function () {
-        return (React.createElement("div", null,
-            React.createElement("p", null,
-                "Name: ",
-                this.person.name),
-            React.createElement("p", null,
-                "Pitch: ",
-                this.person.pitch),
-            this.person.voted ?
-                React.createElement("input", { type: "radio", name: this.role, value: this.person.id, checked: true }) :
-                React.createElement("input", { type: "radio", name: this.role, value: this.person.id })));
-    };
-    return ElectionCandidate;
-}(HigherOrderComponent));
-var ElectionRole = /** @class */ (function (_super) {
-    __extends(ElectionRole, _super);
-    function ElectionRole(name, candidates) {
-        var _this = _super.call(this) || this;
-        _this.role = name;
-        _this.candidates = [];
-        for (var i in candidates) {
-            var candidate = candidates[i];
-            var obj = new ElectionCandidate(candidate, _this.role);
-            _this.candidates.push(obj);
-        }
-        _this.selected = null;
-        return _this;
-    }
-    ElectionRole.prototype.render = function () {
-        return (React.createElement("div", null,
-            React.createElement("h3", null, this.role),
-            this.candidates.map(function (key, idx) {
-                return key.render();
-            })));
-    };
-    return ElectionRole;
-}(HigherOrderComponent));
-var ElectionUp = /** @class */ (function (_super) {
-    __extends(ElectionUp, _super);
-    function ElectionUp(data) {
-        var _this = _super.call(this) || this;
-        _this.order = data.order;
-        _this.campaigns = [];
-        for (var key in _this.order) {
-            var elem = _this.order[key];
-            _this.campaigns.push(new ElectionRole(elem, data.campaigns[elem]));
-        }
-        _this.submitVotes = _this.submitVotes.bind(_this);
-        return _this;
-    }
-    ElectionUp.prototype.up = function () {
-        return true;
-    };
-    ElectionUp.prototype.submitVotes = function (event) {
-        event.preventDefault();
-        for (var key in this.order) {
-            var elem = this.order[key];
-            console.log("For: " + elem + " Userid: " + event.target[elem].value);
-        }
-    };
-    ElectionUp.prototype.render = function () {
-        return (React.createElement("form", { onSubmit: this.submitVotes },
-            this.campaigns.map(function (campaign, idx) {
-                return campaign.render();
-            }),
-            React.createElement("button", { type: "submit" }, "Submit Votes")));
-    };
-    return ElectionUp;
-}(HigherOrderComponent));
-var ElectionDown = /** @class */ (function (_super) {
-    __extends(ElectionDown, _super);
-    function ElectionDown(data) {
-        var _this = _super.call(this) || this;
-        _this.message = data.message;
-        return _this;
-    }
-    ElectionDown.prototype.up = function () {
-        return false;
-    };
-    ElectionDown.prototype.render = function () {
-        return (React.createElement("p", null, this.message));
-    };
-    return ElectionDown;
-}(HigherOrderComponent));
-var election_url = '/mock/election_happening.json';
-var election_not_url = '/mock/electionless.json';
-var ElectionView = /** @class */ (function (_super) {
-    __extends(ElectionView, _super);
-    function ElectionView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
-            election: LoadingState.Loading,
-        };
-        _this.performRequest = _this.performRequest.bind(_this);
-        _this.switch = _this.switch.bind(_this);
-        _this.componentDidMount = _this.componentDidMount.bind(_this);
-        return _this;
-    }
-    ElectionView.prototype.performRequest = function (url) {
-        var _this_ref = this;
-        axios_1.default.get(url)
-            .then(function (res) {
-            var status = res.data.status;
-            var pack;
-            if (status) {
-                pack = new ElectionUp(res.data);
-            }
-            else {
-                pack = new ElectionDown(res.data);
-            }
-            _this_ref.setState({
-                election_data: pack,
-                election: LoadingState.Loaded
-            });
-        });
-    };
-    ElectionView.prototype.switch = function (event) {
-        if (this.state.election !== LoadingState.Loaded) {
-            return;
-        }
-        else if (this.state.election_data.up()) {
-            this.performRequest(election_not_url);
-        }
-        else {
-            this.performRequest(election_url);
-        }
-    };
-    ElectionView.prototype.componentDidMount = function () {
-        this.performRequest(election_url);
-    };
-    ElectionView.prototype.render = function () {
-        return (React.createElement("div", { className: "election-view" },
-            React.createElement("h2", null, "Toggle datum"),
-            React.createElement(Slider_1.Slider, { change: this.switch }),
-            this.state.election === LoadingState.Loading ?
-                React.createElement("p", null, " Loading ") :
-                this.state.election_data.render()));
-    };
-    return ElectionView;
-}(React.Component));
-exports.ElectionView = ElectionView;
-
+module.exports = __webpack_require__(11);
 
 /***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var Slider = /** @class */ (function (_super) {
-    __extends(Slider, _super);
-    function Slider(props) {
-        var _this = _super.call(this, props) || this;
-        _this.onChange = _this.onChange.bind(_this);
-        return _this;
-    }
-    Slider.prototype.onChange = function (event) {
-        this.props.change(event);
-    };
-    Slider.prototype.render = function () {
-        return (React.createElement("label", { className: "switch" },
-            React.createElement("input", { type: "checkbox", onChange: this.onChange }),
-            React.createElement("span", { className: "slider round" })));
-    };
-    return Slider;
-}(React.Component));
-exports.Slider = Slider;
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(19);
-
-/***/ }),
-/* 19 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(4);
-var Axios = __webpack_require__(21);
-var defaults = __webpack_require__(3);
+var bind = __webpack_require__(3);
+var Axios = __webpack_require__(13);
+var defaults = __webpack_require__(2);
 
 /**
  * Create an instance of Axios
@@ -1235,15 +997,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(9);
-axios.CancelToken = __webpack_require__(35);
-axios.isCancel = __webpack_require__(8);
+axios.Cancel = __webpack_require__(8);
+axios.CancelToken = __webpack_require__(27);
+axios.isCancel = __webpack_require__(7);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(36);
+axios.spread = __webpack_require__(28);
 
 module.exports = axios;
 
@@ -1252,7 +1014,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 20 */
+/* 12 */
 /***/ (function(module, exports) {
 
 /*!
@@ -1279,16 +1041,16 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 21 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(3);
+var defaults = __webpack_require__(2);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(30);
-var dispatchRequest = __webpack_require__(31);
+var InterceptorManager = __webpack_require__(22);
+var dispatchRequest = __webpack_require__(23);
 
 /**
  * Create a new instance of Axios
@@ -1365,7 +1127,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 22 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1384,13 +1146,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 23 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -1417,7 +1179,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 24 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1445,7 +1207,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 25 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1518,7 +1280,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 26 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1578,7 +1340,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 27 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1653,7 +1415,7 @@ module.exports = (
 
 
 /***/ }),
-/* 28 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1696,7 +1458,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 29 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1756,7 +1518,7 @@ module.exports = (
 
 
 /***/ }),
-/* 30 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1815,18 +1577,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 31 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(32);
-var isCancel = __webpack_require__(8);
-var defaults = __webpack_require__(3);
-var isAbsoluteURL = __webpack_require__(33);
-var combineURLs = __webpack_require__(34);
+var transformData = __webpack_require__(24);
+var isCancel = __webpack_require__(7);
+var defaults = __webpack_require__(2);
+var isAbsoluteURL = __webpack_require__(25);
+var combineURLs = __webpack_require__(26);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -1908,7 +1670,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 32 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1935,7 +1697,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 33 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1956,7 +1718,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 34 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1977,13 +1739,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 35 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(9);
+var Cancel = __webpack_require__(8);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -2041,7 +1803,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 36 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2072,6 +1834,261 @@ module.exports = function spread(callback) {
     return callback.apply(null, arr);
   };
 };
+
+
+/***/ }),
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var ReactDOM = __webpack_require__(9);
+var ElectionView_1 = __webpack_require__(35);
+ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var Slider_1 = __webpack_require__(36);
+var axios_1 = __webpack_require__(10);
+var ComponentSubclasses_1 = __webpack_require__(37);
+var election_url = '/mock/election_happening.json';
+var election_not_url = '/mock/electionless.json';
+var LoadingState;
+(function (LoadingState) {
+    LoadingState[LoadingState["Loading"] = 0] = "Loading";
+    LoadingState[LoadingState["Loaded"] = 1] = "Loaded";
+})(LoadingState || (LoadingState = {}));
+var ElectionCandidate = /** @class */ (function (_super) {
+    __extends(ElectionCandidate, _super);
+    function ElectionCandidate(person, role) {
+        var _this = _super.call(this) || this;
+        _this.person = person;
+        _this.role = role;
+        return _this;
+    }
+    ElectionCandidate.prototype.render = function () {
+        return (React.createElement("div", null,
+            React.createElement("p", null,
+                "Name: ",
+                this.person.name),
+            React.createElement("p", null,
+                "Pitch: ",
+                this.person.pitch),
+            this.person.voted ?
+                React.createElement("input", { type: "radio", name: this.role, value: this.person.id, checked: true }) :
+                React.createElement("input", { type: "radio", name: this.role, value: this.person.id })));
+    };
+    return ElectionCandidate;
+}(ComponentSubclasses_1.HigherOrderComponent));
+var ElectionRole = /** @class */ (function (_super) {
+    __extends(ElectionRole, _super);
+    function ElectionRole(name, candidates) {
+        var _this = _super.call(this) || this;
+        _this.role = name;
+        _this.candidates = [];
+        for (var i in candidates) {
+            var candidate = candidates[i];
+            var obj = new ElectionCandidate(candidate, _this.role);
+            _this.candidates.push(obj);
+        }
+        return _this;
+    }
+    ElectionRole.prototype.render = function () {
+        return (React.createElement("div", null,
+            React.createElement("h3", null, this.role),
+            this.candidates.map(function (key, idx) {
+                return key.render();
+            })));
+    };
+    return ElectionRole;
+}(ComponentSubclasses_1.HigherOrderComponent));
+var ElectionData = /** @class */ (function (_super) {
+    __extends(ElectionData, _super);
+    function ElectionData() {
+        return _super.call(this) || this;
+    }
+    return ElectionData;
+}(ComponentSubclasses_1.HigherOrderComponent));
+var ElectionUp = /** @class */ (function (_super) {
+    __extends(ElectionUp, _super);
+    function ElectionUp(data) {
+        var _this = _super.call(this) || this;
+        _this.order = data.order;
+        _this.campaigns = [];
+        for (var key in _this.order) {
+            var elem = _this.order[key];
+            _this.campaigns.push(new ElectionRole(elem, data.campaigns[elem]));
+        }
+        _this.submitVotes = _this.submitVotes.bind(_this);
+        return _this;
+    }
+    ElectionUp.prototype.up = function () {
+        return true;
+    };
+    ElectionUp.prototype.submitVotes = function (event) {
+        event.preventDefault();
+        for (var key in this.order) {
+            var elem = this.order[key];
+            console.log("For: " + elem + " Userid: " + event.target[elem].value);
+        }
+    };
+    ElectionUp.prototype.render = function () {
+        return (React.createElement("form", { onSubmit: this.submitVotes },
+            this.campaigns.map(function (campaign, idx) {
+                return campaign.render();
+            }),
+            React.createElement("button", { type: "submit" }, "Submit Votes")));
+    };
+    return ElectionUp;
+}(ElectionData));
+var ElectionDown = /** @class */ (function (_super) {
+    __extends(ElectionDown, _super);
+    function ElectionDown(message) {
+        var _this = _super.call(this) || this;
+        _this.message = message;
+        return _this;
+    }
+    ElectionDown.prototype.up = function () {
+        return false;
+    };
+    ElectionDown.prototype.render = function () {
+        return (React.createElement("p", null, this.message));
+    };
+    return ElectionDown;
+}(ElectionData));
+var ElectionView = /** @class */ (function (_super) {
+    __extends(ElectionView, _super);
+    function ElectionView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            election: LoadingState.Loading,
+        };
+        _this.performRequest = _this.performRequest.bind(_this);
+        _this.switch = _this.switch.bind(_this);
+        _this.componentDidMount = _this.componentDidMount.bind(_this);
+        return _this;
+    }
+    ElectionView.prototype.performRequest = function (url) {
+        var _this_ref = this;
+        axios_1.default.get(url)
+            .then(function (res) {
+            var status = res.data.status;
+            var pack;
+            if (status) {
+                pack = new ElectionUp(res.data);
+            }
+            else {
+                pack = new ElectionDown(res.data.message);
+            }
+            _this_ref.setState({
+                election_data: pack,
+                election: LoadingState.Loaded
+            });
+        });
+    };
+    ElectionView.prototype.switch = function (event) {
+        if (this.state.election !== LoadingState.Loaded) {
+            return;
+        }
+        else if (this.state.election_data.up()) {
+            this.performRequest(election_not_url);
+        }
+        else {
+            this.performRequest(election_url);
+        }
+    };
+    ElectionView.prototype.componentDidMount = function () {
+        this.performRequest(election_url);
+    };
+    ElectionView.prototype.render = function () {
+        return (React.createElement("div", { className: "election-view" },
+            React.createElement("h2", null, "Toggle datum"),
+            React.createElement(Slider_1.Slider, { change: this.switch }),
+            this.state.election === LoadingState.Loading ?
+                React.createElement("p", null, " Loading ") :
+                this.state.election_data.render()));
+    };
+    return ElectionView;
+}(React.Component));
+exports.ElectionView = ElectionView;
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var Slider = /** @class */ (function (_super) {
+    __extends(Slider, _super);
+    function Slider(props) {
+        var _this = _super.call(this, props) || this;
+        _this.onChange = _this.onChange.bind(_this);
+        return _this;
+    }
+    Slider.prototype.onChange = function (event) {
+        this.props.change(event);
+    };
+    Slider.prototype.render = function () {
+        return (React.createElement("label", { className: "switch" },
+            React.createElement("input", { type: "checkbox", onChange: this.onChange }),
+            React.createElement("span", { className: "slider round" })));
+    };
+    return Slider;
+}(React.Component));
+exports.Slider = Slider;
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var HigherOrderComponent = /** @class */ (function () {
+    function HigherOrderComponent() {
+        this.render = this.render.bind(this);
+    }
+    return HigherOrderComponent;
+}());
+exports.HigherOrderComponent = HigherOrderComponent;
 
 
 /***/ })

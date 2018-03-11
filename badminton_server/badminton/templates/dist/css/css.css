@@ -774,4 +774,12 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%; }
 
+.message-div {
+  top: 100px;
+  height: 500px;
+  width: 500px;
+  position: fixed;
+  z-index: 100;
+  background-color: white; }
+
 /*# sourceMappingURL=css.css.map*/

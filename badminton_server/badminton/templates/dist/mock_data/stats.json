@@ -1,0 +1,5 @@
+{
+	"_comment": "status can either be true or false. There is no election happening so there is also a message",
+	"status": false,
+	"message": "Sorry there is no election happening!"
+}
