@@ -1874,7 +1874,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var Slider_1 = __webpack_require__(36);
 var axios_1 = __webpack_require__(10);
-var ComponentSubclasses_1 = __webpack_require__(37);
 var election_url = '/mock/election_happening.json';
 var election_not_url = '/mock/electionless.json';
 var LoadingState;
@@ -1884,102 +1883,79 @@ var LoadingState;
 })(LoadingState || (LoadingState = {}));
 var ElectionCandidate = /** @class */ (function (_super) {
     __extends(ElectionCandidate, _super);
-    function ElectionCandidate(person, role) {
-        var _this = _super.call(this) || this;
-        _this.person = person;
-        _this.role = role;
-        return _this;
+    function ElectionCandidate(props) {
+        return _super.call(this, props) || this;
     }
     ElectionCandidate.prototype.render = function () {
         return (React.createElement("div", null,
             React.createElement("p", null,
                 "Name: ",
-                this.person.name),
+                this.props.person.name),
             React.createElement("p", null,
                 "Pitch: ",
-                this.person.pitch),
-            this.person.voted ?
-                React.createElement("input", { type: "radio", name: this.role, value: this.person.id, checked: true }) :
-                React.createElement("input", { type: "radio", name: this.role, value: this.person.id })));
+                this.props.person.pitch),
+            this.props.person.voted ?
+                React.createElement("input", { type: "radio", name: this.props.role, value: this.props.person.id, defaultChecked: true }) :
+                React.createElement("input", { type: "radio", name: this.props.role, value: this.props.person.id })));
     };
     return ElectionCandidate;
-}(ComponentSubclasses_1.HigherOrderComponent));
+}(React.Component));
 var ElectionRole = /** @class */ (function (_super) {
     __extends(ElectionRole, _super);
-    function ElectionRole(name, candidates) {
-        var _this = _super.call(this) || this;
-        _this.role = name;
-        _this.candidates = [];
-        for (var i in candidates) {
-            var candidate = candidates[i];
-            var obj = new ElectionCandidate(candidate, _this.role);
-            _this.candidates.push(obj);
-        }
-        return _this;
+    function ElectionRole(props) {
+        return _super.call(this, props) || this;
     }
     ElectionRole.prototype.render = function () {
+        var _this = this;
         return (React.createElement("div", null,
-            React.createElement("h3", null, this.role),
-            this.candidates.map(function (key, idx) {
-                return key.render();
+            React.createElement("h3", null, this.props.role),
+            this.props.candidates.map(function (key, idx) {
+                return React.createElement(ElectionCandidate, { person: key, role: _this.props.role, key: idx });
             })));
     };
     return ElectionRole;
-}(ComponentSubclasses_1.HigherOrderComponent));
-var ElectionData = /** @class */ (function (_super) {
-    __extends(ElectionData, _super);
-    function ElectionData() {
-        return _super.call(this) || this;
-    }
-    return ElectionData;
-}(ComponentSubclasses_1.HigherOrderComponent));
+}(React.Component));
 var ElectionUp = /** @class */ (function (_super) {
     __extends(ElectionUp, _super);
-    function ElectionUp(data) {
-        var _this = _super.call(this) || this;
-        _this.order = data.order;
-        _this.campaigns = [];
-        for (var key in _this.order) {
-            var elem = _this.order[key];
-            _this.campaigns.push(new ElectionRole(elem, data.campaigns[elem]));
+    function ElectionUp(props) {
+        var _this = _super.call(this, props) || this;
+        var campaigns = [];
+        for (var key in _this.props.order) {
+            var elem = _this.props.order[key];
+            campaigns.push([elem, _this.props.campaigns[elem]]);
         }
+        _this.state = {
+            campaigns: campaigns,
+        };
         _this.submitVotes = _this.submitVotes.bind(_this);
         return _this;
     }
-    ElectionUp.prototype.up = function () {
-        return true;
-    };
     ElectionUp.prototype.submitVotes = function (event) {
         event.preventDefault();
-        for (var key in this.order) {
-            var elem = this.order[key];
+        for (var key in this.props.order) {
+            var elem = this.props.order[key];
             console.log("For: " + elem + " Userid: " + event.target[elem].value);
         }
     };
     ElectionUp.prototype.render = function () {
         return (React.createElement("form", { onSubmit: this.submitVotes },
-            this.campaigns.map(function (campaign, idx) {
-                return campaign.render();
+            this.state.campaigns.map(function (campaign, idx) {
+                return React.createElement(ElectionRole, { name: campaign[0], candidates: campaign[1], key: idx });
             }),
             React.createElement("button", { type: "submit" }, "Submit Votes")));
     };
     return ElectionUp;
-}(ElectionData));
+}(React.Component));
 var ElectionDown = /** @class */ (function (_super) {
     __extends(ElectionDown, _super);
-    function ElectionDown(message) {
-        var _this = _super.call(this) || this;
-        _this.message = message;
-        return _this;
+    function ElectionDown(props) {
+        return _super.call(this, props) || this;
     }
-    ElectionDown.prototype.up = function () {
-        return false;
-    };
     ElectionDown.prototype.render = function () {
-        return (React.createElement("p", null, this.message));
+        return (React.createElement("p", null, this.props.message));
     };
     return ElectionDown;
-}(ElectionData));
+}(React.Component));
 var ElectionView = /** @class */ (function (_super) {
     __extends(ElectionView, _super);
     function ElectionView(props) {
@@ -1998,15 +1974,19 @@ var ElectionView = /** @class */ (function (_super) {
             .then(function (res) {
             var status = res.data.status;
             var pack;
+            var up;
             if (status) {
-                pack = new ElectionUp(res.data);
+                pack = React.createElement(ElectionUp, { order: res.data.order, campaigns: res.data.campaigns });
+                up = false;
             }
             else {
-                pack = new ElectionDown(res.data.message);
+                pack = React.createElement(ElectionDown, { message: res.data.message });
+                up = true;
             }
             _this_ref.setState({
                 election_data: pack,
-                election: LoadingState.Loaded
+                election: LoadingState.Loaded,
+                up: up
             });
         });
     };
@@ -2014,7 +1994,7 @@ var ElectionView = /** @class */ (function (_super) {
         if (this.state.election !== LoadingState.Loaded) {
             return;
         }
-        else if (this.state.election_data.up()) {
+        else if (this.state.up) {
             this.performRequest(election_not_url);
         }
         else {
@@ -2030,7 +2010,7 @@ var ElectionView = /** @class */ (function (_super) {
             React.createElement(Slider_1.Slider, { change: this.switch }),
             this.state.election === LoadingState.Loading ?
                 React.createElement("p", null, " Loading ") :
-                this.state.election_data.render()));
+                this.state.election_data));
     };
     return ElectionView;
 }(React.Component));
@@ -2073,22 +2053,6 @@ var Slider = /** @class */ (function (_super) {
     return Slider;
 }(React.Component));
 exports.Slider = Slider;
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var HigherOrderComponent = /** @class */ (function () {
-    function HigherOrderComponent() {
-        this.render = this.render.bind(this);
-    }
-    return HigherOrderComponent;
-}());
-exports.HigherOrderComponent = HigherOrderComponent;
 
 
 /***/ })

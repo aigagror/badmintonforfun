@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Slider} from "./Slider";
 import axios from 'axios';
-import {HigherOrderComponent} from '../common/ComponentSubclasses';
+import { HigherOrderComponent } from '../common/ComponentSubclasses';
 
 const election_url = '/mock/election_happening.json';
 const election_not_url = '/mock/electionless.json';
@@ -11,48 +11,37 @@ enum LoadingState {
     Loaded,
 }
 
-class ElectionCandidate extends HigherOrderComponent {
+class ElectionCandidate extends React.Component<any, any> {
 	person: any;
 	role: string;
-	constructor(person: any, role: string) {
-		super();
-		this.person = person;
-		this.role = role;
+	constructor(props: any) {
+		super(props);
 	}
 
 	render() {
 		return (<div>
-			<p>Name: {this.person.name}</p>
-			<p>Pitch: {this.person.pitch}</p>
-			{this.person.voted ? 
-				<input type="radio" name={this.role} value={this.person.id} checked /> :
-				<input type="radio" name={this.role} value={this.person.id} />
+			<p>Name: {this.props.person.name}</p>
+			<p>Pitch: {this.props.person.pitch}</p>
+			{this.props.person.voted ? 
+				<input type="radio" name={this.props.role} value={this.props.person.id} defaultChecked /> :
+				<input type="radio" name={this.props.role} value={this.props.person.id} />
 			}
 			</div>
 			);
 	}
 }
 
-class ElectionRole extends HigherOrderComponent {
-	role: string;
-	candidates: ElectionCandidate[];
-	constructor(name: string, candidates: any) {
-		super();
-		this.role = name;
-		this.candidates = [];
-		for (let i in candidates) {
-			let candidate = candidates[i];
-			const obj = new ElectionCandidate(candidate, this.role);
-			this.candidates.push(obj);
-		}
+class ElectionRole extends React.Component<any, any> {
+	constructor(props: any) {
+		super(props);
 	}
 
 	render() {
 		return (<div>
-			<h3>{this.role}</h3>
+			<h3>{this.props.role}</h3>
 			{
-				this.candidates.map((key, idx) => {
-					return key.render();
+				this.props.candidates.map((key: any, idx: any) => {
+					return <ElectionCandidate person={key} role={this.props.role} key={idx}/>
 				})
 			}
 			</div>
@@ -60,73 +49,53 @@ class ElectionRole extends HigherOrderComponent {
 	}
 }
 
-abstract class ElectionData extends HigherOrderComponent {
-	constructor() {
-		super();
-	}
+type ElectionData = ElectionUp | ElectionDown;
 
-	abstract up(): boolean;
-}
+class ElectionUp extends React.Component<any, any> {
 
-class ElectionUp extends ElectionData {
-	order: string[];
-	campaigns: ElectionRole[];
-
-	constructor(data: any) {
-		super();
-		this.order = data.order;
-		this.campaigns = [];
-		for(let key in this.order) {
-			let elem = this.order[key];
-			this.campaigns.push(new ElectionRole(elem, data.campaigns[elem]));
+	constructor(props: any) {
+		super(props);
+		const campaigns: any[] = [];
+		for(let key in this.props.order) {
+			let elem = this.props.order[key];
+			campaigns.push([elem, this.props.campaigns[elem]]);
+		}
+		this.state = {
+			campaigns: campaigns,
 		}
 		this.submitVotes = this.submitVotes.bind(this);
 	}
 
-	up() {
-		return true;
-	}
-
 	submitVotes(event: any) {
 		event.preventDefault();
-		for(let key in this.order) {
-			let elem = this.order[key];
+		for(let key in this.props.order) {
+			let elem = this.props.order[key];
 			console.log("For: " + elem + " Userid: " + event.target[elem].value);
 		}
 	}
 
 	render() {
 		return (<form onSubmit={this.submitVotes}>{
-			this.campaigns.map((campaign: ElectionRole, idx: number) => { 
-				return campaign.render() 
+			this.state.campaigns.map((campaign: any, idx: number) => { 
+				return <ElectionRole name={campaign[0]} candidates={campaign[1]} key={idx}/>
 			})
 		}<button type="submit">Submit Votes</button>
 		</form>);
 	}
 }
 
-class ElectionDown extends ElectionData {
+class ElectionDown extends React.Component<any, any> {
 	message: string;
-	constructor(message: string) {
-		super();
-		this.message = message;
-	}
-
-	up() {
-		return false;
+	constructor(props: any) {
+		super(props);
 	}
 
 	render() {
-		return (<p>{this.message}</p>);
+		return (<p>{this.props.message}</p>);
 	}
 }
 
-interface ElectionState {
-	election: LoadingState;
-	election_data?: ElectionData;
-}
-
-export class ElectionView extends React.Component<{}, ElectionState> {
+export class ElectionView extends React.Component<{}, any> {
 
 	constructor(props: any) {
 	    super(props);
@@ -144,14 +113,18 @@ export class ElectionView extends React.Component<{}, ElectionState> {
 			.then(res => {
 				const status = res.data.status;
 				var pack;
+				var up;
 				if (status) {
-					pack = new ElectionUp(res.data);
+					pack = <ElectionUp order={res.data.order} campaigns={res.data.campaigns} />;
+					up = false;
 				} else {
-					pack = new ElectionDown(res.data.message);
+					pack = <ElectionDown message={res.data.message} />;
+					up = true;
 				}
 				_this_ref.setState({
 					election_data: pack,
-					election: LoadingState.Loaded
+					election: LoadingState.Loaded,
+					up: up
 				})
 			});
 	}
@@ -160,7 +133,7 @@ export class ElectionView extends React.Component<{}, ElectionState> {
 	switch(event: Event) {
 		if (this.state.election !== LoadingState.Loaded) {
 			return;
-		} else if (this.state.election_data.up()) {
+		} else if (this.state.up) {
 			this.performRequest(election_not_url);
 		} else {
 			this.performRequest(election_url);
@@ -179,7 +152,7 @@ export class ElectionView extends React.Component<{}, ElectionState> {
     		{
     			this.state.election === LoadingState.Loading ?
     			<p> Loading </p> :
-    			this.state.election_data.render()
+    			this.state.election_data
     		}
 	    	</div>);
 	}
