@@ -5,22 +5,20 @@
     <head>
         {% include_fragment 'head.html' %}
 
-        <title>Badminton For Fun - Statistics Page</title>
+        <title>Landing</title>
         <meta name="author" content="Bhuvan Venkatesh">
         <meta name="description" content="Badminton for fun memeber page.">
     </head>
     <body>
-    {% include_fragment 'nav.html' %}
+
     <div class="grid row row-offset-1">
         <div class="col-offset-2 col-8">
             <div class="grid">
                 <div class="row">
-                    <div class="col-4 row-offset-1 badminton-landing-text"> Stats </div>
+                    <div class="col-4 row-offset-1 badminton-landing-text"> Profile </div>
                 </div>
-
-                <div class="row row-offset-1">
-                    <stat-view></stat-view>
-                </div>
+                
+                <profile-view></profile-view>
             </div>
             
         </div>
@@ -29,7 +27,7 @@
         {% resolve_global 'react' %}
         {% resolve_global 'react-dom' %}
 
-        {% resolve_js_local 'stats.js' %}
+        {% resolve_js_local 'profile.js' %}
 
         {% include_fragment 'foot.html' %}
     </body>

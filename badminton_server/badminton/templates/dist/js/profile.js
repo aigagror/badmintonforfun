@@ -60,37 +60,72 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 42);
+/******/ 	return __webpack_require__(__webpack_require__.s = 40);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 42:
+/***/ 1:
+/***/ (function(module, exports) {
+
+module.exports = React;
+
+/***/ }),
+
+/***/ 3:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+
+/***/ 40:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-/* Keep these in here for the time being */
-__webpack_require__(43);
-__webpack_require__(44);
+var React = __webpack_require__(1);
+var ReactDOM = __webpack_require__(3);
+var ProfileView_1 = __webpack_require__(41);
+ReactDOM.render(React.createElement(ProfileView_1.ProfileView, null), document.querySelector("profile-view"));
 
 
 /***/ }),
 
-/***/ 43:
-/***/ (function(module, exports) {
+/***/ 41:
+/***/ (function(module, exports, __webpack_require__) {
 
-// removed by extract-text-webpack-plugin
+"use strict";
 
-/***/ }),
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var ProfileView = /** @class */ (function (_super) {
+    __extends(ProfileView, _super);
+    function ProfileView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {};
+        return _this;
+    }
+    ProfileView.prototype.render = function () {
+        return React.createElement("p", null, "Profile");
+    };
+    return ProfileView;
+}(React.Component));
+exports.ProfileView = ProfileView;
 
-/***/ 44:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
 
 /***/ })
 
 /******/ });
-//# sourceMappingURL=css.js.map
+//# sourceMappingURL=profile.js.map

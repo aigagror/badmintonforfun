@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 36);
+/******/ 	return __webpack_require__(__webpack_require__.s = 38);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1881,7 +1881,9 @@ exports.Slider = Slider;
 /* 33 */,
 /* 34 */,
 /* 35 */,
-/* 36 */
+/* 36 */,
+/* 37 */,
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1889,12 +1891,12 @@ exports.Slider = Slider;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(3);
-var ElectionView_1 = __webpack_require__(37);
-ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
+var HomeView_1 = __webpack_require__(39);
+ReactDOM.render(React.createElement(HomeView_1.HomeView, null), document.querySelector("home-view"));
 
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1911,149 +1913,85 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
-var Slider_1 = __webpack_require__(29);
 var axios_1 = __webpack_require__(10);
-var election_url = '/mock/election_happening.json';
-var election_not_url = '/mock/electionless.json';
-var LoadingState;
-(function (LoadingState) {
-    LoadingState[LoadingState["Loading"] = 0] = "Loading";
-    LoadingState[LoadingState["Loaded"] = 1] = "Loaded";
-})(LoadingState || (LoadingState = {}));
-var ElectionCandidate = /** @class */ (function (_super) {
-    __extends(ElectionCandidate, _super);
-    function ElectionCandidate(props) {
-        return _super.call(this, props) || this;
+var Slider_1 = __webpack_require__(29);
+var stat_urls = "/mock/stats.json";
+var member_url = "/mock/home_member.json";
+var StatView = /** @class */ (function (_super) {
+    __extends(StatView, _super);
+    function StatView() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    ElectionCandidate.prototype.render = function () {
-        return (React.createElement("div", null,
-            React.createElement("p", null,
-                "Name: ",
-                this.props.person.name),
-            React.createElement("p", null,
-                "Pitch: ",
-                this.props.person.pitch),
-            React.createElement("input", { type: "radio", name: this.props.role, value: this.props.person.id, defaultChecked: this.props.person.voted })));
+    StatView.prototype.render = function () {
+        return (React.createElement("div", { className: "stats" }, this.props.stats.games.map(function (game) {
+            return React.createElement("div", null,
+                React.createElement("div", null,
+                    "Your Score: ",
+                    game.my_score),
+                React.createElement("div", null,
+                    "Their Score: ",
+                    game.their_score));
+        })));
     };
-    return ElectionCandidate;
+    return StatView;
 }(React.Component));
-var ElectionRole = /** @class */ (function (_super) {
-    __extends(ElectionRole, _super);
-    function ElectionRole(props) {
-        return _super.call(this, props) || this;
+var BoardView = /** @class */ (function (_super) {
+    __extends(BoardView, _super);
+    function BoardView() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    ElectionRole.prototype.render = function () {
-        var _this = this;
-        return (React.createElement("div", null,
-            React.createElement("h3", null, this.props.role),
-            this.props.candidates.map(function (key, idx) {
-                return React.createElement(ElectionCandidate, { person: key, role: _this.props.role, key: idx });
-            })));
+    BoardView.prototype.render = function () {
+        return React.createElement("p", null, "BoardView");
     };
-    return ElectionRole;
+    return BoardView;
 }(React.Component));
-var ElectionUp = /** @class */ (function (_super) {
-    __extends(ElectionUp, _super);
-    function ElectionUp(props) {
-        var _this = _super.call(this, props) || this;
-        var campaigns = [];
-        for (var key in _this.props.order) {
-            var elem = _this.props.order[key];
-            campaigns.push([elem, _this.props.campaigns[elem]]);
-        }
-        _this.state = {
-            campaigns: campaigns,
-        };
-        _this.submitVotes = _this.submitVotes.bind(_this);
-        return _this;
-    }
-    ElectionUp.prototype.submitVotes = function (event) {
-        event.preventDefault();
-        for (var key in this.props.order) {
-            var elem = this.props.order[key];
-            console.log("For: " + elem + " Userid: " + event.target[elem].value);
-        }
-    };
-    ElectionUp.prototype.render = function () {
-        return (React.createElement("form", { onSubmit: this.submitVotes },
-            this.state.campaigns.map(function (campaign, idx) {
-                return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx });
-            }),
-            React.createElement("button", { type: "submit" }, "Submit Votes")));
-    };
-    return ElectionUp;
-}(React.Component));
-var ElectionDown = /** @class */ (function (_super) {
-    __extends(ElectionDown, _super);
-    function ElectionDown(props) {
-        return _super.call(this, props) || this;
-    }
-    ElectionDown.prototype.render = function () {
-        return (React.createElement("p", null, this.props.message));
-    };
-    return ElectionDown;
-}(React.Component));
-var ElectionView = /** @class */ (function (_super) {
-    __extends(ElectionView, _super);
-    function ElectionView(props) {
+var HomeView = /** @class */ (function (_super) {
+    __extends(HomeView, _super);
+    function HomeView(props) {
         var _this = _super.call(this, props) || this;
         _this.state = {
-            election: LoadingState.Loading,
+            stats: null,
+            board_member: false
         };
         _this.performRequest = _this.performRequest.bind(_this);
         _this.switch = _this.switch.bind(_this);
-        _this.componentDidMount = _this.componentDidMount.bind(_this);
         return _this;
     }
-    ElectionView.prototype.performRequest = function (url) {
-        var _this_ref = this;
+    HomeView.prototype.componentDidMount = function () {
+        this.performRequest(stat_urls);
+    };
+    HomeView.prototype.performRequest = function (url) {
+        var _this = this;
         axios_1.default.get(url)
             .then(function (res) {
-            var status = res.data.status;
-            var pack;
-            var up;
-            if (status) {
-                pack = React.createElement(ElectionUp, { order: res.data.order, campaigns: res.data.campaigns });
-                up = true;
-            }
-            else {
-                pack = React.createElement(ElectionDown, { message: res.data.message });
-                up = false;
-            }
-            _this_ref.setState({
-                election_data: pack,
-                election: LoadingState.Loaded,
-                up: up
+            _this.setState({
+                stats: res.data.stat_data,
+                board_member: res.data.board_member
             });
+        })
+            .catch(function (res) {
         });
     };
-    ElectionView.prototype.switch = function (event) {
-        if (this.state.election !== LoadingState.Loaded) {
-            return;
-        }
-        else if (this.state.up) {
-            this.performRequest(election_not_url);
+    HomeView.prototype.switch = function () {
+        if (this.state.board_member) {
+            this.performRequest(stat_urls);
         }
         else {
-            this.performRequest(election_url);
+            this.performRequest(member_url);
         }
     };
-    ElectionView.prototype.componentDidMount = function () {
-        this.performRequest(election_url);
-    };
-    ElectionView.prototype.render = function () {
+    HomeView.prototype.render = function () {
         return (React.createElement("div", { className: "election-view" },
             React.createElement("h2", null, "Toggle datum"),
             React.createElement(Slider_1.Slider, { change: this.switch }),
-            this.state.election === LoadingState.Loading ?
-                React.createElement("p", null, " Loading ") :
-                this.state.election_data));
+            this.state.stats !== null && React.createElement(StatView, { stats: this.state.stats }),
+            this.state.board_member && React.createElement(BoardView, null)));
     };
-    return ElectionView;
+    return HomeView;
 }(React.Component));
-exports.ElectionView = ElectionView;
+exports.HomeView = HomeView;
 
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=election.js.map
+//# sourceMappingURL=home.js.map

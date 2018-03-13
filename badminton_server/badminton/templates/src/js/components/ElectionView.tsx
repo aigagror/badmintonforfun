@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Slider} from "./Slider";
+import {Slider} from "../common/Slider";
 import axios from 'axios';
 import { HigherOrderComponent } from '../common/ComponentSubclasses';
 
@@ -22,10 +22,7 @@ class ElectionCandidate extends React.Component<any, any> {
 		return (<div>
 			<p>Name: {this.props.person.name}</p>
 			<p>Pitch: {this.props.person.pitch}</p>
-			{this.props.person.voted ? 
-				<input type="radio" name={this.props.role} value={this.props.person.id} defaultChecked /> :
-				<input type="radio" name={this.props.role} value={this.props.person.id} />
-			}
+			<input type="radio" name={this.props.role} value={this.props.person.id} defaultChecked={this.props.person.voted} />
 			</div>
 			);
 	}
@@ -77,7 +74,7 @@ class ElectionUp extends React.Component<any, any> {
 	render() {
 		return (<form onSubmit={this.submitVotes}>{
 			this.state.campaigns.map((campaign: any, idx: number) => { 
-				return <ElectionRole name={campaign[0]} candidates={campaign[1]} key={idx}/>
+				return <ElectionRole role={campaign[0]} candidates={campaign[1]} key={idx}/>
 			})
 		}<button type="submit">Submit Votes</button>
 		</form>);
@@ -116,10 +113,10 @@ export class ElectionView extends React.Component<{}, any> {
 				var up;
 				if (status) {
 					pack = <ElectionUp order={res.data.order} campaigns={res.data.campaigns} />;
-					up = false;
+					up = true;
 				} else {
 					pack = <ElectionDown message={res.data.message} />;
-					up = true;
+					up = false;
 				}
 				_this_ref.setState({
 					election_data: pack,

@@ -1,6 +1,6 @@
 {
 	"_comment": "This is if the person is not a board member",
-	"board_member": false,
+	"board_member": true,
 	"stat_data": {
 		"games": [
 			{

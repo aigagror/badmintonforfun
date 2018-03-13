@@ -1,25 +1,20 @@
 import * as React from "react";
 import axios from 'axios';
+import { Popup } from '../common/Popup';
 
 export interface InterestedProps { 
 
 }
 
-interface InterestedState {
-	message: string;
-	title: string;
-}
-
 const email_name = "email";
 const api_url = "/mock/interested.json";
 
-export class InterestedForm extends React.Component<InterestedProps, InterestedState> {
+export class InterestedForm extends React.Component<InterestedProps, any> {
 
 	constructor(props: InterestedProps) {
 	    super(props);
 	    this.state = {
-	    	message: null,
-	    	title: null
+
 	    }
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.resetState = this.resetState.bind(this);
@@ -34,8 +29,8 @@ export class InterestedForm extends React.Component<InterestedProps, InterestedS
 		})
 		.then((response: any) => {
 			this.setState({
-				message: response.data.message,
-				title: response.data.title
+				popup: <Popup title={response.data.title} message={response.data.message} 
+					callback={this.resetState}/>,
 			});
 		})
 		.catch((error: any) => {
@@ -45,8 +40,7 @@ export class InterestedForm extends React.Component<InterestedProps, InterestedS
 
 	resetState() {
 		this.setState({
-			message: null,
-			title: null
+			popup: null
 		});
 	}
 
@@ -64,15 +58,7 @@ export class InterestedForm extends React.Component<InterestedProps, InterestedS
 	    	<input type="submit" value="Submit" className="big-button" />
         </div>
 	    </form>
-	    {
-	    	this.state.message !== null ?
-	    		<div className="message-div">
-	    			<h4>{this.state.title}</h4>
-	    			<p>{this.state.message}</p>
-	    			<button onClick={this.resetState}>Ok</button>
-	    		</div> :
-	    		<div></div>
-	    }
+	    { this.state.popup !== null && this.state.popup }
 	    </>);
 	}
 }

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 33);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(3);
+var bind = __webpack_require__(4);
 var isBuffer = __webpack_require__(12);
 
 /*global toString:true*/
@@ -403,10 +403,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(5);
+    adapter = __webpack_require__(6);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(5);
+    adapter = __webpack_require__(6);
   }
   return adapter;
 }
@@ -481,10 +481,16 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -502,7 +508,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -692,7 +698,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -703,7 +709,7 @@ var settle = __webpack_require__(15);
 var buildURL = __webpack_require__(17);
 var parseHeaders = __webpack_require__(18);
 var isURLSameOrigin = __webpack_require__(19);
-var createError = __webpack_require__(6);
+var createError = __webpack_require__(7);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(20);
 
 module.exports = function xhrAdapter(config) {
@@ -877,10 +883,10 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -905,7 +911,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -917,7 +923,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -943,12 +949,6 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -962,7 +962,7 @@ module.exports = __webpack_require__(11);
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(3);
+var bind = __webpack_require__(4);
 var Axios = __webpack_require__(13);
 var defaults = __webpack_require__(2);
 
@@ -997,9 +997,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(8);
+axios.Cancel = __webpack_require__(9);
 axios.CancelToken = __webpack_require__(27);
-axios.isCancel = __webpack_require__(7);
+axios.isCancel = __webpack_require__(8);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -1152,7 +1152,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(6);
+var createError = __webpack_require__(7);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -1585,7 +1585,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(24);
-var isCancel = __webpack_require__(7);
+var isCancel = __webpack_require__(8);
 var defaults = __webpack_require__(2);
 var isAbsoluteURL = __webpack_require__(25);
 var combineURLs = __webpack_require__(26);
@@ -1745,7 +1745,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(8);
+var Cancel = __webpack_require__(9);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -1840,20 +1840,21 @@ module.exports = function spread(callback) {
 /* 29 */,
 /* 30 */,
 /* 31 */,
-/* 32 */
+/* 32 */,
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(9);
-var InterestedForm_1 = __webpack_require__(33);
+var ReactDOM = __webpack_require__(3);
+var InterestedForm_1 = __webpack_require__(34);
 ReactDOM.render(React.createElement(InterestedForm_1.InterestedForm, null), document.querySelector("interest-form"));
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1871,16 +1872,14 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
+var Popup_1 = __webpack_require__(35);
 var email_name = "email";
 var api_url = "/mock/interested.json";
 var InterestedForm = /** @class */ (function (_super) {
     __extends(InterestedForm, _super);
     function InterestedForm(props) {
         var _this = _super.call(this, props) || this;
-        _this.state = {
-            message: null,
-            title: null
-        };
+        _this.state = {};
         _this.handleSubmit = _this.handleSubmit.bind(_this);
         _this.resetState = _this.resetState.bind(_this);
         return _this;
@@ -1895,8 +1894,7 @@ var InterestedForm = /** @class */ (function (_super) {
         })
             .then(function (response) {
             _this.setState({
-                message: response.data.message,
-                title: response.data.title
+                popup: React.createElement(Popup_1.Popup, { title: response.data.title, message: response.data.message, callback: _this.resetState }),
             });
         })
             .catch(function (error) {
@@ -1905,8 +1903,7 @@ var InterestedForm = /** @class */ (function (_super) {
     };
     InterestedForm.prototype.resetState = function () {
         this.setState({
-            message: null,
-            title: null
+            popup: null
         });
     };
     InterestedForm.prototype.render = function () {
@@ -1918,16 +1915,65 @@ var InterestedForm = /** @class */ (function (_super) {
                         React.createElement("input", { type: "text", id: "email", name: email_name, placeholder: "netid@illinois.edu" }))),
                 React.createElement("div", { className: "col-center-4" },
                     React.createElement("input", { type: "submit", value: "Submit", className: "big-button" }))),
-            this.state.message !== null ?
-                React.createElement("div", { className: "message-div" },
-                    React.createElement("h4", null, this.state.title),
-                    React.createElement("p", null, this.state.message),
-                    React.createElement("button", { onClick: this.resetState }, "Ok")) :
-                React.createElement("div", null)));
+            this.state.popup !== null && this.state.popup));
     };
     return InterestedForm;
 }(React.Component));
 exports.InterestedForm = InterestedForm;
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            popup: false,
+        };
+        return _this;
+    }
+    Popup.prototype.close = function () {
+        this.setState({
+            popup: false,
+        });
+        this.props.callback();
+    };
+    Popup.prototype.popup = function () {
+        this.setState({
+            popup: true,
+        });
+    };
+    Popup.prototype.render = function () {
+        if (this.state.popup) {
+            return (React.createElement("div", null));
+        }
+        else {
+            return (React.createElement("div", { className: "message-div" },
+                React.createElement("h4", null, this.props.title),
+                React.createElement("p", null, this.props.message),
+                React.createElement("button", { onClick: this.close }, "Ok")));
+        }
+    };
+    return Popup;
+}(React.Component));
+exports.Popup = Popup;
 
 
 /***/ })
