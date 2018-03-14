@@ -20,7 +20,6 @@ body {
   // 20 px because browsers are dishonest with 100%
 	min-height: calc(100% + #{$nav-height} + #{$footer-height} + 20px);
   width: 100%;
-  top:-20px;
 }
 
 p {
@@ -214,11 +213,60 @@ nav {
 .nav-div {
   top: 0px;
   background-color: black;
-  padding-top: 20px;
+  padding-top: 5px;
   padding-bottom:0px;
 }
 
-// Member page stuff
+tbody > tr:nth-child(odd) {
+  background-color: #CCC;
+  background: #CCC;
+}
+
+.hamburger {
+  display: none;
+  font-size: 24px;
+}
+
+@media only screen and (max-width: 700px) {
+  .nav-link {
+    display: none;
+    padding-top: 5px;
+  }
+
+  .nav-list {
+    margin-top: 0px;
+    padding-bottom: 5px;
+  }
+
+  .nav-list > .nav-link {
+    float: none;
+    margin-left: 0px;
+  }
+
+  nav {
+    height: auto;
+    z-index: 101;
+  }
+
+  nav.responsive .nav-link {
+    display: inherit;
+  }
+
+  .nav-link.hamburger {
+    display: inherit;
+  }
+}
+
+// Home page stuff
+
+.stats-table {
+  border-spacing: 0px;
+  width: 100%;
+}
+
+.stats-table > thead {
+  border-bottom: 2px solid black;
+}
 
 
 // Profile page stuff
@@ -252,3 +300,50 @@ nav {
   width: 100%;
   font-size: 7vh;
 }
+
+// Election
+
+$color1: #f4f4f4;
+$color2: #3197EE;
+
+.election-check {
+  -webkit-appearance: checkbox; /* Chrome, Safari, Opera */
+  -moz-appearance: checkbox;    /* Firefox */
+  -ms-appearance: checkbox;     /* not currently supported */
+  margin:auto 0;
+  height: 100%;
+
+  &:checked {
+    background-color: black;
+    background-position:center center;
+    background-size:30px 30px;
+  }
+}
+
+.election-label-div {
+  display: flex;
+}
+
+.election-label {
+  margin:auto 0;
+}
+
+button[type="submit"] {
+  border: none;
+  font-size:4vh;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.55);
+  }
+}
+
+// member page stuff
+
+.member-list {
+  list-style-type: none;
+}
+
+.member-list ~ a {
+  text-decoration: None;
+}
+

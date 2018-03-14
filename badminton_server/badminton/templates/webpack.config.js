@@ -10,6 +10,7 @@ module.exports = {
         'profile': path.resolve(__dirname, 'src/js/profile.tsx'),
         'members': path.resolve(__dirname, 'src/js/members.tsx'),
         'queue': path.resolve(__dirname, 'src/js/queue.tsx'),
+        'settings': path.resolve(__dirname, 'src/js/settings.tsx'),
         'css': path.resolve(__dirname, 'src/js/css.tsx'),
     },
     output: {

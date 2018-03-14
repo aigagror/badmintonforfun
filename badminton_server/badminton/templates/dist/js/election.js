@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 35);
+/******/ 	return __webpack_require__(__webpack_require__.s = 36);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1837,26 +1837,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(9);
-var ElectionView_1 = __webpack_require__(36);
-ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
-
-
-/***/ }),
-/* 36 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1873,7 +1854,121 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
-var Slider_1 = __webpack_require__(37);
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            popup: false,
+        };
+        _this.close = _this.close.bind(_this);
+        return _this;
+    }
+    Popup.prototype.close = function () {
+        this.setState({
+            popup: true,
+        });
+        this.props.callback();
+    };
+    Popup.prototype.render = function () {
+        if (this.state.popup) {
+            return null;
+        }
+        else {
+            return (React.createElement("div", { className: "popup-div" },
+                React.createElement("div", { className: "grid row" },
+                    React.createElement("div", { className: "row-1" },
+                        React.createElement("div", { className: "col-offset-1 col-11" },
+                            React.createElement("h4", { className: "popup-title" }, this.props.title))),
+                    React.createElement("div", { className: "row-1" },
+                        React.createElement("div", { className: "col-offset-1 col-11" },
+                            React.createElement("p", { className: "popup-message" }, this.props.message))),
+                    React.createElement("div", { className: "row-offset-10" },
+                        React.createElement("div", { className: "col-offset-7 col-5" },
+                            React.createElement("button", { className: "popup-button row-2", onClick: this.close }, "Ok"))))));
+        }
+    };
+    return Popup;
+}(React.Component));
+exports.Popup = Popup;
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var Slider = /** @class */ (function (_super) {
+    __extends(Slider, _super);
+    function Slider(props) {
+        var _this = _super.call(this, props) || this;
+        _this.onChange = _this.onChange.bind(_this);
+        return _this;
+    }
+    Slider.prototype.onChange = function (event) {
+        this.props.change(event);
+    };
+    Slider.prototype.render = function () {
+        return (React.createElement("label", { className: "switch" },
+            React.createElement("input", { type: "checkbox", onChange: this.onChange }),
+            React.createElement("span", { className: "slider round" })));
+    };
+    return Slider;
+}(React.Component));
+exports.Slider = Slider;
+
+
+/***/ }),
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var ReactDOM = __webpack_require__(9);
+var ElectionView_1 = __webpack_require__(37);
+ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var Slider_1 = __webpack_require__(30);
+var Popup_1 = __webpack_require__(29);
 var axios_1 = __webpack_require__(10);
 var election_url = '/mock/election_happening.json';
 var election_not_url = '/mock/electionless.json';
@@ -1882,6 +1977,13 @@ var LoadingState;
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
     LoadingState[LoadingState["Loaded"] = 1] = "Loaded";
 })(LoadingState || (LoadingState = {}));
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+function format(str) {
+    var splitted = str.split("_");
+    return splitted.map(function (word) { return capitalize(word); }).join(" ");
+}
 var ElectionCandidate = /** @class */ (function (_super) {
     __extends(ElectionCandidate, _super);
     function ElectionCandidate(props) {
@@ -1889,13 +1991,15 @@ var ElectionCandidate = /** @class */ (function (_super) {
     }
     ElectionCandidate.prototype.render = function () {
         return (React.createElement("div", null,
-            React.createElement("p", null,
-                "Name: ",
-                this.props.person.name),
-            React.createElement("p", null,
-                "Pitch: ",
-                this.props.person.pitch),
-            React.createElement("input", { type: "radio", name: this.props.role, value: this.props.person.id, defaultChecked: this.props.person.voted })));
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { className: "col-offset-3 col-1 row-2" },
+                    React.createElement("input", { type: "radio", name: this.props.role, id: "" + this.props.person.id, value: this.props.person.id, className: "election-check", defaultChecked: this.props.person.voted })),
+                React.createElement("div", { className: "col-8 row-2 election-label-div" },
+                    React.createElement("label", { htmlFor: "" + this.props.person.id, className: "election-label" }, this.props.person.name))),
+            React.createElement("div", { className: "row col-offset-3" },
+                React.createElement("p", null,
+                    "Pitch: ",
+                    this.props.person.pitch))));
     };
     return ElectionCandidate;
 }(React.Component));
@@ -1907,7 +2011,9 @@ var ElectionRole = /** @class */ (function (_super) {
     ElectionRole.prototype.render = function () {
         var _this = this;
         return (React.createElement("div", null,
-            React.createElement("h3", null, this.props.role),
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { className: "col-offset-3 col-3" },
+                    React.createElement("h3", null, format(this.props.role)))),
             this.props.candidates.map(function (key, idx) {
                 return React.createElement(ElectionCandidate, { person: key, role: _this.props.role, key: idx });
             })));
@@ -1925,23 +2031,33 @@ var ElectionUp = /** @class */ (function (_super) {
         }
         _this.state = {
             campaigns: campaigns,
+            popup: null
         };
         _this.submitVotes = _this.submitVotes.bind(_this);
         return _this;
     }
     ElectionUp.prototype.submitVotes = function (event) {
+        var _this = this;
         event.preventDefault();
         for (var key in this.props.order) {
             var elem = this.props.order[key];
             console.log("For: " + elem + " Userid: " + event.target[elem].value);
         }
+        this.setState({
+            popup: React.createElement(Popup_1.Popup, { title: "Submitted!", message: "Submit as many times as you want before the deadline", callback: function () {
+                    _this.setState({ popup: null });
+                } })
+        });
     };
     ElectionUp.prototype.render = function () {
-        return (React.createElement("form", { onSubmit: this.submitVotes },
-            this.state.campaigns.map(function (campaign, idx) {
-                return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx });
-            }),
-            React.createElement("button", { type: "submit" }, "Submit Votes")));
+        return (React.createElement("div", { className: "grid" },
+            React.createElement("form", { onSubmit: this.submitVotes },
+                this.state.campaigns.map(function (campaign, idx) {
+                    return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx });
+                }),
+                React.createElement("div", { className: "row row-offset-2" },
+                    React.createElement("button", { type: "submit", className: "col-6 col-offset-4 row-2 election-submit" }, "Submit Votes"))),
+            this.state.popup !== null && this.state.popup));
     };
     return ElectionUp;
 }(React.Component));
@@ -2005,7 +2121,7 @@ var ElectionView = /** @class */ (function (_super) {
     };
     ElectionView.prototype.render = function () {
         return (React.createElement("div", { className: "election-view" },
-            React.createElement("h2", null, "Toggle datum"),
+            React.createElement("h2", null, "Toggle Election Happening"),
             React.createElement(Slider_1.Slider, { change: this.switch }),
             this.state.election === LoadingState.Loading ?
                 React.createElement("p", null, " Loading ") :
@@ -2014,44 +2130,6 @@ var ElectionView = /** @class */ (function (_super) {
     return ElectionView;
 }(React.Component));
 exports.ElectionView = ElectionView;
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var Slider = /** @class */ (function (_super) {
-    __extends(Slider, _super);
-    function Slider(props) {
-        var _this = _super.call(this, props) || this;
-        _this.onChange = _this.onChange.bind(_this);
-        return _this;
-    }
-    Slider.prototype.onChange = function (event) {
-        this.props.change(event);
-    };
-    Slider.prototype.render = function () {
-        return (React.createElement("label", { className: "switch" },
-            React.createElement("input", { type: "checkbox", onChange: this.onChange }),
-            React.createElement("span", { className: "slider round" })));
-    };
-    return Slider;
-}(React.Component));
-exports.Slider = Slider;
 
 
 /***/ })

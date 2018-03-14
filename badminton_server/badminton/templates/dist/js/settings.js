@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 34);
+/******/ 	return __webpack_require__(__webpack_require__.s = 46);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1837,7 +1837,8 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 29 */
+/* 29 */,
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1854,51 +1855,43 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
-var Popup = /** @class */ (function (_super) {
-    __extends(Popup, _super);
-    function Popup(props) {
+var Slider = /** @class */ (function (_super) {
+    __extends(Slider, _super);
+    function Slider(props) {
         var _this = _super.call(this, props) || this;
-        _this.state = {
-            popup: false,
-        };
-        _this.close = _this.close.bind(_this);
+        _this.onChange = _this.onChange.bind(_this);
         return _this;
     }
-    Popup.prototype.close = function () {
-        this.setState({
-            popup: true,
-        });
-        this.props.callback();
+    Slider.prototype.onChange = function (event) {
+        this.props.change(event);
     };
-    Popup.prototype.render = function () {
-        if (this.state.popup) {
-            return null;
-        }
-        else {
-            return (React.createElement("div", { className: "popup-div" },
-                React.createElement("div", { className: "grid row" },
-                    React.createElement("div", { className: "row-1" },
-                        React.createElement("div", { className: "col-offset-1 col-11" },
-                            React.createElement("h4", { className: "popup-title" }, this.props.title))),
-                    React.createElement("div", { className: "row-1" },
-                        React.createElement("div", { className: "col-offset-1 col-11" },
-                            React.createElement("p", { className: "popup-message" }, this.props.message))),
-                    React.createElement("div", { className: "row-offset-10" },
-                        React.createElement("div", { className: "col-offset-7 col-5" },
-                            React.createElement("button", { className: "popup-button row-2", onClick: this.close }, "Ok"))))));
-        }
+    Slider.prototype.render = function () {
+        return (React.createElement("label", { className: "switch" },
+            React.createElement("input", { type: "checkbox", onChange: this.onChange }),
+            React.createElement("span", { className: "slider round" })));
     };
-    return Popup;
+    return Slider;
 }(React.Component));
-exports.Popup = Popup;
+exports.Slider = Slider;
 
 
 /***/ }),
-/* 30 */,
 /* 31 */,
 /* 32 */,
 /* 33 */,
-/* 34 */
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1906,12 +1899,12 @@ exports.Popup = Popup;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(9);
-var InterestedForm_1 = __webpack_require__(35);
-ReactDOM.render(React.createElement(InterestedForm_1.InterestedForm, null), document.querySelector("interest-form"));
+var SettingsView_1 = __webpack_require__(47);
+ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document.querySelector("settings-view"));
 
 
 /***/ }),
-/* 35 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1929,61 +1922,112 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
-var Popup_1 = __webpack_require__(29);
-var email_name = "email";
-var api_url = "/mock/interested.json";
-var InterestedForm = /** @class */ (function (_super) {
-    __extends(InterestedForm, _super);
-    function InterestedForm(props) {
+var Slider_1 = __webpack_require__(30);
+var LoadingState;
+(function (LoadingState) {
+    LoadingState[LoadingState["Loading"] = 0] = "Loading";
+    LoadingState[LoadingState["Loaded"] = 1] = "Loaded";
+})(LoadingState || (LoadingState = {}));
+var reg_url = '/mock/regular_settings.json';
+var member_url = '/mock/board_settings.json';
+var StandardSettings = /** @class */ (function (_super) {
+    __extends(StandardSettings, _super);
+    function StandardSettings() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    StandardSettings.prototype.render = function () {
+        return React.createElement("p", null, "Standard");
+    };
+    return StandardSettings;
+}(React.Component));
+var BoardSettings = /** @class */ (function (_super) {
+    __extends(BoardSettings, _super);
+    function BoardSettings() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    BoardSettings.prototype.render = function () {
+        return React.createElement("p", null, "Board");
+    };
+    return BoardSettings;
+}(React.Component));
+var SettingsView = /** @class */ (function (_super) {
+    __extends(SettingsView, _super);
+    function SettingsView(props) {
         var _this = _super.call(this, props) || this;
-        _this.state = {};
-        _this.handleSubmit = _this.handleSubmit.bind(_this);
-        _this.resetState = _this.resetState.bind(_this);
+        _this.switch = _this.switch.bind(_this);
+        _this.state = {
+            regular_settings: null,
+            board_settings: null,
+            loading: true,
+            regular: true,
+        };
         return _this;
     }
-    InterestedForm.prototype.handleSubmit = function (event) {
+    SettingsView.prototype.performRequest = function () {
         var _this = this;
-        event.preventDefault();
-        axios_1.default.get(api_url, {
-            params: {
-                email: event.target[email_name].value
-            }
-        })
-            .then(function (response) {
-            _this.setState({
-                popup: React.createElement(Popup_1.Popup, { title: response.data.title, message: response.data.message, callback: _this.resetState }),
+        //... Regular Stuff
+        var regular = this.state.regular;
+        //... Board Stuff
+        if (this.state.regular) {
+            axios_1.default.get(reg_url)
+                .then(function (res) {
+                _this.setState({
+                    loading: false,
+                    regular: !regular,
+                    regular_settings: React.createElement(StandardSettings, null)
+                });
+            })
+                .catch(function (res) {
             });
-        })
-            .catch(function (error) {
-            _this.setState({
-                popup: React.createElement(Popup_1.Popup, { title: "Sorry!", message: "There was an error on our end, please check back soon", callback: _this.resetState }),
+        }
+        else {
+            axios_1.default.get(reg_url)
+                .then(function (res) {
+                _this.setState({
+                    loading: false,
+                    regular: !regular,
+                    regular_settings: React.createElement(StandardSettings, null)
+                });
+            })
+                .catch(function (res) {
             });
-        });
+            axios_1.default.get(member_url)
+                .then(function (res) {
+                _this.setState({
+                    loading: false,
+                    regular: !regular,
+                    board_settings: React.createElement(BoardSettings, null)
+                });
+            })
+                .catch(function (res) {
+            });
+        }
     };
-    InterestedForm.prototype.resetState = function () {
-        this.setState({
-            popup: null
-        });
+    SettingsView.prototype.componentDidMount = function () {
+        this.performRequest();
     };
-    InterestedForm.prototype.render = function () {
-        return (React.createElement(React.Fragment, null,
-            React.createElement("form", { onSubmit: this.handleSubmit },
-                React.createElement("div", { className: "grid row-offset-2" },
-                    React.createElement("div", { className: "row" },
-                        React.createElement("div", { className: "col-offset-4 col-2" },
-                            React.createElement("label", { className: "interested-label row-2" }, "Email")),
-                        React.createElement("div", { className: "col-6" },
-                            React.createElement("input", { type: "text", id: "email", name: email_name, placeholder: "netid@illinois.edu", className: "interested-short-field row-2" }))),
-                    React.createElement("div", { className: "row" },
-                        React.createElement("div", { className: "col-offset-4 col-6" },
-                            React.createElement("input", { type: "submit", value: "Submit!", className: "interested-submit row-offset-1 row-3" }))))),
-            this.state.popup !== null && this.state.popup));
+    SettingsView.prototype.switch = function (event) {
+        if (this.state.loading === true) {
+            return;
+        }
+        else {
+            this.performRequest();
+        }
     };
-    return InterestedForm;
+    SettingsView.prototype.render = function () {
+        return React.createElement("div", { className: "election-view" },
+            React.createElement("h2", null, "Toggle Board View"),
+            React.createElement(Slider_1.Slider, { change: this.switch }),
+            this.state.regular_settings !== null &&
+                this.state.regular_settings,
+            this.state.board_settings !== null &&
+                this.state.board_settings);
+    };
+    return SettingsView;
 }(React.Component));
-exports.InterestedForm = InterestedForm;
+exports.SettingsView = SettingsView;
 
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=interested.js.map
+//# sourceMappingURL=settings.js.map

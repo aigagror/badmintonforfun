@@ -4,15 +4,28 @@ import { Slider } from '../common/Slider'
 
 const stat_urls = "/mock/stats.json"
 
+class GameView extends React.Component<any, any> {
+	render() {
+		return (<tr className="row-2">
+			<td className="col-3">{this.props.my_score}</td>
+			<td className="col-3">{this.props.their_score}</td>
+			</tr>)
+	}
+}
+
 class StatView extends React.Component<any, any> {
 
 	render() {
-		return (<div className="stats">
-			{this.props.stats.games.map ((game: any) => {
-				return <div><div>Your Score: {game.my_score}</div>
-				<div>Their Score: {game.their_score}</div></div>;
+		return (<table className="stats-table">
+			<thead className="row-3">
+			<tr><th className="col-3">Your Score</th><th className="col-3">My Score</th></tr>
+			</thead>
+			<tbody>
+			{this.props.stats.games.map ((game: any, idx: number) => {
+				return <GameView key={idx} my_score={game.my_score} their_score={game.their_score} />
 			}) }
-		</div>);
+			</tbody>
+		</table>);
 	}
 }
 

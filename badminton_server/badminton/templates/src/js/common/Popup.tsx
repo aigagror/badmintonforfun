@@ -8,20 +8,13 @@ export class Popup extends React.Component<any, any> {
 			popup: false,
 		}
 		this.close = this.close.bind(this);
-		this.popup = this.popup.bind(this);
 	}
 
 	close() {
 		this.setState({
-			popup: false,
-		});
-		this.props.callback();
-	}
-
-	popup() {
-		this.setState({
 			popup: true,
 		});
+		this.props.callback();
 	}
 
 	render() {

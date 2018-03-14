@@ -1878,21 +1878,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
 var stat_urls = "/mock/stats.json";
+var GameView = /** @class */ (function (_super) {
+    __extends(GameView, _super);
+    function GameView() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    GameView.prototype.render = function () {
+        return (React.createElement("tr", { className: "row-2" },
+            React.createElement("td", { className: "col-3" }, this.props.my_score),
+            React.createElement("td", { className: "col-3" }, this.props.their_score)));
+    };
+    return GameView;
+}(React.Component));
 var StatView = /** @class */ (function (_super) {
     __extends(StatView, _super);
     function StatView() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     StatView.prototype.render = function () {
-        return (React.createElement("div", { className: "stats" }, this.props.stats.games.map(function (game) {
-            return React.createElement("div", null,
-                React.createElement("div", null,
-                    "Your Score: ",
-                    game.my_score),
-                React.createElement("div", null,
-                    "Their Score: ",
-                    game.their_score));
-        })));
+        return (React.createElement("table", { className: "stats-table" },
+            React.createElement("thead", { className: "row-3" },
+                React.createElement("tr", null,
+                    React.createElement("th", { className: "col-3" }, "Your Score"),
+                    React.createElement("th", { className: "col-3" }, "My Score"))),
+            React.createElement("tbody", null, this.props.stats.games.map(function (game, idx) {
+                return React.createElement(GameView, { key: idx, my_score: game.my_score, their_score: game.their_score });
+            }))));
     };
     return StatView;
 }(React.Component));

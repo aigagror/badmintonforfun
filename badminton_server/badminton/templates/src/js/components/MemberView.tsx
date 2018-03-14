@@ -34,7 +34,7 @@ export class MemberView extends React.Component<any, any> {
 		if (this.state.members.length === 0) {
 			return <p>Loading</p>
 		} else {
-			return <ul>
+			return <ul className="member-list">
 				{
 					this.state.members.map((member: any, idx: any) => {
 						return <li key={idx}><Member name={member.name} id={member.id} key={idx}/></li>

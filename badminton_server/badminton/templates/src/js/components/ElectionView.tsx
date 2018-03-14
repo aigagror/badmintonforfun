@@ -1,5 +1,6 @@
 import * as React from "react";
 import {Slider} from "../common/Slider";
+import {Popup} from "../common/Popup";
 import axios from 'axios';
 import { HigherOrderComponent } from '../common/ComponentSubclasses';
 
@@ -11,6 +12,15 @@ enum LoadingState {
     Loaded,
 }
 
+function capitalize(str: string): string {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function format(str: string): string {
+	const splitted = str.split("_");
+	return splitted.map((word: string) => capitalize(word)).join(" ");
+}
+
 class ElectionCandidate extends React.Component<any, any> {
 	person: any;
 	role: string;
@@ -20,9 +30,20 @@ class ElectionCandidate extends React.Component<any, any> {
 
 	render() {
 		return (<div>
-			<p>Name: {this.props.person.name}</p>
+			<div className="row">
+			<div className="col-offset-3 col-1 row-2">
+			<input type="radio" name={this.props.role} id={""+this.props.person.id}
+				value={this.props.person.id} className="election-check"
+				defaultChecked={this.props.person.voted} />
+			</div>
+			<div className="col-8 row-2 election-label-div">
+			<label htmlFor={""+this.props.person.id} className="election-label">{this.props.person.name}</label>
+			</div>
+			</div>
+
+			<div className="row col-offset-3">
 			<p>Pitch: {this.props.person.pitch}</p>
-			<input type="radio" name={this.props.role} value={this.props.person.id} defaultChecked={this.props.person.voted} />
+			</div>
 			</div>
 			);
 	}
@@ -35,7 +56,11 @@ class ElectionRole extends React.Component<any, any> {
 
 	render() {
 		return (<div>
-			<h3>{this.props.role}</h3>
+			<div className="row">
+			<div className="col-offset-3 col-3">
+			<h3>{format(this.props.role)}</h3>
+			</div>
+			</div>
 			{
 				this.props.candidates.map((key: any, idx: any) => {
 					return <ElectionCandidate person={key} role={this.props.role} key={idx}/>
@@ -59,6 +84,7 @@ class ElectionUp extends React.Component<any, any> {
 		}
 		this.state = {
 			campaigns: campaigns,
+			popup: null
 		}
 		this.submitVotes = this.submitVotes.bind(this);
 	}
@@ -69,15 +95,29 @@ class ElectionUp extends React.Component<any, any> {
 			let elem = this.props.order[key];
 			console.log("For: " + elem + " Userid: " + event.target[elem].value);
 		}
+		this.setState({
+			popup: <Popup title="Submitted!" 
+				message="Submit as many times as you want before the deadline"
+				callback={()=>{
+					this.setState({popup: null});
+				}} />
+		});
 	}
 
 	render() {
-		return (<form onSubmit={this.submitVotes}>{
+		return (<div className="grid">
+		<form onSubmit={this.submitVotes}>
+		{
 			this.state.campaigns.map((campaign: any, idx: number) => { 
 				return <ElectionRole role={campaign[0]} candidates={campaign[1]} key={idx}/>
 			})
-		}<button type="submit">Submit Votes</button>
-		</form>);
+		}
+		<div className="row row-offset-2">
+		<button type="submit" className="col-6 col-offset-4 row-2 election-submit">Submit Votes</button>
+		</div>
+		</form>
+		{ this.state.popup !== null && this.state.popup }
+		</div>);
 	}
 }
 
@@ -144,7 +184,7 @@ export class ElectionView extends React.Component<{}, any> {
 
 	render() {
 	    return (<div className="election-view">
-	    	<h2>Toggle datum</h2>
+	    	<h2>Toggle Election Happening</h2>
 	    	<Slider change={this.switch} />
     		{
     			this.state.election === LoadingState.Loading ?
