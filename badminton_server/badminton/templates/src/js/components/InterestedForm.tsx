@@ -34,7 +34,10 @@ export class InterestedForm extends React.Component<InterestedProps, any> {
 			});
 		})
 		.catch((error: any) => {
-			console.log(error);
+			this.setState({
+				popup: <Popup title="Sorry!" message="There was an error on our end, please check back soon"
+					callback={this.resetState}/>,
+			});
 		});
 	}
 
@@ -48,14 +51,21 @@ export class InterestedForm extends React.Component<InterestedProps, any> {
 	render() {
 	    return (<>
 	    <form onSubmit={this.handleSubmit}>
-	    <div className="col-center-4">
-	    	<label>Email:
-        	<input type="text" id="email" name={email_name} placeholder="netid@illinois.edu"/>
-        	</label>
+	    <div className="grid row-offset-2">
+	    <div className="row">
+	    <div className="col-offset-4 col-2">
+	    	<label className="interested-label row-2">Email</label>
+	    </div>
+	    <div className="col-6">
+        	<input type="text" id="email" name={email_name} placeholder="netid@illinois.edu" className="interested-short-field row-2"/>
+        </div>
         </div>
 
-        <div className="col-center-4">
-	    	<input type="submit" value="Submit" className="big-button" />
+        <div className="row">
+	    <div className="col-offset-4 col-6">
+	    	<input type="submit" value="Submit!" className="interested-submit row-offset-1 row-3" />
+	    </div>
+        </div>
         </div>
 	    </form>
 	    { this.state.popup !== null && this.state.popup }

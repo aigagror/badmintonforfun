@@ -1837,44 +1837,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var Slider = /** @class */ (function (_super) {
-    __extends(Slider, _super);
-    function Slider(props) {
-        var _this = _super.call(this, props) || this;
-        _this.onChange = _this.onChange.bind(_this);
-        return _this;
-    }
-    Slider.prototype.onChange = function (event) {
-        this.props.change(event);
-    };
-    Slider.prototype.render = function () {
-        return (React.createElement("label", { className: "switch" },
-            React.createElement("input", { type: "checkbox", onChange: this.onChange }),
-            React.createElement("span", { className: "slider round" })));
-    };
-    return Slider;
-}(React.Component));
-exports.Slider = Slider;
-
-
-/***/ }),
+/* 29 */,
 /* 30 */,
 /* 31 */,
 /* 32 */,
@@ -1914,9 +1877,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
-var Slider_1 = __webpack_require__(29);
 var stat_urls = "/mock/stats.json";
-var member_url = "/mock/home_member.json";
 var StatView = /** @class */ (function (_super) {
     __extends(StatView, _super);
     function StatView() {
@@ -1954,7 +1915,6 @@ var HomeView = /** @class */ (function (_super) {
             board_member: false
         };
         _this.performRequest = _this.performRequest.bind(_this);
-        _this.switch = _this.switch.bind(_this);
         return _this;
     }
     HomeView.prototype.componentDidMount = function () {
@@ -1972,20 +1932,12 @@ var HomeView = /** @class */ (function (_super) {
             .catch(function (res) {
         });
     };
-    HomeView.prototype.switch = function () {
-        if (this.state.board_member) {
-            this.performRequest(stat_urls);
-        }
-        else {
-            this.performRequest(member_url);
-        }
-    };
     HomeView.prototype.render = function () {
+        if (this.state.stats === null) {
+            return null;
+        }
         return (React.createElement("div", { className: "election-view" },
-            React.createElement("h2", null, "Toggle datum"),
-            React.createElement(Slider_1.Slider, { change: this.switch }),
-            this.state.stats !== null && React.createElement(StatView, { stats: this.state.stats }),
-            this.state.board_member && React.createElement(BoardView, null)));
+            React.createElement(StatView, { stats: this.state.stats })));
     };
     return HomeView;
 }(React.Component));

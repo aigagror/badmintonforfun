@@ -1,0 +1,20 @@
+{
+	"members": [
+		{
+			"name": "Lorem Ipsum",
+			"id": 1
+		},
+		{
+			"name": "Lorem Ipsum",
+			"id": 2
+		},
+		{
+			"name": "Lorem Ipsum",
+			"id": 3
+		},
+		{
+			"name": "Lorem Ipsum",
+			"id": 4
+		}
+	]
+}

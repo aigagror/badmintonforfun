@@ -60,37 +60,72 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 46);
+/******/ 	return __webpack_require__(__webpack_require__.s = 44);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 46:
+/***/ 1:
+/***/ (function(module, exports) {
+
+module.exports = React;
+
+/***/ }),
+
+/***/ 44:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-/* Keep these in here for the time being */
-__webpack_require__(47);
-__webpack_require__(48);
+var React = __webpack_require__(1);
+var ReactDOM = __webpack_require__(9);
+var Queue_1 = __webpack_require__(45);
+ReactDOM.render(React.createElement(Queue_1.Queue, null), document.querySelector("queue-view"));
 
 
 /***/ }),
 
-/***/ 47:
-/***/ (function(module, exports) {
+/***/ 45:
+/***/ (function(module, exports, __webpack_require__) {
 
-// removed by extract-text-webpack-plugin
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var Queue = /** @class */ (function (_super) {
+    __extends(Queue, _super);
+    function Queue(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {};
+        return _this;
+    }
+    Queue.prototype.render = function () {
+        return React.createElement("p", null, "Hello Queue!");
+    };
+    return Queue;
+}(React.Component));
+exports.Queue = Queue;
+
 
 /***/ }),
 
-/***/ 48:
+/***/ 9:
 /***/ (function(module, exports) {
 
-// removed by extract-text-webpack-plugin
+module.exports = ReactDOM;
 
 /***/ })
 
 /******/ });
-//# sourceMappingURL=css.js.map
+//# sourceMappingURL=queue.js.map

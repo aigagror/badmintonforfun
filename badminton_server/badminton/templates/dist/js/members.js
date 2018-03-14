@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 42);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1840,7 +1840,17 @@ module.exports = function spread(callback) {
 /* 29 */,
 /* 30 */,
 /* 31 */,
-/* 32 */
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1848,12 +1858,12 @@ module.exports = function spread(callback) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(9);
-var InterestedForm_1 = __webpack_require__(33);
-ReactDOM.render(React.createElement(InterestedForm_1.InterestedForm, null), document.querySelector("interest-form"));
+var MemberView_1 = __webpack_require__(43);
+ReactDOM.render(React.createElement(MemberView_1.MemberView, null), document.querySelector("member-view"));
 
 
 /***/ }),
-/* 33 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1871,124 +1881,54 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
-var Popup_1 = __webpack_require__(34);
-var email_name = "email";
-var api_url = "/mock/interested.json";
-var InterestedForm = /** @class */ (function (_super) {
-    __extends(InterestedForm, _super);
-    function InterestedForm(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {};
-        _this.handleSubmit = _this.handleSubmit.bind(_this);
-        _this.resetState = _this.resetState.bind(_this);
-        return _this;
+var url = '/mock/members.json';
+var Member = /** @class */ (function (_super) {
+    __extends(Member, _super);
+    function Member() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    InterestedForm.prototype.handleSubmit = function (event) {
-        var _this = this;
-        event.preventDefault();
-        axios_1.default.get(api_url, {
-            params: {
-                email: event.target[email_name].value
-            }
-        })
-            .then(function (response) {
-            _this.setState({
-                popup: React.createElement(Popup_1.Popup, { title: response.data.title, message: response.data.message, callback: _this.resetState }),
-            });
-        })
-            .catch(function (error) {
-            _this.setState({
-                popup: React.createElement(Popup_1.Popup, { title: "Sorry!", message: "There was an error on our end, please check back soon", callback: _this.resetState }),
-            });
-        });
+    Member.prototype.render = function () {
+        return React.createElement("a", { href: "/profile.html?member_id=" + this.props.id }, this.props.name);
     };
-    InterestedForm.prototype.resetState = function () {
-        this.setState({
-            popup: null
-        });
-    };
-    InterestedForm.prototype.render = function () {
-        return (React.createElement(React.Fragment, null,
-            React.createElement("form", { onSubmit: this.handleSubmit },
-                React.createElement("div", { className: "grid row-offset-2" },
-                    React.createElement("div", { className: "row" },
-                        React.createElement("div", { className: "col-offset-4 col-2" },
-                            React.createElement("label", { className: "interested-label row-2" }, "Email")),
-                        React.createElement("div", { className: "col-6" },
-                            React.createElement("input", { type: "text", id: "email", name: email_name, placeholder: "netid@illinois.edu", className: "interested-short-field row-2" }))),
-                    React.createElement("div", { className: "row" },
-                        React.createElement("div", { className: "col-offset-4 col-6" },
-                            React.createElement("input", { type: "submit", value: "Submit!", className: "interested-submit row-offset-1 row-3" }))))),
-            this.state.popup !== null && this.state.popup));
-    };
-    return InterestedForm;
+    return Member;
 }(React.Component));
-exports.InterestedForm = InterestedForm;
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var Popup = /** @class */ (function (_super) {
-    __extends(Popup, _super);
-    function Popup(props) {
+var MemberView = /** @class */ (function (_super) {
+    __extends(MemberView, _super);
+    function MemberView(props) {
         var _this = _super.call(this, props) || this;
         _this.state = {
-            popup: false,
+            members: []
         };
-        _this.close = _this.close.bind(_this);
-        _this.popup = _this.popup.bind(_this);
         return _this;
     }
-    Popup.prototype.close = function () {
-        this.setState({
-            popup: false,
+    MemberView.prototype.componentDidMount = function () {
+        var _this = this;
+        axios_1.default.get(url)
+            .then(function (res) {
+            _this.setState({
+                members: res.data.members
+            });
+        })
+            .catch(function (res) {
+            console.log(res);
         });
-        this.props.callback();
     };
-    Popup.prototype.popup = function () {
-        this.setState({
-            popup: true,
-        });
-    };
-    Popup.prototype.render = function () {
-        if (this.state.popup) {
-            return null;
+    MemberView.prototype.render = function () {
+        if (this.state.members.length === 0) {
+            return React.createElement("p", null, "Loading");
         }
         else {
-            return (React.createElement("div", { className: "popup-div" },
-                React.createElement("div", { className: "grid row" },
-                    React.createElement("div", { className: "row-1" },
-                        React.createElement("div", { className: "col-offset-1 col-11" },
-                            React.createElement("h4", { className: "popup-title" }, this.props.title))),
-                    React.createElement("div", { className: "row-1" },
-                        React.createElement("div", { className: "col-offset-1 col-11" },
-                            React.createElement("p", { className: "popup-message" }, this.props.message))),
-                    React.createElement("div", { className: "row-offset-10" },
-                        React.createElement("div", { className: "col-offset-7 col-5" },
-                            React.createElement("button", { className: "popup-button row-2", onClick: this.close }, "Ok"))))));
+            return React.createElement("ul", null, this.state.members.map(function (member, idx) {
+                return React.createElement("li", { key: idx },
+                    React.createElement(Member, { name: member.name, id: member.id, key: idx }));
+            }));
         }
     };
-    return Popup;
+    return MemberView;
 }(React.Component));
-exports.Popup = Popup;
+exports.MemberView = MemberView;
 
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=interested.js.map
+//# sourceMappingURL=members.js.map

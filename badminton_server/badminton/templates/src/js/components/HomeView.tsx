@@ -1,8 +1,8 @@
 import * as React from "react";
 import axios from 'axios';
 import { Slider } from '../common/Slider'
+
 const stat_urls = "/mock/stats.json"
-const member_url = "/mock/home_member.json"
 
 class StatView extends React.Component<any, any> {
 
@@ -31,7 +31,6 @@ export class HomeView extends React.Component<{}, any> {
 			board_member: false
 		}
 		this.performRequest = this.performRequest.bind(this)
-		this.switch = this.switch.bind(this)
 	}
 
 	componentDidMount() {
@@ -51,24 +50,12 @@ export class HomeView extends React.Component<{}, any> {
 			})
 	}
 
-	switch() {
-		if (this.state.board_member) {
-			this.performRequest(stat_urls);
-		} else {
-			this.performRequest(member_url);
-		}
-	}
-
 	render() {
+		if (this.state.stats === null) {
+			return null
+		}
 		return (<div className="election-view">
-	    	<h2>Toggle datum</h2>
-	    	<Slider change={this.switch} />
-	    	{
-	    		this.state.stats !== null && <StatView stats={this.state.stats} />
-	    	}
-	    	{
-	    		this.state.board_member && <BoardView />
-	    	}
+	    	<StatView stats={this.state.stats} />
 	    	</div>);
 	}
 }
