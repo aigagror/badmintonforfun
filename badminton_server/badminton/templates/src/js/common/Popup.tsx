@@ -7,6 +7,8 @@ export class Popup extends React.Component<any, any> {
 		this.state = {
 			popup: false,
 		}
+		this.close = this.close.bind(this);
+		this.popup = this.popup.bind(this);
 	}
 
 	close() {
@@ -24,12 +26,12 @@ export class Popup extends React.Component<any, any> {
 
 	render() {
 		if (this.state.popup) {
-			return (<div></div>);
+			return null;
 		} else {
-			return (<div className="message-div">
-	    			<h4>{this.props.title}</h4>
-	    			<p>{this.props.message}</p>
-	    			<button onClick={this.close}>Ok</button>
+			return (<div className="popup-div">
+	    			<h4 className="popup-title">{this.props.title}</h4>
+	    			<p className="popup-message">{this.props.message}</p>
+	    			<button className="popup-button" onClick={this.close}>Ok</button>
 	    		</div>)
 		}
 	}

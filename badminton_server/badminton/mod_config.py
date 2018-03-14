@@ -6,6 +6,7 @@ ROOT_RESOURCE_PATH = [BASE_DIR, 'badminton', 'templates', 'dist']
 JS_PATH = os.path.join(*(ROOT_RESOURCE_PATH + ["js"]))
 CSS_PATH = os.path.join(*(ROOT_RESOURCE_PATH + ["css"]))
 TEMPLATE_PATH = os.path.join(*(ROOT_RESOURCE_PATH + ["html"]))
+STATIC_PATH = os.path.join(*(ROOT_RESOURCE_PATH + ["static"]))
 MOCK_PATH = os.path.join(*(ROOT_RESOURCE_PATH + ["mock_data"]))
 FRAGMENTS_PATH = os.path.join(TEMPLATE_PATH, 'fragments')
 

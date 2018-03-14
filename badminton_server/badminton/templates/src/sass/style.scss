@@ -9,13 +9,18 @@ html {
   box-sizing: inherit;
 }
 
+$nav-height: 30px;
+$footer-height: 30px;
 
 body {
 	font-family: Georgia, serif;
-	position: relative;
+	position: absolute;
 	margin: 0;
 	padding-bottom: 6rem;
-	min-height: 100%;
+  // 20 px because browsers are dishonest with 100%
+	min-height: calc(100% + #{$nav-height} + #{$footer-height} + 20px);
+  width: 100%;
+  top:-20px;
 }
 
 p {
@@ -69,23 +74,6 @@ $big-fade: 1s;
 @-o-keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
-}
-
-footer {
-	position: absolute;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	padding: 1rem;
-	width: 100%;
-	padding-bottom: 20px;
-	padding-top: 20px;
-	background-color: black;
-	padding-left: 15px;
-    margin-left: auto;
-    margin-right: auto;
-    text-algin: center;
-    color: white;
 }
 
 .badminton-landing-icon {
@@ -157,11 +145,78 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-.message-div {
+.popup-div {
 	top: 100px;
 	height: 500px;
 	width: 500px;
 	position: fixed;
 	z-index: 100;
 	background-color: white;
+}
+
+.popup-title {
+
+}
+
+.popup-message {
+
+}
+
+.popup-button {
+
+}
+
+footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  width: 100%;
+  padding-bottom: calc(#{$footer-height} / 2);
+  padding-top: calc(#{$footer-height} / 2);
+  background-color: black;
+  padding-left: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  text-algin: center;
+  color: white;
+}
+
+nav {
+  background-color: black;
+  color: white;
+  margin-left: auto;
+  margin-right: auto;
+  height: #{$nav-height};
+}
+
+.nav-list {
+  list-style-type: none;
+}
+
+.nav-list > .nav-link {
+  float: left;
+  margin-left: 20px;
+}
+
+.nav-link > a {
+  text-decoration: none;
+  color: white;
+}
+.nav-div {
+  top: 0px;
+  background-color: black;
+  padding-top: 20px;
+  padding-bottom:0px;
+}
+
+// Member page stuff
+
+
+// Profile page stuff
+
+.profile-picture {
+  width: 80%;
+  height: 80%;
 }

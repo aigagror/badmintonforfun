@@ -8,6 +8,7 @@ module.exports = {
         'election': path.resolve(__dirname, 'src/js/election.tsx'),
         'home': path.resolve(__dirname, 'src/js/home.tsx'),
         'profile': path.resolve(__dirname, 'src/js/profile.tsx'),
+        'members': path.resolve(__dirname, 'src/js/members.tsx'),
         'css': path.resolve(__dirname, 'src/js/css.tsx'),
     },
     output: {

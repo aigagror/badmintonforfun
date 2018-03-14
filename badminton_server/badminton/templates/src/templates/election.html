@@ -11,21 +11,25 @@
     </head>
     <body>
 
+    {% include_fragment 'nav.html' %}
+
     <div class="grid row row-offset-1">
-        <div class="col-offset-1 col-11">
+        <div class="col-offset-2 col-8">
+            <div class="grid">
+                <div class="row">
+                    <div class="col-4 row-offset-1 badminton-landing-text"> Election </div>
+                </div>
 
-        <div class="grid row col-offset-1">
-            <h1>Election Page</h1>
+        <div class="row row-offset-1">
+            <election-view>
+            </election-view>
         </div>
-
-        <election-view>
-        </election-view>
     </div>
+</div>
 </div>
 
         {% resolve_global 'react' %}
         {% resolve_global 'react-dom' %}
-        {% resolve_global 'google-platform' %}
 
         {% resolve_js_local 'election.js' %}
 

@@ -41,6 +41,15 @@ $response-booster: (
   @return $adjusted;
 }
 
+@function strip-units($number) {
+  @return $number / ($number * 0 + 1);
+}
+
+@function convert-to-type($percent, $type) {
+  $temp: strip-units($percent);
+  @return $temp + $type;
+}
+
 @each $name, $value in $response-booster {
   $adjusted-padding: calculating-padding($value);
   $padding-multiplier: nth($value, 3);
@@ -60,11 +69,13 @@ $response-booster: (
         margin-left: calc( (#{$adjusted-percentage} - #{$adjusted-padding} * 2) * #{$padding-multiplier});
       }
 
+      $row-offset-vh: convert-to-type($adjusted-percentage, vh);
+      
       #{$row-offset-slug}-#{$i} {
-        margin-top: calc( #{$adjusted-percentage} / (#{$column-multiplier} * 2));
+        margin-top: calc( #{$row-offset-vh} / (#{$column-multiplier} * 2));
       }
       #{$row-height-slug}-#{$i} {
-        height: calc( #{$adjusted-percentage} / (#{$column-multiplier} * 2));
+        height: calc( #{$row-offset-vh} / (#{$column-multiplier} * 2));
       }
     }
     [class*='col-'] {

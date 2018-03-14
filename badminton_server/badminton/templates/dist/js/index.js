@@ -72,13 +72,6 @@ module.exports = React;
 
 /***/ }),
 
-/***/ 3:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-
 /***/ 30:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -86,7 +79,7 @@ module.exports = ReactDOM;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
+var ReactDOM = __webpack_require__(9);
 var react_google_login_1 = __webpack_require__(31);
 var Button_1 = __webpack_require__(32);
 var responseGoogle = function (response) {
@@ -139,6 +132,13 @@ var Button = /** @class */ (function (_super) {
 }(React.Component));
 exports.Button = Button;
 
+
+/***/ }),
+
+/***/ 9:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
 
 /***/ })
 

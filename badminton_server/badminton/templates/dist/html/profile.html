@@ -1,28 +1,32 @@
 {% load badminton_filters %}
+{% load static %}
 
 <!DOCTYPE html>
 <html>
     <head>
         {% include_fragment 'head.html' %}
 
-        <title>Landing</title>
+        <title>Badminton For Fun - Profile</title>
         <meta name="author" content="Bhuvan Venkatesh">
-        <meta name="description" content="Badminton for fun memeber page.">
+        <meta name="description" content="Badminton for fun profile page.">
     </head>
     <body>
 
+    {% include_fragment 'nav.html' %}
+    
     <div class="grid row row-offset-1">
         <div class="col-offset-2 col-8">
             <div class="grid">
-                <div class="row">
-                    <div class="col-4 row-offset-1 badminton-landing-text"> Profile </div>
-                </div>
-                
                 <profile-view></profile-view>
             </div>
             
         </div>
     </div>
+
+    <script type="text/javascript">
+        var member_id = {{ member_id }};
+        var default_pic_url = "/assets/default_profile.png";
+    </script>
 
         {% resolve_global 'react' %}
         {% resolve_global 'react-dom' %}
