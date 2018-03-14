@@ -58,12 +58,27 @@ def template_server(request, template=None):
     for key, value in context.items():
         if isinstance(value, list) and len(value) == 1:
             context[key] = value[0]
-    print(context)
-    return render(request, template, context=context)
+    try:
+        return render(request, template, context=context)
+    except:
+        raise Http404("Page not found")
 
 
 def mock_api(request, data):
     file_name = os.path.join(MOCK_PATH, data)
     content = _file_or_error(file_name)
     return HttpResponse(content, content_type="application/json")
+
+def handle_404(request, exception, template_name='404.html'):
+    return template_server(template_name)
+
+def handle_500(request, exception, template_name='500.html'):
+    return template_server(template_name)
+
+def handle_403(request, exception, template_name='403.html'):
+    return template_server(template_name)
+
+def handle_400(request, exception, template_name='400.html'):
+    return template_server(template_name)
+
 
