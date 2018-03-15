@@ -7,8 +7,8 @@ const stat_urls = "/mock/stats.json"
 class GameView extends React.Component<any, any> {
 	render() {
 		return (<tr className="row-2">
-			<td className="col-3">{this.props.my_score}</td>
-			<td className="col-3">{this.props.their_score}</td>
+			<td className="col-3 col-es-6">{this.props.my_score}</td>
+			<td className="col-3 col-es-6">{this.props.their_score}</td>
 			</tr>)
 	}
 }
@@ -18,7 +18,7 @@ class StatView extends React.Component<any, any> {
 	render() {
 		return (<table className="stats-table">
 			<thead className="row-3">
-			<tr><th className="col-3">Your Score</th><th className="col-3">My Score</th></tr>
+			<tr><th className="col-3 col-es-6">Your Score</th><th className="col-3 col-es-6">My Score</th></tr>
 			</thead>
 			<tbody>
 			{this.props.stats.games.map ((game: any, idx: number) => {

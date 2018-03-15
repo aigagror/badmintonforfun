@@ -1885,8 +1885,8 @@ var GameView = /** @class */ (function (_super) {
     }
     GameView.prototype.render = function () {
         return (React.createElement("tr", { className: "row-2" },
-            React.createElement("td", { className: "col-3" }, this.props.my_score),
-            React.createElement("td", { className: "col-3" }, this.props.their_score)));
+            React.createElement("td", { className: "col-3 col-es-6" }, this.props.my_score),
+            React.createElement("td", { className: "col-3 col-es-6" }, this.props.their_score)));
     };
     return GameView;
 }(React.Component));
@@ -1899,8 +1899,8 @@ var StatView = /** @class */ (function (_super) {
         return (React.createElement("table", { className: "stats-table" },
             React.createElement("thead", { className: "row-3" },
                 React.createElement("tr", null,
-                    React.createElement("th", { className: "col-3" }, "Your Score"),
-                    React.createElement("th", { className: "col-3" }, "My Score"))),
+                    React.createElement("th", { className: "col-3 col-es-6" }, "Your Score"),
+                    React.createElement("th", { className: "col-3 col-es-6" }, "My Score"))),
             React.createElement("tbody", null, this.props.stats.games.map(function (game, idx) {
                 return React.createElement(GameView, { key: idx, my_score: game.my_score, their_score: game.their_score });
             }))));

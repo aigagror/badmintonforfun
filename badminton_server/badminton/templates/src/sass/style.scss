@@ -80,7 +80,7 @@ $big-fade: 1s;
 }
 
 .badminton-landing-text {
-	font-size: 5vw; 
+	font-size: calc(20px + 2.5vw);; 
 	font-weight: 10em; 
 	padding-left:40px;
 }
@@ -159,6 +159,20 @@ $popup-width: 400px;
   border-radius: 4px;
 }
 
+@media only screen and (max-width: 430px) {
+
+  $sm-popup-height: 300px;
+  $sm-popup-width: 300px;
+
+  .popup-div {
+    top: calc((100vh - #{$sm-popup-height}) / 2);
+    left: calc((100vw - #{$sm-popup-width}) / 2);
+    height: #{$sm-popup-height};
+    width: #{$sm-popup-width};
+  }
+
+}
+
 .popup-title {
   font-size: 4vh;
 }
@@ -229,8 +243,22 @@ tbody > tr:nth-child(odd) {
 
 @media only screen and (max-width: 700px) {
   .nav-link {
-    display: none;
+    height: 0px;
     padding-top: 5px;
+  }
+
+  .nav-link > a {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .nav-link.hamburger {
+    display: inherit;
+  }
+
+  .hamburger > a {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .nav-list {
@@ -249,11 +277,17 @@ tbody > tr:nth-child(odd) {
   }
 
   nav.responsive .nav-link {
-    display: inherit;
+    height: auto;
+
+    & > a {
+      opacity: 1;
+      pointer-events: auto;
+    }
   }
 
-  .nav-link.hamburger {
-    display: inherit;
+  nav.responsive {
+    max-height: 500px;
+    transition: max-height 0.25s ease-in;
   }
 }
 
