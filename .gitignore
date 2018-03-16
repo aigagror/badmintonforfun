@@ -1,3 +1,10 @@
+# JetBrains - Eddie
+*.iml
+
+# node_modules - Eddie
+**/node_modules/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
