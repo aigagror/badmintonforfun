@@ -26,12 +26,13 @@ class Tournament(models.Model):
     date = models.DateField('date of tournament', primary_key=True)
 
 class Interested(models.Model):
-    name = models.CharField(max_length=64)
+    first_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=64)
     formerBoardMember = models.BooleanField(default=False)
     email = models.EmailField(primary_key=True)
 
     def __str__(self):
-        return self.name
+        return '{} {}'.format(self.first_name, self.last_name)
 
 
 class Member(Interested):
@@ -76,3 +77,8 @@ class Match(models.Model):
 
 class FinishedMatch(Match):
     endDate = models.DateTimeField('date ended')
+
+class Announcement(models.Model):
+    date = models.DateField('date of announcement', primary_key=True)
+    title = models.CharField(max_length=64)
+    entry = models.CharField(max_length=500)

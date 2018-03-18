@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<h1>Announcements</h1>
+{% if announcements %}
+    <ul>
+        {% for a in announcements %}
+            <li>
+                <h1>{{ a.title }}</h1>
+                <p>{{ a.date }}</p>
+                <p>{{ a.entry }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No announcements are available.</p>
+{% endif %}
+
+<h1>Profile</h1>
+{% if profile %}
+    <div>{{ profile.first_name }}</div>
+    <div>{{ profile.last_name }}</div>
+{% endif %}
+
+<h1>Stats</h1>
+{% if stats %}
+    <div></div>
+{% endif %}
+
+<h1>Matches</h1>
+{% if matches %}
+
+{% endif %}
+</body>
+</html>
+
