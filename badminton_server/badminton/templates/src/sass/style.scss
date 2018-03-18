@@ -13,7 +13,7 @@ $nav-height: 30px;
 $footer-height: 30px;
 
 body {
-	font-family: Georgia, serif;
+	font-family: "Verdana", sans-serif;
 	position: absolute;
 	margin: 0;
 	padding-bottom: 6rem;
@@ -80,7 +80,7 @@ $big-fade: 1s;
 }
 
 .badminton-landing-text {
-	font-size: calc(20px + 2.5vw);; 
+	font-size: calc(30px + 1.5vw);; 
 	font-weight: 10em; 
 	padding-left:40px;
 }
@@ -264,6 +264,7 @@ tbody > tr:nth-child(odd) {
   .nav-list {
     margin-top: 0px;
     padding-bottom: 5px;
+    padding-left: 20px;
   }
 
   .nav-list > .nav-link {
@@ -381,3 +382,19 @@ button[type="submit"] {
   text-decoration: None;
 }
 
+// tournament page
+
+.tournament-card {
+  width: 15vw;
+  height: 15vw;
+  margin: 0 auto;
+  text-align: center;
+  background-color: gray;
+}
+
+.tournament-row {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-top: 5px;
+  width: 50%;
+}

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 39);
+/******/ 	return __webpack_require__(__webpack_require__.s = 52);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1839,74 +1839,7 @@ module.exports = function spread(callback) {
 /***/ }),
 /* 29 */,
 /* 30 */,
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var axios_1 = __webpack_require__(10);
-var default_pic_url = "/assets/default_profile.png";
-var bio_url = '/mock/bio.json';
-var ProfileView = /** @class */ (function (_super) {
-    __extends(ProfileView, _super);
-    function ProfileView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
-            person: null,
-        };
-        return _this;
-    }
-    ProfileView.prototype.componentDidMount = function () {
-        var _this = this;
-        axios_1.default.get(bio_url, {
-            params: {
-                member_id: this.props.member_id
-            }
-        })
-            .then(function (res) {
-            _this.setState({
-                person: res.data
-            });
-        })
-            .catch(function (res) {
-            console.log(res);
-        });
-    };
-    ProfileView.prototype.render = function () {
-        if (this.state.person === null) {
-            return null;
-        }
-        var person = this.state.person;
-        var url = person.picture;
-        if (url === null) {
-            url = default_pic_url;
-        }
-        return React.createElement("div", { className: "profile-div" },
-            React.createElement("div", { className: "grid row row-8" },
-                React.createElement("div", { className: "col-6" },
-                    React.createElement("img", { className: "profile-picture", src: url, alt: "Profile picture" })),
-                React.createElement("div", { className: "col-6" },
-                    React.createElement("h2", null, person.name),
-                    React.createElement("p", null, person.bio))));
-    };
-    return ProfileView;
-}(React.Component));
-exports.ProfileView = ProfileView;
-
-
-/***/ }),
+/* 31 */,
 /* 32 */,
 /* 33 */,
 /* 34 */,
@@ -1914,7 +1847,20 @@ exports.ProfileView = ProfileView;
 /* 36 */,
 /* 37 */,
 /* 38 */,
-/* 39 */
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1922,12 +1868,12 @@ exports.ProfileView = ProfileView;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(9);
-var HomeView_1 = __webpack_require__(40);
-ReactDOM.render(React.createElement(HomeView_1.HomeView, null), document.querySelector("home-view"));
+var TournamentView_1 = __webpack_require__(53);
+ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), document.querySelector("tournament-view"));
 
 
 /***/ }),
-/* 40 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1945,123 +1891,79 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
-var ProfileView_1 = __webpack_require__(31);
-var stat_urls = "/mock/stats.json";
-var announce_url = "/mock/announcements.json";
-var GameView = /** @class */ (function (_super) {
-    __extends(GameView, _super);
-    function GameView() {
+var tourney_url = '/mock/tournament.json';
+var TournamentCell = /** @class */ (function (_super) {
+    __extends(TournamentCell, _super);
+    function TournamentCell() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    GameView.prototype.render = function () {
-        return (React.createElement("tr", { className: "row-2" },
-            React.createElement("td", { className: "col-3 col-es-6" }, this.props.my_score),
-            React.createElement("td", { className: "col-3 col-es-6" }, this.props.their_score)));
-    };
-    return GameView;
-}(React.Component));
-var StatView = /** @class */ (function (_super) {
-    __extends(StatView, _super);
-    function StatView() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    StatView.prototype.render = function () {
-        return (React.createElement("table", { className: "stats-table" },
-            React.createElement("thead", { className: "row-3" },
-                React.createElement("tr", null,
-                    React.createElement("th", { className: "col-3 col-es-6" }, "Your Score"),
-                    React.createElement("th", { className: "col-3 col-es-6" }, "My Score"))),
-            React.createElement("tbody", null, this.props.stats.games.map(function (game, idx) {
-                return React.createElement(GameView, { key: idx, my_score: game.my_score, their_score: game.their_score });
-            }))));
-    };
-    return StatView;
-}(React.Component));
-var AnnounceView = /** @class */ (function (_super) {
-    __extends(AnnounceView, _super);
-    function AnnounceView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
-            title: null,
-            body: null,
-        };
-        return _this;
-    }
-    AnnounceView.prototype.componentDidMount = function () {
-        var _this = this;
-        axios_1.default.get(announce_url)
-            .then(function (res) {
-            _this.setState({
-                title: res.data.title,
-                body: res.data.body,
-            });
-        })
-            .catch(function (res) {
-        });
-    };
-    AnnounceView.prototype.render = function () {
-        if (this.state.title === null) {
-            return React.createElement("p", null, "Loading Announcement");
+    TournamentCell.prototype.render = function () {
+        var matches = this.props.matches;
+        var render;
+        if (matches.state === "undecided") {
+            render = (React.createElement("div", { className: "tournament-card" },
+                React.createElement("h4", null, matches.title),
+                React.createElement("p", null, "TBA")));
         }
-        return (React.createElement("div", { className: "announcement" },
-            React.createElement("h2", null, "Most Recent Announcment"),
-            React.createElement("h3", null, this.state.title),
-            React.createElement("p", null, this.state.body)));
+        else if (matches.state === "decided") {
+            render = (React.createElement("div", { className: "tournament-card" },
+                React.createElement("h4", null, matches.title),
+                React.createElement("h5", null, matches.team1),
+                React.createElement("h5", null, matches.team2)));
+        }
+        else {
+            render = (React.createElement("div", { className: "tournament-card" },
+                React.createElement("h4", null, matches.title),
+                React.createElement("h5", null,
+                    matches.team1,
+                    " Score: ",
+                    matches.team1_score),
+                React.createElement("h5", null,
+                    matches.team2,
+                    " Score: ",
+                    matches.team2_score)));
+        }
+        return React.createElement("div", { className: "grid" },
+            React.createElement("div", { className: "row" }, render),
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { className: "col-6 tournament-row" }, matches.feeder_lhs !== null &&
+                    React.createElement(TournamentCell, { matches: matches.feeder_lhs })),
+                React.createElement("div", { className: "col-6 tournament-row" }, matches.feeder_rhs !== null &&
+                    React.createElement(TournamentCell, { matches: matches.feeder_rhs }))));
     };
-    return AnnounceView;
+    return TournamentCell;
 }(React.Component));
-var BoardView = /** @class */ (function (_super) {
-    __extends(BoardView, _super);
-    function BoardView() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BoardView.prototype.render = function () {
-        return React.createElement("p", null, "BoardView");
-    };
-    return BoardView;
-}(React.Component));
-var HomeView = /** @class */ (function (_super) {
-    __extends(HomeView, _super);
-    function HomeView(props) {
+var TournamentView = /** @class */ (function (_super) {
+    __extends(TournamentView, _super);
+    function TournamentView(props) {
         var _this = _super.call(this, props) || this;
         _this.state = {
-            stats: null,
-            board_member: false
+            matches: null,
         };
-        _this.performRequest = _this.performRequest.bind(_this);
         return _this;
     }
-    HomeView.prototype.componentDidMount = function () {
-        this.performRequest(stat_urls);
-    };
-    HomeView.prototype.performRequest = function (url) {
+    TournamentView.prototype.componentDidMount = function () {
         var _this = this;
-        axios_1.default.get(url)
+        axios_1.default.get(tourney_url)
             .then(function (res) {
             _this.setState({
-                stats: res.data.stat_data,
-                board_member: res.data.board_member
+                matches: res.data.matches,
             });
         })
             .catch(function (res) {
         });
     };
-    HomeView.prototype.render = function () {
-        if (this.state.stats === null) {
+    TournamentView.prototype.render = function () {
+        if (this.state.matches === null) {
             return null;
         }
-        return (React.createElement("div", { className: "home-view" },
-            React.createElement(AnnounceView, { stats: this.state.stats }),
-            React.createElement("div", { className: "row-offset-1" },
-                React.createElement(StatView, { stats: this.state.stats })),
-            React.createElement("div", { className: "row-offset-1" },
-                React.createElement(ProfileView_1.ProfileView, { member_id: 1 }))));
+        return (React.createElement(TournamentCell, { matches: this.state.matches }));
     };
-    return HomeView;
+    return TournamentView;
 }(React.Component));
-exports.HomeView = HomeView;
+exports.TournamentView = TournamentView;
 
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=home.js.map
+//# sourceMappingURL=tournament.js.map

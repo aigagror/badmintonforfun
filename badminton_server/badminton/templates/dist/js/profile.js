@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 40);
+/******/ 	return __webpack_require__(__webpack_require__.s = 41);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1839,29 +1839,7 @@ module.exports = function spread(callback) {
 /***/ }),
 /* 29 */,
 /* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(9);
-var ProfileView_1 = __webpack_require__(41);
-ReactDOM.render(React.createElement(ProfileView_1.ProfileView, { member_id: member_id }), document.querySelector("profile-view"));
-
-
-/***/ }),
-/* 41 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1879,6 +1857,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
+var default_pic_url = "/assets/default_profile.png";
 var bio_url = '/mock/bio.json';
 var ProfileView = /** @class */ (function (_super) {
     __extends(ProfileView, _super);
@@ -1925,6 +1904,28 @@ var ProfileView = /** @class */ (function (_super) {
     return ProfileView;
 }(React.Component));
 exports.ProfileView = ProfileView;
+
+
+/***/ }),
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var ReactDOM = __webpack_require__(9);
+var ProfileView_1 = __webpack_require__(31);
+ReactDOM.render(React.createElement(ProfileView_1.ProfileView, { member_id: member_id }), document.querySelector("profile-view"));
 
 
 /***/ })

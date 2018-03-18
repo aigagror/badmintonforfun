@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 46);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -72,7 +72,7 @@ module.exports = React;
 
 /***/ }),
 
-/***/ 44:
+/***/ 46:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80,13 +80,13 @@ module.exports = React;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(9);
-var Queue_1 = __webpack_require__(45);
+var Queue_1 = __webpack_require__(47);
 ReactDOM.render(React.createElement(Queue_1.Queue, null), document.querySelector("queue-view"));
 
 
 /***/ }),
 
-/***/ 45:
+/***/ 47:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

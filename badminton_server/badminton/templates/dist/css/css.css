@@ -739,7 +739,7 @@ html {
   box-sizing: inherit; }
 
 body {
-  font-family: Georgia, serif;
+  font-family: "Verdana", sans-serif;
   position: absolute;
   margin: 0;
   padding-bottom: 6rem;
@@ -807,7 +807,7 @@ p {
   font-size: 15vw; }
 
 .badminton-landing-text {
-  font-size: calc(20px + 2.5vw);
+  font-size: calc(30px + 1.5vw);
   font-weight: 10em;
   padding-left: 40px; }
 
@@ -950,7 +950,8 @@ tbody > tr:nth-child(odd) {
     pointer-events: auto; }
   .nav-list {
     margin-top: 0px;
-    padding-bottom: 5px; }
+    padding-bottom: 5px;
+    padding-left: 20px; }
   .nav-list > .nav-link {
     float: none;
     margin-left: 0px; }
@@ -1028,5 +1029,18 @@ button[type="submit"] {
 
 .member-list ~ a {
   text-decoration: None; }
+
+.tournament-card {
+  width: 15vw;
+  height: 15vw;
+  margin: 0 auto;
+  text-align: center;
+  background-color: gray; }
+
+.tournament-row {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-top: 5px;
+  width: 50%; }
 
 /*# sourceMappingURL=css.css.map*/

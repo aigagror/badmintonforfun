@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 46);
+/******/ 	return __webpack_require__(__webpack_require__.s = 48);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1891,7 +1891,9 @@ exports.Slider = Slider;
 /* 43 */,
 /* 44 */,
 /* 45 */,
-/* 46 */
+/* 46 */,
+/* 47 */,
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1899,12 +1901,12 @@ exports.Slider = Slider;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(9);
-var SettingsView_1 = __webpack_require__(47);
+var SettingsView_1 = __webpack_require__(49);
 ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document.querySelector("settings-view"));
 
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

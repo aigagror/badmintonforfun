@@ -1,7 +1,7 @@
 import * as React from "react";
 import axios from 'axios';
 
-declare var default_pic_url:string;
+const default_pic_url = "/assets/default_profile.png";
 
 const bio_url = '/mock/bio.json'
 

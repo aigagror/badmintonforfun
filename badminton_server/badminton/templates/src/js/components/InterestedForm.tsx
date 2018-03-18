@@ -2,16 +2,12 @@ import * as React from "react";
 import axios from 'axios';
 import { Popup } from '../common/Popup';
 
-export interface InterestedProps { 
-
-}
-
 const email_name = "email";
 const api_url = "/mock/interested.json";
 
-export class InterestedForm extends React.Component<InterestedProps, any> {
+export class InterestedForm extends React.Component<any, any> {
 
-	constructor(props: InterestedProps) {
+	constructor(props: any) {
 	    super(props);
 	    this.state = {
 

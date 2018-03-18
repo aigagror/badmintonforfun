@@ -18,16 +18,4 @@
 		"diplay_name": "Show Games",
 		"value": false
 	},
-	{
-		"type": "bool",
-		"name": "show_games2",
-		"diplay_name": "Show Games",
-		"value": true
-	},
-	{
-		"type": "bool",
-		"name": "show_games3",
-		"diplay_name": "Show Games",
-		"value": false
-	}
 ]
