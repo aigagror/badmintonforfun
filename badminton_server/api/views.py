@@ -9,16 +9,20 @@ def index(request):
     return render(request, 'index.html')
 
 def home(request):
-    announcements = get_announcements()
+    email = 'ezhuang2@illinois.edu'
 
-    profile = get_member('ezhuang2@illinois.edu')
+    announcements = get_announcements()
+    profile = get_member(email)
+
+    stats = get_stats(email)
 
     context = {
         'announcements': announcements,
         'profile': profile,
-        'stats': None,
+        'stats': stats,
         'matches': None,
     }
+
     return render(request, 'home.html', context)
 
 def elections(request):
