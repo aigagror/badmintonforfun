@@ -26,5 +26,21 @@ Didn't work lol
 {% else %}
 Didn't work lol
 {% endif %}
+
+<h1>Insert a campaign</h1>
+{% if insertResult and afterInserting%}
+    {{insertResult}}
+    {{afterInserting}}
+{% else %}
+Didn't work lol
+{% endif %}
+
+<h1>Edit a campaign</h1>
+{% if edit and afterEditing %}
+    {{edit}}
+    {{afterEditing}}
+{% else %}
+Didn't work lol
+{% endif %}
 </body>
 </html>

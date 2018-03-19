@@ -26,17 +26,35 @@ def home(request):
 
     return render(request, 'home.html', context)
 
+class Mini(object):
+    email = ""
+    pitch = ""
+    job = ""
+    def __init__(self, email, pitch, job):
+        self.email = email
+        self.pitch = pitch
+        self.job = job
+
 def elections(request):
     curr_campaigns = get__current_campaigns()
     campaign_json = get_campaign("apoddar3@illinois.edu", "Treasurer")
     no_campaign_json = get_campaign("apoddar3@illinois.edu", "President")
 
+    insert_one = start_campaign(Mini("ezhuang2@illinois.edu", "Hello I'm Eddie", "Treasurer"))
+    after_insert = get__current_campaigns()
+
+    edit_one = edit_campaign(Mini("ezhuang2@illinois.edu", "I've been edited - twice", "Treasurer"))
+    after_edit = get__current_campaigns()
     context = {
         'campaigns': curr_campaigns,
         'foundCampaign': campaign_json,
         'noCampaign': no_campaign_json,
-
+        'insertResult': insert_one,
+        'afterInserting': after_insert,
+        'edit': edit_one,
+        'afterEditing': after_edit
     }
+
     return render(request, 'elections.html', context)
 
 def settings(request):
