@@ -17,22 +17,26 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
+def dictfetchone(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    row = cursor.fetchone()
+    return dict(zip(columns, row))
+
 
 def get_announcements():
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM api_announcement ORDER BY date DESC;")
         results = dictfetchall(cursor)
-
-
     # result = Announcement.objects.raw('SELECT * FROM api_announcement ORDER BY date DESC;')
     return results
 
 
 def get_member(email):
-    result = Member.objects.get(email=email)
-    # with connection.cursor() as cursor:
-    #     cursor.execute('SELECT * FROM api_member WHERE email=\'{}\';'.format(email))
-    #     results = dictfetchall(cursor)
+    # result = Member.objects.get(email=email)
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT first_name, last_name FROM api_member, api_interested WHERE interested_ptr_id = email AND email=%s;', [email])
+        result = dictfetchone(cursor)
     return result
 
 def get_stats(email):
