@@ -1,0 +1,568 @@
+[
+{
+    "model": "api.interested",
+    "pk": "apoddar3@illinois.edu",
+    "fields": {
+        "first_name": "Agnivah",
+        "last_name": "Poddar",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "baobl2@illinois.edu",
+    "fields": {
+        "first_name": "Bao",
+        "last_name": "Lam",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "dhchen3@illinois.edu",
+    "fields": {
+        "first_name": "Denghang",
+        "last_name": "Chen",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "diwen2@illinois.edu",
+    "fields": {
+        "first_name": "Di",
+        "last_name": "When",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "donghao2@illinois.edu",
+    "fields": {
+        "first_name": "Donghao",
+        "last_name": "Shi",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "dusad2@illinois.edu",
+    "fields": {
+        "first_name": "Krishna",
+        "last_name": "Dusad",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "dwang47@illinois.edu",
+    "fields": {
+        "first_name": "Edward",
+        "last_name": "Wang",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "ezhuang2@illinois.edu",
+    "fields": {
+        "first_name": "Eddie",
+        "last_name": "Huang",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "harryr2@illinois.edu",
+    "fields": {
+        "first_name": "Harry",
+        "last_name": "Ren",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "jaemanp2@illinois.edu",
+    "fields": {
+        "first_name": "Jae",
+        "last_name": "Park",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "janec3@illinois.edu",
+    "fields": {
+        "first_name": "Jane",
+        "last_name": "C",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "jchu15@illinois.edu",
+    "fields": {
+        "first_name": "Jenny",
+        "last_name": "Chu",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "jiayih4@illinois.edu",
+    "fields": {
+        "first_name": "Jiayi",
+        "last_name": "Huang",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "joshuac6@illinois.edu",
+    "fields": {
+        "first_name": "Joshua",
+        "last_name": "Cheng",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "jyang98@illinois.edu",
+    "fields": {
+        "first_name": "Jun",
+        "last_name": "Yang",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "lan10@illinois.edu",
+    "fields": {
+        "first_name": "Gary",
+        "last_name": "Lan",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "lixiang2@illinois.edu",
+    "fields": {
+        "first_name": "LiXiang",
+        "last_name": "Dong",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "mithin@illinois.edu",
+    "fields": {
+        "first_name": "Mithin",
+        "last_name": "Nehrubabu",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "peiyuxu2@illinois.edu",
+    "fields": {
+        "first_name": "Perry",
+        "last_name": "Xu",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "srb2@illinois.edu",
+    "fields": {
+        "first_name": "Sarith",
+        "last_name": "B",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "sujayd2@illinois.edu",
+    "fields": {
+        "first_name": "Sujay",
+        "last_name": "Dasgupta",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "suryasn2@illinois.edu",
+    "fields": {
+        "first_name": "Surya",
+        "last_name": "Nair",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "tinag2@illinois.edu",
+    "fields": {
+        "first_name": "Tina",
+        "last_name": "Guo",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "tyou4@illinois.edu",
+    "fields": {
+        "first_name": "Tim",
+        "last_name": "You",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "yikeli2@illinois.edu",
+    "fields": {
+        "first_name": "Yike",
+        "last_name": "Li",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "yleung5@illinois.edu",
+    "fields": {
+        "first_name": "Hannah",
+        "last_name": "Leung",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "yzhao221@illinois.edu",
+    "fields": {
+        "first_name": "Yifan",
+        "last_name": "Zhao",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "zshen5@illinois.edu",
+    "fields": {
+        "first_name": "Zack",
+        "last_name": "Shen",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.member",
+    "pk": "apoddar3@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "baobl2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "dhchen3@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "diwen2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "donghao2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "dusad2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "dwang47@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "ezhuang2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "harryr2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "jaemanp2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "janec3@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "jchu15@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "jiayih4@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "joshuac6@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "jyang98@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "lan10@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "lixiang2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "mithin@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "peiyuxu2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "srb2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "sujayd2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "suryasn2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "tinag2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "tyou4@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "yikeli2@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "yleung5@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "yzhao221@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.member",
+    "pk": "zshen5@illinois.edu",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-19",
+        "queue": null
+    }
+},
+{
+    "model": "api.boardmember",
+    "pk": "ezhuang2@illinois.edu",
+    "fields": {
+        "job": "PRESIDENT"
+    }
+},
+{
+    "model": "api.boardmember",
+    "pk": "yleung5@illinois.edu",
+    "fields": {
+        "job": "OFFICER"
+    }
+},
+{
+    "model": "api.announcement",
+    "pk": 1,
+    "fields": {
+        "date": "2018-03-19",
+        "time": "14:46:39",
+        "title": "An Announcement",
+        "entry": "Foo"
+    }
+},
+{
+    "model": "api.announcement",
+    "pk": 2,
+    "fields": {
+        "date": "2018-03-19",
+        "time": "14:46:53",
+        "title": "Another Announcement",
+        "entry": "Baa"
+    }
+}
+]
