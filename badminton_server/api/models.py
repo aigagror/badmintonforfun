@@ -65,6 +65,9 @@ class Team(models.Model):
     memberA = models.ForeignKey(Member, related_name='memberA', on_delete=models.PROTECT)
     memberB = models.ForeignKey(Member, related_name='memberB', on_delete=models.SET_NULL, null=True, blank=True)
 
+    def __str__(self):
+        return '{} & {}'.format(self.memberA, self.memberB)
+
 class Match(models.Model):
     id = models.AutoField(primary_key=True)
     startDate = models.DateTimeField('date started')
@@ -75,13 +78,13 @@ class Match(models.Model):
     court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True, blank=True)
     tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True)
 
+    def __str__(self):
+        return '{} vs {}'.format(self.teamA, self.teamB)
+
 class FinishedMatch(Match):
     endDate = models.DateTimeField('date ended')
 
 class Announcement(models.Model):
-    class Meta:
-        unique_together = (('date', 'time'),)
-    date = models.DateField('date of announcement')
-    time = models.TimeField()
+    date = models.DateTimeField('date of announcement', primary_key=True)
     title = models.CharField(max_length=64)
     entry = models.CharField(max_length=500)
