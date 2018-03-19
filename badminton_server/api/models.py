@@ -79,6 +79,9 @@ class FinishedMatch(Match):
     endDate = models.DateTimeField('date ended')
 
 class Announcement(models.Model):
-    date = models.DateField('date of announcement', primary_key=True)
+    class Meta:
+        unique_together = (('date', 'time'),)
+    date = models.DateField('date of announcement')
+    time = models.TimeField()
     title = models.CharField(max_length=64)
     entry = models.CharField(max_length=500)
