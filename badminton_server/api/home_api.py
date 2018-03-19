@@ -29,17 +29,31 @@ def get_member(email):
 
 def get_stats(email):
     member = get_member(email)
-    if member is None:
-        return None
+    if len(member) == 0:
+        return {}
     total_matches = get_total_matches(email)
     total_wins = get_total_wins(email)
 
     return {'matches': total_matches, 'wins': total_wins}
 
-def get_total_matches(email):
+def get_matches(email):
     member = get_member(email)
     # TODO
-    return 0
+    with connection.cursor() as cursor:
+        query = '''
+        SELECT *
+        FROM api_match AS match, api_team AS team, api_finishedmatch AS finishedmatch 
+        WHERE (match.teamA_id = team.id OR match.teamB_id = team.id) AND (team.memberA_id = %s OR team.memberB_id = %s) 
+              AND match.id = finishedmatch.match_ptr_id
+        '''
+        cursor.execute(query, [email, email])
+        results = dictfetchall(cursor)
+
+    return results
+
+def get_total_matches(email):
+    results = get_matches(email)
+    return len(results)
 
 def get_total_wins(email):
     member = get_member(email)
