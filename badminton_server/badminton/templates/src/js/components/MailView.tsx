@@ -1,8 +1,10 @@
 import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import axios from 'axios';
+import {getResource, setResource} from '../common/LocalResourceResolver';
 
 const mail_list_url = '/mock/mail_lists.json'
+const mail_data_location = 'mailData';
 
 export class MailView extends React.Component<any, any> {
 
@@ -28,15 +30,14 @@ export class MailView extends React.Component<any, any> {
 					lists: res.data.lists,
 				})
 
-				const item = localStorage.getItem('mailData');
+				const item = getResource(this, mail_data_location);
 
 				if (item !== null) {
 					this.setData(JSON.parse(item));
 				}
 
 				window.setInterval(() => {
-					localStorage.setItem('mailData', 
-						JSON.stringify(this.scoopData()));
+					setResource(this, mail_data_location, JSON.stringify(this.scoopData()));
 				}, 5000);
 			})
 			.catch((res) => {

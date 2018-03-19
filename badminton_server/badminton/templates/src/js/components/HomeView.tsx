@@ -18,7 +18,10 @@ class GameView extends React.Component<any, any> {
 class StatView extends React.Component<any, any> {
 
 	render() {
-		return (<table className="stats-table">
+		return (
+		<div>
+		<h2>Most Recent Games</h2>
+		<table className="stats-table">
 			<thead className="row-3">
 			<tr><th className="col-3 col-es-6">Your Score</th><th className="col-3 col-es-6">My Score</th></tr>
 			</thead>
@@ -27,7 +30,8 @@ class StatView extends React.Component<any, any> {
 				return <GameView key={idx} my_score={game.my_score} their_score={game.their_score} />
 			}) }
 			</tbody>
-		</table>);
+		</table>
+		</div>);
 	}
 }
 
@@ -68,13 +72,6 @@ class AnnounceView extends React.Component<any, any> {
 	}
 }
 
-class BoardView extends React.Component<any, any> {
-
-	render() {
-		return <p>BoardView</p>;
-	}
-}
-
 export class HomeView extends React.Component<{}, any> {
 	constructor(props: any) {
 		super(props);
@@ -109,10 +106,11 @@ export class HomeView extends React.Component<{}, any> {
 
 		return (<div className="home-view">
 			<AnnounceView stats={this.state.stats} />
-			<div className="row-offset-1">
+			<div className="row-offset-2">
 	    	<StatView stats={this.state.stats} />
 	    	</div>
-	    	<div className="row-offset-1">
+	    	<div className="row-offset-2">
+	    	<h2>Profile</h2>
 	    	<ProfileView member_id={1} />
 	    	</div>
 	    	</div>);
