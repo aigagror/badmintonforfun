@@ -2,7 +2,7 @@ import * as React from "react";
 import {Slider} from "../common/Slider";
 import {Popup} from "../common/Popup";
 import axios from 'axios';
-import { HigherOrderComponent } from '../common/ComponentSubclasses';
+import { RegisterElectionView } from "./RegisterElection";
 
 const election_url = '/mock/election_happening.json';
 const election_not_url = '/mock/electionless.json';
@@ -31,17 +31,18 @@ class ElectionCandidate extends React.Component<any, any> {
 	render() {
 		return (<div>
 			<div className="row">
-			<div className="col-offset-3 col-1 row-2">
+			<div className="col-offset-2 col-1 row-2">
 			<input type="radio" name={this.props.role} id={""+this.props.person.id}
 				value={this.props.person.id} className="election-check"
 				defaultChecked={this.props.person.voted} />
 			</div>
+
 			<div className="col-8 row-2 election-label-div">
 			<label htmlFor={""+this.props.person.id} className="election-label">{this.props.person.name}</label>
 			</div>
 			</div>
 
-			<div className="row col-offset-3">
+			<div className="row col-offset-2">
 			<p>Pitch: {this.props.person.pitch}</p>
 			</div>
 			</div>
@@ -57,7 +58,7 @@ class ElectionRole extends React.Component<any, any> {
 	render() {
 		return (<div>
 			<div className="row">
-			<div className="col-offset-3 col-3">
+			<div className="col-offset-2 col-3">
 			<h3>{format(this.props.role)}</h3>
 			</div>
 			</div>
@@ -183,7 +184,9 @@ export class ElectionView extends React.Component<{}, any> {
 	}
 
 	render() {
-	    return (<div className="election-view">
+	    return (
+	    	<div className="grid row">
+	    	<div className="col-offset-2 col-7">
 	    	<h2>Toggle Election Happening</h2>
 	    	<Slider change={this.switch} />
     		{
@@ -191,6 +194,12 @@ export class ElectionView extends React.Component<{}, any> {
     			<p> Loading </p> :
     			this.state.election_data
     		}
+    		</div>
+
+    		<div className="col-2">
+    		<RegisterElectionView />
+    		</div>
+
 	    	</div>);
 	}
 }

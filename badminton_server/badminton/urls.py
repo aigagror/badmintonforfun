@@ -28,5 +28,5 @@ urlpatterns = [
 	# All templates are in the first level directory
 	path('<str:template>', template_server),
 	# Additional rule for the special index.html
-	re_path(r'', template_server),
+	re_path(r'', template_server, name='index'),
 ]

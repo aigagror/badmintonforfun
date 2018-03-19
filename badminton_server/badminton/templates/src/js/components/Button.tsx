@@ -17,6 +17,6 @@ export class Button extends React.Component<ButtonProps, {}> {
 	}
 
 	render() {
-	    return <button onClick={this.handleClick} className="big-button faded">{this.props.text}</button>;
+	    return <button onClick={this.handleClick} className="login-button">{this.props.text}</button>;
 	}
 }

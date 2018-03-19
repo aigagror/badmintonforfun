@@ -7,6 +7,10 @@ const responseGoogle = (response: any) => {
   console.log(response);
 }
 
+const failureGoogle = (response: any) => {
+  
+}
+
 ReactDOM.render(
     <GoogleLogin
 	    clientId="613791656516-s7k2pbsbosa0c83o8omr0m1p1gp9q8vh.apps.googleusercontent.com"
@@ -14,6 +18,7 @@ ReactDOM.render(
 	    onSuccess={responseGoogle}
 	    onFailure={responseGoogle}
 	    disabled={false}
+      className="login-button"
   	/>,
     document.querySelector("member-button")
 );
