@@ -51,7 +51,11 @@ class Resource(object):
 
 
 GLOBAL_RESOURCES = {
-	'react': Resource('./js/node/react/umd/react.development.js', None, False),
-	'react-dom': Resource('./js/node/react-dom/umd/react-dom.development.js', None, False),
+	'react': Resource('https://unpkg.com/react@16/umd/react.development.js', 
+			"sha384-UPapAe7NrpqKvkXZb2NLIqYfbN6v7JdoqAa+aC9PZgLyNtSnT2JR2wZOe6Rimrp9", 
+			True),
+	'react-dom': Resource('https://unpkg.com/react-dom@16.2.0/umd/react-dom.development.js', 
+			"sha384-cOIvn0O161vk0z63S/3qFzS7ofe2V/LJ+4/iFQyQrRuAbSr56ul863bW6b9AoNPZ", 
+			False),
 	'google-platform': Resource("https://apis.google.com/js/api:client.js", None, True),
 }

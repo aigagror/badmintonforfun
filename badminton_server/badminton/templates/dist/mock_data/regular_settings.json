@@ -2,7 +2,7 @@
 	{
 		"type": "bool",
 		"name": "show_games",
-		"display_name": "Show Games",
+		"display_name": "Show Games on Profile",
 		"value": false
 	},
 	{
@@ -26,9 +26,15 @@
 		"value": "c"
 	},
 	{
+		"type": "text",
+		"name": "display_name",
+		"display_name": "Name",
+		"value": "Lorem Ipsum"
+	},
+	{
 		"type": "bool",
-		"name": "show_games1",
-		"display_name": "Show Games",
+		"name": "get_emails",
+		"display_name": "Receive Emails",
 		"value": true
 	}
 ]

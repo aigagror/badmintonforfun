@@ -1,6 +1,7 @@
 import * as React from "react";
 import axios from 'axios';
 import { Popup } from '../common/Popup';
+import { GoogleAuthButton } from './GoogleAuthButton';
 
 const email_name = "email";
 const api_url = "/mock/interested.json";
@@ -16,8 +17,9 @@ export class InterestedForm extends React.Component<any, any> {
 	    this.resetState = this.resetState.bind(this);
 	}
 
-	handleSubmit(event: any) {
-		event.preventDefault();
+	handleSubmit(response: any) {
+		console.log(response);
+		return;/*
 		axios.get(api_url, {
 			params: {
 			  email: event.target[email_name].value
@@ -34,7 +36,7 @@ export class InterestedForm extends React.Component<any, any> {
 				popup: <Popup title="Sorry!" message="There was an error on our end, please check back soon"
 					callback={this.resetState}/>,
 			});
-		});
+		});*/
 	}
 
 	resetState() {
@@ -46,6 +48,18 @@ export class InterestedForm extends React.Component<any, any> {
 
 	render() {
 	    return (<>
+	    <div className="grid row row-offset-2">
+	    	<div className="col-offset-4 col-6">
+		    	<GoogleAuthButton 
+		    		onSuccess={this.handleSubmit}
+		    		onFailure={this.handleSubmit} 
+		    	/>
+		    </div>
+	    </div>
+	    { this.state.popup !== null && this.state.popup }
+	    </>);
+
+	    /*(<>
 	    <form onSubmit={this.handleSubmit}>
 	    <div className="grid row-offset-2">
 	    <div className="row">
@@ -65,6 +79,6 @@ export class InterestedForm extends React.Component<any, any> {
         </div>
 	    </form>
 	    { this.state.popup !== null && this.state.popup }
-	    </>);
+	    </>);*/
 	}
 }

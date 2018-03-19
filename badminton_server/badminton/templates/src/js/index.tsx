@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { GoogleLogin } from 'react-google-login';
+import { GoogleAuthButton } from './components/GoogleAuthButton';
 import { Button } from "./components/Button";
 
 const responseGoogle = (response: any) => {
@@ -12,14 +12,10 @@ const failureGoogle = (response: any) => {
 }
 
 ReactDOM.render(
-    <GoogleLogin
-	    clientId="613791656516-s7k2pbsbosa0c83o8omr0m1p1gp9q8vh.apps.googleusercontent.com"
-	    buttonText="Login"
-	    onSuccess={responseGoogle}
-	    onFailure={responseGoogle}
-	    disabled={false}
-      className="login-button"
-  	/>,
+    <GoogleAuthButton 
+      onSuccess={responseGoogle}
+      onFailure={failureGoogle}
+     />,
     document.querySelector("member-button")
 );
 

@@ -44,12 +44,13 @@ Website Checklist
 		<li class="nav-link"> <a href="./tournament.html">Tournament </a> </li>
 		<li class="nav-link"> <a href="./mail.html">Mail </a> </li>
 		<li class="nav-link"> <a href="./settings.html">Settings </a> </li>
+		<li class="nav-link"> <a href="/api/logout">Settings </a> </li>
 	</ul>
 </nav>
 </div>
 
 <script type="text/javascript">
-
+/* Keeps this in vanilla to avoid forcing react to load before nav is ready */
 function toggleClass(el, className) {
 	if (el.classList) {
 	  el.classList.toggle(className);
@@ -66,10 +67,9 @@ function toggleClass(el, className) {
 	}
 }
 
-function toggleMobile(element) {
+function toggleMobile() {
 	const reponsive_name = 'responsive';
 	toggleClass(document.querySelector("nav"), reponsive_name);
 }
-
 
 </script>

@@ -19,7 +19,7 @@ register = template.Library()
 # That means that we have a lot of repeated code
 # Hopefully they don't change how scripts/css are included :D
 script_template = Template('<script src="{{ script_name }}" type="text/javascript"></script>')
-script_checksum_template = Template("<script src='{{ script_name }}', checksum='{{ checksum }}'"
+script_checksum_template = Template("<script src='{{ script_name }}', integrity='{{ checksum }}'"
 "crossorigin='anonymous' type='text/javascript'></script>")
 script_anonymous_template = Template("<script src='{{ script_name }}' crossorigin='anonymous' type='text/javascript'></script>")
 css_template = Template('<link rel="stylesheet" type="text/css" href="{{ stylesheet }}">')

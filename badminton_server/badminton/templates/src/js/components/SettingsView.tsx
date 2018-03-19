@@ -29,6 +29,13 @@ class BoolSetting extends React.Component<any, any> {
 	}
 }
 
+class TextSetting extends React.Component<any, any> {
+
+	render() {
+		return <input type="text" name={this.props.data.name} defaultValue={this.props.data.value} />
+	}
+}
+
 class StandardSettings extends React.Component<any, any> {
 
 	constructor(props: any) {
@@ -42,6 +49,8 @@ class StandardSettings extends React.Component<any, any> {
 			return <BoolSetting data={setting} key={key}/>
 		} else if (setting.type === "option") {
 			return <OptionSetting data={setting} key={key}/>
+		} else if (setting.type === "text") {
+			return <TextSetting data={setting} key={key} />
 		}
 	}
 
