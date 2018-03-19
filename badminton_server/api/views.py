@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 from .home_api import *
+from .election_api import *
 
 def index(request):
     return render(request, 'index.html')
@@ -26,8 +27,17 @@ def home(request):
     return render(request, 'home.html', context)
 
 def elections(request):
+    curr_campaigns = get__current_campaigns()
+    campaign_json = get_campaign("apoddar3@illinois.edu", "Treasurer")
+    no_campaign_json = get_campaign("apoddar3@illinois.edu", "President")
 
-    return render(request, 'elections.html')
+    context = {
+        'campaigns': curr_campaigns,
+        'foundCampaign': campaign_json,
+        'noCampaign': no_campaign_json,
+
+    }
+    return render(request, 'elections.html', context)
 
 def settings(request):
     return render(request, 'settings.html')

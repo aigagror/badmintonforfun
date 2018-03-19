@@ -10,8 +10,7 @@ def start_campaign(campaign):
     :return: 200 if successful, 400 if not
     """
 
-    today = str(datetime.now(pytz.utc).date())
-    curr_election = Election.objects.get(date__lte=today, endDate__gte=today)
+    curr_election = get_current_election()
     if curr_election:
         c = Campaign.objects.create(election=curr_election, campaigner=campaign.email,
                                 job=campaign.job, pitch=campaign.pitch)
@@ -26,12 +25,12 @@ def get_campaign(email, job):
     :return: campaign information if campaign exists
     """
 
-    campaign = Campaign.objects.filter(campaigner=email, job=job)
-
-    if not campaign:
-        return json.dumps({'code': 400, 'message': 'There is no campaign.'})
-    return json.dumps({'code': 200, 'election': campaign.election, 'job': campaign.job,
+    try:
+        campaign = Campaign.objects.get(campaigner=email, job=job)
+        return json.dumps({'code': 200, 'election': str(campaign.election), 'job': campaign.job,
                        'pitch': campaign.pitch, 'message': 'OK'})
+    except Campaign.DoesNotExist:
+        return json.dumps({'code': 400, 'message': 'There is no campaign.'})
 
 def edit_campaign(campaign):
     """
@@ -48,5 +47,21 @@ def edit_campaign(campaign):
         # make a more helpful message later
         return json.dumps({'code': 400, 'message': 'There is no campaign'})
 
-def get_all_campaigns():
-    
+def get__current_campaigns():
+
+    results = Campaign.objects.filter(election=get_current_election())
+    if results:
+        string = '{"code": 200, "message": "OK", "campaigns": {'
+        for c in results:
+            string += '"email": ' + '"' + str(c.campaigner) + '",' + '"job": ' + '"' + c.job + '",' + '"pitch": ' + '"' \
+                        + c.pitch + '",' + '"election": ' + '"' + str(c.election) + '"}}'
+        print(string)
+        return json.dumps(json.loads(string))
+    else:
+        return json.dumps({'code': 400, 'message': 'There are no current campaigns."'})
+
+def get_current_election():
+
+    today = str(datetime.now(pytz.utc).date())
+    curr_election = Election.objects.get(date__lte=today, endDate__gte=today)
+    return curr_election

@@ -41,13 +41,15 @@ class Member(Interested):
     dateJoined = models.DateField('date joined')
     queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
 
-
 class BoardMember(Member):
     job = models.CharField(max_length=64, choices=JOBS)
 
 class Election(models.Model):
     date = models.DateField('date of the election', primary_key=True)
     endDate = models.DateField('election end date', null=True, blank=True)
+
+    def __str__(self):
+        return '{} to {}'.format(self.date, self.endDate)
 
 class Votes(models.Model):
     votee = models.ForeignKey(Member, related_name='votee', on_delete=models.SET_NULL, null=True)
