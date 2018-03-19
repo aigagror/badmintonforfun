@@ -23,6 +23,7 @@ def get_member(email):
     # result = Member.objects.get(email=email)
     with connection.cursor() as cursor:
         cursor.execute('SELECT first_name, last_name FROM api_member, api_interested WHERE interested_ptr_id = email AND email=%s;', [email])
+
         result = dictfetchone(cursor)
     return result
 
