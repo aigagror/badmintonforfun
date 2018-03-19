@@ -47,6 +47,7 @@ class BoardMember(Member):
 
 class Election(models.Model):
     date = models.DateField('date of the election', primary_key=True)
+    endDate = models.DateField('election end date', null=True, blank=True)
 
 class Votes(models.Model):
     votee = models.ForeignKey(Member, related_name='votee', on_delete=models.SET_NULL, null=True)

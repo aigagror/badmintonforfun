@@ -22,6 +22,7 @@ def home(request):
     return render(request, 'home.html', context)
 
 def elections(request):
+
     return render(request, 'elections.html')
 
 def settings(request):
