@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 39);
+/******/ 	return __webpack_require__(__webpack_require__.s = 40);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1914,7 +1914,8 @@ exports.ProfileView = ProfileView;
 /* 36 */,
 /* 37 */,
 /* 38 */,
-/* 39 */
+/* 39 */,
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1922,12 +1923,12 @@ exports.ProfileView = ProfileView;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(9);
-var HomeView_1 = __webpack_require__(40);
+var HomeView_1 = __webpack_require__(41);
 ReactDOM.render(React.createElement(HomeView_1.HomeView, null), document.querySelector("home-view"));
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1966,14 +1967,16 @@ var StatView = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     StatView.prototype.render = function () {
-        return (React.createElement("table", { className: "stats-table" },
-            React.createElement("thead", { className: "row-3" },
-                React.createElement("tr", null,
-                    React.createElement("th", { className: "col-3 col-es-6" }, "Your Score"),
-                    React.createElement("th", { className: "col-3 col-es-6" }, "My Score"))),
-            React.createElement("tbody", null, this.props.stats.games.map(function (game, idx) {
-                return React.createElement(GameView, { key: idx, my_score: game.my_score, their_score: game.their_score });
-            }))));
+        return (React.createElement("div", null,
+            React.createElement("h2", null, "Most Recent Games"),
+            React.createElement("table", { className: "stats-table" },
+                React.createElement("thead", { className: "row-3" },
+                    React.createElement("tr", null,
+                        React.createElement("th", { className: "col-3 col-es-6" }, "Your Score"),
+                        React.createElement("th", { className: "col-3 col-es-6" }, "My Score"))),
+                React.createElement("tbody", null, this.props.stats.games.map(function (game, idx) {
+                    return React.createElement(GameView, { key: idx, my_score: game.my_score, their_score: game.their_score });
+                })))));
     };
     return StatView;
 }(React.Component));
@@ -2010,16 +2013,6 @@ var AnnounceView = /** @class */ (function (_super) {
     };
     return AnnounceView;
 }(React.Component));
-var BoardView = /** @class */ (function (_super) {
-    __extends(BoardView, _super);
-    function BoardView() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BoardView.prototype.render = function () {
-        return React.createElement("p", null, "BoardView");
-    };
-    return BoardView;
-}(React.Component));
 var HomeView = /** @class */ (function (_super) {
     __extends(HomeView, _super);
     function HomeView(props) {
@@ -2052,9 +2045,10 @@ var HomeView = /** @class */ (function (_super) {
         }
         return (React.createElement("div", { className: "home-view" },
             React.createElement(AnnounceView, { stats: this.state.stats }),
-            React.createElement("div", { className: "row-offset-1" },
+            React.createElement("div", { className: "row-offset-2" },
                 React.createElement(StatView, { stats: this.state.stats })),
-            React.createElement("div", { className: "row-offset-1" },
+            React.createElement("div", { className: "row-offset-2" },
+                React.createElement("h2", null, "Profile"),
                 React.createElement(ProfileView_1.ProfileView, { member_id: 1 }))));
     };
     return HomeView;

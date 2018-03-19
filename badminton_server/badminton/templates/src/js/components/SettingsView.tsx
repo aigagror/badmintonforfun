@@ -88,11 +88,9 @@ export class SettingsView extends React.Component<any, any> {
 
 	performRequest() {
 
-		//... Regular Stuff
 		const regular = this.state.regular;
 
-		//... Board Stuff
-		if(this.state.regular) {
+		if (this.state.regular) {
 			axios.get(reg_url)
 			.then((res) => {
 				this.setState({

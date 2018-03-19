@@ -85,7 +85,9 @@ var Button_1 = __webpack_require__(34);
 var responseGoogle = function (response) {
     console.log(response);
 };
-ReactDOM.render(React.createElement(react_google_login_1.GoogleLogin, { clientId: "613791656516-s7k2pbsbosa0c83o8omr0m1p1gp9q8vh.apps.googleusercontent.com", buttonText: "Login", onSuccess: responseGoogle, onFailure: responseGoogle, disabled: false }), document.querySelector("member-button"));
+var failureGoogle = function (response) {
+};
+ReactDOM.render(React.createElement(react_google_login_1.GoogleLogin, { clientId: "613791656516-s7k2pbsbosa0c83o8omr0m1p1gp9q8vh.apps.googleusercontent.com", buttonText: "Login", onSuccess: responseGoogle, onFailure: responseGoogle, disabled: false, className: "login-button" }), document.querySelector("member-button"));
 ReactDOM.render(React.createElement(Button_1.Button, { text: "Interested", href: "./interested.html" }), document.querySelector("interested-button"));
 
 
@@ -126,7 +128,7 @@ var Button = /** @class */ (function (_super) {
         document.location.href = this.props.href;
     };
     Button.prototype.render = function () {
-        return React.createElement("button", { onClick: this.handleClick, className: "big-button faded" }, this.props.text);
+        return React.createElement("button", { onClick: this.handleClick, className: "login-button" }, this.props.text);
     };
     return Button;
 }(React.Component));

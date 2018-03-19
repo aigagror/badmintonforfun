@@ -2,20 +2,33 @@
 	{
 		"type": "bool",
 		"name": "show_games",
-		"diplay_name": "Show Games",
+		"display_name": "Show Games",
 		"value": false
 	},
 	{
-		"type": "select",
+		"type": "option",
 		"name": "abc",
-		"diplay_name": "Show Games",
-		"options": ["a", "a", "a"],
-		"value": false
-	}
+		"display_name": "Show Games",
+		"options": [
+			{
+				"name": "a",
+				"value": "a"
+			},
+			{
+				"name": "c",
+				"value": "c"
+			},
+			{
+				"name": "d",
+				"value": "d"
+			}
+		],
+		"value": "c"
+	},
 	{
 		"type": "bool",
 		"name": "show_games1",
-		"diplay_name": "Show Games",
-		"value": false
-	},
+		"display_name": "Show Games",
+		"value": true
+	}
 ]

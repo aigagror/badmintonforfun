@@ -32,9 +32,12 @@ class ElectionCandidate extends React.Component<any, any> {
 		return (<div>
 			<div className="row">
 			<div className="col-offset-2 col-1 row-2">
+			<label className="radio-container">
 			<input type="radio" name={this.props.role} id={""+this.props.person.id}
 				value={this.props.person.id} className="election-check"
 				defaultChecked={this.props.person.voted} />
+			<span className="radio-checkmark"></span>
+			</label>
 			</div>
 
 			<div className="col-8 row-2 election-label-div">
@@ -114,7 +117,7 @@ class ElectionUp extends React.Component<any, any> {
 			})
 		}
 		<div className="row row-offset-2">
-		<button type="submit" className="col-6 col-offset-4 row-2 election-submit">Submit Votes</button>
+		<button type="submit" className="col-7 col-offset-2 row-2 election-submit">Submit Votes</button>
 		</div>
 		</form>
 		{ this.state.popup !== null && this.state.popup }
@@ -152,15 +155,19 @@ export class ElectionView extends React.Component<{}, any> {
 				const status = res.data.status;
 				var pack;
 				var up;
+				var roles = null;
 				if (status) {
 					pack = <ElectionUp order={res.data.order} campaigns={res.data.campaigns} />;
+					roles = Object.keys(res.data.campaigns).sort();
 					up = true;
 				} else {
 					pack = <ElectionDown message={res.data.message} />;
 					up = false;
 				}
+
 				_this_ref.setState({
 					election_data: pack,
+					roles: roles,
 					election: LoadingState.Loaded,
 					up: up
 				})
@@ -186,18 +193,18 @@ export class ElectionView extends React.Component<{}, any> {
 	render() {
 	    return (
 	    	<div className="grid row">
-	    	<div className="col-offset-2 col-7">
+	    	<div className="col-offset-2 col-8">
 	    	<h2>Toggle Election Happening</h2>
-	    	<Slider change={this.switch} />
+	    	<Slider change={this.switch} checked={false}/>
     		{
     			this.state.election === LoadingState.Loading ?
     			<p> Loading </p> :
     			this.state.election_data
     		}
-    		</div>
 
-    		<div className="col-2">
-    		<RegisterElectionView />
+    		<div className="row-offset-2 col-offset-2 col-12">
+    		{ this.state.roles && <RegisterElectionView roles={this.state.roles}/> }
+    		</div>
     		</div>
 
 	    	</div>);

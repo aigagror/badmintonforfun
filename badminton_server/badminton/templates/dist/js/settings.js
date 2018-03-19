@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 48);
+/******/ 	return __webpack_require__(__webpack_require__.s = 50);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1860,14 +1860,22 @@ var Slider = /** @class */ (function (_super) {
     function Slider(props) {
         var _this = _super.call(this, props) || this;
         _this.onChange = _this.onChange.bind(_this);
+        _this.selected = !!_this.props.checked;
         return _this;
     }
+    Slider.prototype.componentDidMount = function () {
+        if (this.selected) {
+            this.inputElem.checked = true;
+        }
+    };
     Slider.prototype.onChange = function (event) {
+        this.selected = !this.selected;
         this.props.change(event);
     };
     Slider.prototype.render = function () {
+        var _this = this;
         return (React.createElement("label", { className: "switch" },
-            React.createElement("input", { type: "checkbox", onChange: this.onChange }),
+            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: function (input) { return _this.inputElem = input; } }),
             React.createElement("span", { className: "slider round" })));
     };
     return Slider;
@@ -1893,7 +1901,9 @@ exports.Slider = Slider;
 /* 45 */,
 /* 46 */,
 /* 47 */,
-/* 48 */
+/* 48 */,
+/* 49 */,
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1901,12 +1911,12 @@ exports.Slider = Slider;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(9);
-var SettingsView_1 = __webpack_require__(49);
+var SettingsView_1 = __webpack_require__(51);
 ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document.querySelector("settings-view"));
 
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1932,13 +1942,51 @@ var LoadingState;
 })(LoadingState || (LoadingState = {}));
 var reg_url = '/mock/regular_settings.json';
 var member_url = '/mock/board_settings.json';
-var StandardSettings = /** @class */ (function (_super) {
-    __extends(StandardSettings, _super);
-    function StandardSettings() {
+var OptionSetting = /** @class */ (function (_super) {
+    __extends(OptionSetting, _super);
+    function OptionSetting() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    OptionSetting.prototype.render = function () {
+        return React.createElement("select", { name: this.props.data.name, defaultValue: this.props.data.value }, this.props.data.options.map(function (option, idx) {
+            return React.createElement("option", { value: option.value, key: idx }, option.name);
+        }));
+    };
+    return OptionSetting;
+}(React.Component));
+var BoolSetting = /** @class */ (function (_super) {
+    __extends(BoolSetting, _super);
+    function BoolSetting() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    BoolSetting.prototype.render = function () {
+        return React.createElement(Slider_1.Slider, { change: function () { }, checked: this.props.data.value });
+    };
+    return BoolSetting;
+}(React.Component));
+var StandardSettings = /** @class */ (function (_super) {
+    __extends(StandardSettings, _super);
+    function StandardSettings(props) {
+        var _this = _super.call(this, props) || this;
+        _this.decideComponent = _this.decideComponent.bind(_this);
+        return _this;
+    }
+    StandardSettings.prototype.decideComponent = function (setting, key) {
+        if (setting.type === "bool") {
+            return React.createElement(BoolSetting, { data: setting, key: key });
+        }
+        else if (setting.type === "option") {
+            return React.createElement(OptionSetting, { data: setting, key: key });
+        }
+    };
     StandardSettings.prototype.render = function () {
-        return React.createElement("p", null, "Standard");
+        var _this = this;
+        return React.createElement("div", { className: "grid" }, this.props.data.map(function (setting, idx) {
+            return React.createElement("div", { className: "row", key: idx },
+                React.createElement("div", { className: "col-6" },
+                    React.createElement("h2", null, setting.display_name)),
+                React.createElement("div", { className: "col-6" }, _this.decideComponent(setting, idx)));
+        }));
     };
     return StandardSettings;
 }(React.Component));
@@ -1967,38 +2015,33 @@ var SettingsView = /** @class */ (function (_super) {
     }
     SettingsView.prototype.performRequest = function () {
         var _this = this;
-        //... Regular Stuff
         var regular = this.state.regular;
-        //... Board Stuff
         if (this.state.regular) {
             axios_1.default.get(reg_url)
                 .then(function (res) {
                 _this.setState({
                     loading: false,
                     regular: !regular,
-                    regular_settings: React.createElement(StandardSettings, null)
+                    regular_settings: React.createElement(StandardSettings, { data: res.data }),
+                    board_settings: null
                 });
             })
                 .catch(function (res) {
             });
         }
         else {
-            axios_1.default.get(reg_url)
-                .then(function (res) {
-                _this.setState({
-                    loading: false,
-                    regular: !regular,
-                    regular_settings: React.createElement(StandardSettings, null)
-                });
-            })
-                .catch(function (res) {
-            });
             axios_1.default.get(member_url)
-                .then(function (res) {
-                _this.setState({
-                    loading: false,
-                    regular: !regular,
-                    board_settings: React.createElement(BoardSettings, null)
+                .then(function (res1) {
+                axios_1.default.get(reg_url)
+                    .then(function (res) {
+                    _this.setState({
+                        loading: false,
+                        regular: !regular,
+                        regular_settings: React.createElement(StandardSettings, { data: res.data }),
+                        board_settings: React.createElement(BoardSettings, { data: res1.data })
+                    });
+                })
+                    .catch(function (res) {
                 });
             })
                 .catch(function (res) {

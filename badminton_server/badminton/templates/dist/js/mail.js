@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 45);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1852,7 +1852,8 @@ module.exports = function spread(callback) {
 /* 41 */,
 /* 42 */,
 /* 43 */,
-/* 44 */
+/* 44 */,
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1860,12 +1861,12 @@ module.exports = function spread(callback) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(9);
-var MailView_1 = __webpack_require__(45);
+var MailView_1 = __webpack_require__(46);
 ReactDOM.render(React.createElement(MailView_1.MailView, null), document.querySelector("mail-form"));
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1883,7 +1884,9 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
+var LocalResourceResolver_1 = __webpack_require__(47);
 var mail_list_url = '/mock/mail_lists.json';
+var mail_data_location = 'mailData';
 var MailView = /** @class */ (function (_super) {
     __extends(MailView, _super);
     function MailView(props) {
@@ -1892,6 +1895,8 @@ var MailView = /** @class */ (function (_super) {
             lists: null,
         };
         _this.sendMail = _this.sendMail.bind(_this);
+        _this.scoopData = _this.scoopData.bind(_this);
+        _this.setData = _this.setData.bind(_this);
         return _this;
     }
     MailView.prototype.componentDidMount = function () {
@@ -1901,35 +1906,86 @@ var MailView = /** @class */ (function (_super) {
             _this.setState({
                 lists: res.data.lists,
             });
+            var item = LocalResourceResolver_1.getResource(_this, mail_data_location);
+            if (item !== null) {
+                _this.setData(JSON.parse(item));
+            }
+            window.setInterval(function () {
+                LocalResourceResolver_1.setResource(_this, mail_data_location, JSON.stringify(_this.scoopData()));
+            }, 5000);
         })
             .catch(function (res) {
         });
     };
+    MailView.prototype.scoopData = function () {
+        var data = {
+            list: this.mailingList.value,
+            title: this.titleElem.value,
+            body: this.bodyElem.value
+        };
+        return data;
+    };
+    MailView.prototype.setData = function (data) {
+        this.mailingList.value = data.list;
+        this.titleElem.value = data.title;
+        this.bodyElem.value = data.body;
+    };
     MailView.prototype.sendMail = function (event) {
         event.preventDefault();
-        console.log("Pressed!");
+        var data = this.scoopData();
+        console.log(data);
     };
     MailView.prototype.render = function () {
+        var _this = this;
         if (this.state.lists === null) {
             return React.createElement("p", null, "Loading");
         }
         /* We don't want this to be a form so that we can type <return>
             Freely */
         return (React.createElement("div", { className: "mail-view grid" },
-            React.createElement("div", { className: "row" },
-                React.createElement("select", { id: "mailId" }, this.state.lists.map(function (list, idx) {
-                    return React.createElement("option", { value: list.key }, list.name);
-                }))),
-            React.createElement("div", { className: "row" },
-                React.createElement("input", { type: "text", value: "", placeholder: "title" })),
-            React.createElement("div", { className: "row" },
-                React.createElement("textarea", { placeholder: "body" })),
-            React.createElement("div", { className: "row" },
-                React.createElement("button", { type: "submit", onClick: this.sendMail }, "Submit"))));
+            React.createElement("div", { className: "row row-offset-1" },
+                React.createElement("div", { className: "col-6" },
+                    React.createElement("select", { id: "mailId", ref: function (input) { _this.mailingList = input; } }, this.state.lists.map(function (list, idx) {
+                        return React.createElement("option", { value: list.key, key: idx }, list.name);
+                    })))),
+            React.createElement("div", { className: "row row-offset-1" },
+                React.createElement("div", { className: "col-8" },
+                    React.createElement("input", { type: "text", placeholder: "Title", ref: function (input) { _this.titleElem = input; }, className: "mail-title" }))),
+            React.createElement("div", { className: "row row-offset-1" },
+                React.createElement("div", { className: "col-12" },
+                    React.createElement("textarea", { placeholder: "Body", ref: function (input) { _this.bodyElem = input; }, className: "mail-body" }))),
+            React.createElement("div", { className: "row row-offset-1" },
+                React.createElement("div", { className: "col-4" },
+                    React.createElement("button", { type: "submit", onClick: this.sendMail }, "Submit")))));
     };
     return MailView;
 }(React.Component));
 exports.MailView = MailView;
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var obfuscationMappings = {
+    'MailView': 'ysjiUtKPV7',
+};
+function getResource(instance, arg) {
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
+    return localStorage.getItem(arg + obf);
+    ;
+}
+exports.getResource = getResource;
+function setResource(instance, arg, value) {
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
+    localStorage.setItem(arg + obf, value);
+}
+exports.setResource = setResource;
 
 
 /***/ })
