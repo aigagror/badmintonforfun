@@ -60,11 +60,11 @@ class StandardSettings extends React.Component<any, any> {
 			this.props.data.map((setting: any, idx: number) => {
 				return <div className="row" key={idx}>
 
-				<div className="col-6">
+				<div className="col-6 col-es-12">
 				<h2>{setting.display_name}</h2>
 				</div>
 
-				<div className="col-6">
+				<div className="col-6 col-es-12">
 					{this.decideComponent(setting, idx)}
 				</div>
 				</div>

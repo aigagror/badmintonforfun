@@ -25,7 +25,9 @@ export class RegisterElectionView extends React.Component<any, any> {
 				</button>
 			</div>
 		} else {
-			return <div>
+			return <div className="row-offset-2 register-div">
+
+			<h3>Register Election</h3>
 			<textarea placeholder="Your pitch goes here...">
 			</textarea>
 

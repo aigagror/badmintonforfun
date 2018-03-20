@@ -1,0 +1,87 @@
+/* Works like the <option/> tag */
+.select-label {
+  background: #f1f1f1;
+  color: black;
+  display: block;
+  padding: 0.5em;
+  cursor: pointer;
+}
+
+.select-toggle {
+
+}
+/* Works like the <select/> tag */
+.select {
+  opacity: 1;
+}
+
+.select-hidden {
+  opacity:0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.select-arrow {
+  border-left: .3em solid transparent;
+  border-right: .3em solid transparent;
+  border-top: .6em solid black;
+  display: inline-block;
+  line-height: 0;
+  right: 20px;
+  position: absolute;
+}
+
+.select-div {
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.inner-select-div {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: -20px; /* Increase/Decrease this value for cross-browser compatibility */
+  overflow-y: auto;
+}
+
+.select-wrapper-div {
+  position:relative;
+}
+
+/* Checked properties */
+
+.select-check-toggle:checked ~ .select-toggle {
+  margin-bottom: auto;
+}
+
+.select-check-toggle:checked ~ .select-toggle >  .select-arrow {
+  right: 20px;
+}
+
+.select-check-toggle:checked ~ .select-div {
+  display: auto;
+  margin-bottom: -80px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 80px;
+}
+
+.select-check-toggle:checked ~ .select-div {
+  display: auto;
+  margin-bottom: -80px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 80px;
+}
+
+.select-check-toggle:checked ~ .select-div label:hover {
+  background-color: #a4a3a3;
+}

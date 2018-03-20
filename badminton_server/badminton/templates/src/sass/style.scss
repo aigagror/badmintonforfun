@@ -32,7 +32,7 @@ p {
   // Don't stick them too close
 	line-height: 1.15;
 	text-align: auto;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .badminton-landing-icon {
@@ -43,107 +43,6 @@ p {
 	font-size: calc(30px + 1.5vw);; 
 	font-weight: 10em; 
 	padding-left:40px;
-}
-
- /* The switch - the box around the slider */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {display:none;}
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-$popup-height: 400px;
-$popup-width: 400px;
-
-.popup-div {
-	top: calc((100vh - #{$popup-height}) / 2);
-  left: calc((100vw - #{$popup-width}) / 2);
-	height: #{$popup-height};
-	width: #{$popup-width};
-	position: fixed;
-	z-index: 100;
-	background-color: white;
-  border: 4px solid gray;
-  border-radius: 4px;
-}
-
-@media only screen and (max-width: 430px) {
-
-  $sm-popup-height: 300px;
-  $sm-popup-width: 300px;
-
-  .popup-div {
-    top: calc((100vh - #{$sm-popup-height}) / 2);
-    left: calc((100vw - #{$sm-popup-width}) / 2);
-    height: #{$sm-popup-height};
-    width: #{$sm-popup-width};
-  }
-
-}
-
-.popup-title {
-  font-size: 4vh;
-}
-
-.popup-message {
-
-}
-
-.popup-button {
-  width: 100%;
-  border: none;
 }
 
 // Footer Styling
@@ -162,6 +61,10 @@ footer {
   margin-left: auto;
   margin-right: auto;
   text-algin: center;
+  color: white;
+}
+
+.footer-link {
   color: white;
 }
 
@@ -269,10 +172,6 @@ tbody > tr:nth-child(odd) {
   padding-bottom: 8px;
 }
 
-button {
-  @include box-input;
-}
-
 .login-button {
   background-color: rgba(0, 0, 0, .35);
 }
@@ -303,9 +202,9 @@ textarea {
   font-family: #{$font}
 }
 
-button[type="submit"] {
+button {
   @include box-input;
-
+  transition: all .2s ease-in;
   &:hover {
     background-color: rgba(0, 0, 0, 0.55);
   }
@@ -348,22 +247,6 @@ button[type="submit"] {
   font-size: 7vh;
 }
 
-// Election
-/*
-$color1: #f4f4f4;
-$color2: #3197EE;
-
-.election-check {
-  margin:auto 0;
-  height: 100%;
-
-  &:checked {
-    background-color: black;
-    background-position:center center;
-    background-size:30px 30px;
-  }
-} */
-
 .election-label-div {
   display: flex;
 }
@@ -403,103 +286,4 @@ $color2: #3197EE;
 
 .inherit-input {
   height: 100%;
-}
-
-
-
-/* The container */
-.radio-container {
-    display: block;
-    position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    font-size: 22px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-/* Hide the browser's default radio button */
-.radio-container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-}
-
-$radio-size:20px;
-$radio-ratio:.55;
-$radio-default-color: #eee;
-$radio-checked-color: #2196F3;
-$radio-hover-color: #ccc;
-
-@keyframes radio-animate {
-  @for $i from 0 through 50 {
-    #{$i}% {background-image: 
-        linear-gradient(#{90 + $i / 50 * 180}deg, transparent 50%, white 50%),
-        linear-gradient(90deg, white 50%, transparent 50%);}
-  }
-
-  @for $i from 51 through 99 {
-    #{$i}% {background-image: 
-        linear-gradient(#{90 + ($i - 51)/ 48 * 180}deg, transparent 50%, #{$radio-checked-color} 50%),
-        linear-gradient(90deg, white 50%, transparent 50%);}
-  }
-
-  100% {background-image: none;}
-}
-
-
-@keyframes radio-hover-animate {
-  from {background-color: #{$radio-default-color};}
-    to {background-color: #{$radio-hover-color};}
-}
-
-/* Create a custom radio button */
-.radio-checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: #{$radio-size};
-    width: #{$radio-size};
-    background-color: #{$radio-default-color};
-    border-radius: 50%;
-}
-
-
-/* On mouse-over, add a grey background color */
-.radio-container:hover input ~ .radio-checkmark {
-    animation-name: radio-hover-animate;
-    background-color: #{$radio-hover-color};
-    animation-duration: .3s;
-}
-
-/* When the radio button is checked, add a blue background */
-.radio-container input:checked ~ .radio-checkmark {
-    background-color: #{$radio-checked-color};
-    animation-name: radio-animate;
-    animation-duration: .3s;
-}
-
-/* Create the indicator (the dot/circle - hidden when not checked) */
-.radio-checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-}
-
-/* Show the indicator (dot/circle) when checked */
-.radio-container input:checked ~ .radio-checkmark:after {
-    display: block;
-}
-
-/* Style the indicator (dot/circle) */
-.radio-container .radio-checkmark:after {
-  top: #{$radio-size * (1-$radio-ratio) / 2};
-  left: #{$radio-size * (1-$radio-ratio) / 2};
-  width: #{$radio-size * $radio-ratio};
-  height: #{$radio-size * $radio-ratio};
-  border-radius: 50%;
-  background: white;
 }
