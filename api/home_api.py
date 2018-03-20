@@ -37,8 +37,6 @@ def get_stats(email):
     return {'matches': total_matches, 'wins': total_wins}
 
 def get_matches(email):
-    member = get_member(email)
-    # TODO
     with connection.cursor() as cursor:
         query = '''
         SELECT *
@@ -55,7 +53,19 @@ def get_total_matches(email):
     results = get_matches(email)
     return len(results)
 
+def get_won_matches(email):
+    with connection.cursor() as cursor:
+        query = '''
+        SELECT *
+        FROM api_match AS match, api_team AS team, api_finishedmatch AS finishedmatch 
+        WHERE (match.teamA_id = team.id OR match.teamB_id = team.id) AND (team.memberA_id = %s OR team.memberB_id = %s) 
+              AND match.id = finishedmatch.match_ptr_id
+        '''
+        cursor.execute(query, [email, email])
+        results = dictfetchall(cursor)
+
+    return results
+
 def get_total_wins(email):
-    member = get_member(email)
-    # TODO
-    return 0
+    results = get_won_matches(email)
+    return len(results)
