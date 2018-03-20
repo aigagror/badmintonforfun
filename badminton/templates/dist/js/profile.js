@@ -1846,51 +1846,38 @@ module.exports = function spread(callback) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var axios_1 = __webpack_require__(10);
-var default_pic_url = "/assets/default_profile.png";
-var bio_url = '/mock/bio.json';
-var ProfileView = /** @class */ (function (_super) {
-    __extends(ProfileView, _super);
-    function ProfileView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const React = __webpack_require__(1);
+const axios_1 = __webpack_require__(10);
+const default_pic_url = "/assets/default_profile.png";
+const bio_url = '/mock/bio.json';
+class ProfileView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             person: null,
         };
-        return _this;
     }
-    ProfileView.prototype.componentDidMount = function () {
-        var _this = this;
+    componentDidMount() {
         axios_1.default.get(bio_url, {
             params: {
                 member_id: this.props.member_id
             }
         })
-            .then(function (res) {
-            _this.setState({
+            .then((res) => {
+            this.setState({
                 person: res.data
             });
         })
-            .catch(function (res) {
+            .catch((res) => {
             console.log(res);
         });
-    };
-    ProfileView.prototype.render = function () {
+    }
+    render() {
         if (this.state.person === null) {
             return null;
         }
-        var person = this.state.person;
+        const person = this.state.person;
         var url = person.picture;
         if (url === null) {
             url = default_pic_url;
@@ -1902,9 +1889,8 @@ var ProfileView = /** @class */ (function (_super) {
                 React.createElement("div", { className: "col-6" },
                     React.createElement("h2", null, person.name),
                     React.createElement("p", null, person.bio))));
-    };
-    return ProfileView;
-}(React.Component));
+    }
+}
 exports.ProfileView = ProfileView;
 
 
@@ -1925,9 +1911,9 @@ exports.ProfileView = ProfileView;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
-var ProfileView_1 = __webpack_require__(33);
+const React = __webpack_require__(1);
+const ReactDOM = __webpack_require__(3);
+const ProfileView_1 = __webpack_require__(33);
 ReactDOM.render(React.createElement(ProfileView_1.ProfileView, { member_id: member_id }), document.querySelector("profile-view"));
 
 

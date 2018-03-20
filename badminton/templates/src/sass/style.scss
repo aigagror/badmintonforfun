@@ -147,6 +147,32 @@ button {
   margin:auto 0;
 }
 
+@keyframes height-auto-open {
+  0% {max-height: 0px;}
+  100% {max-height: 999px;}
+}
+
+@keyframes height-auto-close {
+  0% {max-height: 999px;}
+  100% {max-height: 0px;}
+}
+
+@mixin height-auto-mixin {
+  overflow: hidden;
+}
+
+.register-div {
+  @include height-auto-mixin;
+  animation-name: height-auto-open;
+  animation-duration: .4s;
+}
+
+.register-div-close {
+  @include height-auto-mixin;
+  animation-name: height-auto-close;
+  animation-duration: .4s;
+}
+
 // member page stuff
 
 .member-list {

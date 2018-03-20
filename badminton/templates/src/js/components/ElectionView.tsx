@@ -4,7 +4,7 @@ import {Popup} from "../common/Popup";
 import axios from 'axios';
 import { RegisterElectionView } from "./RegisterElection";
 import { RadioButton } from '../common/RadioButton';
-import { Select } from "../common/Select";
+import { Select, Option } from "../common/Select";
 
 const election_url = '/mock/election_happening.json';
 const election_not_url = '/mock/electionless.json';
@@ -180,18 +180,9 @@ export class ElectionView extends React.Component<{}, any> {
 	    this.switch = this.switch.bind(this);
 	    this.componentDidMount = this.componentDidMount.bind(this);
 	    this.options = [
-	    			{
-	    				value: "up",
-	    				display: "Up"
-	    			},
-	    			{
-	    				value: "down",
-	    				display: "Down"
-	    			},
-	    			{
-	    				value: "results",
-	    				display: "Results"
-	    			}
+	    			new Option("up", "Up"),
+	    			new Option("down", "Down"),
+	    			new Option("results", "Results"),
 	    		];
 	}
 
@@ -246,7 +237,7 @@ export class ElectionView extends React.Component<{}, any> {
 
 	    	<h2>Toggle Election Happening</h2>
 	    	<Select onChange={this.switch} 
-	    		options={this.options} 
+	    		options={this.options as Option[]} 
 	    		defaultValue="up" 
 	    		name="electionState" />
     		{

@@ -43,18 +43,18 @@ $radio-hover-color: #ccc;
 
 @keyframes radio-animate-reverse {
   @for $i from 0 through 50 {
-    #{$i}% {background-image: 
-        linear-gradient(#{90 + $i / 50 * 180}deg, transparent 50%, white 50%),
-        linear-gradient(90deg, white 50%, transparent 50%);}
+    #{100-$i}% {background-image: 
+        linear-gradient(#{90 + $i / 50 * 180}deg, transparent 50%, #{$radio-default-color} 50%),
+        linear-gradient(90deg, #{$radio-default-color} 50%, transparent 50%);}
   }
 
   @for $i from 51 through 99 {
-    #{$i}% {background-image: 
+    #{100-$i}% {background-image: 
         linear-gradient(#{90 + ($i - 51)/ 48 * 180}deg, transparent 50%, #{$radio-checked-color} 50%),
-        linear-gradient(90deg, white 50%, transparent 50%);}
+        linear-gradient(90deg, #{$radio-default-color} 50%, transparent 50%);}
   }
 
-  100% {background-image: none;}
+  0% {background-image: none;}
 }
 
 
@@ -93,7 +93,7 @@ $radio-hover-color: #ccc;
 .radio-checkmark:after {
     content: "";
     position: absolute;
-    display: none;
+    display: block;
 }
 
 /* Show the indicator (dot/circle) when checked */
@@ -111,8 +111,7 @@ $radio-hover-color: #ccc;
   background: white;
 }
 
-.radio-swirl-back {
-  background-color: #{$radio-checked-color};
+.radio-swirl-back, .radio-swirl-back:hover {
   animation-name: radio-animate-reverse;
-  animation-duration: .3s;
+  animation-duration: .5s;
 }

@@ -1871,9 +1871,9 @@ module.exports = function spread(callback) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
-var TournamentView_1 = __webpack_require__(58);
+const React = __webpack_require__(1);
+const ReactDOM = __webpack_require__(3);
+const TournamentView_1 = __webpack_require__(58);
 ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), document.querySelector("tournament-view"));
 
 
@@ -1883,27 +1883,13 @@ ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), docu
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var axios_1 = __webpack_require__(10);
-var tourney_url = '/mock/tournament.json';
-var TournamentCell = /** @class */ (function (_super) {
-    __extends(TournamentCell, _super);
-    function TournamentCell() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    TournamentCell.prototype.render = function () {
-        var matches = this.props.matches;
+const React = __webpack_require__(1);
+const axios_1 = __webpack_require__(10);
+const tourney_url = '/mock/tournament.json';
+class TournamentCell extends React.Component {
+    render() {
+        const matches = this.props.matches;
         var render;
         if (matches.state === "undecided") {
             render = (React.createElement("div", { className: "tournament-card" },
@@ -1935,37 +1921,32 @@ var TournamentCell = /** @class */ (function (_super) {
                     React.createElement(TournamentCell, { matches: matches.feeder_lhs })),
                 React.createElement("div", { className: "col-6 tournament-row" }, matches.feeder_rhs !== null &&
                     React.createElement(TournamentCell, { matches: matches.feeder_rhs }))));
-    };
-    return TournamentCell;
-}(React.Component));
-var TournamentView = /** @class */ (function (_super) {
-    __extends(TournamentView, _super);
-    function TournamentView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+    }
+}
+class TournamentView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             matches: null,
         };
-        return _this;
     }
-    TournamentView.prototype.componentDidMount = function () {
-        var _this = this;
+    componentDidMount() {
         axios_1.default.get(tourney_url)
-            .then(function (res) {
-            _this.setState({
+            .then((res) => {
+            this.setState({
                 matches: res.data.matches,
             });
         })
-            .catch(function (res) {
+            .catch((res) => {
         });
-    };
-    TournamentView.prototype.render = function () {
+    }
+    render() {
         if (this.state.matches === null) {
             return null;
         }
         return (React.createElement(TournamentCell, { matches: this.state.matches }));
-    };
-    return TournamentView;
-}(React.Component));
+    }
+}
 exports.TournamentView = TournamentView;
 
 

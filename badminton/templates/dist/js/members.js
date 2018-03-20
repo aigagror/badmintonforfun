@@ -1859,9 +1859,9 @@ module.exports = function spread(callback) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
-var MemberView_1 = __webpack_require__(46);
+const React = __webpack_require__(1);
+const ReactDOM = __webpack_require__(3);
+const MemberView_1 = __webpack_require__(46);
 ReactDOM.render(React.createElement(MemberView_1.MemberView, null), document.querySelector("member-view"));
 
 
@@ -1871,64 +1871,45 @@ ReactDOM.render(React.createElement(MemberView_1.MemberView, null), document.que
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var axios_1 = __webpack_require__(10);
-var url = '/mock/members.json';
-var Member = /** @class */ (function (_super) {
-    __extends(Member, _super);
-    function Member() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Member.prototype.render = function () {
+const React = __webpack_require__(1);
+const axios_1 = __webpack_require__(10);
+const url = '/mock/members.json';
+class Member extends React.Component {
+    render() {
         return React.createElement("a", { href: "/profile.html?member_id=" + this.props.id }, this.props.name);
-    };
-    return Member;
-}(React.Component));
-var MemberView = /** @class */ (function (_super) {
-    __extends(MemberView, _super);
-    function MemberView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+    }
+}
+class MemberView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             members: []
         };
-        return _this;
     }
-    MemberView.prototype.componentDidMount = function () {
-        var _this = this;
+    componentDidMount() {
         axios_1.default.get(url)
-            .then(function (res) {
-            _this.setState({
+            .then((res) => {
+            this.setState({
                 members: res.data.members
             });
         })
-            .catch(function (res) {
+            .catch((res) => {
             console.log(res);
         });
-    };
-    MemberView.prototype.render = function () {
+    }
+    render() {
         if (this.state.members.length === 0) {
             return React.createElement("p", null, "Loading");
         }
         else {
-            return React.createElement("ul", { className: "member-list" }, this.state.members.map(function (member, idx) {
+            return React.createElement("ul", { className: "member-list" }, this.state.members.map((member, idx) => {
                 return React.createElement("li", { key: idx },
                     React.createElement(Member, { name: member.name, id: member.id, key: idx }));
             }));
         }
-    };
-    return MemberView;
-}(React.Component));
+    }
+}
 exports.MemberView = MemberView;
 
 

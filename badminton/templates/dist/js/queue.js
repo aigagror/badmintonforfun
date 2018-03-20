@@ -85,9 +85,9 @@ module.exports = ReactDOM;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
-var Queue_1 = __webpack_require__(51);
+const React = __webpack_require__(1);
+const ReactDOM = __webpack_require__(3);
+const Queue_1 = __webpack_require__(51);
 ReactDOM.render(React.createElement(Queue_1.Queue, null), document.querySelector("queue-view"));
 
 
@@ -98,30 +98,17 @@ ReactDOM.render(React.createElement(Queue_1.Queue, null), document.querySelector
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var Queue = /** @class */ (function (_super) {
-    __extends(Queue, _super);
-    function Queue(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {};
-        return _this;
+const React = __webpack_require__(1);
+class Queue extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
     }
-    Queue.prototype.render = function () {
+    render() {
         return React.createElement("p", null, "Hello Queue!");
-    };
-    return Queue;
-}(React.Component));
+    }
+}
 exports.Queue = Queue;
 
 

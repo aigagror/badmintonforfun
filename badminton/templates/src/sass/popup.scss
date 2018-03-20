@@ -1,6 +1,39 @@
 $popup-height: 400px;
 $popup-width: 400px;
 
+@mixin fade-in-mixin($to-opacity) {
+  0% {opacity: 0;}
+  100% {opacity: #{$to-opacity};}
+}
+
+@mixin fade-out-mixin($to-opacity) {
+  0% {opacity: #{$to-opacity};}
+  100% {opacity: 0;}
+}
+
+$full-opacity: 1;
+$half-opacity: .5;
+
+@keyframes fade-in {
+  @include fade-in-mixin($full-opacity);
+}
+
+@keyframes fade-out {
+  @include fade-out-mixin($full-opacity);
+}
+
+@keyframes fade-in-half {
+  @include fade-in-mixin($half-opacity);
+}
+
+@keyframes fade-out-half {
+  @include fade-out-mixin($half-opacity);
+}
+
+
+
+$fade-in-duration: .4s;
+$fade-out-duration: .4s;
 .popup-div {
 	top: calc((100vh - #{$popup-height}) / 2);
   left: calc((100vw - #{$popup-width}) / 2);
@@ -10,6 +43,32 @@ $popup-width: 400px;
 	z-index: 100;
 	background-color: #a4a3a3;
   border-radius: 4px;
+  animation-name: fade-in;
+  animation-duration: #{$fade-in-duration};
+}
+
+.popup-screen {
+  z-index: 99;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  opacity: .5;
+  background-color:gray;
+  animation-name: fade-in-half;
+  animation-duration: #{$fade-in-duration};
+}
+
+.popup-fade {
+  animation-name: fade-out;
+  animation-duration: #{$fade-out-duration};
+  opacity: 0;
+}
+
+.popup-screen-fade {
+  animation-name: fade-out-half;
+  animation-duration: #{$fade-out-duration};
+  opacity: 0;
 }
 
 @media only screen and (max-width: 430px) {
@@ -48,5 +107,5 @@ $popup-width: 400px;
 
 .popup-disabled {
   overflow: hidden;
-  background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) );
 }
+

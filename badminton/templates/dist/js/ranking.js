@@ -85,9 +85,9 @@ module.exports = ReactDOM;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
-var RankingView_1 = __webpack_require__(56);
+const React = __webpack_require__(1);
+const ReactDOM = __webpack_require__(3);
+const RankingView_1 = __webpack_require__(56);
 ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.querySelector("ranking-view"));
 
 
@@ -98,28 +98,13 @@ ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.q
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var RankingView = /** @class */ (function (_super) {
-    __extends(RankingView, _super);
-    function RankingView() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    RankingView.prototype.render = function () {
+const React = __webpack_require__(1);
+class RankingView extends React.Component {
+    render() {
         return React.createElement("p", null, "Ranking View");
-    };
-    return RankingView;
-}(React.Component));
+    }
+}
 exports.RankingView = RankingView;
 
 

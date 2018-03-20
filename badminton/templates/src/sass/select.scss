@@ -1,12 +1,23 @@
 /* Works like the <option/> tag */
 $select-background: #f1f1f1;
 $select-hover:#a4a3a3;
+
+@mixin unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .select-label {
   background: #{$select-background};
   color: black;
   display: block;
   padding: 0.5em;
   cursor: pointer;
+  @include unselectable;
 }
 
 .select-toggle {
@@ -74,6 +85,7 @@ $select-hover:#a4a3a3;
 $select-height: 80;
 
 @keyframes select-slide-in {
+
 @for $i from 0 through 100 {
   #{$i}% { 
     height: #{$i / 100.0 * $select-height}px;
@@ -85,7 +97,7 @@ $select-height: 80;
 @for $i from 0 through 100 {
   #{$i}% { 
     height: #{(1 - $i / 100.0) * $select-height}px;
-    margin-bottom: #{(1 + $i / -100.0) * $select-height}px }
+    margin-bottom: -#{(1 - $i / 100.0) * $select-height}px }
 }
 }
 
@@ -122,4 +134,16 @@ $select-height: 80;
   background-color: #{$select-hover};
   animation-name: hover-fade;
   animation-duration: .3s;
+}
+
+.select-scroll {
+  height: 20px;
+  width: 7px;
+  position: absolute;
+  background-color: gray;
+  z-index: 2;
+  color: black;
+  top: 0px;
+  right: 5px;
+  border-radius: 2px;
 }
