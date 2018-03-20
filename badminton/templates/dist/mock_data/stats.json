@@ -1,0 +1,34 @@
+{
+	"_comment": "We are going to need their last n games and any notes associated",
+	"stat_data": {
+		"games": [
+			{
+				"my_score": 17,
+				"their_score": 16,
+				"notes": "Lorem ipsum"
+			},
+			{
+				"my_score": 16,
+				"their_score": 17
+			},
+			{
+				"my_score": 17,
+				"their_score": 16,
+				"notes": "Lorem ipsum"
+			},
+			{
+				"my_score": 17,
+				"their_score": 16
+			},
+			{
+				"my_score": 17,
+				"their_score": 16
+			},
+			{
+				"my_score": 17,
+				"their_score": 16,
+				"notes": "Lorem ipsum"
+			}
+		]
+	}
+}

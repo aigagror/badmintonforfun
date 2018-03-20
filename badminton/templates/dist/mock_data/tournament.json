@@ -1,0 +1,45 @@
+{
+	"_comment": "The view should not have to deal with the logic of pairing views together so the api should give the structure of the single elimination tournament including whether a match is active",
+	"matches": {
+		"title": "Grand Final",
+		"state": "undecided",
+		"feeder_lhs": {
+			"title": "Semi Finals",
+			"state": "undecided",
+			"feeder_lhs": {
+				"title": "Quarters",
+				"state": "decided",
+				"team1": "Bruce and Richard",
+				"team2": "John and Drake",
+				"feeder_lhs": null,
+				"feeder_rhs": null
+			},
+			"feeder_rhs": {
+				"title": "Quarters",
+				"state": "decided",
+				"team1": "Ben and Cecilia",
+				"team2": "Holly and James",
+				"feeder_lhs": null,
+				"feeder_rhs": null
+			}
+		},
+
+		"feeder_rhs": {
+			"title": "Semi Finals",
+			"state": "decided",
+			"team1": "Jason and Tim",
+			"team2": "Pamela and Selena",
+			"feeder_lhs": {
+				"title": "Quarters",
+				"state": "finished",
+				"team1": "Jason and Tim",
+				"team2": "Roy and Kara",
+				"team1_score": 17,
+				"team2_score": 16,
+				"feeder_lhs": null,
+				"feeder_rhs": null
+			},
+			"feeder_rhs": null
+		}
+	}
+}

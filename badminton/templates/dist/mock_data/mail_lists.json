@@ -1,0 +1,17 @@
+{
+	"_comment": "This keeps a list of mailing lists that board memebers can e-mail",
+	"lists": [
+		{
+			"name": "Interested Members",
+			"key": "interested"
+		},
+		{
+			"name": "Current Member",
+			"key": "current"
+		},
+		{
+			"name": "Board Member",
+			"key": "board"
+		}
+	]
+}

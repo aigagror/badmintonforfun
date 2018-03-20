@@ -1,0 +1,34 @@
+{% load badminton_filters %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include_fragment 'head.html' %}
+
+        <title>Badminton For Fun - Election</title>
+        <meta name="author" content="Bhuvan Venkatesh">
+        <meta name="description" content="Badminton for fun election page.">
+    </head>
+    <body>
+
+    {% include_fragment 'nav.html' %}
+
+    <div class="grid row row-offset-1">
+        <div class="col-offset-2 col-4">
+            <div class="badminton-landing-text"> Election </div>
+        </div>
+    </div>
+
+    <election-view>
+    </election-view>
+</div>
+</div>
+
+        {% resolve_global 'react' %}
+        {% resolve_global 'react-dom' %}
+
+        {% resolve_js_local 'election.js' %}
+
+        {% include_fragment 'foot.html' %}
+    </body>
+</html>

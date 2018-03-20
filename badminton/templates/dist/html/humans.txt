@@ -1,0 +1,14 @@
+/* TEAM */
+Your title: Bhuvan Venkatesh,.
+Site: bvenkat2@illinois.edu.
+Location: Urbana, Illinois.
+
+
+/* THANKS */
+Name: name or url
+
+
+/* SITE */
+Last update: YYYY/MM/DD
+Standards: HTML5, CSS3,
+Components: React, Google-Platform, etc.

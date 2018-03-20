@@ -1,0 +1,36 @@
+{% load badminton_filters %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include_fragment 'head.html' %}
+
+        <title>Badminton For Fun - Profile</title>
+        <meta name="author" content="Bhuvan Venkatesh">
+        <meta name="description" content="Badminton for fun profile page.">
+    </head>
+    <body>
+
+    {% include_fragment 'nav.html' %}
+    
+    <div class="grid row row-offset-1">
+        <div class="col-offset-2 col-8">
+            <div class="grid">
+                <profile-view></profile-view>
+            </div>
+            
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var member_id = {{ member_id }};
+    </script>
+
+        {% resolve_global 'react' %}
+        {% resolve_global 'react-dom' %}
+
+        {% resolve_js_local 'profile.js' %}
+
+        {% include_fragment 'foot.html' %}
+    </body>
+</html>

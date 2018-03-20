@@ -1,0 +1,35 @@
+{% load badminton_filters %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include_fragment 'head.html' %}
+
+        <title>Badminton For Fun - Tournament</title>
+        <meta name="author" content="Bhuvan Venkatesh">
+        <meta name="description" content="Badminton for fun tournament page.">
+    </head>
+    <body>
+    {% include_fragment 'nav.html' %}
+    <div class="grid row row-offset-es-1">
+        <div class="col-offset-2 col-8">
+            <div class="grid">
+                <div class="row badminton-landing-text">
+                    Tournament
+                </div>
+
+                <tournament-view></tournament-view>
+
+            </div>
+            
+        </div>
+    </div>
+
+        {% resolve_global 'react' %}
+        {% resolve_global 'react-dom' %}
+
+        {% resolve_js_local 'tournament.js' %}
+
+        {% include_fragment 'foot.html' %}
+    </body>
+</html>
