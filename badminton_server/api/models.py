@@ -26,12 +26,13 @@ class Tournament(models.Model):
     date = models.DateField('date of tournament', primary_key=True)
 
 class Interested(models.Model):
-    name = models.CharField(max_length=64)
+    first_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=64)
     formerBoardMember = models.BooleanField(default=False)
     email = models.EmailField(primary_key=True)
 
     def __str__(self):
-        return self.name
+        return '{} {}'.format(self.first_name, self.last_name)
 
 
 class Member(Interested):
@@ -40,12 +41,15 @@ class Member(Interested):
     dateJoined = models.DateField('date joined')
     queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
 
-
 class BoardMember(Member):
     job = models.CharField(max_length=64, choices=JOBS)
 
 class Election(models.Model):
     date = models.DateField('date of the election', primary_key=True)
+    endDate = models.DateField('election end date', null=True, blank=True)
+
+    def __str__(self):
+        return '{} to {}'.format(self.date, self.endDate)
 
 class Votes(models.Model):
     votee = models.ForeignKey(Member, related_name='votee', on_delete=models.SET_NULL, null=True)
@@ -64,6 +68,9 @@ class Team(models.Model):
     memberA = models.ForeignKey(Member, related_name='memberA', on_delete=models.PROTECT)
     memberB = models.ForeignKey(Member, related_name='memberB', on_delete=models.SET_NULL, null=True, blank=True)
 
+    def __str__(self):
+        return '{} & {}'.format(self.memberA, self.memberB)
+
 class Match(models.Model):
     id = models.AutoField(primary_key=True)
     startDate = models.DateTimeField('date started')
@@ -74,5 +81,13 @@ class Match(models.Model):
     court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True, blank=True)
     tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True)
 
+    def __str__(self):
+        return '{} vs {}'.format(self.teamA, self.teamB)
+
 class FinishedMatch(Match):
     endDate = models.DateTimeField('date ended')
+
+class Announcement(models.Model):
+    date = models.DateTimeField('date of announcement', primary_key=True)
+    title = models.CharField(max_length=64)
+    entry = models.CharField(max_length=500)
