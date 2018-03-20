@@ -40,6 +40,7 @@ class Member(Interested):
     private = models.BooleanField(default=False)
     dateJoined = models.DateField('date joined')
     queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
+    bio = models.CharField(max_length=500)
 
 class BoardMember(Member):
     job = models.CharField(max_length=64, choices=JOBS)

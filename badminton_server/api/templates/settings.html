@@ -2,9 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Settings</title>
 </head>
 <body>
+
+<h1>Board Members</h1>
+{% if board_members %}
+    <ul>
+        {% for b in board_members %}
+            <li>
+                <h1>{{ b.first_name }}</h1>
+                <p>{{ b.last_name }}</p>
+                <p>{{ b.email }}</p>
+                <p>{{ b.job }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no board members.</p>
+{% endif %}
+
+<h1>Members</h1>
+{% if members%}
+    <ul>
+        {% for m in members %}
+            <li>
+                <h1>{{ m.first_name }}</h1>
+                <p>{{ m.last_name }}</p>
+                <p>{{ m.email }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no members.</p>
+{% endif %}
+
+<h1>Interested</h1>
+{% if interested %}
+    <ul>
+        {% for i in interested %}
+            <li>
+                <h1>{{ i.first_name }}</h1>
+                <p>{{ i.last_name }}</p>
+                <p>{{ i.email }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There is no one exclusively interested.</p>
+{% endif %}
+
+
+
 
 </body>
 </html>
