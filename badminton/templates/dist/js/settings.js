@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 51);
+/******/ 	return __webpack_require__(__webpack_require__.s = 52);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1839,52 +1839,7 @@ module.exports = function spread(callback) {
 /***/ }),
 /* 29 */,
 /* 30 */,
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var Slider = /** @class */ (function (_super) {
-    __extends(Slider, _super);
-    function Slider(props) {
-        var _this = _super.call(this, props) || this;
-        _this.onChange = _this.onChange.bind(_this);
-        _this.selected = !!_this.props.checked;
-        return _this;
-    }
-    Slider.prototype.componentDidMount = function () {
-        if (this.selected) {
-            this.inputElem.checked = true;
-        }
-    };
-    Slider.prototype.onChange = function (event) {
-        this.selected = !this.selected;
-        this.props.change(event);
-    };
-    Slider.prototype.render = function () {
-        var _this = this;
-        return (React.createElement("label", { className: "switch" },
-            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: function (input) { return _this.inputElem = input; } }),
-            React.createElement("span", { className: "slider round" })));
-    };
-    return Slider;
-}(React.Component));
-exports.Slider = Slider;
-
-
-/***/ }),
+/* 31 */,
 /* 32 */,
 /* 33 */,
 /* 34 */,
@@ -1904,7 +1859,8 @@ exports.Slider = Slider;
 /* 48 */,
 /* 49 */,
 /* 50 */,
-/* 51 */
+/* 51 */,
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1912,12 +1868,12 @@ exports.Slider = Slider;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(3);
-var SettingsView_1 = __webpack_require__(52);
+var SettingsView_1 = __webpack_require__(53);
 ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document.querySelector("settings-view"));
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1935,7 +1891,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
-var Slider_1 = __webpack_require__(31);
+var Slider_1 = __webpack_require__(54);
 var LoadingState;
 (function (LoadingState) {
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
@@ -1997,9 +1953,9 @@ var StandardSettings = /** @class */ (function (_super) {
         var _this = this;
         return React.createElement("div", { className: "grid" }, this.props.data.map(function (setting, idx) {
             return React.createElement("div", { className: "row", key: idx },
-                React.createElement("div", { className: "col-6" },
+                React.createElement("div", { className: "col-6 col-es-12" },
                     React.createElement("h2", null, setting.display_name)),
-                React.createElement("div", { className: "col-6" }, _this.decideComponent(setting, idx)));
+                React.createElement("div", { className: "col-6 col-es-12" }, _this.decideComponent(setting, idx)));
         }));
     };
     return StandardSettings;
@@ -2085,6 +2041,52 @@ var SettingsView = /** @class */ (function (_super) {
     return SettingsView;
 }(React.Component));
 exports.SettingsView = SettingsView;
+
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var Slider = /** @class */ (function (_super) {
+    __extends(Slider, _super);
+    function Slider(props) {
+        var _this = _super.call(this, props) || this;
+        _this.onChange = _this.onChange.bind(_this);
+        _this.selected = !!_this.props.checked;
+        return _this;
+    }
+    Slider.prototype.componentDidMount = function () {
+        if (this.selected) {
+            this.inputElem.checked = true;
+        }
+    };
+    Slider.prototype.onChange = function (event) {
+        this.selected = !this.selected;
+        this.props.change(event);
+    };
+    Slider.prototype.render = function () {
+        var _this = this;
+        return (React.createElement("label", { className: "switch" },
+            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: function (input) { return _this.inputElem = input; } }),
+            React.createElement("span", { className: "slider round" })));
+    };
+    return Slider;
+}(React.Component));
+exports.Slider = Slider;
 
 
 /***/ })

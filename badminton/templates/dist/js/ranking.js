@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 53);
+/******/ 	return __webpack_require__(__webpack_require__.s = 55);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -79,7 +79,7 @@ module.exports = ReactDOM;
 
 /***/ }),
 
-/***/ 53:
+/***/ 55:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87,13 +87,13 @@ module.exports = ReactDOM;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(3);
-var RankingView_1 = __webpack_require__(54);
+var RankingView_1 = __webpack_require__(56);
 ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.querySelector("ranking-view"));
 
 
 /***/ }),
 
-/***/ 54:
+/***/ 56:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

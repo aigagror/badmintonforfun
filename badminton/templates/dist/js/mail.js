@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 46);
+/******/ 	return __webpack_require__(__webpack_require__.s = 47);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1854,7 +1854,8 @@ module.exports = function spread(callback) {
 /* 43 */,
 /* 44 */,
 /* 45 */,
-/* 46 */
+/* 46 */,
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1862,12 +1863,12 @@ module.exports = function spread(callback) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(3);
-var MailView_1 = __webpack_require__(47);
+var MailView_1 = __webpack_require__(48);
 ReactDOM.render(React.createElement(MailView_1.MailView, null), document.querySelector("mail-form"));
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1885,7 +1886,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
-var LocalResourceResolver_1 = __webpack_require__(48);
+var LocalResourceResolver_1 = __webpack_require__(49);
 var mail_list_url = '/mock/mail_lists.json';
 var mail_data_location = 'mailData';
 var MailView = /** @class */ (function (_super) {
@@ -1965,7 +1966,7 @@ exports.MailView = MailView;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
