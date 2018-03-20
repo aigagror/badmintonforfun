@@ -1,6 +1,8 @@
 /* Works like the <option/> tag */
+$select-background: #f1f1f1;
+$select-hover:#a4a3a3;
 .select-label {
-  background: #f1f1f1;
+  background: #{$select-background};
   color: black;
   display: block;
   padding: 0.5em;
@@ -8,7 +10,7 @@
 }
 
 .select-toggle {
-
+  border-radius: 4px;
 }
 /* Works like the <select/> tag */
 .select {
@@ -35,6 +37,7 @@
   line-height: 0;
   right: 20px;
   position: absolute;
+  top: 12px;
 }
 
 .select-div {
@@ -60,6 +63,8 @@
 
 .select-check-toggle:checked ~ .select-toggle {
   margin-bottom: auto;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 
 .select-check-toggle:checked ~ .select-toggle >  .select-arrow {
@@ -72,6 +77,9 @@
   overflow-y: auto;
   overflow-x: hidden;
   height: 80px;
+
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
 }
 
 .select-check-toggle:checked ~ .select-div {
@@ -82,6 +90,13 @@
   height: 80px;
 }
 
+@keyframes hover-fade {
+    from {background-color: #{$select-background};}
+    to {background-color: #{$select-hover};}
+}
+
 .select-check-toggle:checked ~ .select-div label:hover {
-  background-color: #a4a3a3;
+  background-color: #{$select-hover};
+  animation-name: hover-fade;
+  animation-duration: .3s;
 }

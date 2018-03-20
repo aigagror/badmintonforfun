@@ -45,3 +45,8 @@ $popup-width: 400px;
   width: 100%;
   border: none;
 }
+
+.popup-disabled {
+  overflow: hidden;
+  background: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) );
+}

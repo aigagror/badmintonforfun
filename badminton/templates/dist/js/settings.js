@@ -1839,7 +1839,65 @@ module.exports = function spread(callback) {
 /***/ }),
 /* 29 */,
 /* 30 */,
-/* 31 */,
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var popupDisabledClass = "popup-disabled";
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            popup: false,
+        };
+        _this.close = _this.close.bind(_this);
+        return _this;
+    }
+    Popup.prototype.componentDidMount = function () {
+        document.querySelector('body').classList.add(popupDisabledClass);
+    };
+    Popup.prototype.componentWillUnmount = function () {
+        document.querySelector('body').classList.remove(popupDisabledClass);
+    };
+    Popup.prototype.close = function () {
+        this.setState({
+            popup: true,
+        });
+        this.props.callback();
+    };
+    Popup.prototype.render = function () {
+        return (React.createElement("div", { className: "popup-div" },
+            React.createElement("div", { className: "grid row" },
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-11 popup-title-div" },
+                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-offset-1 col-11" },
+                        React.createElement("p", { className: "popup-message" }, this.props.message))),
+                React.createElement("div", { className: "row-offset-10" },
+                    React.createElement("div", { className: "col-offset-es-9 col-es-5 row-offset-es-9 col-offset-9 row-offset-11" },
+                        React.createElement("button", { className: "popup-button row-2", onClick: this.close }, "\u2714"))))));
+    };
+    return Popup;
+}(React.Component));
+exports.Popup = Popup;
+
+
+/***/ }),
 /* 32 */,
 /* 33 */,
 /* 34 */,
@@ -1892,6 +1950,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
 var Slider_1 = __webpack_require__(54);
+var Popup_1 = __webpack_require__(31);
 var LoadingState;
 (function (LoadingState) {
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
@@ -1936,6 +1995,9 @@ var StandardSettings = /** @class */ (function (_super) {
     function StandardSettings(props) {
         var _this = _super.call(this, props) || this;
         _this.decideComponent = _this.decideComponent.bind(_this);
+        _this.state = {
+            popup: null,
+        };
         return _this;
     }
     StandardSettings.prototype.decideComponent = function (setting, key) {
@@ -1951,12 +2013,20 @@ var StandardSettings = /** @class */ (function (_super) {
     };
     StandardSettings.prototype.render = function () {
         var _this = this;
-        return React.createElement("div", { className: "grid" }, this.props.data.map(function (setting, idx) {
-            return React.createElement("div", { className: "row", key: idx },
-                React.createElement("div", { className: "col-6 col-es-12" },
-                    React.createElement("h2", null, setting.display_name)),
-                React.createElement("div", { className: "col-6 col-es-12" }, _this.decideComponent(setting, idx)));
-        }));
+        return React.createElement(React.Fragment, null,
+            React.createElement("div", { className: "grid" },
+                this.props.data.map(function (setting, idx) {
+                    return React.createElement("div", { className: "row", key: idx },
+                        React.createElement("div", { className: "col-6 col-es-12" },
+                            React.createElement("h2", null, setting.display_name)),
+                        React.createElement("div", { className: "col-6 col-es-12" }, _this.decideComponent(setting, idx)));
+                }),
+                React.createElement("button", { onClick: function () { return _this.setState({
+                        popup: React.createElement(Popup_1.Popup, { title: "Saved", message: "Your data has been saved", callback: function () {
+                                return _this.setState({ popup: null });
+                            } })
+                    }); } }, "Save")),
+            this.state.popup && this.state.popup);
     };
     return StandardSettings;
 }(React.Component));

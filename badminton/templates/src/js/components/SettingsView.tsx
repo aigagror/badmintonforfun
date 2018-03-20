@@ -1,7 +1,7 @@
 import * as React from "react";
 import axios from 'axios';
 import { Slider } from '../common/Slider';
-
+import { Popup } from '../common/Popup';
 enum LoadingState {
     Loading,
     Loaded,
@@ -42,6 +42,10 @@ class StandardSettings extends React.Component<any, any> {
 		super(props);
 
 		this.decideComponent = this.decideComponent.bind(this);
+
+		this.state = {
+			popup: null,
+		}
 	}
 
 	decideComponent(setting: any, key: any) {
@@ -54,8 +58,11 @@ class StandardSettings extends React.Component<any, any> {
 		}
 	}
 
+
+
 	render() {
-		return <div className="grid">
+		return <>
+		<div className="grid">
 		{
 			this.props.data.map((setting: any, idx: number) => {
 				return <div className="row" key={idx}>
@@ -70,7 +77,13 @@ class StandardSettings extends React.Component<any, any> {
 				</div>
 			})
 		}
+		<button onClick={() => this.setState({
+			popup: <Popup title="Saved" message="Your data has been saved" callback={() => 
+				this.setState({popup:null})} />
+		})}>Save</button>
 		</div>
+		{ this.state.popup && this.state.popup }
+		</>
 	}
 }
 

@@ -14,6 +14,7 @@ export class Select extends React.Component<any, any> {
 
 		this.change = this.change.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
+        var status = ""
 
         if (this.props.defaultValue) {
 
@@ -21,13 +22,15 @@ export class Select extends React.Component<any, any> {
 				option.value === this.props.defaultValue);
 			if (!value) {
 				console.log("Default value not found");
-				this.status = "";
 			} else {
-				this.status = value.display;
+				status = value.display;
 			}
 		} else {
-			this.status = this.props.options[0].display;
+			status = this.props.options[0].display;
 		}
+        this.state = {
+            status: status,
+        }
     }
 
     componentDidMount() {
@@ -51,7 +54,10 @@ export class Select extends React.Component<any, any> {
 		if (this.props.onChange) {
 			this.props.onChange(event.target.value);
 		}
-		this.status = document.querySelector('label[for="' + event.target.id + '"]').innerHTML;
+        const elem = document.querySelector('label[for="' + event.target.id + '"]');
+        this.setState({
+            status: elem.innerHTML,
+        });
 		this.inputDiv.checked = false;
 	}
 
@@ -64,7 +70,7 @@ export class Select extends React.Component<any, any> {
     	ref={(input) => this.inputDiv = input}/>
 
     <label className='select-label select-toggle' htmlFor={this.props.name+"-toggle"} >
-    	<span ref={(input) => this.titleSpan = input} className="select-title-text">{this.status}</span>
+    	<span ref={(input) => this.titleSpan = input} className="select-title-text">{this.state.status}</span>
 		<b className='select-arrow'></b>
     </label>
 

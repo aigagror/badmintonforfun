@@ -1840,7 +1840,94 @@ module.exports = function spread(callback) {
 /* 29 */,
 /* 30 */,
 /* 31 */,
-/* 32 */,
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var Select = /** @class */ (function (_super) {
+    __extends(Select, _super);
+    function Select(props) {
+        var _this = _super.call(this, props) || this;
+        _this.change = _this.change.bind(_this);
+        _this.handleClickOutside = _this.handleClickOutside.bind(_this);
+        var status = "";
+        if (_this.props.defaultValue) {
+            var value = _this.props.options.find(function (option) {
+                return option.value === _this.props.defaultValue;
+            });
+            if (!value) {
+                console.log("Default value not found");
+            }
+            else {
+                status = value.display;
+            }
+        }
+        else {
+            status = _this.props.options[0].display;
+        }
+        _this.state = {
+            status: status,
+        };
+        return _this;
+    }
+    Select.prototype.componentDidMount = function () {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    };
+    Select.prototype.componentWillUnmount = function () {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    };
+    /**
+     * Alert if clicked on outside of element
+     */
+    Select.prototype.handleClickOutside = function (event) {
+        if (this.inputDiv && !this.wrapper.contains(event.target)) {
+            this.inputDiv.checked = false;
+        }
+    };
+    Select.prototype.change = function (event) {
+        if (this.props.onChange) {
+            this.props.onChange(event.target.value);
+        }
+        var elem = document.querySelector('label[for="' + event.target.id + '"]');
+        this.setState({
+            status: elem.innerHTML,
+        });
+        this.inputDiv.checked = false;
+    };
+    Select.prototype.render = function () {
+        var _this = this;
+        return React.createElement("div", { className: "select-wrapper-div", ref: function (input) { return _this.wrapper = input; } },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, type: 'checkbox', ref: function (input) { return _this.inputDiv = input; } }),
+            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
+                React.createElement("span", { ref: function (input) { return _this.titleSpan = input; }, className: "select-title-text" }, this.state.status),
+                React.createElement("b", { className: 'select-arrow' })),
+            React.createElement("div", { className: "select-div", ref: function (input) { return _this.selectDiv = input; } },
+                React.createElement("div", { className: "inner-select-div" },
+                    React.createElement("span", { className: 'select' }, this.props.options.map(function (option, idx) {
+                        return React.createElement(React.Fragment, null,
+                            React.createElement("input", { className: 'select-hidden', key: idx, id: _this.props.name + idx, value: option.value, name: _this.props.name, type: 'radio', onChange: _this.change }),
+                            React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: _this.props.name + idx }, option.display));
+                    })))));
+    };
+    return Select;
+}(React.Component));
+exports.Select = Select;
+
+
+/***/ }),
 /* 33 */,
 /* 34 */,
 /* 35 */,
@@ -1887,6 +1974,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var axios_1 = __webpack_require__(10);
 var LocalResourceResolver_1 = __webpack_require__(49);
+var Select_1 = __webpack_require__(32);
 var mail_list_url = '/mock/mail_lists.json';
 var mail_data_location = 'mailData';
 var MailView = /** @class */ (function (_super) {
@@ -1899,6 +1987,7 @@ var MailView = /** @class */ (function (_super) {
         _this.sendMail = _this.sendMail.bind(_this);
         _this.scoopData = _this.scoopData.bind(_this);
         _this.setData = _this.setData.bind(_this);
+        _this.switch = _this.switch.bind(_this);
         return _this;
     }
     MailView.prototype.componentDidMount = function () {
@@ -1908,6 +1997,7 @@ var MailView = /** @class */ (function (_super) {
             _this.setState({
                 lists: res.data.lists,
             });
+            _this.mailingList = res.data.lists[0].value;
             var item = LocalResourceResolver_1.getResource(_this, mail_data_location);
             if (item !== null) {
                 _this.setData(JSON.parse(item));
@@ -1919,9 +2009,12 @@ var MailView = /** @class */ (function (_super) {
             .catch(function (res) {
         });
     };
+    MailView.prototype.switch = function (value) {
+        this.mailingList = value;
+    };
     MailView.prototype.scoopData = function () {
         var data = {
-            list: this.mailingList.value,
+            list: this.mailingList,
             title: this.titleElem.value,
             body: this.bodyElem.value
         };
@@ -1942,14 +2035,18 @@ var MailView = /** @class */ (function (_super) {
         if (this.state.lists === null) {
             return React.createElement("p", null, "Loading");
         }
+        var selectData = this.state.lists.map(function (list, idx) {
+            return {
+                value: list.key,
+                display: list.name
+            };
+        });
         /* We don't want this to be a form so that we can type <return>
             Freely */
         return (React.createElement("div", { className: "mail-view grid" },
             React.createElement("div", { className: "row row-offset-1" },
-                React.createElement("div", { className: "col-6" },
-                    React.createElement("select", { id: "mailId", ref: function (input) { _this.mailingList = input; } }, this.state.lists.map(function (list, idx) {
-                        return React.createElement("option", { value: list.key, key: idx }, list.name);
-                    })))),
+                React.createElement("div", { className: "col-6 col-es-12" },
+                    React.createElement(Select_1.Select, { options: selectData, onChange: this.switch, name: "mailState" }))),
             React.createElement("div", { className: "row row-offset-1" },
                 React.createElement("div", { className: "col-8" },
                     React.createElement("input", { type: "text", placeholder: "Title", ref: function (input) { _this.titleElem = input; }, className: "mail-title" }))),

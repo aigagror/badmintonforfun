@@ -1,0 +1,21 @@
+{
+	"_comment": "",
+	"ranking": [
+		{
+			"name": "Person 1",
+			"rank": 1
+		},
+		{
+			"name": "Person 2",
+			"rank": 2
+		},
+		{
+			"name": "Person 1",
+			"rank": 3
+		}
+	],
+
+	"member": {
+		"rank": 2
+	}
+}
