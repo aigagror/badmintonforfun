@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .home_api import *
 from .election_api import *
+from .settings_api import *
 
 def index(request):
     return render(request, 'index.html')
@@ -68,5 +69,50 @@ def elections(request):
 
     return render(request, 'elections.html', context)
 
+class Interested(object):
+    first_name = ''
+    last_name = ''
+    formerBoardMember = False
+    email = ''
+
+    def __init__(self, first_name, last_name, formerBoardMember, email):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.formerBoardMember = formerBoardMember
+        self.email = email
+
+
+class Member(object):
+    level = ''
+    private = False
+    date_joined = ''
+    queue = None
+    bio = ''
+
+    def __init__(self, level, private, date_joined, queue, bio):
+        self.level = level
+        self.private = private
+        self.date_joined = date_joined
+        self.queue = queue
+        self.bio = bio
+
+
+class BoardMember(object):
+    job = ''
+
+    def __init__(self, job):
+        self.job = job
+
+
 def settings(request):
-    return render(request, 'settings.html')
+    board_members = get_board_members()
+    members = get_members()
+    interested = get_interested()
+    context = {
+        'board_members': board_members,
+        'members': members,
+        'interested': interested
+    }
+
+    return render(request, 'api_settings.html', context)
+
