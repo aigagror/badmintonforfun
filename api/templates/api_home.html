@@ -10,7 +10,7 @@
     <ul>
         {% for a in announcements %}
             <li>
-                <h1>{{ a.title }}</h1>
+                <h2>{{ a.title }}</h2>
                 <p>{{ a.date }}</p>
                 <p>{{ a.entry }}</p>
             </li>
@@ -34,7 +34,14 @@
 
 <h1>Matches</h1>
 {% if matches %}
-
+    <ul>
+        {% for m in matches%}
+            <li>
+                <h2>Team {{ m.teamA }} vs. Team {{ m.teamB }}</h2>
+                <p>{{ m.scoreA }} to {{ m.scoreB }}</p>
+            </li>
+        {% endfor %}
+    </ul>
 {% endif %}
 </body>
 </html>
