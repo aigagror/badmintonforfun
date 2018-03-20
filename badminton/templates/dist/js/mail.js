@@ -1864,6 +1864,7 @@ var Select = /** @class */ (function (_super) {
         _this.change = _this.change.bind(_this);
         _this.handleClickOutside = _this.handleClickOutside.bind(_this);
         var status = "";
+        _this.initial = true;
         if (_this.props.defaultValue) {
             var value = _this.props.options.find(function (option) {
                 return option.value === _this.props.defaultValue;
@@ -1898,6 +1899,10 @@ var Select = /** @class */ (function (_super) {
         }
     };
     Select.prototype.change = function (event) {
+        if (this.initial) {
+            this.selectDiv.classList.add('select-check-fade-out');
+            this.initial = false;
+        }
         if (this.props.onChange) {
             this.props.onChange(event.target.value);
         }

@@ -179,3 +179,14 @@ button {
 .inherit-input {
   height: 100%;
 }
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+  animation: none !important;
+  animation-play-state: paused !important;
+  animation-duration: 0 !important;
+  animation-delay: -99s !important;
+}

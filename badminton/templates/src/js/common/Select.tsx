@@ -8,6 +8,7 @@ export class Select extends React.Component<any, any> {
 	private titleSpan: any;
 	private wrapper: any;
 	private status: string;
+    private initial: boolean;
 
 	constructor(props: any) {
 		super(props);
@@ -15,6 +16,7 @@ export class Select extends React.Component<any, any> {
 		this.change = this.change.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
         var status = ""
+        this.initial = true;
 
         if (this.props.defaultValue) {
 
@@ -51,6 +53,10 @@ export class Select extends React.Component<any, any> {
     }
 
 	change(event: any) {
+        if (this.initial) {
+            this.selectDiv.classList.add('select-check-fade-out');
+            this.initial = false;
+        }
 		if (this.props.onChange) {
 			this.props.onChange(event.target.value);
 		}
