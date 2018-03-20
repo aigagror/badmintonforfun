@@ -41,7 +41,7 @@ def get_matches(email):
         query = '''
         SELECT *
         FROM api_match AS match, api_team AS team, api_finishedmatch AS finishedmatch 
-        WHERE (match.teamA_id = team.id OR match.teamB_id = team.id) AND (team.memberA_id = %s OR team.memberB_id = %s) 
+        WHERE (match.teamA_id = team.id OR match.teamB_id = team.id) AND (team.member1_id = %s OR team.member2_id = %s) 
               AND match.id = finishedmatch.match_ptr_id
         '''
         cursor.execute(query, [email, email])
@@ -58,7 +58,7 @@ def get_won_matches(email):
         query = '''
         SELECT *
         FROM api_match AS match, api_team AS team, api_finishedmatch AS finishedmatch 
-        WHERE (match.teamA_id = team.id OR match.teamB_id = team.id) AND (team.memberA_id = %s OR team.memberB_id = %s) 
+        WHERE (match.teamA_id = team.id OR match.teamB_id = team.id) AND (team.member1_id = %s OR team.member2_id = %s) 
               AND match.id = finishedmatch.match_ptr_id
         '''
         cursor.execute(query, [email, email])
