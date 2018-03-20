@@ -20,8 +20,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index),
-    path('home/', views.home),
-    path('elections/', views.elections),
-    path('settings/', views.settings),
+    path('api_home/', views.home),
+    path('api_elections/', views.elections),
+    path('api_settings/', views.settings),
 ]
 

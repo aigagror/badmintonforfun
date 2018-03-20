@@ -7,7 +7,7 @@ from .home_api import *
 from .election_api import *
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'api_index.html')
 
 def home(request):
     email = 'ezhuang2@illinois.edu'
@@ -24,7 +24,7 @@ def home(request):
         'matches': None,
     }
 
-    return render(request, 'home.html', context)
+    return render(request, 'api_home.html', context)
 
 class Mini(object):
     email = ""
@@ -55,7 +55,7 @@ def elections(request):
         'afterEditing': after_edit
     }
 
-    return render(request, 'elections.html', context)
+    return render(request, 'api_elections.html', context)
 
 def settings(request):
-    return render(request, 'settings.html')
+    return render(request, 'api_settings.html')
