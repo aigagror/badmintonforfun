@@ -1,0 +1,75 @@
+{% load badminton_filters %}
+
+<!-- Notes
+election
+	* Needs a way to determine if already voted
+interested
+    * Style
+member-stats 
+
+TODOS:
+Website Checklist
+
+* Implicit CSRF (if not using django)
+* Mobile
+* Accessibility
+    - All images should have alt tags
+* Ease of design
+* Responsiveness (No Synchronous REquests)
+* Loading Speed
+* Colors
+* OAUTH login
+    * Request Scopes
+* Opengraph/Facebook integration
+* sass-y css
+* headers and footers
+* Thank you for submitting form
+* 404 page
+* Cookie announcement
+* Privacy Policy
+* Request mobile worst as expected
+* XML sitemap
+* Input validators for forms
+
+-->
+<div class="nav-div">
+<nav>
+	<ul class="nav-list">
+		<li class="nav-link hamburger"><a href="javascript:void(0);" class="icon" onclick="toggleMobile()">&#9776;</a></li>
+		<li class="nav-link"> <a href="./home.html">Home</a> </li>
+		<li class="nav-link"> <a href="./election.html">Election</a> </li>
+		<li class="nav-link"> <a href="./members.html">Members </a> </li>
+		<li class="nav-link"> <a href="./queue.html">Queue </a> </li>
+		<li class="nav-link"> <a href="./ranking.html">Ranking </a> </li>
+		<li class="nav-link"> <a href="./tournament.html">Tournament </a> </li>
+		<li class="nav-link"> <a href="./mail.html">Mail </a> </li>
+		<li class="nav-link"> <a href="./settings.html">Settings </a> </li>
+		<li class="nav-link"> <a href="/api/logout">Settings </a> </li>
+	</ul>
+</nav>
+</div>
+
+<script type="text/javascript">
+/* Keeps this in vanilla to avoid forcing react to load before nav is ready */
+function toggleClass(el, className) {
+	if (el.classList) {
+	  el.classList.toggle(className);
+	} else {
+	  var classes = el.className.split(' ');
+	  var existingIndex = classes.indexOf(className);
+
+	  if (existingIndex >= 0)
+	    classes.splice(existingIndex, 1);
+	  else
+	    classes.push(className);
+
+	  el.className = classes.join(' ');
+	}
+}
+
+function toggleMobile() {
+	const reponsive_name = 'responsive';
+	toggleClass(document.querySelector("nav"), reponsive_name);
+}
+
+</script>

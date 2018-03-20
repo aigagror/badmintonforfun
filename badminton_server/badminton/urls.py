@@ -1,25 +1,32 @@
-"""badminton_server URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+	Sub URL router for the frontend module
+"""
+
 from django.contrib import admin
 from django.urls import path
-from django.urls import include, path
-from .views import js_server, css_server, template_server
+from django.urls import include, path, re_path
+# There is no way to do relative named imports.
+# We are going to have to settle for this
+from .views import *
 
+
+# Set up the error handlers for client side
+handler404 = handle_404
+handler500 = handle_500
+handler403 = handle_403
+handler400 = handle_400
+
+# Set the patterns in most-least
 urlpatterns = [
+	# We would like to keep paths to access node_modules
+	# This should be changed back to str for security
 	path('js/<path:js_file>', js_server),
 	path('css/<path:css_file>', css_server),
+	path('mock/<path:data>', mock_api),
+	path('assets/<path:static_file>', static_server),
+
+	# All templates are in the first level directory
 	path('<str:template>', template_server),
+	# Additional rule for the special index.html
+	re_path(r'', template_server, name='index'),
 ]

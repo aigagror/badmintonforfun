@@ -1,0 +1,40 @@
+[
+	{
+		"type": "bool",
+		"name": "show_games",
+		"display_name": "Show Games on Profile",
+		"value": false
+	},
+	{
+		"type": "option",
+		"name": "abc",
+		"display_name": "Show Games",
+		"options": [
+			{
+				"name": "a",
+				"value": "a"
+			},
+			{
+				"name": "c",
+				"value": "c"
+			},
+			{
+				"name": "d",
+				"value": "d"
+			}
+		],
+		"value": "c"
+	},
+	{
+		"type": "text",
+		"name": "display_name",
+		"display_name": "Name",
+		"value": "Lorem Ipsum"
+	},
+	{
+		"type": "bool",
+		"name": "get_emails",
+		"display_name": "Receive Emails",
+		"value": true
+	}
+]

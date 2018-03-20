@@ -5,6 +5,15 @@ module.exports = {
     entry: {
         'index': path.resolve(__dirname, 'src/js/index.tsx'),
         'interested': path.resolve(__dirname, 'src/js/interested.tsx'),
+        'election': path.resolve(__dirname, 'src/js/election.tsx'),
+        'home': path.resolve(__dirname, 'src/js/home.tsx'),
+        'profile': path.resolve(__dirname, 'src/js/profile.tsx'),
+        'members': path.resolve(__dirname, 'src/js/members.tsx'),
+        'mail': path.resolve(__dirname, 'src/js/mail.tsx'),
+        'queue': path.resolve(__dirname, 'src/js/queue.tsx'),
+        'settings': path.resolve(__dirname, 'src/js/settings.tsx'),
+        'ranking': path.resolve(__dirname, 'src/js/ranking.tsx'),
+        'tournament': path.resolve(__dirname, 'src/js/tournament.tsx'),
         'css': path.resolve(__dirname, 'src/js/css.tsx'),
     },
     output: {

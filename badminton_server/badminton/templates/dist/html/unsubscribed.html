@@ -1,0 +1,31 @@
+{% load badminton_filters %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include_fragment 'head.html' %}
+
+        <title>Badminton For Fun - Unsubscribed</title>
+        <meta name="author" content="Bhuvan Venkatesh">
+        <meta name="description" content="Badminton for unsubscribed page.">
+    </head>
+    <body>
+
+    <div class="grid row row-offset-es-1">
+        <div class="col-offset-2 col-8">
+            <div class="grid">
+                <div class="row badminton-landing-text">
+                    Unsubscribed!
+                </div>
+
+                <div class="row row-offset-1">
+                    <p>We are sorry to see you go. If you want to resubscribe, <a href="{% url 'index' %}"> just visit our home page</a> </p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    {% include_fragment 'foot.html' %}
+    </body>
+</html>
