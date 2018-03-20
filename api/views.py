@@ -19,11 +19,14 @@ def home(request):
 
     matches = get_matches(email)
 
+    schedule = get_schedule()
+
     context = {
         'announcements': announcements,
         'profile': profile,
         'stats': stats,
         'matches': matches,
+        'schedule': schedule
     }
 
     return render(request, 'api_home.html', context)

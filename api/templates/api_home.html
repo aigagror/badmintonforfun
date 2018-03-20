@@ -20,6 +20,20 @@
     <p>No announcements are available.</p>
 {% endif %}
 
+<h1>Schedule</h1>
+{% if schedule %}
+    <ul>
+        {% for s in schedule %}
+            <li>
+                <h2>{{ s.date }}</h2>
+                <p>{{ s.number_of_courts }} courts</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No sessions are available.</p>
+{% endif %}
+
 <h1>Profile</h1>
 {% if profile %}
     <div>{{ profile.first_name }}</div>

@@ -105,3 +105,14 @@ def get_won_matches(email):
 def get_total_wins(email):
     results = get_won_matches(email)
     return len(results)
+
+def get_schedule():
+    with connection.cursor() as cursor:
+        query = '''
+        SELECT *
+        FROM api_schedule
+        '''
+        cursor.execute(query)
+        results = dictfetchall(cursor)
+
+    return results

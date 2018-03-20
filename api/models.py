@@ -92,6 +92,12 @@ class Announcement(models.Model):
     title = models.CharField(max_length=64)
     entry = models.CharField(max_length=500)
 
+    def __str__(self):
+        return '{}'.format(self.title)
+
 class Schedule(models.Model):
     date = models.DateField('date of session', primary_key=True)
-    number_of_courts = models.IntegerField()
+    number_of_courts = models.IntegerField(default=4)
+
+    def __str__(self):
+        return '{}'.format(self.date)
