@@ -51,7 +51,7 @@
     <ul>
         {% for m in matches%}
             <li>
-                <h2>Team {{ m.teamA }} vs. Team {{ m.teamB }}</h2>
+                <h2>{{ m.teamA.p1.first_name }} and {{ m.teamA.p2.first_name }} vs. {{ m.teamB.p1.first_name }} and {{ m.teamB.p2.first_name }}</h2>
                 <p>{{ m.scoreA }} to {{ m.scoreB }}</p>
             </li>
         {% endfor %}
