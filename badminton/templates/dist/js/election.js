@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 39);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var isBuffer = __webpack_require__(12);
 
 /*global toString:true*/
@@ -481,10 +481,28 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -674,24 +692,6 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function bind(fn, thisArg) {
-  return function wrap() {
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-    return fn.apply(thisArg, args);
-  };
-};
-
-
-/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -877,7 +877,7 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 6 */
@@ -962,7 +962,7 @@ module.exports = __webpack_require__(11);
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var Axios = __webpack_require__(13);
 var defaults = __webpack_require__(2);
 
@@ -2051,12 +2051,7 @@ exports.Popup = Popup;
 /* 36 */,
 /* 37 */,
 /* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2064,12 +2059,12 @@ exports.Popup = Popup;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const ReactDOM = __webpack_require__(9);
-const ElectionView_1 = __webpack_require__(45);
+const ElectionView_1 = __webpack_require__(40);
 ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
 
 
 /***/ }),
-/* 45 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2078,8 +2073,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const Popup_1 = __webpack_require__(30);
 const axios_1 = __webpack_require__(10);
-const RegisterElection_1 = __webpack_require__(46);
-const RadioButton_1 = __webpack_require__(47);
+const RegisterElection_1 = __webpack_require__(41);
+const RadioButton_1 = __webpack_require__(42);
 const Select_1 = __webpack_require__(29);
 const election_url = '/mock/election_happening.json';
 const election_not_url = '/mock/electionless.json';
@@ -2259,7 +2254,7 @@ exports.ElectionView = ElectionView;
 
 
 /***/ }),
-/* 46 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2332,7 +2327,7 @@ exports.RegisterElectionView = RegisterElectionView;
 
 
 /***/ }),
-/* 47 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

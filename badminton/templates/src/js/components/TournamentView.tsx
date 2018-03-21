@@ -1,7 +1,5 @@
 import * as React from "react";
 import axios from 'axios';
-import * as Konva from "konva";
-import { Stage, Layer, Rect, Text, Line } from "react-konva";
 
 const tourney_url = '/mock/tournament.json';
 
@@ -10,11 +8,11 @@ const rowHeight = 40;
 const rowSpacing = 10;
 const colSpacing = 50;
 const lazyHack =10000000;
-
-const calcX = (col: number) => (columnWidth+colSpacing)*col;
+const svgOffset = 20;
+const calcX = (col: number) => (columnWidth+colSpacing)*col + svgOffset;
 const calcY = (col: number, row: number, maxCols: number): number => {
 	if(col === 0) {
-		return (rowHeight+rowSpacing)*row + col * ((rowHeight+rowSpacing)/2)
+		return (rowHeight+rowSpacing)*row + col * ((rowHeight+rowSpacing)/2) + svgOffset;
 	}
 
 	const numBlocksCenter = Math.pow(2, col);
@@ -32,17 +30,25 @@ class Matchup extends React.Component<any, any> {
 		var extra;
 		const opts = {
 			stroke: "white",
-			strokeWidth: 1.25,
-			padding: 4,
+			fill: "white",
+			"font-family": "Arial",
+			"font-size": "16px",
 		}
-
+		const startingX = this.props.x;
+		const startingY = this.props.y+15;
 		if (this.props.data.state === "undecided") {
-			extra = <Text text="TBA" {...opts} x={this.props.x} y={this.props.y} height={rowHeight} width={columnWidth} align="center" />
+			extra = <text style={opts} x={startingX} y={startingY} height={rowHeight} width={columnWidth}>
+				TBA
+				</text>
 		}
 		else if (this.props.data.state === "decided") {
 			extra = <>
-				<Text text={this.props.data.team1} {...opts} x={this.props.x} y={this.props.y}/>
-				<Text text={this.props.data.team2} {...opts} x={this.props.x} y={this.props.y+rowHeight/2}/>
+				<text style={opts} x={startingX} y={startingY}>
+				{this.props.data.team1}
+				</text>
+				<text style={opts} x={startingX} y={startingY+rowHeight/2}>
+				{this.props.data.team2}
+				</text>
 				</>
 		} else {
 			const convert = (num: number): string => {
@@ -53,22 +59,35 @@ class Matchup extends React.Component<any, any> {
 				return "" + num;
 			}
 			extra = <>
-				<Text text={this.props.data.team1} {...opts} x={this.props.x} y={this.props.y}/>
-				<Text text={this.props.data.team2} {...opts} x={this.props.x} y={this.props.y+rowHeight/2}/>
-				<Text text={convert(this.props.data.team1_score)} {...opts} x={this.props.x+columnWidth-25} y={this.props.y}/>
-				<Text text={convert(this.props.data.team2_score)} {...opts} x={this.props.x+columnWidth-25} y={this.props.y+rowHeight/2}/>
+				<text style={opts} x={startingX} y={startingY}>
+				{this.props.data.team1}
+				</text>
+				<text style={opts} x={startingX} y={startingY+rowHeight/2}>
+				{this.props.data.team2}
+				</text>
+				<text style={opts} x={startingX+columnWidth-25} y={startingY}>
+				{this.props.data.team1_score}
+				</text>
+				<text style={opts} x={startingX+columnWidth-25} y={startingY+rowHeight/2}>
+				{this.props.data.team2_score}
+				</text>
 				</>
+		}
+		const rectStyle = {
+			fill: 'black',
+			stroke: 'black',
+			'stroke-width': 5,
 		}
 		return (
 			<>
-		  <Rect
+		  <rect
 			x={this.props.x}
 			y={this.props.y}
 			width={columnWidth}
 			height={rowHeight}
-			fill={"black"}
-			shadowEnabled={false}
-			cornerRadius={3}
+			style={rectStyle}
+			rx={""+3}
+			ry={""+3}
 		  />
 		  {extra}
 		  </>
@@ -108,7 +127,14 @@ class TournamentCell extends React.Component<any, any> {
 		} else {
 			toY -= offsetY;
 		}
-		return [<Line stroke="black" strokeWidth={3} points={[midX, midY, halfX, midY, halfX, toY, toX-offsetX, toY]} />, ...othElems]
+		const lineOpts = {
+			stroke: "black",
+			strokeWidth: 1.5,
+		}
+		return [<line {...lineOpts} x1={""+midX} y1={""+midY} x2={""+halfX} y2={""+midY} />, 
+			<line {...lineOpts} x1={""+halfX} y1={""+midY} x2={""+halfX} y2={""+toY} />,
+			<line {...lineOpts} x1={""+halfX} y1={""+toY} x2={""+(toX-offsetX)} y2={""+toY} />,
+			...othElems]
 	}
 
 
@@ -139,13 +165,13 @@ class TournamentCell extends React.Component<any, any> {
 	render() {
 		const maxHeight = height(this.props.matches);
 		let [elems, ...rest] = this.agglomerateData(this.props.matches, 0, maxHeight-1, maxHeight);
-		return <Stage width={window.innerWidth} height={window.innerHeight}>
-				<Layer>
+		return <svg width={""+window.innerWidth} height={""+window.innerHeight}>
+				<g>
 					{
 						elems
 					}
-				</Layer>
-			  </Stage>
+				</g>
+			  </svg>
 	}
 }
 
