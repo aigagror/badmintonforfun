@@ -1,48 +1,109 @@
 import * as React from "react";
 import axios from 'axios';
+import * as Konva from "konva";
+import { Stage, Layer, Rect, Text, Line } from "react-konva";
 
 const tourney_url = '/mock/tournament.json';
 
+const columnWidth = 160;
+const rowHeight = 40;
+const rowSpacing = 10;
+const colSpacing = 50;
+const lazyHack =10000000;
+
+const calcX = (col: number) => (columnWidth+colSpacing)*col;
+const calcY = (col: number, row: number, maxCols: number): number => {
+	if(col === 0) {
+		return (rowHeight+rowSpacing)*row + col * ((rowHeight+rowSpacing)/2)
+	}
+
+	const numBlocksCenter = Math.pow(2, col);
+	const ytop = calcY(0, row*numBlocksCenter, maxCols);
+	const ybot = calcY(0, (row+1)*numBlocksCenter-1, maxCols) + rowHeight;
+
+	return (ytop + ybot - rowHeight) / 2;
+}
+
+class Matchup extends React.Component<any, any> {
+
+
+	render() {
+		return (
+		  <Rect
+			x={this.props.x}
+			y={this.props.y}
+			width={columnWidth}
+			height={rowHeight}
+			fill={"black"}
+			shadowBlur={5}
+		  />
+		);
+	}
+}
+
+function height(matchups: any): number {
+	if (matchups === null) {
+		return 0;
+	}
+
+	let hgt = Math.max(height(matchups.feeder_lhs), 
+		height(matchups.feeder_rhs)) + 1;
+	return hgt;
+}
+
 class TournamentCell extends React.Component<any, any> {
 
-	render(): any {
-		const matches = this.props.matches;
-		var render;
-		if (matches.state === "undecided") {
-			render = (<div className="tournament-card">
-					<h4>{matches.title}</h4>
-					<p>TBA</p>
-					</div>);
-		} else if (matches.state === "decided") {
-			render = (<div className="tournament-card">
-					<h4>{matches.title}</h4>
-					<h5>{matches.team1}</h5>
-					<h5>{matches.team2}</h5>
-					</div>);
-		} else {
-			render = (<div className="tournament-card">
-					<h4>{matches.title}</h4>
-					<h5>{matches.team1} Score: {matches.team1_score}</h5>
-					<h5>{matches.team2} Score: {matches.team2_score}</h5>
-					</div>);
-		}
-		
-		return <div className="grid">
-			<div className="row">
-				{render}
-			</div>
+	constructor(props: any) {
+		super(props);
 
-			<div className="row">
-			<div className="col-6 tournament-row">
-			{matches.feeder_lhs !== null && 
-				<TournamentCell matches={matches.feeder_lhs} />}
-			</div>
-			<div className="col-6 tournament-row">
-			{matches.feeder_rhs !== null && 
-				<TournamentCell matches={matches.feeder_rhs} />}
-			</div>
-			</div>
-		</div>
+		this.agglomerateData = this.agglomerateData.bind(this);
+		this._merge = this._merge.bind(this);
+	}
+
+	_merge(aggCall: any, toX: number, toY: number) {
+		let [othElems, [othX, othY]] = aggCall;
+		const midX = othX + columnWidth;
+		const midY = othY + rowHeight / 2;
+		return [<Line stroke="blue" strokeWidth={3} points={[midX, midY, toX, toY]} />, ...othElems]
+	}
+
+
+
+	agglomerateData(data: any, row: number, col: number, maxCols: number): any {
+		//elements, root
+		if (data === null) {
+			return [];
+		}
+		let {feeder_lhs, feeder_rhs, ...rest} = data;
+		const x = calcX(col);
+		const y = calcY(col, row, maxCols);
+		var elems = [<Matchup x={x} y={y} data={rest}/>];
+		const entry = y + rowHeight / 2;
+
+		if (data.feeder_lhs !== null) {
+			const accumulated = this._merge(this.agglomerateData(data.feeder_lhs, row*2, col-1, maxCols), x, entry);
+			elems = elems.concat(accumulated);
+		}
+		if (data.feeder_rhs !== null) {
+			const accumulated = this._merge(this.agglomerateData(data.feeder_rhs, row*2+1, col-1, maxCols), x, entry);
+			elems = elems.concat(accumulated);
+		}
+		console.log(elems);
+		return [elems, [x, y]];
+	}
+
+
+	render() {
+		const maxHeight = height(this.props.matches);
+		let [elems, ...rest] = this.agglomerateData(this.props.matches, 0, maxHeight-1, maxHeight);
+		console.log(elems);
+		return <Stage width={window.innerWidth} height={window.innerHeight}>
+				<Layer>
+					{
+						elems
+					}
+				</Layer>
+			  </Stage>
 	}
 }
 
@@ -70,7 +131,6 @@ export class TournamentView extends React.Component<any, any> {
 		if (this.state.matches === null) {
 			return null;
 		}
-
 		return (<TournamentCell matches={this.state.matches} />);
 	}
 }
