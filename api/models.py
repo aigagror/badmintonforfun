@@ -40,6 +40,7 @@ class Member(Interested):
     private = models.BooleanField(default=False)
     dateJoined = models.DateField('date joined')
     queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
+    bio = models.CharField(max_length=500, default='')
 
 class BoardMember(Member):
     job = models.CharField(max_length=64, choices=JOBS)
@@ -64,12 +65,12 @@ class Campaign(models.Model):
 
 class Team(models.Model):
     class Meta:
-        unique_together = (('memberA', 'memberB'),)
-    memberA = models.ForeignKey(Member, related_name='memberA', on_delete=models.PROTECT)
-    memberB = models.ForeignKey(Member, related_name='memberB', on_delete=models.SET_NULL, null=True, blank=True)
+        unique_together = (('member1', 'member2'),)
+    member1 = models.ForeignKey(Member, related_name='member1', on_delete=models.PROTECT)
+    member2 = models.ForeignKey(Member, related_name='member2', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return '{} & {}'.format(self.memberA, self.memberB)
+        return '{} & {}'.format(self.member1, self.member2)
 
 class Match(models.Model):
     id = models.AutoField(primary_key=True)
@@ -91,3 +92,13 @@ class Announcement(models.Model):
     date = models.DateTimeField('date of announcement', primary_key=True)
     title = models.CharField(max_length=64)
     entry = models.CharField(max_length=500)
+
+    def __str__(self):
+        return '{}'.format(self.title)
+
+class Schedule(models.Model):
+    date = models.DateField('date of session', primary_key=True)
+    number_of_courts = models.IntegerField(default=4)
+
+    def __str__(self):
+        return '{}'.format(self.date)

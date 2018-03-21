@@ -42,5 +42,28 @@ Didn't work lol
 {% else %}
 Didn't work lol
 {% endif %}
+
+
+<h1>Delete election (integrityerror)</h1>
+{% if deleted %}
+    {{deleted}}
+{% else %}
+Didn't work lol
+{% endif %}
+
+<h1>Add new elections</h1>
+{% if oneElection and twoElections %}
+    {{oneElection}}
+    {{twoElections}}
+{% else %}
+Didn't work lol
+{% endif %}
+
+<h1>List elections</h1>
+{% if elections %}
+    {{elections}}
+{% else %}
+Didn't work lol
+{% endif %}
 </body>
 </html>

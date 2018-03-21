@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+</head>
+<body>
+
+<h1>Board Members</h1>
+{% if board_members %}
+    <ul>
+        {% for b in board_members %}
+            <li>
+                <h1>{{ b.first_name }}</h1>
+                <p>{{ b.last_name }}</p>
+                <p>{{ b.email }}</p>
+                <p>{{ b.job }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no board members.</p>
+{% endif %}
+
+<h1>Members</h1>
+{% if members%}
+    <ul>
+        {% for m in members %}
+            <li>
+                <h1>{{ m.first_name }}</h1>
+                <p>{{ m.last_name }}</p>
+                <p>{{ m.email }}</p>
+                <p>{{ m.private }}</p>
+                <p>{{ m.bio }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no members.</p>
+{% endif %}
+
+<h1>Interested</h1>
+{% if interested %}
+    <ul>
+        {% for i in interested %}
+            <li>
+                <h1>{{ i.first_name }}</h1>
+                <p>{{ i.last_name }}</p>
+                <p>{{ i.email }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There is no one exclusively interested.</p>
+{% endif %}
+
+<h1>Retrieved attribute</h1>
+{% if john_doe_attr %}
+    <ul>
+        {{ john_doe_attr }}
+    </ul>
+{% endif %}
+
+<h1>Schedule</h1>
+{% if schedule %}
+    <ul>
+        {% for s in schedule %}
+            <h1>Date: {{ s.date }}</h1>
+            <p>Number of courts available: {{ s.number_of_courts }}</p>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no entries in the schedule.</p>
+{% endif %}
+
+<h1>All Courts Info</h1>
+{% if all_courts %}
+    <ul>
+        {% for c in all_courts %}
+            <h1>Court {{c.id}}</h1>
+            <p>Number: {{c.number}}</p>
+            <p>Queue Type: {{c.queue_id}}</p>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no existing courts.</p>
+{% endif %}
+
+<h1>Available Courts Check ({{available_courts.date}})</h1>
+{% if available_courts %}
+    <ul>
+        {% for c in available_courts.courts %}
+            <h1>Court {{c.id}}</h1>
+            <p>Number: {{c.number}}</p>
+            <p>Queue Type: {{c.queue_id}}</p>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no available courts.</p>
+{% endif %}
+
+
+</body>
+</html>

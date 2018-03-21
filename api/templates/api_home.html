@@ -10,7 +10,7 @@
     <ul>
         {% for a in announcements %}
             <li>
-                <h1>{{ a.title }}</h1>
+                <h2>{{ a.title }}</h2>
                 <p>{{ a.date }}</p>
                 <p>{{ a.entry }}</p>
             </li>
@@ -18,6 +18,20 @@
     </ul>
 {% else %}
     <p>No announcements are available.</p>
+{% endif %}
+
+<h1>Schedule</h1>
+{% if schedule %}
+    <ul>
+        {% for s in schedule %}
+            <li>
+                <h2>{{ s.date }}</h2>
+                <p>{{ s.number_of_courts }} courts</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No sessions are available.</p>
 {% endif %}
 
 <h1>Profile</h1>
@@ -34,7 +48,14 @@
 
 <h1>Matches</h1>
 {% if matches %}
-
+    <ul>
+        {% for m in matches%}
+            <li>
+                <h2>{{ m.teamA.p1.first_name }} and {{ m.teamA.p2.first_name }} vs. {{ m.teamB.p1.first_name }} and {{ m.teamB.p2.first_name }}</h2>
+                <p>{{ m.scoreA }} to {{ m.scoreB }}</p>
+            </li>
+        {% endfor %}
+    </ul>
 {% endif %}
 </body>
 </html>
