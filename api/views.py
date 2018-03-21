@@ -144,18 +144,18 @@ def settings(request):
     #delete_from_schedule('2018-03-21')
     schedule = get_schedule()
 
-    #add_queue(Queue('CASUAL'))
-    #add_queue(Queue('RANKED'))
-    #add_queue(Queue('KOTH'))
+    add_queue(Queue('CASUAL'))
+    add_queue(Queue('RANKED'))
+    add_queue(Queue('KOTH'))
 
-    # add_court(Court(1, 4, 'CASUAL'))
-    # add_court(Court(2, 2, 'RANKED'))
-    # add_court(Court(3, 8, 'CASUAL'))
-    # add_court(Court(4, 4, 'KOTH'))
-    # add_court(Court(5, 2, 'RANKED'))
-    # add_court(Court(6, 2, 'RANKED'))
-    # add_court(Court(7, 2, 'RANKED'))
-    # add_court(Court(8, 2, 'RANKED'))
+    add_court(Court(1, 4, 'CASUAL'))
+    add_court(Court(2, 2, 'RANKED'))
+    add_court(Court(3, 8, 'CASUAL'))
+    add_court(Court(4, 4, 'KOTH'))
+    add_court(Court(5, 2, 'RANKED'))
+    add_court(Court(6, 2, 'RANKED'))
+    add_court(Court(7, 2, 'RANKED'))
+    add_court(Court(8, 2, 'RANKED'))
 
     check_court_date = '2018-03-31'
     available_courts = {'date': check_court_date, 'courts': get_available_courts(check_court_date)}
