@@ -30,6 +30,8 @@
                 <h1>{{ m.first_name }}</h1>
                 <p>{{ m.last_name }}</p>
                 <p>{{ m.email }}</p>
+                <p>{{ m.private }}</p>
+                <p>{{ m.bio }}</p>
             </li>
         {% endfor %}
     </ul>
@@ -52,7 +54,50 @@
     <p>There is no one exclusively interested.</p>
 {% endif %}
 
+<h1>Retrieved attribute</h1>
+{% if john_doe_attr %}
+    <ul>
+        {{ john_doe_attr }}
+    </ul>
+{% endif %}
 
+<h1>Schedule</h1>
+{% if schedule %}
+    <ul>
+        {% for s in schedule %}
+            <h1>Date: {{ s.date }}</h1>
+            <p>Number of courts available: {{ s.number_of_courts }}</p>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no entries in the schedule.</p>
+{% endif %}
+
+<h1>All Courts Info</h1>
+{% if all_courts %}
+    <ul>
+        {% for c in all_courts %}
+            <h1>Court {{c.id}}</h1>
+            <p>Number: {{c.number}}</p>
+            <p>Queue Type: {{c.queue_id}}</p>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no existing courts.</p>
+{% endif %}
+
+<h1>Available Courts Check ({{available_courts.date}})</h1>
+{% if available_courts %}
+    <ul>
+        {% for c in available_courts.courts %}
+            <h1>Court {{c.id}}</h1>
+            <p>Number: {{c.number}}</p>
+            <p>Queue Type: {{c.queue_id}}</p>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no available courts.</p>
+{% endif %}
 
 
 </body>
