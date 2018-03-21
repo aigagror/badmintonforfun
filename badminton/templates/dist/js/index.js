@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 39);
+/******/ 	return __webpack_require__(__webpack_require__.s = 40);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -97,16 +97,16 @@ exports.GoogleAuthButton = GoogleAuthButton;
 
 /***/ }),
 
-/***/ 39:
+/***/ 40:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
-const ReactDOM = __webpack_require__(4);
+const ReactDOM = __webpack_require__(9);
 const GoogleAuthButton_1 = __webpack_require__(31);
-const Button_1 = __webpack_require__(40);
+const Button_1 = __webpack_require__(41);
 const responseGoogle = (response) => {
     console.log(response);
 };
@@ -118,14 +118,7 @@ ReactDOM.render(React.createElement(Button_1.Button, { text: "Interested", href:
 
 /***/ }),
 
-/***/ 4:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-
-/***/ 40:
+/***/ 41:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -146,6 +139,13 @@ class Button extends React.Component {
 }
 exports.Button = Button;
 
+
+/***/ }),
+
+/***/ 9:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
 
 /***/ })
 

@@ -10,12 +10,17 @@
 			"rank": 2
 		},
 		{
-			"name": "Person 1",
+			"name": "Person 3",
 			"rank": 3
+		},
+		{
+			"name": "Person 4",
+			"rank": 4
+		},
+		{
+			"name": "Person 5",
+			"rank": 5
 		}
 	],
-
-	"member": {
-		"rank": 2
-	}
+	"my_rank": 2
 }

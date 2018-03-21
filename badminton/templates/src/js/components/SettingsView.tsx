@@ -181,7 +181,8 @@ export class SettingsView extends React.Component<any, any> {
 	constructor(props: any) {
 		super(props);
 		this.switch = this.switch.bind(this);
-
+		this.performRequest = this.performRequest.bind(this);
+		
 		this.state = {
 			regular_settings: null,
 			board_settings: null,
