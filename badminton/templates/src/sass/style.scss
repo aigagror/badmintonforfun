@@ -185,19 +185,9 @@ button {
 
 // tournament page
 
-.tournament-card {
-  width: 15vw;
-  height: 15vw;
-  margin: 0 auto;
-  text-align: center;
-  background-color: gray;
-}
-
-.tournament-row {
-  padding-left: 0px;
-  padding-right: 0px;
-  margin-top: 5px;
-  width: 50%;
+.tournament-div {
+  overflow: auto;
+  padding-top:30px;
 }
 
 // mail

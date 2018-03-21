@@ -28,15 +28,50 @@ class Matchup extends React.Component<any, any> {
 
 
 	render() {
+
+		var extra;
+		const opts = {
+			stroke: "white",
+			strokeWidth: 1.25,
+			padding: 4,
+		}
+
+		if (this.props.data.state === "undecided") {
+			extra = <Text text="TBA" {...opts} x={this.props.x} y={this.props.y} height={rowHeight} width={columnWidth} align="center" />
+		}
+		else if (this.props.data.state === "decided") {
+			extra = <>
+				<Text text={this.props.data.team1} {...opts} x={this.props.x} y={this.props.y}/>
+				<Text text={this.props.data.team2} {...opts} x={this.props.x} y={this.props.y+rowHeight/2}/>
+				</>
+		} else {
+			const convert = (num: number): string => {
+				if (num < 10) {
+					return "0" + num;
+				}
+
+				return "" + num;
+			}
+			extra = <>
+				<Text text={this.props.data.team1} {...opts} x={this.props.x} y={this.props.y}/>
+				<Text text={this.props.data.team2} {...opts} x={this.props.x} y={this.props.y+rowHeight/2}/>
+				<Text text={convert(this.props.data.team1_score)} {...opts} x={this.props.x+columnWidth-25} y={this.props.y}/>
+				<Text text={convert(this.props.data.team2_score)} {...opts} x={this.props.x+columnWidth-25} y={this.props.y+rowHeight/2}/>
+				</>
+		}
 		return (
+			<>
 		  <Rect
 			x={this.props.x}
 			y={this.props.y}
 			width={columnWidth}
 			height={rowHeight}
 			fill={"black"}
-			shadowBlur={5}
+			shadowEnabled={false}
+			cornerRadius={3}
 		  />
+		  {extra}
+		  </>
 		);
 	}
 }
@@ -62,9 +97,18 @@ class TournamentCell extends React.Component<any, any> {
 
 	_merge(aggCall: any, toX: number, toY: number) {
 		let [othElems, [othX, othY]] = aggCall;
-		const midX = othX + columnWidth;
-		const midY = othY + rowHeight / 2;
-		return [<Line stroke="blue" strokeWidth={3} points={[midX, midY, toX, toY]} />, ...othElems]
+		const offsetX = 6;
+		const midX = othX + columnWidth+offsetX;
+		var midY = othY + rowHeight / 2;
+
+		const halfX = midX + colSpacing / 2;
+		const offsetY = 9;
+		if (toY < midY) {
+			toY += offsetY;
+		} else {
+			toY -= offsetY;
+		}
+		return [<Line stroke="black" strokeWidth={3} points={[midX, midY, halfX, midY, halfX, toY, toX-offsetX, toY]} />, ...othElems]
 	}
 
 
@@ -88,7 +132,6 @@ class TournamentCell extends React.Component<any, any> {
 			const accumulated = this._merge(this.agglomerateData(data.feeder_rhs, row*2+1, col-1, maxCols), x, entry);
 			elems = elems.concat(accumulated);
 		}
-		console.log(elems);
 		return [elems, [x, y]];
 	}
 
@@ -96,7 +139,6 @@ class TournamentCell extends React.Component<any, any> {
 	render() {
 		const maxHeight = height(this.props.matches);
 		let [elems, ...rest] = this.agglomerateData(this.props.matches, 0, maxHeight-1, maxHeight);
-		console.log(elems);
 		return <Stage width={window.innerWidth} height={window.innerHeight}>
 				<Layer>
 					{
@@ -131,6 +173,9 @@ export class TournamentView extends React.Component<any, any> {
 		if (this.state.matches === null) {
 			return null;
 		}
-		return (<TournamentCell matches={this.state.matches} />);
+		return (
+			<div className="tournament-div">
+			<TournamentCell matches={this.state.matches} />
+			</div>);
 	}
 }

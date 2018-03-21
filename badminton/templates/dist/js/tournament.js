@@ -2235,7 +2235,36 @@ const calcY = (col, row, maxCols) => {
 };
 class Matchup extends React.Component {
     render() {
-        return (React.createElement(react_konva_1.Rect, { x: this.props.x, y: this.props.y, width: columnWidth, height: rowHeight, fill: "black", shadowBlur: 5 }));
+        var extra;
+        const opts = {
+            stroke: "white",
+            strokeWidth: 1.25,
+            padding: 4,
+        };
+        if (this.props.data.state === "undecided") {
+            extra = React.createElement(react_konva_1.Text, Object.assign({ text: "TBA" }, opts, { x: this.props.x, y: this.props.y, height: rowHeight, width: columnWidth, align: "center" }));
+        }
+        else if (this.props.data.state === "decided") {
+            extra = React.createElement(React.Fragment, null,
+                React.createElement(react_konva_1.Text, Object.assign({ text: this.props.data.team1 }, opts, { x: this.props.x, y: this.props.y })),
+                React.createElement(react_konva_1.Text, Object.assign({ text: this.props.data.team2 }, opts, { x: this.props.x, y: this.props.y + rowHeight / 2 })));
+        }
+        else {
+            const convert = (num) => {
+                if (num < 10) {
+                    return "0" + num;
+                }
+                return "" + num;
+            };
+            extra = React.createElement(React.Fragment, null,
+                React.createElement(react_konva_1.Text, Object.assign({ text: this.props.data.team1 }, opts, { x: this.props.x, y: this.props.y })),
+                React.createElement(react_konva_1.Text, Object.assign({ text: this.props.data.team2 }, opts, { x: this.props.x, y: this.props.y + rowHeight / 2 })),
+                React.createElement(react_konva_1.Text, Object.assign({ text: convert(this.props.data.team1_score) }, opts, { x: this.props.x + columnWidth - 25, y: this.props.y })),
+                React.createElement(react_konva_1.Text, Object.assign({ text: convert(this.props.data.team2_score) }, opts, { x: this.props.x + columnWidth - 25, y: this.props.y + rowHeight / 2 })));
+        }
+        return (React.createElement(React.Fragment, null,
+            React.createElement(react_konva_1.Rect, { x: this.props.x, y: this.props.y, width: columnWidth, height: rowHeight, fill: "black", shadowEnabled: false, cornerRadius: 3 }),
+            extra));
     }
 }
 function height(matchups) {
@@ -2253,9 +2282,18 @@ class TournamentCell extends React.Component {
     }
     _merge(aggCall, toX, toY) {
         let [othElems, [othX, othY]] = aggCall;
-        const midX = othX + columnWidth;
-        const midY = othY + rowHeight / 2;
-        return [React.createElement(react_konva_1.Line, { stroke: "blue", strokeWidth: 3, points: [midX, midY, toX, toY] }), ...othElems];
+        const offsetX = 6;
+        const midX = othX + columnWidth + offsetX;
+        var midY = othY + rowHeight / 2;
+        const halfX = midX + colSpacing / 2;
+        const offsetY = 9;
+        if (toY < midY) {
+            toY += offsetY;
+        }
+        else {
+            toY -= offsetY;
+        }
+        return [React.createElement(react_konva_1.Line, { stroke: "black", strokeWidth: 3, points: [midX, midY, halfX, midY, halfX, toY, toX - offsetX, toY] }), ...othElems];
     }
     agglomerateData(data, row, col, maxCols) {
         //elements, root
@@ -2275,13 +2313,11 @@ class TournamentCell extends React.Component {
             const accumulated = this._merge(this.agglomerateData(data.feeder_rhs, row * 2 + 1, col - 1, maxCols), x, entry);
             elems = elems.concat(accumulated);
         }
-        console.log(elems);
         return [elems, [x, y]];
     }
     render() {
         const maxHeight = height(this.props.matches);
         let [elems, ...rest] = this.agglomerateData(this.props.matches, 0, maxHeight - 1, maxHeight);
-        console.log(elems);
         return React.createElement(react_konva_1.Stage, { width: window.innerWidth, height: window.innerHeight },
             React.createElement(react_konva_1.Layer, null, elems));
     }
@@ -2307,7 +2343,8 @@ class TournamentView extends React.Component {
         if (this.state.matches === null) {
             return null;
         }
-        return (React.createElement(TournamentCell, { matches: this.state.matches }));
+        return (React.createElement("div", { className: "tournament-div" },
+            React.createElement(TournamentCell, { matches: this.state.matches })));
     }
 }
 exports.TournamentView = TournamentView;
