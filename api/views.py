@@ -25,7 +25,7 @@ def home(request):
         'matches': None,
     }
 
-    return render(request, 'home.html', context)
+    return render(request, 'api_home.html', context)
 
 class Mini(object):
     email = ""
@@ -67,7 +67,7 @@ def elections(request):
         'elections': election_list
     }
 
-    return render(request, 'elections.html', context)
+    return render(request, 'api_elections.html', context)
 
 class Interested(object):
     first_name = ''
