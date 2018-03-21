@@ -123,9 +123,9 @@ class Queue(object):
 
 def settings(request):
     #remove_member('johndoe@email.com')
-    #add_interested(Interested('John', 'Doe', False, 'johndoe@email.com'))
-    #new_member_info = Member(0, False, '2018-03-20', 'My name is John Doe and I like badminton')
-    #promote_to_member('johndoe@email.com', new_member_info)
+    add_interested(Interested('John', 'Doe', False, 'johndoe@email.com'))
+    new_member_info = Member(0, False, '2018-03-20', 'My name is John Doe and I like badminton')
+    promote_to_member('johndoe@email.com', new_member_info)
     #promote_to_board_member('johndoe@email.com', BoardMember('Test Job'))
 
     #edit_member_info('johndoe@email.com', 'private', True)

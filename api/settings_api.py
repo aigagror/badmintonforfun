@@ -34,7 +34,8 @@ def get_member_attr(email, attribute):
         query = '''
         SELECT ''' + attribute + '''
         FROM api_member
-        WHERE interested_ptr_id=%s;
+        WHERE interested_ptr_id=%s
+        LIMIT 1;
         '''
         cursor.execute(query, [email])
         results = dictfetchall(cursor)
@@ -281,7 +282,8 @@ def get_court(court_id):
         query = '''
         SELECT *
         FROM api_court
-        WHERE id=%s;
+        WHERE id=%s
+        LIMIT 1
         '''
         cursor.execute(query, [court_id])
         results = dictfetchall(cursor)
