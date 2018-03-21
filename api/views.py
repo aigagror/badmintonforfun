@@ -17,12 +17,17 @@ def home(request):
     profile = get_member(email)
 
     stats = get_stats(email)
+    
+    matches = get_matches(email)
+    
+    schedule = get_schedule()
 
     context = {
         'announcements': announcements,
         'profile': profile,
         'stats': stats,
-        'matches': None,
+        'matches': matches,
+        'schedule': schedule
     }
 
     return render(request, 'api_home.html', context)
