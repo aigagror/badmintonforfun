@@ -17,12 +17,17 @@ def home(request):
     profile = get_member(email)
 
     stats = get_stats(email)
+    
+    matches = get_matches(email)
+    
+    schedule = get_schedule()
 
     context = {
         # 'announcements': announcements,
         'profile': profile,
         'stats': stats,
-        # 'matches': None,
+        # 'matches': matches,
+        # 'schedule': schedule
     }
 
     return HttpResponse(json.dumps(context), content_type="application/json")
