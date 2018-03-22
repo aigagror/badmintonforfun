@@ -8,7 +8,7 @@ from .election_api import *
 from .settings_api import *
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'api_index.html')
 
 def home(request):
     email = 'ezhuang2@illinois.edu'
@@ -19,13 +19,13 @@ def home(request):
     stats = get_stats(email)
 
     context = {
-        'announcements': announcements,
+        # 'announcements': announcements,
         'profile': profile,
         'stats': stats,
-        'matches': None,
+        # 'matches': None,
     }
 
-    return render(request, 'api_home.html', context)
+    return HttpResponse(json.dumps(context), content_type="application/json")
 
 class Mini(object):
     email = ""
