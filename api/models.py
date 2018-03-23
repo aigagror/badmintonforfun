@@ -107,7 +107,16 @@ class Match(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return '{}: {}-{}'.format(self.id, self.scoreA, self.scoreB)
+        plays = PlayedIn.objects.filter(match=self)
+        team_a_members = []
+        team_b_members = []
+        for play in plays:
+            if play.team == TEAMS[0][0]:
+                team_a_members.append(play.member)
+            elif play.team == TEAMS[1][0]:
+                team_b_members.append(play.member)
+
+        return 'A{}-B{}:{}-{}'.format([str(m) for m in team_a_members], [str(m) for m in team_b_members], self.scoreA, self.scoreB)
 
 class PlayedIn(models.Model):
     class Meta:
@@ -116,6 +125,9 @@ class PlayedIn(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     team = models.CharField(max_length=64, choices=TEAMS)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{}:{}'.format(self.member, self.match)
 
 class FinishedMatch(Match):
     endDate = models.DateTimeField('date ended')
