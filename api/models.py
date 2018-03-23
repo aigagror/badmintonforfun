@@ -18,6 +18,13 @@ QUEUE_TYPE = (
 class Queue(models.Model):
     type = models.CharField(max_length=64, choices=QUEUE_TYPE, primary_key=True)
 
+    def __str__(self):
+        parties = Party.objects.filter(queue=self)
+        ret = self.type
+        for party in parties:
+            ret += ' | {}'.format(party)
+        return ret
+
 class Party(models.Model):
     queue = models.ForeignKey(Queue, on_delete=models.CASCADE)
     leader = models.OneToOneField('Member', related_name='my_party', on_delete=models.CASCADE) # Using a string to avoid Python's compile error of circular reference
@@ -54,6 +61,15 @@ class Member(Interested):
     dateJoined = models.DateField('date joined')
     party = models.ForeignKey(Party, on_delete=models.SET_NULL, null=True, blank=True)
     bio = models.CharField(max_length=500, default='', blank=True)
+
+    def clean(self):
+        if self.party is not None:
+            leader = self.party.leader
+            other_party_members = Member.objects.filter(party=self.party)
+            if leader == self:
+                raise ValidationError('Cannot assign member to party that he/she is the party\'s leader')
+            if other_party_members.count() == 3:
+                raise ValidationError('Party is full')
 
 
 class BoardMember(Member):
