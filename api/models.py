@@ -15,6 +15,11 @@ QUEUE_TYPE = (
         ('KOTH', 'King of the Hill'),
     )
 
+TEAMS = (
+    ('A', 'A'),
+    ('B', 'B'),
+)
+
 class Queue(models.Model):
     type = models.CharField(max_length=64, choices=QUEUE_TYPE, primary_key=True)
 
@@ -93,27 +98,24 @@ class Campaign(models.Model):
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
     campaigner = models.ForeignKey(Member, on_delete=models.CASCADE)
 
-class Team(models.Model):
-    class Meta:
-        unique_together = (('member1', 'member2'),)
-    member1 = models.ForeignKey(Member, related_name='member1', on_delete=models.PROTECT)
-    member2 = models.ForeignKey(Member, related_name='member2', on_delete=models.SET_NULL, null=True, blank=True)
-
-    def __str__(self):
-        return '{} & {}'.format(self.member1, self.member2)
 
 class Match(models.Model):
-    id = models.AutoField(primary_key=True)
     startDate = models.DateTimeField('date started')
     scoreA = models.IntegerField()
     scoreB = models.IntegerField()
-    teamA = models.ForeignKey(Team, related_name='teamA', on_delete=models.SET_NULL, null=True)
-    teamB = models.ForeignKey(Team, related_name='teamB', on_delete=models.SET_NULL, null=True)
     court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True, blank=True)
     tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return '{} vs {}'.format(self.teamA, self.teamB)
+        return '{}: {}-{}'.format(self.id, self.scoreA, self.scoreB)
+
+class PlayedIn(models.Model):
+    class Meta:
+        unique_together = (('member', 'team', 'match'),)
+
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    team = models.CharField(max_length=64, choices=TEAMS)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
 
 class FinishedMatch(Match):
     endDate = models.DateTimeField('date ended')
