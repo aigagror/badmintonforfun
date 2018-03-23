@@ -16,9 +16,9 @@ QUEUE_TYPE = (
     )
 
 TEAMS = (
-    ('A', 'A'),
-    ('B', 'B'),
-)
+        ('A', 'A'),
+        ('B', 'B'),
+    )
 
 class Queue(models.Model):
     type = models.CharField(max_length=64, choices=QUEUE_TYPE, primary_key=True)
@@ -107,7 +107,16 @@ class Match(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return '{}: {}-{}'.format(self.id, self.scoreA, self.scoreB)
+        plays = PlayedIn.objects.filter(match=self)
+        team_a_members = []
+        team_b_members = []
+        for play in plays:
+            if play.team == TEAMS[0][0]:
+                team_a_members.append(play.member)
+            elif play.team == TEAMS[1][0]:
+                team_b_members.append(play.member)
+
+        return 'A{}-B{}:{}-{}'.format([str(m) for m in team_a_members], [str(m) for m in team_b_members], self.scoreA, self.scoreB)
 
 class PlayedIn(models.Model):
     class Meta:
@@ -117,8 +126,17 @@ class PlayedIn(models.Model):
     team = models.CharField(max_length=64, choices=TEAMS)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return '{}:{}'.format(self.member, self.match)
+
 class FinishedMatch(Match):
     endDate = models.DateTimeField('date ended')
+
+    def clean(self):
+        if abs(self.scoreA - self.scoreB) < 2:
+            raise ValidationError('Violates win by 2 rule')
+        if self.scoreA < 21 and self.scoreB < 21:
+            raise ValidationError('Someone should have at least 21 points')
 
 class Announcement(models.Model):
     date = models.DateTimeField('date of announcement', primary_key=True)

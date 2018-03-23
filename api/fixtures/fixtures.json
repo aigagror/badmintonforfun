@@ -1183,7 +1183,7 @@
     "pk": 38,
     "fields": {
         "member": "yikeli2@illinois.edu",
-        "team": "A",
+        "team": "B",
         "match": 20
     }
 },
@@ -1192,7 +1192,7 @@
     "pk": 39,
     "fields": {
         "member": "sujayd2@illinois.edu",
-        "team": "B",
+        "team": "A",
         "match": 20
     }
 },
