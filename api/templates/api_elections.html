@@ -65,5 +65,16 @@ Didn't work lol
 {% else %}
 Didn't work lol
 {% endif %}
+
+    <form method="POST">{% csrf_token %}
+        <input type="text" name="pitch" id="pitch">
+        <input type="text" name="job" id="job">
+        <input type="text" name="email" id="email">
+        <input type="submit" value="Submit Campaign">
+    </form>
+
+    <form method="GET">
+        <input type="submit" value="Get Campaigns">
+    </form>
 </body>
 </html>
