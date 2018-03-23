@@ -83,11 +83,9 @@ class Election(models.Model):
         return '{} to {}'.format(self.date, self.endDate)
 
 class Votes(models.Model):
-    class Meta:
-        unique_together = (('election','voter'),)
-    votee = models.ForeignKey(Member, related_name='votee', on_delete=models.CASCADE, unique=True)
-    election = models.ForeignKey(Election, on_delete=models.CASCADE)
-    voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE)
+    votee = models.ForeignKey(Member, related_name='votee', on_delete=models.SET_NULL, null=True)
+    election = models.ForeignKey(Election, on_delete=models.CASCADE, primary_key=True)
+    voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE, unique=True)
 
 class Campaign(models.Model):
     job = models.CharField(max_length=64, choices=JOBS)
