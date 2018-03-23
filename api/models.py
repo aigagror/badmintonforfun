@@ -16,9 +16,9 @@ QUEUE_TYPE = (
     )
 
 TEAMS = (
-    ('A', 'A'),
-    ('B', 'B'),
-)
+        ('A', 'A'),
+        ('B', 'B'),
+    )
 
 class Queue(models.Model):
     type = models.CharField(max_length=64, choices=QUEUE_TYPE, primary_key=True)
@@ -131,6 +131,12 @@ class PlayedIn(models.Model):
 
 class FinishedMatch(Match):
     endDate = models.DateTimeField('date ended')
+
+    def clean(self):
+        if abs(self.scoreA - self.scoreB) < 2:
+            raise ValidationError('Violates win by 2 rule')
+        if self.scoreA < 21 and self.scoreB < 21:
+            raise ValidationError('Someone should have at least 21 points')
 
 class Announcement(models.Model):
     date = models.DateTimeField('date of announcement', primary_key=True)
