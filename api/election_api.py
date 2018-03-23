@@ -2,6 +2,7 @@ from .models import *
 import pytz
 from datetime import datetime
 from django.db import connection, DatabaseError, IntegrityError
+from django.http import JsonResponse
 from .cursor import *
 import json
 
@@ -35,11 +36,11 @@ def get_campaign(email, job):
                        AND api_campaign.campaigner_id=%s", [job, curr_election.date, email])
         result = dictfetchone(cursor)
         if result:
-            return json.dumps({'code': 200, 'election': str(result['date']) + " to " + str(result['endDate']), 'job': result['job'],
-                       'pitch': result['pitch'], 'message': 'OK'})
+            return JsonResponse(json.dumps({'code': 200, 'election': str(result['date']) + " to " + str(result['endDate']), 'job': result['job'],
+                       'pitch': result['pitch'], 'message': 'OK'}))
         else:
             # be more helpful later
-            return json.dumps({'code': 400, 'message': 'There is no campaign.'})
+            return JsonResponse(json.dumps({'code': 400, 'message': 'There is no campaign.'}))
 
 
 def edit_campaign(campaign):
@@ -59,7 +60,7 @@ def edit_campaign(campaign):
 
 def delete_campaign(email, job):
     if json.loads(get_campaign(email, job))['code'] == 400:
-        return json.dumps({'code': 400, 'message': 'No campaign exists.'})
+        return JsonResponse(json.dumps({'code': 400, 'message': 'No campaign exists.'}))
 
     return run_connection("DELETE FROM api_campaign WHERE campaigner_id=%s AND job=%s", email, job)
 
@@ -81,9 +82,9 @@ def get__current_campaigns():
             campaign_list.append(campaign_dict)
 
         dict = {"code": 200, "message": "OK", "campaigns": campaign_list}
-        return json.dumps(dict)
+        return JsonResponse(json.dumps(dict))
     else:
-        return json.dumps({'code': 400, 'message': 'There are no current campaigns."'})
+        return JsonResponse(json.dumps({'code': 400, 'message': 'There are no current campaigns."'}))
 
 
 def get_current_election():
@@ -118,9 +119,9 @@ def get_all_elections():
         print(election_list)
         dict = {"code": 200, "message": "OK", "elections": election_list}
         print(dict)
-        return json.dumps(dict)
+        return JsonResponse(json.dumps(dict))
     else:
-        return json.dumps({'code': 400, 'message': 'There are no current elections.'})
+        return JsonResponse(json.dumps({'code': 400, 'message': 'There are no current elections.'}))
 
 
 def start_election(startDate, endDate=None):
@@ -145,9 +146,9 @@ def get_election(startDate, endDate=None):
         election = dictfetchone(cursor)
 
     if election:
-        return json.dumps({'code': 200, 'message': 'OK', 'election': {'date': election.date, 'endDate': election.endDate}})
+        return JsonResponse(json.dumps({'code': 200, 'message': 'OK', 'election': {'date': election.date, 'endDate': election.endDate}}))
     else:
-        return json.dumps({'code': 400, 'message': 'There is no election that starts on this date!'})
+        return JsonResponse(json.dumps({'code': 400, 'message': 'There is no election that starts on this date!'}))
 
 
 def edit_election(startDate, endDate=None):
@@ -178,8 +179,8 @@ def run_connection(execute, *args):
             cursor.execute(execute, [arg for arg in args])
             connection.commit()
         except IntegrityError:
-            return json.dumps({'code': 400, 'message': 'IntegrityError!'})
+            return JsonResponse(json.dumps({'code': 400, 'message': 'IntegrityError!'}))
         except DatabaseError:
-            return json.dumps({'code': 400, 'message': 'DatabaseError!'})
+            return JsonResponse(json.dumps({'code': 400, 'message': 'DatabaseError!'}))
         else:
-            return json.dumps({'code': 200, 'message': 'OK'})
+            return JsonResponse(json.dumps({'code': 200, 'message': 'OK'}))
