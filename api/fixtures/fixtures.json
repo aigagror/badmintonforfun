@@ -16,7 +16,7 @@
 },
 {
     "model": "api.party",
-    "pk": 1,
+    "pk": 3,
     "fields": {
         "queue": "CASUAL",
         "leader": "apoddar3@illinois.edu"
@@ -290,7 +290,7 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "party": 1,
+        "party": null,
         "bio": ""
     }
 },
@@ -617,246 +617,12 @@
     }
 },
 {
-    "model": "api.team",
-    "pk": 1,
-    "fields": {
-        "member1": "apoddar3@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 2,
-    "fields": {
-        "member1": "baobl2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 3,
-    "fields": {
-        "member1": "dhchen3@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 4,
-    "fields": {
-        "member1": "diwen2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 5,
-    "fields": {
-        "member1": "donghao2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 6,
-    "fields": {
-        "member1": "dusad2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 7,
-    "fields": {
-        "member1": "dwang47@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 8,
-    "fields": {
-        "member1": "ezhuang2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 9,
-    "fields": {
-        "member1": "harryr2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 10,
-    "fields": {
-        "member1": "jaemanp2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 11,
-    "fields": {
-        "member1": "janec3@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 12,
-    "fields": {
-        "member1": "jchu15@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 13,
-    "fields": {
-        "member1": "jiayih4@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 14,
-    "fields": {
-        "member1": "joshuac6@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 15,
-    "fields": {
-        "member1": "jyang98@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 16,
-    "fields": {
-        "member1": "lan10@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 17,
-    "fields": {
-        "member1": "lixiang2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 18,
-    "fields": {
-        "member1": "mithin@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 19,
-    "fields": {
-        "member1": "peiyuxu2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 20,
-    "fields": {
-        "member1": "srb2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 21,
-    "fields": {
-        "member1": "sujayd2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 22,
-    "fields": {
-        "member1": "suryasn2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 23,
-    "fields": {
-        "member1": "tinag2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 24,
-    "fields": {
-        "member1": "tyou4@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 25,
-    "fields": {
-        "member1": "yikeli2@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 26,
-    "fields": {
-        "member1": "yleung5@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 27,
-    "fields": {
-        "member1": "yzhao221@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 28,
-    "fields": {
-        "member1": "zshen5@illinois.edu",
-        "member2": null
-    }
-},
-{
-    "model": "api.team",
-    "pk": 29,
-    "fields": {
-        "member1": "harshh2@illinois.edu",
-        "member2": null
-    }
-},
-{
     "model": "api.match",
     "pk": 1,
     "fields": {
         "startDate": "2018-03-19T16:47:37Z",
         "scoreA": 16,
         "scoreB": 21,
-        "teamA": 24,
-        "teamB": 21,
         "court": null,
         "tournament": null
     }
@@ -868,8 +634,6 @@
         "startDate": "2018-03-19T16:49:10Z",
         "scoreA": 19,
         "scoreB": 21,
-        "teamA": 1,
-        "teamB": 9,
         "court": null,
         "tournament": null
     }
@@ -881,8 +645,6 @@
         "startDate": "2018-03-19T16:50:42Z",
         "scoreA": 5,
         "scoreB": 21,
-        "teamA": 19,
-        "teamB": 21,
         "court": null,
         "tournament": null
     }
@@ -894,8 +656,6 @@
         "startDate": "2018-03-19T16:51:04Z",
         "scoreA": 21,
         "scoreB": 16,
-        "teamA": 21,
-        "teamB": 15,
         "court": null,
         "tournament": null
     }
@@ -907,8 +667,6 @@
         "startDate": "2018-03-19T16:53:07Z",
         "scoreA": 16,
         "scoreB": 21,
-        "teamA": 9,
-        "teamB": 29,
         "court": null,
         "tournament": null
     }
@@ -920,8 +678,6 @@
         "startDate": "2018-03-19T16:53:35Z",
         "scoreA": 21,
         "scoreB": 19,
-        "teamA": 4,
-        "teamB": 1,
         "court": null,
         "tournament": null
     }
@@ -933,8 +689,6 @@
         "startDate": "2018-03-19T16:53:52Z",
         "scoreA": 11,
         "scoreB": 21,
-        "teamA": 9,
-        "teamB": 21,
         "court": null,
         "tournament": null
     }
@@ -946,8 +700,6 @@
         "startDate": "2018-03-19T16:54:06Z",
         "scoreA": 21,
         "scoreB": 15,
-        "teamA": 6,
-        "teamB": 8,
         "court": null,
         "tournament": null
     }
@@ -959,8 +711,6 @@
         "startDate": "2018-03-19T16:54:18Z",
         "scoreA": 11,
         "scoreB": 21,
-        "teamA": 4,
-        "teamB": 7,
         "court": null,
         "tournament": null
     }
@@ -972,8 +722,6 @@
         "startDate": "2018-03-19T16:54:43Z",
         "scoreA": 14,
         "scoreB": 21,
-        "teamA": 20,
-        "teamB": 6,
         "court": null,
         "tournament": null
     }
@@ -985,8 +733,6 @@
         "startDate": "2018-03-19T16:55:17Z",
         "scoreA": 10,
         "scoreB": 21,
-        "teamA": 24,
-        "teamB": 29,
         "court": null,
         "tournament": null
     }
@@ -998,8 +744,6 @@
         "startDate": "2018-03-19T16:55:34Z",
         "scoreA": 14,
         "scoreB": 21,
-        "teamA": 26,
-        "teamB": 24,
         "court": null,
         "tournament": null
     }
@@ -1011,8 +755,6 @@
         "startDate": "2018-03-19T16:55:52Z",
         "scoreA": 21,
         "scoreB": 10,
-        "teamA": 13,
-        "teamB": 2,
         "court": null,
         "tournament": null
     }
@@ -1024,8 +766,6 @@
         "startDate": "2018-03-19T16:56:06Z",
         "scoreA": 26,
         "scoreB": 24,
-        "teamA": 11,
-        "teamB": 12,
         "court": null,
         "tournament": null
     }
@@ -1037,8 +777,6 @@
         "startDate": "2018-03-19T16:58:10Z",
         "scoreA": 21,
         "scoreB": 10,
-        "teamA": 14,
-        "teamB": 28,
         "court": null,
         "tournament": null
     }
@@ -1050,8 +788,6 @@
         "startDate": "2018-03-19T16:58:25Z",
         "scoreA": 19,
         "scoreB": 21,
-        "teamA": 2,
-        "teamB": 9,
         "court": null,
         "tournament": null
     }
@@ -1063,8 +799,6 @@
         "startDate": "2018-03-19T16:58:50Z",
         "scoreA": 21,
         "scoreB": 15,
-        "teamA": 29,
-        "teamB": 17,
         "court": null,
         "tournament": null
     }
@@ -1076,8 +810,6 @@
         "startDate": "2018-03-19T16:59:05Z",
         "scoreA": 10,
         "scoreB": 21,
-        "teamA": 26,
-        "teamB": 15,
         "court": null,
         "tournament": null
     }
@@ -1089,8 +821,6 @@
         "startDate": "2018-03-19T16:59:26Z",
         "scoreA": 21,
         "scoreB": 8,
-        "teamA": 4,
-        "teamB": 23,
         "court": null,
         "tournament": null
     }
@@ -1102,10 +832,368 @@
         "startDate": "2018-03-19T16:59:42Z",
         "scoreA": 21,
         "scoreB": 12,
-        "teamA": 25,
-        "teamB": 21,
         "court": null,
         "tournament": null
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 0,
+    "fields": {
+        "member": "tyou4@illinois.edu",
+        "team": "A",
+        "match": 1
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 1,
+    "fields": {
+        "member": "sujayd2@illinois.edu",
+        "team": "B",
+        "match": 1
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 2,
+    "fields": {
+        "member": "apoddar3@illinois.edu",
+        "team": "A",
+        "match": 2
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 3,
+    "fields": {
+        "member": "harryr2@illinois.edu",
+        "team": "B",
+        "match": 2
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 4,
+    "fields": {
+        "member": "peiyuxu2@illinois.edu",
+        "team": "A",
+        "match": 3
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 5,
+    "fields": {
+        "member": "sujayd2@illinois.edu",
+        "team": "B",
+        "match": 3
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 6,
+    "fields": {
+        "member": "sujayd2@illinois.edu",
+        "team": "A",
+        "match": 4
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 7,
+    "fields": {
+        "member": "jyang98@illinois.edu",
+        "team": "B",
+        "match": 4
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 8,
+    "fields": {
+        "member": "harryr2@illinois.edu",
+        "team": "A",
+        "match": 5
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 9,
+    "fields": {
+        "member": "harshh2@illinois.edu",
+        "team": "B",
+        "match": 5
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 10,
+    "fields": {
+        "member": "diwen2@illinois.edu",
+        "team": "A",
+        "match": 6
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 11,
+    "fields": {
+        "member": "apoddar3@illinois.edu",
+        "team": "B",
+        "match": 6
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 12,
+    "fields": {
+        "member": "harryr2@illinois.edu",
+        "team": "A",
+        "match": 7
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 13,
+    "fields": {
+        "member": "sujayd2@illinois.edu",
+        "team": "B",
+        "match": 7
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 14,
+    "fields": {
+        "member": "dusad2@illinois.edu",
+        "team": "A",
+        "match": 8
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 15,
+    "fields": {
+        "member": "ezhuang2@illinois.edu",
+        "team": "B",
+        "match": 8
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 16,
+    "fields": {
+        "member": "diwen2@illinois.edu",
+        "team": "A",
+        "match": 9
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 17,
+    "fields": {
+        "member": "dwang47@illinois.edu",
+        "team": "B",
+        "match": 9
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 18,
+    "fields": {
+        "member": "srb2@illinois.edu",
+        "team": "A",
+        "match": 10
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 19,
+    "fields": {
+        "member": "dusad2@illinois.edu",
+        "team": "B",
+        "match": 10
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 20,
+    "fields": {
+        "member": "tyou4@illinois.edu",
+        "team": "A",
+        "match": 11
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 21,
+    "fields": {
+        "member": "harshh2@illinois.edu",
+        "team": "B",
+        "match": 11
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 22,
+    "fields": {
+        "member": "yleung5@illinois.edu",
+        "team": "A",
+        "match": 12
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 23,
+    "fields": {
+        "member": "tyou4@illinois.edu",
+        "team": "B",
+        "match": 12
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 24,
+    "fields": {
+        "member": "jiayih4@illinois.edu",
+        "team": "A",
+        "match": 13
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 25,
+    "fields": {
+        "member": "baobl2@illinois.edu",
+        "team": "B",
+        "match": 13
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 26,
+    "fields": {
+        "member": "janec3@illinois.edu",
+        "team": "A",
+        "match": 14
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 27,
+    "fields": {
+        "member": "jchu15@illinois.edu",
+        "team": "B",
+        "match": 14
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 28,
+    "fields": {
+        "member": "joshuac6@illinois.edu",
+        "team": "A",
+        "match": 15
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 29,
+    "fields": {
+        "member": "zshen5@illinois.edu",
+        "team": "B",
+        "match": 15
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 30,
+    "fields": {
+        "member": "baobl2@illinois.edu",
+        "team": "A",
+        "match": 16
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 31,
+    "fields": {
+        "member": "harryr2@illinois.edu",
+        "team": "B",
+        "match": 16
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 32,
+    "fields": {
+        "member": "harshh2@illinois.edu",
+        "team": "A",
+        "match": 17
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 33,
+    "fields": {
+        "member": "lixiang2@illinois.edu",
+        "team": "B",
+        "match": 17
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 34,
+    "fields": {
+        "member": "yleung5@illinois.edu",
+        "team": "A",
+        "match": 18
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 35,
+    "fields": {
+        "member": "jyang98@illinois.edu",
+        "team": "B",
+        "match": 18
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 36,
+    "fields": {
+        "member": "diwen2@illinois.edu",
+        "team": "A",
+        "match": 19
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 37,
+    "fields": {
+        "member": "tinag2@illinois.edu",
+        "team": "B",
+        "match": 19
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 38,
+    "fields": {
+        "member": "yikeli2@illinois.edu",
+        "team": "A",
+        "match": 20
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 39,
+    "fields": {
+        "member": "sujayd2@illinois.edu",
+        "team": "B",
+        "match": 20
     }
 },
 {
