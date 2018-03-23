@@ -1,5 +1,28 @@
 [
 {
+    "model": "api.queue",
+    "pk": "CASUAL",
+    "fields": {}
+},
+{
+    "model": "api.queue",
+    "pk": "KOTH",
+    "fields": {}
+},
+{
+    "model": "api.queue",
+    "pk": "RANKED",
+    "fields": {}
+},
+{
+    "model": "api.party",
+    "pk": 1,
+    "fields": {
+        "queue": "CASUAL",
+        "leader": "apoddar3@illinois.edu"
+    }
+},
+{
     "model": "api.interested",
     "pk": "apoddar3@illinois.edu",
     "fields": {
@@ -267,7 +290,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": 1,
+        "bio": ""
     }
 },
 {
@@ -277,7 +301,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -287,7 +312,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -297,7 +323,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -307,7 +334,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -317,7 +345,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -327,7 +356,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -337,7 +367,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -347,7 +378,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -357,7 +389,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -367,7 +400,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -377,7 +411,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -387,7 +422,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -397,7 +433,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -407,7 +444,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -417,7 +455,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -427,7 +466,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -437,7 +477,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -447,7 +488,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -457,7 +499,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -467,7 +510,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -477,7 +521,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -487,7 +532,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -497,7 +543,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -507,7 +554,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -517,7 +565,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -527,7 +576,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -537,7 +587,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -547,7 +598,8 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "queue": null
+        "party": null,
+        "bio": ""
     }
 },
 {
@@ -568,232 +620,232 @@
     "model": "api.team",
     "pk": 1,
     "fields": {
-        "memberA": "apoddar3@illinois.edu",
-        "memberB": null
+        "member1": "apoddar3@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 2,
     "fields": {
-        "memberA": "baobl2@illinois.edu",
-        "memberB": null
+        "member1": "baobl2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 3,
     "fields": {
-        "memberA": "dhchen3@illinois.edu",
-        "memberB": null
+        "member1": "dhchen3@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 4,
     "fields": {
-        "memberA": "diwen2@illinois.edu",
-        "memberB": null
+        "member1": "diwen2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 5,
     "fields": {
-        "memberA": "donghao2@illinois.edu",
-        "memberB": null
+        "member1": "donghao2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 6,
     "fields": {
-        "memberA": "dusad2@illinois.edu",
-        "memberB": null
+        "member1": "dusad2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 7,
     "fields": {
-        "memberA": "dwang47@illinois.edu",
-        "memberB": null
+        "member1": "dwang47@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 8,
     "fields": {
-        "memberA": "ezhuang2@illinois.edu",
-        "memberB": null
+        "member1": "ezhuang2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 9,
     "fields": {
-        "memberA": "harryr2@illinois.edu",
-        "memberB": null
+        "member1": "harryr2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 10,
     "fields": {
-        "memberA": "jaemanp2@illinois.edu",
-        "memberB": null
+        "member1": "jaemanp2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 11,
     "fields": {
-        "memberA": "janec3@illinois.edu",
-        "memberB": null
+        "member1": "janec3@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 12,
     "fields": {
-        "memberA": "jchu15@illinois.edu",
-        "memberB": null
+        "member1": "jchu15@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 13,
     "fields": {
-        "memberA": "jiayih4@illinois.edu",
-        "memberB": null
+        "member1": "jiayih4@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 14,
     "fields": {
-        "memberA": "joshuac6@illinois.edu",
-        "memberB": null
+        "member1": "joshuac6@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 15,
     "fields": {
-        "memberA": "jyang98@illinois.edu",
-        "memberB": null
+        "member1": "jyang98@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 16,
     "fields": {
-        "memberA": "lan10@illinois.edu",
-        "memberB": null
+        "member1": "lan10@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 17,
     "fields": {
-        "memberA": "lixiang2@illinois.edu",
-        "memberB": null
+        "member1": "lixiang2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 18,
     "fields": {
-        "memberA": "mithin@illinois.edu",
-        "memberB": null
+        "member1": "mithin@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 19,
     "fields": {
-        "memberA": "peiyuxu2@illinois.edu",
-        "memberB": null
+        "member1": "peiyuxu2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 20,
     "fields": {
-        "memberA": "srb2@illinois.edu",
-        "memberB": null
+        "member1": "srb2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 21,
     "fields": {
-        "memberA": "sujayd2@illinois.edu",
-        "memberB": null
+        "member1": "sujayd2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 22,
     "fields": {
-        "memberA": "suryasn2@illinois.edu",
-        "memberB": null
+        "member1": "suryasn2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 23,
     "fields": {
-        "memberA": "tinag2@illinois.edu",
-        "memberB": null
+        "member1": "tinag2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 24,
     "fields": {
-        "memberA": "tyou4@illinois.edu",
-        "memberB": null
+        "member1": "tyou4@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 25,
     "fields": {
-        "memberA": "yikeli2@illinois.edu",
-        "memberB": null
+        "member1": "yikeli2@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 26,
     "fields": {
-        "memberA": "yleung5@illinois.edu",
-        "memberB": null
+        "member1": "yleung5@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 27,
     "fields": {
-        "memberA": "yzhao221@illinois.edu",
-        "memberB": null
+        "member1": "yzhao221@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 28,
     "fields": {
-        "memberA": "zshen5@illinois.edu",
-        "memberB": null
+        "member1": "zshen5@illinois.edu",
+        "member2": null
     }
 },
 {
     "model": "api.team",
     "pk": 29,
     "fields": {
-        "memberA": "harshh2@illinois.edu",
-        "memberB": null
+        "member1": "harshh2@illinois.edu",
+        "member2": null
     }
 },
 {

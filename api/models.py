@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 # Create your models here.
@@ -16,6 +17,18 @@ QUEUE_TYPE = (
 
 class Queue(models.Model):
     type = models.CharField(max_length=64, choices=QUEUE_TYPE, primary_key=True)
+
+class Party(models.Model):
+    queue = models.ForeignKey(Queue, on_delete=models.CASCADE)
+    leader = models.OneToOneField('Member', related_name='my_party', on_delete=models.CASCADE) # Using a string to avoid Python's compile error of circular reference
+
+    def __str__(self):
+        members = Member.objects.filter(party=self.id)
+        ret = str(self.leader) + ':'
+        for member in members:
+            ret += ' {}'.format(str(member))
+        return ret
+
 
 class Court(models.Model):
     id = models.AutoField(primary_key=True)
@@ -39,8 +52,9 @@ class Member(Interested):
     level = models.IntegerField(default=0)
     private = models.BooleanField(default=False)
     dateJoined = models.DateField('date joined')
-    queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
-    bio = models.CharField(max_length=500, default='')
+    party = models.ForeignKey(Party, on_delete=models.SET_NULL, null=True, blank=True)
+    bio = models.CharField(max_length=500, default='', blank=True)
+
 
 class BoardMember(Member):
     job = models.CharField(max_length=64, choices=JOBS)
