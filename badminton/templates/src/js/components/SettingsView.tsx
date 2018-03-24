@@ -3,12 +3,13 @@ import axios from 'axios';
 import { Slider } from '../common/Slider';
 import { Popup } from '../common/Popup';
 import { Select, Option } from '../common/Select';
+
 enum LoadingState {
     Loading,
     Loaded,
 }
 
-const reg_url = '/mock/regular_settings.json';
+const reg_url = '/api/settings';
 const member_url = '/mock/board_settings.json';
 
 class OptionSetting extends React.Component<any, any> {
@@ -187,49 +188,21 @@ export class SettingsView extends React.Component<any, any> {
 			regular_settings: null,
 			board_settings: null,
 			loading: true,
-			regular: true,
 		}
 	}
 
 	performRequest() {
-
-		const regular = this.state.regular;
-
-		if (this.state.regular) {
-			axios.get(reg_url)
-			.then((res) => {
-				this.setState({
-					loading: false,
-					regular: !regular,
-					regular_settings: <StandardSettings data={res.data}/>,
-					board_settings: null
-				})
+		axios.get(reg_url)
+		.then((res) => {
+			this.setState({
+				loading: false,
+				regular_settings: <StandardSettings data={res.data.regular}/>,
+				board_settings: null
 			})
-			.catch((res) => {
+		})
+		.catch((res) => {
 
-			})
-		} else {
-
-			axios.get(member_url)
-				.then((res1) => {
-					axios.get(reg_url)
-						.then((res) => {
-							this.setState({
-								loading: false,
-								regular: !regular,
-								regular_settings: <StandardSettings data={res.data}/>,
-								board_settings: <BoardSettings data={res1.data}/>
-							})
-						})
-						.catch((res) => {
-
-						})
-				})
-				.catch((res) => {
-					
-				})
-		}
-
+		})
 	}
 
 	componentDidMount() {
@@ -247,8 +220,6 @@ export class SettingsView extends React.Component<any, any> {
 	render() {
 		return <div className="election-view">
 	    	<h2>Toggle Board View</h2>
-	    	<Slider change={this.switch} />
-
 	    	{ this.state.regular_settings !== null &&
 	    		this.state.regular_settings }
 
