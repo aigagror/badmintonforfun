@@ -1,9 +1,9 @@
 from .models import *
 import pytz
-from datetime import datetime
 from django.db import connection, DatabaseError, IntegrityError
 from django.http import HttpResponse
 from .cursor import *
+from datetime import datetime
 import json
 
 
@@ -19,7 +19,7 @@ def start_campaign(campaign):
         return run_connection("INSERT INTO api_campaign (job, pitch, election_id, campaigner_id) VALUES\
                                 (%s, %s, %s, %s)", campaign.job, campaign.pitch, curr_election.date, campaign.email)
     else:
-        return HttpResponse(json.dumps({"code": 400, "message": "There is no election to campaign for!"}),
+        return HttpResponse(json.dumps({"message": "There is no election to campaign for!"}),
                             content_type='application/json', status=400)
 
 def get_campaign(email, job):
@@ -61,8 +61,6 @@ def edit_campaign(campaign):
     :param campaign:
     :return: 200 if successful, 400 if not
     """
-    #result = Campaign.objects.filter(campaigner=campaign.email, job=campaign.job)
-
 
     if get_campaign(campaign.email, campaign.job).status_code == 400:
         return start_campaign(campaign)
@@ -83,9 +81,8 @@ def get_current_campaigns():
 
     curr_election = get_current_election()
     if curr_election is None:
-        return HttpResponse(json.dumps({"code": 200, "message": "OK", "campaigns": []}), content_type='application/json')
+        return HttpResponse(json.dumps({"message": "OK", "campaigns": []}), content_type='application/json')
 
-    #results = Campaign.objects.filter(election=get_current_election())
     results = Campaign.objects.raw("SELECT * FROM api_campaign WHERE api_campaign.election_id = %s",
                                    [curr_election.date])
 
@@ -98,7 +95,7 @@ def get_current_campaigns():
             campaign_dict["pitch"] = c.pitch
             campaign_list.append(campaign_dict)
 
-        dict = {"code": 200, "message": "OK", "campaigns": campaign_list}
+        dict = {"message": "OK", "campaigns": campaign_list}
         return HttpResponse(json.dumps(dict), content_type='application/json')
     else:
         return HttpResponse(json.dumps({'code': 400, 'message': 'There are no current campaigns."'}),
@@ -113,20 +110,34 @@ def get_current_election():
 
     today = str(datetime.now(pytz.utc).date())
     curr_election = Election.objects.raw("SELECT * FROM api_election WHERE date <= %s AND endDate >= %s", [today, today])
-    #curr_election = Election.objects.get(date__lte=today, endDate__gte=today)
+
     if len(list(curr_election)) == 0:
         return None
     else:
         return curr_election[0]
+
+def current_election():
+    """
+        Returns the one current election going on
+    :return:
+    """
+
+    election = get_current_election()
+    if election == None:
+        return HttpResponse(json.dumps({"status": False, "message": "Sorry there is no election!"}), content_type='application/json')
+    else:
+        serialize = serializeModel(election)
+        serialize["status"] = True
+        return HttpResponse(json.dumps(serialize), content_type='application/json')
 
 
 def get_all_elections():
     """
         Returns all elections in the database
     :return: JSON in format
-        {"code": 200, "message": "OK", "elections": [{"date": "2018-02-03", "endDate": "None"},
+        {"message": "OK", "elections": [{"date": "2018-02-03", "endDate": "None"},
         {"date": "2018-09-09", "endDate": "2018-09-28"}]} if successful
-        {"code": 400, "message": "There are no current elections."} if not
+        {"message": "There are no current elections."} if not
     """
     elections = Election.objects.raw("SELECT * FROM api_election")
     if elections:
@@ -140,13 +151,9 @@ def get_all_elections():
                 election_dict["endDate"] = e.endDate.strftime("%Y-%m-%dT%H:%M:%SZ")
             election_list.append(election_dict)
 
-        print(election_list)
-        dict = {"code": 200, "message": "OK", "elections": election_list}
-        print(dict)
-        return HttpResponse(json.dumps(dict), content_type='application/json')
+        return HttpResponse(json.dumps(election_list), content_type='application/json')
     else:
-        return HttpResponse(json.dumps({'code': 400, 'message': 'There are no current elections.'}),
-                            content_type='application/json', status=400)
+        return HttpResponse('There are no current elections.', status=400)
 
 
 def start_election(startDate, endDate=None):
