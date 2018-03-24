@@ -23,6 +23,9 @@ urlpatterns = [
     path('api_home/', views.home),
     path('api_elections/', views.elections),
     path('api_settings/', views.settings),
+    path('settings/', views.settings_view),
+    path('settings/schedule/', views.settings_available_courts),
+
     path('campaigns/', views.campaignView),
     path('elections/', views.electionView)
 ]

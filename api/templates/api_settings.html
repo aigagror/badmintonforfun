@@ -54,10 +54,10 @@
     <p>There is no one exclusively interested.</p>
 {% endif %}
 
-<h1>Retrieved attribute</h1>
-{% if john_doe_attr %}
+<h1>Retrieved member info</h1>
+{% if member_info %}
     <ul>
-        {{ john_doe_attr }}
+        {{ member_info }}
     </ul>
 {% endif %}
 
@@ -99,6 +99,8 @@
     <p>There are no available courts.</p>
 {% endif %}
 
+<h1>Is board member</h1>
+<p>{{is_bm}}</p>
 
 </body>
 </html>

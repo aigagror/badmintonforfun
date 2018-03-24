@@ -2,6 +2,28 @@ from django.db import connection, IntegrityError
 from .cursor import *
 import json
 
+
+def is_board_member(email):
+    """
+    Returns if the member with 'email' is a board member or not
+    :param email:
+    :return:
+    """
+    with connection.cursor() as cursor:
+        query = '''
+        SELECT member_ptr_id
+        FROM api_boardmember
+        WHERE member_ptr_id=%s;
+        '''
+        cursor.execute(query, [email])
+        data = cursor.fetchall()
+
+        if len(data) == 0:
+            return False
+        else:
+            return True
+
+
 # Members
 def edit_member_info(email, attribute, new_value):
     """
@@ -21,10 +43,10 @@ def edit_member_info(email, attribute, new_value):
         cursor.execute(query, [new_value, email])
 
 
-def get_member_attr(email, attribute):
+def get_member_info(email):
     """
-    Retrieves the specified attribute of a member.
-    The attributes available to retrieve are 'level', 'private', 'dateJoined', 'bio', and possibly 'queue'?.
+    Retrieves all information on a member.
+    The attributes retrieved will be from api_interested and api_member
     Will be used to show the member their current settings.
     :param email:
     :param attribute:
@@ -32,9 +54,9 @@ def get_member_attr(email, attribute):
     """
     with connection.cursor() as cursor:
         query = '''
-        SELECT ''' + attribute + '''
-        FROM api_member
-        WHERE interested_ptr_id=%s
+        SELECT level, private, dateJoined, bio, party_id, first_name, last_name, formerBoardMember, email
+        FROM api_member, api_interested
+        WHERE api_interested.email= interested_ptr_id AND interested_ptr_id=%s
         LIMIT 1;
         '''
         cursor.execute(query, [email])
@@ -325,6 +347,17 @@ def edit_court_info(court_id, attribute, new_value):
             return json.dumps({'code': 400, 'message': 'This queue type does not exist.'})
         else:
             return json.dumps({'code': 200, 'message': 'OK'})
+
+
+def get_all_queues():
+    with connection.cursor() as cursor:
+        query = '''
+        SELECT *
+        FROM api_queue
+        '''
+        cursor.execute(query)
+        results = dictfetchall(cursor)
+    return results
 
 
 def add_queue(queue):

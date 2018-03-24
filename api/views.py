@@ -166,7 +166,9 @@ def settings(request):
     board_members = get_board_members()
     members = get_members()
     interested = get_interested()
-    john_doe_attr = get_member_attr('johndoe@email.com', 'private')
+    member_info = get_member_info('ezhuang2@illinois.edu')
+    print(member_info[0].__getitem__('dateJoined'))
+    member_info[0].__setitem__('dateJoined', member_info[0].__getitem__('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
 
     #add_to_schedule('2018-03-21', 8)
     #edit_schedule('2018-03-21', 2)
@@ -192,15 +194,74 @@ def settings(request):
     edit_court_info(1, 'queue_id', 'KOTH')
     all_courts = get_all_courts()
 
+    is_bm = is_board_member('apoddar3@illinois.edu')
+
     context = {
         'board_members': board_members,
         'members': members,
         'interested': interested,
-        'john_doe_attr': john_doe_attr,
+        'member_info': member_info,
         'schedule': schedule,
         'available_courts': available_courts,
-        'all_courts': all_courts
+        'all_courts': all_courts,
+        'is_bm': is_bm
     }
 
     return render(request, 'api_settings.html', context)
 
+
+def settings_view(request):
+    # email = request.session['email']
+    email = 'ezhuang2@illinois.edu'
+    if request.method == 'GET':
+        context = ''
+
+        # Get this member's info
+        my_info = get_member_info(email)
+        # Convert 'dateJoined' attribute to be JSON serializable
+        # datetime.datetime.utcnow().strftime(“ % Y - % m - % dT % H: % M: % SZ”)
+        my_info[0].__setitem__('dateJoined', my_info[0].__getitem__('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
+
+        if is_board_member(email):
+            # Get list of everybody (interested, members, boardmembers)
+            board_members = get_board_members()
+            members = get_members()
+            for m in members:
+                m.__setitem__('dateJoined', m.get('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
+
+            interested = get_interested()
+
+            # Get schedule
+            schedule = get_schedule()
+            for s in schedule:
+                s.__setitem__('date', s.get('date').strftime('%Y-%m-%dT%H:%M:%SZ'))
+            all_courts = get_all_courts()
+            all_queues = get_all_queues()
+
+            context = {
+                'board_members': board_members,
+                'members': members,
+                'interested': interested,
+                'schedule': schedule,
+                'all_courts': all_courts,
+                'all_queues': all_queues
+            }
+
+        context['my_info'] = my_info
+        return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+
+    if request.method == 'POST':
+        if is_board_member(email):
+            dict_post = dict(request.POST.items())
+
+
+
+
+
+def settings_available_courts(request):
+    today = datetime.datetime.today().strftime('%Y-%m-%d')
+    # If the date isn't specified, use today's date
+    available_courts = get_available_courts(request.GET.get('date', today))
+    context = {'available_courts': available_courts}
+
+    return HttpResponse(json.dumps(context), content_type="application/json")
