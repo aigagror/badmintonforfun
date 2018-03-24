@@ -1,6 +1,6 @@
 {
 	"_comment": "status can either be true or false, candidates is a list of candidate people who are running for roles in the form of role:[person]",
-	"status": true,
+	"status": "up",
 	"order": ["president", "treasurer", "vice_president", "outreach"],
 	"campaigns": {
 		"president": [

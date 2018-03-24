@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 55);
+/******/ 	return __webpack_require__(__webpack_require__.s = 57);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var isBuffer = __webpack_require__(12);
 
 /*global toString:true*/
@@ -403,10 +403,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   }
   return adapter;
 }
@@ -481,16 +481,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +502,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -698,7 +692,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -709,7 +703,7 @@ var settle = __webpack_require__(15);
 var buildURL = __webpack_require__(17);
 var parseHeaders = __webpack_require__(18);
 var isURLSameOrigin = __webpack_require__(19);
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(20);
 
 module.exports = function xhrAdapter(config) {
@@ -883,10 +877,10 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -911,7 +905,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -923,7 +917,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -949,6 +943,12 @@ module.exports = Cancel;
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -962,7 +962,7 @@ module.exports = __webpack_require__(11);
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var Axios = __webpack_require__(13);
 var defaults = __webpack_require__(2);
 
@@ -997,9 +997,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(9);
+axios.Cancel = __webpack_require__(8);
 axios.CancelToken = __webpack_require__(27);
-axios.isCancel = __webpack_require__(8);
+axios.isCancel = __webpack_require__(7);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -1152,7 +1152,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -1585,7 +1585,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(24);
-var isCancel = __webpack_require__(8);
+var isCancel = __webpack_require__(7);
 var defaults = __webpack_require__(2);
 var isAbsoluteURL = __webpack_require__(25);
 var combineURLs = __webpack_require__(26);
@@ -1745,7 +1745,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(9);
+var Cancel = __webpack_require__(8);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -1863,107 +1863,184 @@ module.exports = function spread(callback) {
 /* 52 */,
 /* 53 */,
 /* 54 */,
-/* 55 */
+/* 55 */,
+/* 56 */,
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
-var TournamentView_1 = __webpack_require__(56);
+const React = __webpack_require__(1);
+const ReactDOM = __webpack_require__(9);
+const TournamentView_1 = __webpack_require__(58);
 ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), document.querySelector("tournament-view"));
 
 
 /***/ }),
-/* 56 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var axios_1 = __webpack_require__(10);
-var tourney_url = '/mock/tournament.json';
-var TournamentCell = /** @class */ (function (_super) {
-    __extends(TournamentCell, _super);
-    function TournamentCell() {
-        return _super !== null && _super.apply(this, arguments) || this;
+const React = __webpack_require__(1);
+const axios_1 = __webpack_require__(10);
+const tourney_url = '/mock/tournament.json';
+const columnWidth = 160;
+const rowHeight = 40;
+const rowSpacing = 10;
+const colSpacing = 50;
+const lazyHack = 10000000;
+const svgOffset = 20;
+const calcX = (col) => (columnWidth + colSpacing) * col + svgOffset;
+const calcY = (col, row, maxCols) => {
+    if (col === 0) {
+        return (rowHeight + rowSpacing) * row + col * ((rowHeight + rowSpacing) / 2) + svgOffset;
     }
-    TournamentCell.prototype.render = function () {
-        var matches = this.props.matches;
-        var render;
-        if (matches.state === "undecided") {
-            render = (React.createElement("div", { className: "tournament-card" },
-                React.createElement("h4", null, matches.title),
-                React.createElement("p", null, "TBA")));
+    const numBlocksCenter = Math.pow(2, col);
+    const ytop = calcY(0, row * numBlocksCenter, maxCols);
+    const ybot = calcY(0, (row + 1) * numBlocksCenter - 1, maxCols) + rowHeight;
+    return (ytop + ybot - rowHeight) / 2;
+};
+class Matchup extends React.Component {
+    render() {
+        var extra;
+        const opts = {
+            stroke: "white",
+            fill: "white",
+            "font-family": "Arial",
+            "font-size": "16px",
+        };
+        const startingX = this.props.x;
+        const startingY = this.props.y + 15;
+        if (this.props.data.state === "undecided") {
+            extra = React.createElement("text", { style: opts, x: startingX, y: startingY, height: rowHeight, width: columnWidth }, "TBA");
         }
-        else if (matches.state === "decided") {
-            render = (React.createElement("div", { className: "tournament-card" },
-                React.createElement("h4", null, matches.title),
-                React.createElement("h5", null, matches.team1),
-                React.createElement("h5", null, matches.team2)));
+        else if (this.props.data.state === "decided") {
+            extra = React.createElement(React.Fragment, null,
+                React.createElement("text", { style: opts, x: startingX, y: startingY }, this.props.data.team1),
+                React.createElement("text", { style: opts, x: startingX, y: startingY + rowHeight / 2 }, this.props.data.team2));
         }
         else {
-            render = (React.createElement("div", { className: "tournament-card" },
-                React.createElement("h4", null, matches.title),
-                React.createElement("h5", null,
-                    matches.team1,
-                    " Score: ",
-                    matches.team1_score),
-                React.createElement("h5", null,
-                    matches.team2,
-                    " Score: ",
-                    matches.team2_score)));
+            const convert = (num) => {
+                if (num < 10) {
+                    return "0" + num;
+                }
+                return "" + num;
+            };
+            extra = React.createElement(React.Fragment, null,
+                React.createElement("text", { style: opts, x: startingX, y: startingY }, this.props.data.team1),
+                React.createElement("text", { style: opts, x: startingX, y: startingY + rowHeight / 2 }, this.props.data.team2),
+                React.createElement("text", { style: opts, x: startingX + columnWidth - 25, y: startingY }, this.props.data.team1_score),
+                React.createElement("text", { style: opts, x: startingX + columnWidth - 25, y: startingY + rowHeight / 2 }, this.props.data.team2_score));
         }
-        return React.createElement("div", { className: "grid" },
-            React.createElement("div", { className: "row" }, render),
-            React.createElement("div", { className: "row" },
-                React.createElement("div", { className: "col-6 tournament-row" }, matches.feeder_lhs !== null &&
-                    React.createElement(TournamentCell, { matches: matches.feeder_lhs })),
-                React.createElement("div", { className: "col-6 tournament-row" }, matches.feeder_rhs !== null &&
-                    React.createElement(TournamentCell, { matches: matches.feeder_rhs }))));
-    };
-    return TournamentCell;
-}(React.Component));
-var TournamentView = /** @class */ (function (_super) {
-    __extends(TournamentView, _super);
-    function TournamentView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+        const rectStyle = {
+            fill: 'black',
+            stroke: 'black',
+            'stroke-width': 5,
+        };
+        return (React.createElement(React.Fragment, null,
+            React.createElement("rect", { x: this.props.x, y: this.props.y, width: columnWidth, height: rowHeight, style: rectStyle, rx: "" + 3, ry: "" + 3 }),
+            extra));
+    }
+}
+function height(matchups) {
+    if (matchups === null) {
+        return 0;
+    }
+    let hgt = Math.max(height(matchups.feeder_lhs), height(matchups.feeder_rhs)) + 1;
+    return hgt;
+}
+class TournamentCell extends React.Component {
+    constructor(props) {
+        super(props);
+        this.agglomerateData = this.agglomerateData.bind(this);
+        this._merge = this._merge.bind(this);
+    }
+    _merge(aggCall, toX, toY) {
+        let [othElems, [othX, othY]] = aggCall;
+        const offsetX = 6;
+        const midX = othX + columnWidth + offsetX;
+        var midY = othY + rowHeight / 2;
+        const halfX = midX + colSpacing / 2;
+        const offsetY = 9;
+        if (toY < midY) {
+            toY += offsetY;
+        }
+        else {
+            toY -= offsetY;
+        }
+        const lineOpts = {
+            stroke: "black",
+            strokeWidth: 1.5,
+        };
+        return [React.createElement("line", Object.assign({}, lineOpts, { x1: "" + midX, y1: "" + midY, x2: "" + halfX, y2: "" + midY })),
+            React.createElement("line", Object.assign({}, lineOpts, { x1: "" + halfX, y1: "" + midY, x2: "" + halfX, y2: "" + toY })),
+            React.createElement("line", Object.assign({}, lineOpts, { x1: "" + halfX, y1: "" + toY, x2: "" + (toX - offsetX), y2: "" + toY })),
+            ...othElems];
+    }
+    agglomerateData(data, row, col, maxCols) {
+        //elements, root
+        if (data === null) {
+            return [];
+        }
+        let { feeder_lhs, feeder_rhs } = data, rest = __rest(data, ["feeder_lhs", "feeder_rhs"]);
+        const x = calcX(col);
+        const y = calcY(col, row, maxCols);
+        var elems = [React.createElement(Matchup, { x: x, y: y, data: rest })];
+        const entry = y + rowHeight / 2;
+        if (data.feeder_lhs !== null) {
+            const accumulated = this._merge(this.agglomerateData(data.feeder_lhs, row * 2, col - 1, maxCols), x, entry);
+            elems = elems.concat(accumulated);
+        }
+        if (data.feeder_rhs !== null) {
+            const accumulated = this._merge(this.agglomerateData(data.feeder_rhs, row * 2 + 1, col - 1, maxCols), x, entry);
+            elems = elems.concat(accumulated);
+        }
+        return [elems, [x, y]];
+    }
+    render() {
+        const maxHeight = height(this.props.matches);
+        let [elems, ...rest] = this.agglomerateData(this.props.matches, 0, maxHeight - 1, maxHeight);
+        return React.createElement("svg", { width: "" + window.innerWidth, height: "" + window.innerHeight },
+            React.createElement("g", null, elems));
+    }
+}
+class TournamentView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             matches: null,
         };
-        return _this;
     }
-    TournamentView.prototype.componentDidMount = function () {
-        var _this = this;
+    componentDidMount() {
         axios_1.default.get(tourney_url)
-            .then(function (res) {
-            _this.setState({
+            .then((res) => {
+            this.setState({
                 matches: res.data.matches,
             });
         })
-            .catch(function (res) {
+            .catch((res) => {
         });
-    };
-    TournamentView.prototype.render = function () {
+    }
+    render() {
         if (this.state.matches === null) {
             return null;
         }
-        return (React.createElement(TournamentCell, { matches: this.state.matches }));
-    };
-    return TournamentView;
-}(React.Component));
+        return (React.createElement("div", { className: "tournament-div" },
+            React.createElement(TournamentCell, { matches: this.state.matches })));
+    }
+}
 exports.TournamentView = TournamentView;
 
 

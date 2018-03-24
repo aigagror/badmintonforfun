@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 46);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var isBuffer = __webpack_require__(12);
 
 /*global toString:true*/
@@ -403,10 +403,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   }
   return adapter;
 }
@@ -481,16 +481,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +502,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -698,7 +692,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -709,7 +703,7 @@ var settle = __webpack_require__(15);
 var buildURL = __webpack_require__(17);
 var parseHeaders = __webpack_require__(18);
 var isURLSameOrigin = __webpack_require__(19);
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(20);
 
 module.exports = function xhrAdapter(config) {
@@ -883,10 +877,10 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -911,7 +905,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -923,7 +917,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -949,6 +943,12 @@ module.exports = Cancel;
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -962,7 +962,7 @@ module.exports = __webpack_require__(11);
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var Axios = __webpack_require__(13);
 var defaults = __webpack_require__(2);
 
@@ -997,9 +997,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(9);
+axios.Cancel = __webpack_require__(8);
 axios.CancelToken = __webpack_require__(27);
-axios.isCancel = __webpack_require__(8);
+axios.isCancel = __webpack_require__(7);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -1152,7 +1152,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -1585,7 +1585,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(24);
-var isCancel = __webpack_require__(8);
+var isCancel = __webpack_require__(7);
 var defaults = __webpack_require__(2);
 var isAbsoluteURL = __webpack_require__(25);
 var combineURLs = __webpack_require__(26);
@@ -1745,7 +1745,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(9);
+var Cancel = __webpack_require__(8);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -1852,82 +1852,65 @@ module.exports = function spread(callback) {
 /* 41 */,
 /* 42 */,
 /* 43 */,
-/* 44 */
+/* 44 */,
+/* 45 */,
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
-var MemberView_1 = __webpack_require__(45);
+const React = __webpack_require__(1);
+const ReactDOM = __webpack_require__(9);
+const MemberView_1 = __webpack_require__(47);
 ReactDOM.render(React.createElement(MemberView_1.MemberView, null), document.querySelector("member-view"));
 
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var axios_1 = __webpack_require__(10);
-var url = '/mock/members.json';
-var Member = /** @class */ (function (_super) {
-    __extends(Member, _super);
-    function Member() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Member.prototype.render = function () {
+const React = __webpack_require__(1);
+const axios_1 = __webpack_require__(10);
+const url = '/mock/members.json';
+class Member extends React.Component {
+    render() {
         return React.createElement("a", { href: "/profile.html?member_id=" + this.props.id }, this.props.name);
-    };
-    return Member;
-}(React.Component));
-var MemberView = /** @class */ (function (_super) {
-    __extends(MemberView, _super);
-    function MemberView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+    }
+}
+class MemberView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             members: []
         };
-        return _this;
     }
-    MemberView.prototype.componentDidMount = function () {
-        var _this = this;
+    componentDidMount() {
         axios_1.default.get(url)
-            .then(function (res) {
-            _this.setState({
+            .then((res) => {
+            this.setState({
                 members: res.data.members
             });
         })
-            .catch(function (res) {
+            .catch((res) => {
             console.log(res);
         });
-    };
-    MemberView.prototype.render = function () {
+    }
+    render() {
         if (this.state.members.length === 0) {
             return React.createElement("p", null, "Loading");
         }
         else {
-            return React.createElement("ul", { className: "member-list" }, this.state.members.map(function (member, idx) {
+            return React.createElement("ul", { className: "member-list" }, this.state.members.map((member, idx) => {
                 return React.createElement("li", { key: idx },
                     React.createElement(Member, { name: member.name, id: member.id, key: idx }));
             }));
         }
-    };
-    return MemberView;
-}(React.Component));
+    }
+}
 exports.MemberView = MemberView;
 
 

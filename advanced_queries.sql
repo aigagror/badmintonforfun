@@ -1,17 +1,16 @@
 -- TODO: Setup some mock data to demonstrate the queries
 
 
-SELECT "First Advanced Query: Members on the queue with the minimum amount of play time from today";
--- TODO
-SELECT api_member.interested_ptr_id
-FROM api_member JOIN
-    (SELECT SUM(endDate - startDate) as PLAY_TIME, interested_ptr_id
-     FROM api_finishedmatch GROUP BY interested_ptr_id
-     WHERE start > TODAY())
-    WHERE api_member.queue_id = 'CASUAL'
-ORDER BY PLAY_TIME ASC LIMIT 1;
+SELECT "First Advanced Query: Party on the queue with the minimum average play time of the members involved from today";
+
 
 
 
 SELECT "Second Advanced Query: Members in order of highest wins/total games ratio";
--- TODO
+SELECT member.interested_ptr_id, COUNT(CASE WHEN (playedin.team = 'A' AND match.scoreA > match.scoreB) OR
+                                                 (playedin.team = 'B' AND match.scoreB > match.scoreA) THEN 1 ELSE NULL END) AS wins, COUNT(*) AS total_games
+FROM (api_member AS member
+  INNER JOIN api_playedin AS playedin ON member.interested_ptr_id = playedin.member_id)
+  INNER JOIN api_match AS match ON match.id = playedin.match_id
+GROUP BY member.interested_ptr_id
+ORDER BY wins * 1.0 / total_games DESC;

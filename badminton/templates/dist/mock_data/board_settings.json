@@ -3,19 +3,21 @@
 		{
 			"name": "Lorem Ipsum",
 			"id": 1234,
-			"type": "member",
+			"type": "member"
 		},
 		{
 			"name": "Lorem Ipsum2",
 			"id": 12345,
-			"type": "interested",
+			"type": "interested"
 		},
 		{
 			"name": "Lorem Ipsum3",
 			"id": 12346,
-			"type": "board member",
-		},
+			"type": "board member"
+		}
 	],
+
+	"memberTypes": ["member", "interested", "board member"],
 
 	"courts": [
 		{
@@ -30,5 +32,7 @@
 			"name": "Court3",
 			"type": "free_play"
 		}
-	]
+	],
+
+	"courtTypes": ["ranked", "king", "free_play"]
 }

@@ -3,9 +3,11 @@ import {Slider} from "../common/Slider";
 import {Popup} from "../common/Popup";
 import axios from 'axios';
 import { RegisterElectionView } from "./RegisterElection";
+import { RadioButton } from '../common/RadioButton';
+import { Select, Option } from "../common/Select";
 
-const election_url = '/mock/election_happening.json';
-const election_not_url = '/mock/electionless.json';
+const election_url = '/api/elections';
+const campaign_url = '/api/campaign';
 
 enum LoadingState {
     Loading,
@@ -14,11 +16,6 @@ enum LoadingState {
 
 function capitalize(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function format(str: string): string {
-	const splitted = str.split("_");
-	return splitted.map((word: string) => capitalize(word)).join(" ");
 }
 
 class ElectionCandidate extends React.Component<any, any> {
@@ -31,13 +28,9 @@ class ElectionCandidate extends React.Component<any, any> {
 	render() {
 		return (<div>
 			<div className="row">
-			<div className="col-offset-2 col-1 row-2">
-			<label className="radio-container">
-			<input type="radio" name={this.props.role} id={""+this.props.person.id}
-				value={this.props.person.id} className="election-check"
-				defaultChecked={this.props.person.voted} />
-			<span className="radio-checkmark"></span>
-			</label>
+			<div className="col-1 row-2">
+			<RadioButton name={this.props.role} id={""+this.props.person.id}
+				value={this.props.person.id} defaultChecked={this.props.person.voted} />
 			</div>
 
 			<div className="col-8 row-2 election-label-div">
@@ -45,7 +38,7 @@ class ElectionCandidate extends React.Component<any, any> {
 			</div>
 			</div>
 
-			<div className="row col-offset-2">
+			<div className="row col-offset-1 col-10">
 			<p>Pitch: {this.props.person.pitch}</p>
 			</div>
 			</div>
@@ -61,8 +54,8 @@ class ElectionRole extends React.Component<any, any> {
 	render() {
 		return (<div>
 			<div className="row">
-			<div className="col-offset-2 col-3">
-			<h3>{format(this.props.role)}</h3>
+			<div className="col-3">
+			<h3>{this.props.role}</h3>
 			</div>
 			</div>
 			{
@@ -87,8 +80,8 @@ class ElectionUp extends React.Component<any, any> {
 			campaigns.push([elem, this.props.campaigns[elem]]);
 		}
 		this.state = {
+			popup: null,
 			campaigns: campaigns,
-			popup: null
 		}
 		this.submitVotes = this.submitVotes.bind(this);
 	}
@@ -109,7 +102,8 @@ class ElectionUp extends React.Component<any, any> {
 	}
 
 	render() {
-		return (<div className="grid">
+		return (<>
+		<div className="grid">
 		<form onSubmit={this.submitVotes}>
 		{
 			this.state.campaigns.map((campaign: any, idx: number) => { 
@@ -117,16 +111,17 @@ class ElectionUp extends React.Component<any, any> {
 			})
 		}
 		<div className="row row-offset-2">
-		<button type="submit" className="col-7 col-offset-2 row-2 election-submit">Submit Votes</button>
+		<button type="submit">Submit Votes</button>
 		</div>
 		</form>
 		{ this.state.popup !== null && this.state.popup }
-		</div>);
+		</div>
+		<RegisterElectionView roles={this.props.roles}/>
+		</>);
 	}
 }
 
 class ElectionDown extends React.Component<any, any> {
-	message: string;
 	constructor(props: any) {
 		super(props);
 	}
@@ -136,75 +131,157 @@ class ElectionDown extends React.Component<any, any> {
 	}
 }
 
+class ElectionResults extends React.Component<any, any> {
+
+	constructor(props: any) {
+		super(props);
+	}
+
+
+	render() {
+		return <div>
+			{
+				this.props.results.map((role: any, idx: number) => {
+					return <div key={idx}>
+					<h4>{role.role}</h4>
+					{
+						role.votes.map((person: any, idx2: number) => {
+							return <div key={idx2}>
+								{person.name}:{person.num_votes}
+							</div>;
+						}
+						)
+					}
+					</div>
+
+				})
+			}
+			</div>;
+	}
+}
+
+class Campaign {
+	pitch: string;
+	job: string;
+	email: string;
+	id: number;
+	name: string;
+}
+
+class CampaignResponse {
+	order: string[];
+	campaigns: Campaign[];
+}
+
+const convertResponseToHierarchy = (res: CampaignResponse): any => {
+	const ret: any = {};
+	for (var i of res.order) {
+		ret[i] = [];
+	}
+
+	for (var campaigner of res.campaigns) {
+		ret[campaigner.job].push(campaigner);
+	}
+	return ret;
+}
+
 export class ElectionView extends React.Component<{}, any> {
+
+	private switchElem: any;
 
 	constructor(props: any) {
 	    super(props);
 	    this.state = {
 	    	election: LoadingState.Loading,
+	    	error: null,
 	    }
 	    this.performRequest = this.performRequest.bind(this);
-	    this.switch = this.switch.bind(this);
+	    //this.switch = this.switch.bind(this);
 	    this.componentDidMount = this.componentDidMount.bind(this);
 	}
 
-	performRequest(url: string) {
+	performRequest() {
 		const _this_ref = this;
-		axios.get(url)
+		const followUp = () => {
+			axios.get(campaign_url)
+				.then(res => {
+					const casted = res.data as CampaignResponse;
+					const hierarchy = convertResponseToHierarchy(casted);
+					const pack = <ElectionUp order={casted.order} 
+						campaigns={hierarchy} 
+						roles={casted.order} />;
+					_this_ref.setState({
+						election_data: pack,
+						election: LoadingState.Loaded,
+						up: status
+					})
+				})
+				.catch(res => {
+					this.setState({
+						error: res,
+					});
+				})
+		}
+
+		axios.get(election_url)
 			.then(res => {
 				const status = res.data.status;
 				var pack;
-				var up;
-				var roles = null;
-				if (status) {
-					pack = <ElectionUp order={res.data.order} campaigns={res.data.campaigns} />;
-					roles = Object.keys(res.data.campaigns).sort();
-					up = true;
+				if (status === "up") {
+					followUp();
+				} else if (status === "down") {
+					_this_ref.setState({
+						election_data: <ElectionDown message={res.data.message} />,
+						election: LoadingState.Loaded,
+						up: status
+					})
 				} else {
-					pack = <ElectionDown message={res.data.message} />;
-					up = false;
+					_this_ref.setState({
+						election_data: <ElectionResults results={res.data.election_data} />,
+						election: LoadingState.Loaded,
+						up: status
+					})
 				}
-
-				_this_ref.setState({
-					election_data: pack,
-					roles: roles,
-					election: LoadingState.Loaded,
-					up: up
-				})
+			})
+			.catch(res => {
+				this.setState({
+					error: res,
+				});
 			});
 	}
 
-
-	switch(event: Event) {
+/*
+	switch(value: any) {
 		if (this.state.election !== LoadingState.Loaded) {
 			return;
-		} else if (this.state.up) {
+		}
+
+		if (value === 'up') {
+			this.performRequest(election_url);
+		} else if (value === 'down') {
 			this.performRequest(election_not_url);
 		} else {
-			this.performRequest(election_url);
+			this.performRequest(election_results_url);
 		}
-	}
+	} */
 
 
 	componentDidMount() {
-		this.performRequest(election_url);
+		this.performRequest();
 	}
 
 	render() {
+		if (this.state.error !== null) {
+			return <p> An error has occurred "{this.state.error}"</p>
+		}
 	    return (
 	    	<div className="grid row">
 	    	<div className="col-offset-2 col-8">
-	    	<h2>Toggle Election Happening</h2>
-	    	<Slider change={this.switch} checked={false}/>
     		{
     			this.state.election === LoadingState.Loading ?
     			<p> Loading </p> :
     			this.state.election_data
     		}
-
-    		<div className="row-offset-2 col-offset-2 col-12">
-    		{ this.state.roles && <RegisterElectionView roles={this.state.roles}/> }
-    		</div>
     		</div>
 
 	    	</div>);

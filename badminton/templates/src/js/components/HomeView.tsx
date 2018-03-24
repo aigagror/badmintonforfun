@@ -2,6 +2,7 @@ import * as React from "react";
 import axios from 'axios';
 import { Slider } from '../common/Slider'
 import { ProfileView } from './ProfileView'
+import { Select } from '../common/Select'
 
 const stat_urls = "/mock/stats.json"
 const announce_url = "/mock/announcements.json"

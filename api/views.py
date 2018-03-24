@@ -6,9 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from .home_api import *
 from .election_api import *
 from .settings_api import *
-
-def index(request):
-    return render(request, 'index.html')
+from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
     email = 'ezhuang2@illinois.edu'
@@ -17,6 +15,10 @@ def home(request):
     profile = get_member(email)
 
     stats = get_stats(email)
+    
+    matches = get_matches(email)
+    
+    schedule = get_schedule()
 
     matches = get_matches(email)
 
@@ -81,22 +83,61 @@ def elections(request):
         return render(request, 'api_elections.html', context)
 
 
-def campaignView(request):
+def restrictRouter(allowed=list(), incomplete=list()):
+    def _restrictRouter(func):
+        def _func(request, *args, **kwargs):
+            if request.method in incomplete:
+                return HttpResponse("Coming soon!", status=501)
+            elif request.method not in allowed:
+                return HttpResponse("Invalid request verb {}".format(request.method), status=400)
+            else:
+                return func(request, *args, **kwargs)
+
+        return _func
+    return _restrictRouter
+
+@restrictRouter(allowed=["GET", "POST"], incomplete=["DELETE"])
+def campaignRouter(request):
     if request.method == "GET":
         return get_current_campaigns()
-
-    # create a new campaign or edit a current campaign
-    if request.method == "POST":
+    elif request.method == "POST":
         dict_post = dict(request.POST.items())
         return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
 
-def electionView(request):
+@restrictRouter(allowed=["GET", "POST"])
+def settingsRouter(request):
     if request.method == "GET":
-        return get_all_elections()
+        return member_config()
+    elif request.method == "POST":
+        return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
 
-    if request.method == "POST":
+
+@csrf_exempt
+@restrictRouter(allowed=["GET", "POST"], incomplete=["DELETE"])
+def electionRouter(request):
+    if request.method == "GET":
+        return current_election()
+    elif request.method == "POST":
         dict_post = dict(request.POST.items())
-        return edit_election(dict_post["date"], dict_post["endDate"])
+        startKey = "startDate"
+        endKey = "endDate"
+        if startKey not in dict_post:
+            return HttpResponse("Missing required param {}".format(startKey), status=400)
+        startDate = deserializeDateTime(dict_post[startKey])
+        endDate = dict_post.get(endKey, None)
+        if endDate != None:
+            endDate = deserializeDateTime(endDate)
+        return edit_election(startDate, endDate)
+
+@csrf_exempt
+@restrictRouter(allowed=["POST"])
+def electionCreateRouter(request):
+    dict_post = dict(request.POST.items())
+    startKey = "startDate"
+    if startKey not in dict_post:
+        return HttpResponse("Missing required param {}".format(startKey), status=400)
+    startDate = deserializeDateTime(dict_post[startKey])
+    return start_election(startDate)
 
 class Interested(object):
     first_name = ''
@@ -253,9 +294,6 @@ def settings_view(request):
     if request.method == 'POST':
         if is_board_member(email):
             dict_post = dict(request.POST.items())
-
-
-
 
 
 def settings_available_courts(request):

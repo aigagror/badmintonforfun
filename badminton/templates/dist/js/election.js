@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 37);
+/******/ 	return __webpack_require__(__webpack_require__.s = 39);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var isBuffer = __webpack_require__(12);
 
 /*global toString:true*/
@@ -403,10 +403,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   }
   return adapter;
 }
@@ -481,16 +481,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +502,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -698,7 +692,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -709,7 +703,7 @@ var settle = __webpack_require__(15);
 var buildURL = __webpack_require__(17);
 var parseHeaders = __webpack_require__(18);
 var isURLSameOrigin = __webpack_require__(19);
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(20);
 
 module.exports = function xhrAdapter(config) {
@@ -883,10 +877,10 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -911,7 +905,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -923,7 +917,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -949,6 +943,12 @@ module.exports = Cancel;
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -962,7 +962,7 @@ module.exports = __webpack_require__(11);
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var Axios = __webpack_require__(13);
 var defaults = __webpack_require__(2);
 
@@ -997,9 +997,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(9);
+axios.Cancel = __webpack_require__(8);
 axios.CancelToken = __webpack_require__(27);
-axios.isCancel = __webpack_require__(8);
+axios.isCancel = __webpack_require__(7);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -1152,7 +1152,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -1585,7 +1585,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(24);
-var isCancel = __webpack_require__(8);
+var isCancel = __webpack_require__(7);
 var defaults = __webpack_require__(2);
 var isAbsoluteURL = __webpack_require__(25);
 var combineURLs = __webpack_require__(26);
@@ -1745,7 +1745,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(9);
+var Cancel = __webpack_require__(8);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -1837,317 +1837,230 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 29 */,
-/* 30 */,
-/* 31 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var Slider = /** @class */ (function (_super) {
-    __extends(Slider, _super);
-    function Slider(props) {
-        var _this = _super.call(this, props) || this;
-        _this.onChange = _this.onChange.bind(_this);
-        _this.selected = !!_this.props.checked;
-        return _this;
+const React = __webpack_require__(1);
+class Option {
+    constructor(val, displ) {
+        this.value = val;
+        this.display = displ;
     }
-    Slider.prototype.componentDidMount = function () {
-        if (this.selected) {
-            this.inputElem.checked = true;
+}
+exports.Option = Option;
+const selectFadeOutClassName = 'select-check-fade-out';
+class SelectArea extends React.Component {
+    render() {
+        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: this.props.onChange }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
+        }));
+    }
+}
+class Select extends React.Component {
+    constructor(props) {
+        super(props);
+        this.change = this.change.bind(this);
+        this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
+        this._decideInitialStatus = this._decideInitialStatus.bind(this);
+        const status = this._decideInitialStatus();
+        this.state = {
+            status: status,
+        };
+    }
+    _decideInitialStatus() {
+        if (this.props.defaultValue) {
+            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            if (!value) {
+                return "";
+            }
+            else {
+                return value.display;
+            }
         }
-    };
-    Slider.prototype.onChange = function (event) {
-        this.selected = !this.selected;
-        this.props.change(event);
-    };
-    Slider.prototype.render = function () {
-        var _this = this;
-        return (React.createElement("label", { className: "switch" },
-            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: function (input) { return _this.inputElem = input; } }),
-            React.createElement("span", { className: "slider round" })));
-    };
-    return Slider;
-}(React.Component));
-exports.Slider = Slider;
+        else {
+            return this.props.options[0].display;
+        }
+    }
+    componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+        const defaultHeight = 30;
+        this.scrollDiv.style.height = defaultHeight + "px";
+        this.interval = setInterval(() => {
+            const movableArea = this.innerDiv.scrollTop /
+                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            this.scrollDiv.style.top = "" + offset + "px";
+        }, 20);
+        const divMove = (e) => {
+            const boundingRect = this.selectDiv.getBoundingClientRect();
+            const fuzz = .2;
+            const height = boundingRect.bottom - boundingRect.top;
+            const bottom = boundingRect.bottom - fuzz * height;
+            const top = boundingRect.top + fuzz * height;
+            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            const percentage = (adjusted - top) / (bottom - top);
+            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        };
+        function mouseUp() {
+            window.removeEventListener('mousemove', divMove, true);
+        }
+        function mouseDown() {
+            window.addEventListener('mousemove', divMove, true);
+        }
+        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
+        window.addEventListener('mouseup', mouseUp, false);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+        clearInterval(this.interval);
+    }
+    /**
+     * Uncheck the input if clicked outside
+     * Best to leave the typing generic because typescript does _not_
+     * like non-generics with dom.
+     */
+    handleClickOutside(event) {
+        if (this.inputDiv && !this.wrapper.contains(event.target)) {
+            this.inputDiv.checked = false;
+        }
+    }
+    lazyAnimationAdder(event) {
+        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
+            this.selectDiv.classList.add(selectFadeOutClassName);
+        }
+    }
+    change(event) {
+        const target = event.target;
+        if (this.props.onChange) {
+            this.props.onChange(target.value);
+        }
+        // Cool trick to get the label for the input
+        const elem = document.querySelector('label[for="' + target.id + '"]');
+        this.setState({
+            status: elem.innerHTML,
+        });
+        this.inputDiv.checked = false;
+    }
+    render() {
+        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
+                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("b", { className: 'select-arrow' })),
+            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
+                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, onChange: this.change }),
+                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
+    }
+}
+exports.Select = Select;
 
 
 /***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Contains a popup view that need only to be rendered
+ * To work. Appears in the middle of the screen and darkens
+ * The body.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(1);
+const popupDisabledClass = "popup-disabled";
+const popupScreenFadeClass = 'popup-screen-fade';
+const popupFadeClass = 'popup-fade';
+class PopupProps {
+}
+exports.PopupProps = PopupProps;
+class PopupState {
+}
+class Popup extends React.Component {
+    constructor(props) {
+        super(props);
+        this.close = this.close.bind(this);
+    }
+    componentDidMount() {
+        /* Programatically create a div to overlay everything and animate it in
+            Also force the body not to scroll */
+        this.screenDiv = document.createElement('div');
+        this.screenDiv.className = 'popup-screen';
+        const body = document.querySelector('body');
+        body.appendChild(this.screenDiv);
+        body.classList.add(popupDisabledClass);
+    }
+    componentWillUnmount() {
+        /* Remove the programatic div and let the body scroll */
+        const body = document.querySelector('body');
+        body.removeChild(this.screenDiv);
+        body.classList.remove(popupDisabledClass);
+    }
+    close() {
+        /* Animate everything in */
+        this.wrapperDiv.classList.add(popupFadeClass);
+        this.screenDiv.classList.add(popupScreenFadeClass);
+        /* Cool so we can seperate concerns */
+        const refCounter = { count: 0 };
+        const callback = () => {
+            if (refCounter.count == 1) {
+                this.props.callback();
+            }
+            else {
+                refCounter.count += 1;
+            }
+        };
+        /*
+         * Since there are two animations going on we want to wait
+         * for both of them to end. So we use a reference counter
+         * in the form of a bound object.
+         */
+        this.wrapperDiv.addEventListener('animationend', callback);
+        this.screenDiv.addEventListener('animationend', callback);
+    }
+    render() {
+        return (React.createElement("div", { className: "popup-div", ref: (input) => this.wrapperDiv = input },
+            React.createElement("div", { className: "grid row" },
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-11 popup-title-div" },
+                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-offset-1 col-11" },
+                        React.createElement("p", { className: "popup-message" }, this.props.message))),
+                React.createElement("div", { className: "row-offset-10" },
+                    React.createElement("div", { className: "col-offset-es-9 col-es-5 row-offset-es-9 col-offset-9 row-offset-11" },
+                        React.createElement("button", { className: "popup-button row-2", onClick: this.close }, "\u2714"))))));
+    }
+}
+exports.Popup = Popup;
+
+
+/***/ }),
+/* 31 */,
 /* 32 */,
 /* 33 */,
 /* 34 */,
 /* 35 */,
 /* 36 */,
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
-var ElectionView_1 = __webpack_require__(38);
-ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
-
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var Slider_1 = __webpack_require__(31);
-var Popup_1 = __webpack_require__(39);
-var axios_1 = __webpack_require__(10);
-var RegisterElection_1 = __webpack_require__(40);
-var election_url = '/mock/election_happening.json';
-var election_not_url = '/mock/electionless.json';
-var LoadingState;
-(function (LoadingState) {
-    LoadingState[LoadingState["Loading"] = 0] = "Loading";
-    LoadingState[LoadingState["Loaded"] = 1] = "Loaded";
-})(LoadingState || (LoadingState = {}));
-function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-function format(str) {
-    var splitted = str.split("_");
-    return splitted.map(function (word) { return capitalize(word); }).join(" ");
-}
-var ElectionCandidate = /** @class */ (function (_super) {
-    __extends(ElectionCandidate, _super);
-    function ElectionCandidate(props) {
-        return _super.call(this, props) || this;
-    }
-    ElectionCandidate.prototype.render = function () {
-        return (React.createElement("div", null,
-            React.createElement("div", { className: "row" },
-                React.createElement("div", { className: "col-offset-2 col-1 row-2" },
-                    React.createElement("label", { className: "radio-container" },
-                        React.createElement("input", { type: "radio", name: this.props.role, id: "" + this.props.person.id, value: this.props.person.id, className: "election-check", defaultChecked: this.props.person.voted }),
-                        React.createElement("span", { className: "radio-checkmark" }))),
-                React.createElement("div", { className: "col-8 row-2 election-label-div" },
-                    React.createElement("label", { htmlFor: "" + this.props.person.id, className: "election-label" }, this.props.person.name))),
-            React.createElement("div", { className: "row col-offset-2" },
-                React.createElement("p", null,
-                    "Pitch: ",
-                    this.props.person.pitch))));
-    };
-    return ElectionCandidate;
-}(React.Component));
-var ElectionRole = /** @class */ (function (_super) {
-    __extends(ElectionRole, _super);
-    function ElectionRole(props) {
-        return _super.call(this, props) || this;
-    }
-    ElectionRole.prototype.render = function () {
-        var _this = this;
-        return (React.createElement("div", null,
-            React.createElement("div", { className: "row" },
-                React.createElement("div", { className: "col-offset-2 col-3" },
-                    React.createElement("h3", null, format(this.props.role)))),
-            this.props.candidates.map(function (key, idx) {
-                return React.createElement(ElectionCandidate, { person: key, role: _this.props.role, key: idx });
-            })));
-    };
-    return ElectionRole;
-}(React.Component));
-var ElectionUp = /** @class */ (function (_super) {
-    __extends(ElectionUp, _super);
-    function ElectionUp(props) {
-        var _this = _super.call(this, props) || this;
-        var campaigns = [];
-        for (var key in _this.props.order) {
-            var elem = _this.props.order[key];
-            campaigns.push([elem, _this.props.campaigns[elem]]);
-        }
-        _this.state = {
-            campaigns: campaigns,
-            popup: null
-        };
-        _this.submitVotes = _this.submitVotes.bind(_this);
-        return _this;
-    }
-    ElectionUp.prototype.submitVotes = function (event) {
-        var _this = this;
-        event.preventDefault();
-        for (var key in this.props.order) {
-            var elem = this.props.order[key];
-            console.log("For: " + elem + " Userid: " + event.target[elem].value);
-        }
-        this.setState({
-            popup: React.createElement(Popup_1.Popup, { title: "Submitted!", message: "Submit as many times as you want before the deadline", callback: function () {
-                    _this.setState({ popup: null });
-                } })
-        });
-    };
-    ElectionUp.prototype.render = function () {
-        return (React.createElement("div", { className: "grid" },
-            React.createElement("form", { onSubmit: this.submitVotes },
-                this.state.campaigns.map(function (campaign, idx) {
-                    return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx });
-                }),
-                React.createElement("div", { className: "row row-offset-2" },
-                    React.createElement("button", { type: "submit", className: "col-7 col-offset-2 row-2 election-submit" }, "Submit Votes"))),
-            this.state.popup !== null && this.state.popup));
-    };
-    return ElectionUp;
-}(React.Component));
-var ElectionDown = /** @class */ (function (_super) {
-    __extends(ElectionDown, _super);
-    function ElectionDown(props) {
-        return _super.call(this, props) || this;
-    }
-    ElectionDown.prototype.render = function () {
-        return (React.createElement("p", null, this.props.message));
-    };
-    return ElectionDown;
-}(React.Component));
-var ElectionView = /** @class */ (function (_super) {
-    __extends(ElectionView, _super);
-    function ElectionView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
-            election: LoadingState.Loading,
-        };
-        _this.performRequest = _this.performRequest.bind(_this);
-        _this.switch = _this.switch.bind(_this);
-        _this.componentDidMount = _this.componentDidMount.bind(_this);
-        return _this;
-    }
-    ElectionView.prototype.performRequest = function (url) {
-        var _this_ref = this;
-        axios_1.default.get(url)
-            .then(function (res) {
-            var status = res.data.status;
-            var pack;
-            var up;
-            var roles = null;
-            if (status) {
-                pack = React.createElement(ElectionUp, { order: res.data.order, campaigns: res.data.campaigns });
-                roles = Object.keys(res.data.campaigns).sort();
-                up = true;
-            }
-            else {
-                pack = React.createElement(ElectionDown, { message: res.data.message });
-                up = false;
-            }
-            _this_ref.setState({
-                election_data: pack,
-                roles: roles,
-                election: LoadingState.Loaded,
-                up: up
-            });
-        });
-    };
-    ElectionView.prototype.switch = function (event) {
-        if (this.state.election !== LoadingState.Loaded) {
-            return;
-        }
-        else if (this.state.up) {
-            this.performRequest(election_not_url);
-        }
-        else {
-            this.performRequest(election_url);
-        }
-    };
-    ElectionView.prototype.componentDidMount = function () {
-        this.performRequest(election_url);
-    };
-    ElectionView.prototype.render = function () {
-        return (React.createElement("div", { className: "grid row" },
-            React.createElement("div", { className: "col-offset-2 col-8" },
-                React.createElement("h2", null, "Toggle Election Happening"),
-                React.createElement(Slider_1.Slider, { change: this.switch, checked: false }),
-                this.state.election === LoadingState.Loading ?
-                    React.createElement("p", null, " Loading ") :
-                    this.state.election_data,
-                React.createElement("div", { className: "row-offset-2 col-offset-2 col-12" }, this.state.roles && React.createElement(RegisterElection_1.RegisterElectionView, { roles: this.state.roles })))));
-    };
-    return ElectionView;
-}(React.Component));
-exports.ElectionView = ElectionView;
-
-
-/***/ }),
+/* 37 */,
+/* 38 */,
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var Popup = /** @class */ (function (_super) {
-    __extends(Popup, _super);
-    function Popup(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
-            popup: false,
-        };
-        _this.close = _this.close.bind(_this);
-        return _this;
-    }
-    Popup.prototype.close = function () {
-        this.setState({
-            popup: true,
-        });
-        this.props.callback();
-    };
-    Popup.prototype.render = function () {
-        if (this.state.popup) {
-            return null;
-        }
-        else {
-            return (React.createElement("div", { className: "popup-div" },
-                React.createElement("div", { className: "grid row" },
-                    React.createElement("div", { className: "row-1" },
-                        React.createElement("div", { className: "col-offset-1 col-11" },
-                            React.createElement("h4", { className: "popup-title" }, this.props.title))),
-                    React.createElement("div", { className: "row-1" },
-                        React.createElement("div", { className: "col-offset-1 col-11" },
-                            React.createElement("p", { className: "popup-message" }, this.props.message))),
-                    React.createElement("div", { className: "row-offset-10" },
-                        React.createElement("div", { className: "col-offset-7 col-5" },
-                            React.createElement("button", { className: "popup-button row-2", onClick: this.close }, "Ok"))))));
-        }
-    };
-    return Popup;
-}(React.Component));
-exports.Popup = Popup;
+const React = __webpack_require__(1);
+const ReactDOM = __webpack_require__(9);
+const ElectionView_1 = __webpack_require__(40);
+ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
 
 
 /***/ }),
@@ -2156,54 +2069,350 @@ exports.Popup = Popup;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var RegisterElectionView = /** @class */ (function (_super) {
-    __extends(RegisterElectionView, _super);
-    function RegisterElectionView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.change = _this.change.bind(_this);
-        _this.state = {
-            clicked: false,
-        };
-        return _this;
+const React = __webpack_require__(1);
+const Popup_1 = __webpack_require__(30);
+const axios_1 = __webpack_require__(10);
+const RegisterElection_1 = __webpack_require__(41);
+const RadioButton_1 = __webpack_require__(42);
+const election_url = '/api/elections';
+const campaign_url = '/api/campaign';
+var LoadingState;
+(function (LoadingState) {
+    LoadingState[LoadingState["Loading"] = 0] = "Loading";
+    LoadingState[LoadingState["Loaded"] = 1] = "Loaded";
+})(LoadingState || (LoadingState = {}));
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+class ElectionCandidate extends React.Component {
+    constructor(props) {
+        super(props);
     }
-    RegisterElectionView.prototype.change = function () {
+    render() {
+        return (React.createElement("div", null,
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { className: "col-1 row-2" },
+                    React.createElement(RadioButton_1.RadioButton, { name: this.props.role, id: "" + this.props.person.id, value: this.props.person.id, defaultChecked: this.props.person.voted })),
+                React.createElement("div", { className: "col-8 row-2 election-label-div" },
+                    React.createElement("label", { htmlFor: "" + this.props.person.id, className: "election-label" }, this.props.person.name))),
+            React.createElement("div", { className: "row col-offset-1 col-10" },
+                React.createElement("p", null,
+                    "Pitch: ",
+                    this.props.person.pitch))));
+    }
+}
+class ElectionRole extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (React.createElement("div", null,
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { className: "col-3" },
+                    React.createElement("h3", null, this.props.role))),
+            this.props.candidates.map((key, idx) => {
+                return React.createElement(ElectionCandidate, { person: key, role: this.props.role, key: idx });
+            })));
+    }
+}
+class ElectionUp extends React.Component {
+    constructor(props) {
+        super(props);
+        const campaigns = [];
+        for (let key in this.props.order) {
+            let elem = this.props.order[key];
+            campaigns.push([elem, this.props.campaigns[elem]]);
+        }
+        this.state = {
+            popup: null,
+            campaigns: campaigns,
+        };
+        this.submitVotes = this.submitVotes.bind(this);
+    }
+    submitVotes(event) {
+        event.preventDefault();
+        for (let key in this.props.order) {
+            let elem = this.props.order[key];
+            console.log("For: " + elem + " Userid: " + event.target[elem].value);
+        }
+        this.setState({
+            popup: React.createElement(Popup_1.Popup, { title: "Submitted!", message: "Submit as many times as you want before the deadline", callback: () => {
+                    this.setState({ popup: null });
+                } })
+        });
+    }
+    render() {
+        return (React.createElement(React.Fragment, null,
+            React.createElement("div", { className: "grid" },
+                React.createElement("form", { onSubmit: this.submitVotes },
+                    this.state.campaigns.map((campaign, idx) => {
+                        return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx });
+                    }),
+                    React.createElement("div", { className: "row row-offset-2" },
+                        React.createElement("button", { type: "submit" }, "Submit Votes"))),
+                this.state.popup !== null && this.state.popup),
+            React.createElement(RegisterElection_1.RegisterElectionView, { roles: this.props.roles })));
+    }
+}
+class ElectionDown extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (React.createElement("p", null, this.props.message));
+    }
+}
+class ElectionResults extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return React.createElement("div", null, this.props.results.map((role, idx) => {
+            return React.createElement("div", { key: idx },
+                React.createElement("h4", null, role.role),
+                role.votes.map((person, idx2) => {
+                    return React.createElement("div", { key: idx2 },
+                        person.name,
+                        ":",
+                        person.num_votes);
+                }));
+        }));
+    }
+}
+class Campaign {
+}
+class CampaignResponse {
+}
+const convertResponseToHierarchy = (res) => {
+    const ret = {};
+    for (var i of res.order) {
+        ret[i] = [];
+    }
+    for (var campaigner of res.campaigns) {
+        ret[campaigner.job].push(campaigner);
+    }
+    return ret;
+};
+class ElectionView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            election: LoadingState.Loading,
+            error: null,
+        };
+        this.performRequest = this.performRequest.bind(this);
+        //this.switch = this.switch.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+    }
+    performRequest() {
+        const _this_ref = this;
+        const followUp = () => {
+            axios_1.default.get(campaign_url)
+                .then(res => {
+                const casted = res.data;
+                const hierarchy = convertResponseToHierarchy(casted);
+                const pack = React.createElement(ElectionUp, { order: casted.order, campaigns: hierarchy, roles: casted.order });
+                _this_ref.setState({
+                    election_data: pack,
+                    election: LoadingState.Loaded,
+                    up: status
+                });
+            })
+                .catch(res => {
+                this.setState({
+                    error: res,
+                });
+            });
+        };
+        axios_1.default.get(election_url)
+            .then(res => {
+            const status = res.data.status;
+            var pack;
+            if (status === "up") {
+                followUp();
+            }
+            else if (status === "down") {
+                _this_ref.setState({
+                    election_data: React.createElement(ElectionDown, { message: res.data.message }),
+                    election: LoadingState.Loaded,
+                    up: status
+                });
+            }
+            else {
+                _this_ref.setState({
+                    election_data: React.createElement(ElectionResults, { results: res.data.election_data }),
+                    election: LoadingState.Loaded,
+                    up: status
+                });
+            }
+        })
+            .catch(res => {
+            this.setState({
+                error: res,
+            });
+        });
+    }
+    /*
+        switch(value: any) {
+            if (this.state.election !== LoadingState.Loaded) {
+                return;
+            }
+    
+            if (value === 'up') {
+                this.performRequest(election_url);
+            } else if (value === 'down') {
+                this.performRequest(election_not_url);
+            } else {
+                this.performRequest(election_results_url);
+            }
+        } */
+    componentDidMount() {
+        this.performRequest();
+    }
+    render() {
+        if (this.state.error !== null) {
+            return React.createElement("p", null,
+                " An error has occurred \"",
+                this.state.error,
+                "\"");
+        }
+        return (React.createElement("div", { className: "grid row" },
+            React.createElement("div", { className: "col-offset-2 col-8" }, this.state.election === LoadingState.Loading ?
+                React.createElement("p", null, " Loading ") :
+                this.state.election_data)));
+    }
+}
+exports.ElectionView = ElectionView;
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(1);
+const Select_1 = __webpack_require__(29);
+const Popup_1 = __webpack_require__(30);
+class RegisterElectionView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.change = this.change.bind(this);
+        this.close = this.close.bind(this);
+        this.submit = this.submit.bind(this);
+        this._animationListener = this._animationListener.bind(this);
+        this.state = {
+            clicked: false,
+            pitchValue: ''
+        };
+        this.campaignType = this.props.roles[0];
+    }
+    componentDidUpdate() {
+        if (this.openDiv) {
+            this.openDiv.addEventListener('animationend', () => this.openDiv.scrollIntoView({ behavior: "smooth" }));
+        }
+    }
+    change() {
         this.setState({
             clicked: !this.state.clicked
         });
-    };
-    RegisterElectionView.prototype.render = function () {
+    }
+    _animationListener() {
+        this.openDiv.classList.remove('register-div-close');
+        this.openDiv.removeEventListener('animationend', this._animationListener);
+        this.change();
+    }
+    close() {
+        this.openDiv.classList.add('register-div-close');
+        this.openDiv.addEventListener('animationend', this._animationListener);
+    }
+    submit() {
+        console.log("Pitch", this.state.pitchValue);
+        console.log("State", this.campaignType);
+        this.setState({
+            popup: React.createElement(Popup_1.Popup, { title: "Campaign Submitted", message: "Election Campaign has been submitted", callback: () => window.location.reload(true) })
+        });
+    }
+    render() {
         if (!this.state.clicked) {
             return React.createElement("div", null,
                 React.createElement("button", { onClick: this.change }, "Want to run? Click here!"));
         }
         else {
-            return React.createElement("div", null,
-                React.createElement("textarea", { placeholder: "Your pitch goes here..." }),
-                React.createElement("div", { className: "row-offset-1" },
-                    React.createElement("select", null, this.props.roles.map(function (role, idx) {
-                        return React.createElement("option", { value: role, key: idx }, role);
-                    }))),
-                React.createElement("div", { className: "row-offset-1" },
-                    React.createElement("button", { onClick: this.change }, "Close")),
-                React.createElement("div", { className: "row-offset-1" },
-                    React.createElement("button", { onClick: this.change }, "Submit")));
+            const options = this.props.roles.map((role, idx) => new Select_1.Option(role, role));
+            return React.createElement(React.Fragment, null,
+                React.createElement("div", { className: "row-offset-2 register-div", ref: (input) => this.openDiv = input },
+                    React.createElement("h3", null, "Register Election"),
+                    React.createElement("textarea", { placeholder: "Your pitch goes here...", value: this.state.pitchValue, onChange: (ev) => this.setState({ pitchValue: ev.target.value }) }),
+                    React.createElement("div", { className: "row-offset-1" },
+                        React.createElement(Select_1.Select, { name: 'registerElection', onChange: (op) => { this.campaignType = op; }, options: options })),
+                    React.createElement("div", { className: "row-offset-1" },
+                        React.createElement("button", { onClick: this.close }, "Close")),
+                    React.createElement("div", { className: "row-offset-1" },
+                        React.createElement("button", { onClick: this.submit }, "Submit"))),
+                this.state.popup && this.state.popup);
         }
-    };
-    return RegisterElectionView;
-}(React.Component));
+    }
+}
 exports.RegisterElectionView = RegisterElectionView;
+
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Acts as a this wrapper around radio button so that
+ * Styles, animation, and consistency is maintained
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(1);
+const reverseSwirlClass = "radio-swirl-back";
+class RadioButtonState {
+}
+// Typescript doesn't support variadic types so the props have to be any
+// To forward to the standard input field
+class RadioButton extends React.Component {
+    constructor(props) {
+        super(props);
+        this.clicked = this.clicked.bind(this);
+        this.hover = this.hover.bind(this);
+    }
+    hover(event) {
+        // Must remove or after :hover disappears the
+        // Animation will trigger again
+        // No op to remove a class that does not exist
+        if (event.animationName.includes('reverse')) {
+            this.spanElem.classList.remove(reverseSwirlClass);
+        }
+    }
+    componentDidMount() {
+        // Make sure that the class has the reverse if checked for the first time
+        this.spanElem.addEventListener('animationend', this.hover);
+        this.clicked();
+    }
+    componentWillUnmount() {
+        this.spanElem.removeEventListener('animationend', this.hover);
+    }
+    clicked() {
+        if (this.inputElem.checked) {
+            // We are checking it
+            this.spanElem.classList.add(reverseSwirlClass);
+        }
+    }
+    render() {
+        /* Forward all props using ... to the input field since this is supposed
+         * to be a thin wrapper around it */
+        return React.createElement("label", { className: "radio-container" },
+            React.createElement("input", Object.assign({}, this.props, { type: "radio", onClick: this.clicked, ref: (input) => this.inputElem = input })),
+            React.createElement("span", { className: "radio-checkmark", ref: (input) => this.spanElem = input }));
+    }
+}
+exports.RadioButton = RadioButton;
 
 
 /***/ })
