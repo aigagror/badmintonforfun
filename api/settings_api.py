@@ -1,6 +1,7 @@
 from django.db import connection, IntegrityError
 from .cursor import *
 import json
+from django.http import HttpResponse
 
 # Members
 def edit_member_info(email, attribute, new_value):
@@ -341,3 +342,47 @@ def add_queue(queue):
             return json.dumps({'message': 'OK'})
 
 
+def member_config():
+    data = {
+            "regular": [
+                    {
+                        "type": "bool",
+                        "name": "show_games",
+                        "display_name": "Show Games on Profile",
+                        "value": False
+                    },
+                    {
+                        "type": "option",
+                        "name": "abc",
+                        "display_name": "Show Games",
+                        "options": [
+                            {
+                                "name": "a",
+                                "value": "a"
+                            },
+                            {
+                                "name": "c",
+                                "value": "c"
+                            },
+                            {
+                                "name": "d",
+                                "value": "d"
+                            }
+                        ],
+                        "value": "c"
+                    },
+                    {
+                        "type": "text",
+                        "name": "display_name",
+                        "display_name": "Name",
+                        "value": "Lorem Ipsum"
+                    },
+                    {
+                        "type": "bool",
+                        "name": "get_emails",
+                        "display_name": "Receive Emails",
+                        "value": False
+                    }
+                ]
+            }
+    return HttpResponse(json.dumps(data), content_type="application/json")

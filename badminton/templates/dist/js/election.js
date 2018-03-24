@@ -2075,10 +2075,8 @@ const Popup_1 = __webpack_require__(30);
 const axios_1 = __webpack_require__(10);
 const RegisterElection_1 = __webpack_require__(41);
 const RadioButton_1 = __webpack_require__(42);
-const Select_1 = __webpack_require__(29);
-const election_url = '/mock/election_happening.json';
-const election_not_url = '/mock/electionless.json';
-const election_results_url = '/mock/election_results.json';
+const election_url = '/api/elections';
+const campaign_url = '/api/campaign';
 var LoadingState;
 (function (LoadingState) {
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
@@ -2086,10 +2084,6 @@ var LoadingState;
 })(LoadingState || (LoadingState = {}));
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
-}
-function format(str) {
-    const splitted = str.split("_");
-    return splitted.map((word) => capitalize(word)).join(" ");
 }
 class ElectionCandidate extends React.Component {
     constructor(props) {
@@ -2116,7 +2110,7 @@ class ElectionRole extends React.Component {
         return (React.createElement("div", null,
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col-3" },
-                    React.createElement("h3", null, format(this.props.role)))),
+                    React.createElement("h3", null, this.props.role))),
             this.props.candidates.map((key, idx) => {
                 return React.createElement(ElectionCandidate, { person: key, role: this.props.role, key: idx });
             })));
@@ -2131,8 +2125,8 @@ class ElectionUp extends React.Component {
             campaigns.push([elem, this.props.campaigns[elem]]);
         }
         this.state = {
+            popup: null,
             campaigns: campaigns,
-            popup: null
         };
         this.submitVotes = this.submitVotes.bind(this);
     }
@@ -2186,68 +2180,107 @@ class ElectionResults extends React.Component {
         }));
     }
 }
+class Campaign {
+}
+class CampaignResponse {
+}
+const convertResponseToHierarchy = (res) => {
+    const ret = {};
+    for (var i of res.order) {
+        ret[i] = [];
+    }
+    for (var campaigner of res.campaigns) {
+        ret[campaigner.job].push(campaigner);
+    }
+    return ret;
+};
 class ElectionView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             election: LoadingState.Loading,
+            error: null,
         };
         this.performRequest = this.performRequest.bind(this);
-        this.switch = this.switch.bind(this);
+        //this.switch = this.switch.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
-        this.options = [
-            new Select_1.Option("up", "Up"),
-            new Select_1.Option("down", "Down"),
-            new Select_1.Option("results", "Results"),
-        ];
     }
-    performRequest(url) {
+    performRequest() {
         const _this_ref = this;
-        axios_1.default.get(url)
+        const followUp = () => {
+            axios_1.default.get(campaign_url)
+                .then(res => {
+                const casted = res.data;
+                const hierarchy = convertResponseToHierarchy(casted);
+                const pack = React.createElement(ElectionUp, { order: casted.order, campaigns: hierarchy, roles: casted.order });
+                _this_ref.setState({
+                    election_data: pack,
+                    election: LoadingState.Loaded,
+                    up: status
+                });
+            })
+                .catch(res => {
+                this.setState({
+                    error: res,
+                });
+            });
+        };
+        axios_1.default.get(election_url)
             .then(res => {
             const status = res.data.status;
             var pack;
             if (status === "up") {
-                pack = React.createElement(ElectionUp, { order: res.data.order, campaigns: res.data.campaigns, roles: Object.keys(res.data.campaigns).sort() });
+                followUp();
             }
             else if (status === "down") {
-                pack = React.createElement(ElectionDown, { message: res.data.message });
+                _this_ref.setState({
+                    election_data: React.createElement(ElectionDown, { message: res.data.message }),
+                    election: LoadingState.Loaded,
+                    up: status
+                });
             }
             else {
-                pack = React.createElement(ElectionResults, { results: res.data.election_data });
+                _this_ref.setState({
+                    election_data: React.createElement(ElectionResults, { results: res.data.election_data }),
+                    election: LoadingState.Loaded,
+                    up: status
+                });
             }
-            _this_ref.setState({
-                election_data: pack,
-                election: LoadingState.Loaded,
-                up: status
+        })
+            .catch(res => {
+            this.setState({
+                error: res,
             });
         });
     }
-    switch(value) {
-        if (this.state.election !== LoadingState.Loaded) {
-            return;
-        }
-        if (value === 'up') {
-            this.performRequest(election_url);
-        }
-        else if (value === 'down') {
-            this.performRequest(election_not_url);
-        }
-        else {
-            this.performRequest(election_results_url);
-        }
-    }
+    /*
+        switch(value: any) {
+            if (this.state.election !== LoadingState.Loaded) {
+                return;
+            }
+    
+            if (value === 'up') {
+                this.performRequest(election_url);
+            } else if (value === 'down') {
+                this.performRequest(election_not_url);
+            } else {
+                this.performRequest(election_results_url);
+            }
+        } */
     componentDidMount() {
-        this.performRequest(election_url);
+        this.performRequest();
     }
     render() {
+        if (this.state.error !== null) {
+            return React.createElement("p", null,
+                " An error has occurred \"",
+                this.state.error,
+                "\"");
+        }
         return (React.createElement("div", { className: "grid row" },
-            React.createElement("div", { className: "col-offset-2 col-8" },
-                React.createElement("h2", null, "Toggle Election Happening"),
-                React.createElement(Select_1.Select, { onChange: this.switch, options: this.options, defaultValue: "up", name: "electionState" }),
-                this.state.election === LoadingState.Loading ?
-                    React.createElement("p", null, " Loading ") :
-                    this.state.election_data)));
+            React.createElement("div", { className: "col-offset-2 col-8" }, this.state.election === LoadingState.Loading ?
+                React.createElement("p", null, " Loading ") :
+                this.state.election_data)));
     }
 }
 exports.ElectionView = ElectionView;

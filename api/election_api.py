@@ -91,11 +91,14 @@ def get_current_campaigns():
         for c in results:
             campaign_dict = {}
             campaign_dict["email"] = c.campaigner_id
+            campaign_dict["name"] = c.campaigner_id
+            campaign_dict["id"] = c.id
             campaign_dict["job"] = c.job
             campaign_dict["pitch"] = c.pitch
             campaign_list.append(campaign_dict)
 
-        dict = {"message": "OK", "campaigns": campaign_list}
+        alphaOrder = sorted(list(set([i["job"] for i in campaign_list])))
+        dict = {"order": alphaOrder, "campaigns": campaign_list}
         return HttpResponse(json.dumps(dict), content_type='application/json')
     else:
         return HttpResponse(json.dumps({'code': 400, 'message': 'There are no current campaigns."'}),
@@ -108,9 +111,10 @@ def get_current_election():
     :return:
     """
 
-    today = str(datetime.now(pytz.utc).date())
-    curr_election = Election.objects.raw("SELECT * FROM api_election WHERE date <= %s AND endDate >= %s", [today, today])
-
+    curr_election = Election.objects.raw("SELECT * FROM api_election \
+        WHERE date is not null AND date <= date('now') AND endDate IS NULL\
+        ORDER BY date DESC LIMIT 1")
+    print(curr_election[0])
     if len(list(curr_election)) == 0:
         return None
     else:
@@ -124,10 +128,10 @@ def current_election():
 
     election = get_current_election()
     if election == None:
-        return HttpResponse(json.dumps({"status": False, "message": "Sorry there is no election!"}), content_type='application/json')
+        return HttpResponse(json.dumps({"status": "down", "message": "Sorry there is no election!"}), content_type='application/json')
     else:
         serialize = serializeModel(election)
-        serialize["status"] = True
+        serialize["status"] = "up"
         return HttpResponse(json.dumps(serialize), content_type='application/json')
 
 

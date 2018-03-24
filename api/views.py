@@ -83,19 +83,37 @@ def elections(request):
         return render(request, 'api_elections.html', context)
 
 
+def restrictRouter(allowed=list(), incomplete=list()):
+    def _restrictRouter(func):
+        def _func(request, *args, **kwargs):
+            if request.method in incomplete:
+                return HttpResponse("Coming soon!", status=501)
+            elif request.method not in allowed:
+                return HttpResponse("Invalid request verb {}".format(request.method), status=400)
+            else:
+                return func(request, *args, **kwargs)
+
+        return _func
+    return _restrictRouter
+
+@restrictRouter(allowed=["GET", "POST"], incomplete=["DELETE"])
 def campaignRouter(request):
     if request.method == "GET":
         return get_current_campaigns()
-    # create a new campaign or edit a current campaign
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
         return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
-    elif request.method == "DELETE":
-        pass
-    else:
-        return HttpResponse("Invalid request verb {}".format(request.method), status=400)
+
+@restrictRouter(allowed=["GET", "POST"])
+def settingsRouter(request):
+    if request.method == "GET":
+        return member_config()
+    elif request.method == "POST":
+        return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
+
 
 @csrf_exempt
+@restrictRouter(allowed=["GET", "POST"], incomplete=["DELETE"])
 def electionRouter(request):
     if request.method == "GET":
         return current_election()
@@ -110,10 +128,16 @@ def electionRouter(request):
         if endDate != None:
             endDate = deserializeDateTime(endDate)
         return edit_election(startDate, endDate)
-    elif request.method == "DELETE":
-        return HttpResponse("Coming soon!", status=501)
-    else:
-        return HttpResponse("Invalid request verb {}".format(request.method), status=400)
+
+@csrf_exempt
+@restrictRouter(allowed=["POST"])
+def electionCreateRouter(request):
+    dict_post = dict(request.POST.items())
+    startKey = "startDate"
+    if startKey not in dict_post:
+        return HttpResponse("Missing required param {}".format(startKey), status=400)
+    startDate = deserializeDateTime(dict_post[startKey])
+    return start_election(startDate)
 
 class Interested(object):
     first_name = ''

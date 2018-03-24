@@ -15,13 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.urls import include, path
+from django.urls import include, path, re_path
 from . import views
 
 urlpatterns = [
     path('api_home/', views.home),
     path('api_settings/', views.settings),
-    path('campaigns/', views.campaignRouter),
-    path('elections/', views.electionRouter),
+    re_path(r'campaign/?$', views.campaignRouter),
+    re_path(r'election/create/?$', views.electionCreateRouter),
+    re_path(r'election/?$', views.electionRouter),
+    re_path(r'settings/?$', views.settingsRouter),
 ]
 

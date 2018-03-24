@@ -2127,7 +2127,7 @@ var LoadingState;
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
     LoadingState[LoadingState["Loaded"] = 1] = "Loaded";
 })(LoadingState || (LoadingState = {}));
-const reg_url = '/mock/regular_settings.json';
+const reg_url = '/api/settings';
 const member_url = '/mock/board_settings.json';
 class OptionSetting extends React.Component {
     render() {
