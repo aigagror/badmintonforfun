@@ -1,0 +1,58 @@
+{
+	"_comment": "status can either be true or false. There is no election happening so there is also a message",
+	"status": "results",
+	"election_data": [
+		{
+			"role": "president",
+			"votes": [
+				{
+					"name": "Lorem Ipsum",
+					"num_votes": 17
+				},
+				{
+					"name": "Lorem Ipsum",
+					"num_votes": 12
+				},
+				{
+					"name": "Lorem Ipsum",
+					"num_votes": 1
+				}
+			]
+		},
+		{
+			"role": "vice_president",
+			"votes": [
+				{
+					"name": "Lorem Ipsum",
+					"num_votes": 17
+				}
+			]
+		},
+		{
+			"role": "outreach",
+			"votes": [
+				{
+					"name": "Lorem Ipsum",
+					"num_votes": 17
+				},
+				{
+					"name": "Lorem Ipsum",
+					"num_votes": 17
+				}
+			]
+		},
+		{
+			"role": "treasurer",
+			"votes": [
+				{
+					"name": "Lorem Ipsum",
+					"num_votes": 17
+				},
+				{
+					"name": "Lorem Ipsum",
+					"num_votes": 17
+				}
+			]
+		}
+	]
+}

@@ -15,6 +15,10 @@ def home(request):
     profile = get_member(email)
 
     stats = get_stats(email)
+    
+    matches = get_matches(email)
+    
+    schedule = get_schedule()
 
     matches = get_matches(email)
 

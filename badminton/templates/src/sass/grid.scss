@@ -66,13 +66,24 @@ $response-booster: (
       #{$col-offset-slug}-#{$name}-#{$i} {
         margin-left: calc( (#{$adjusted-percentage} - #{$adjusted-padding} * 2) * #{$padding-multiplier});
       }
+
+      $adjusted-percentage-reg: calculate-adjusted-percentage($value, $i*2);
+      $adjusted-percentage-doub: calculate-adjusted-percentage($value, $i*2-1);
       
-      #{$row-offset-slug}-#{$name}-#{$i} {
-        margin-top: calc( #{$adjusted-percentage / 2});
+      #{$row-offset-slug}-#{$name}-#{$i*2} {
+        margin-top: calc( #{$adjusted-percentage-reg / 2});
       }
 
-      #{$row-height-slug}-#{$name}-#{$i} {
-        height: calc( #{$adjusted-percentage / 2});
+      #{$row-height-slug}-#{$name}-#{$i*2} {
+        height: calc( #{$adjusted-percentage-reg / 2});
+      }
+
+      #{$row-offset-slug}-#{$name}-#{$i*2-1} {
+        margin-top: calc( #{$adjusted-percentage-doub / 2});
+      }
+
+      #{$row-height-slug}-#{$name}-#{$i*2-1} {
+        height: calc( #{$adjusted-percentage-doub / 2});
       }
 
       @if $name == med {

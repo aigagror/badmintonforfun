@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 46);
+/******/ 	return __webpack_require__(__webpack_require__.s = 48);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var isBuffer = __webpack_require__(12);
 
 /*global toString:true*/
@@ -403,10 +403,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   }
   return adapter;
 }
@@ -481,16 +481,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +502,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -698,7 +692,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -709,7 +703,7 @@ var settle = __webpack_require__(15);
 var buildURL = __webpack_require__(17);
 var parseHeaders = __webpack_require__(18);
 var isURLSameOrigin = __webpack_require__(19);
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(20);
 
 module.exports = function xhrAdapter(config) {
@@ -883,10 +877,10 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -911,7 +905,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -923,7 +917,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -949,6 +943,12 @@ module.exports = Cancel;
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -962,7 +962,7 @@ module.exports = __webpack_require__(11);
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var Axios = __webpack_require__(13);
 var defaults = __webpack_require__(2);
 
@@ -997,9 +997,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(9);
+axios.Cancel = __webpack_require__(8);
 axios.CancelToken = __webpack_require__(27);
-axios.isCancel = __webpack_require__(8);
+axios.isCancel = __webpack_require__(7);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -1152,7 +1152,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -1585,7 +1585,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(24);
-var isCancel = __webpack_require__(8);
+var isCancel = __webpack_require__(7);
 var defaults = __webpack_require__(2);
 var isAbsoluteURL = __webpack_require__(25);
 var combineURLs = __webpack_require__(26);
@@ -1745,7 +1745,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(9);
+var Cancel = __webpack_require__(8);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -1837,7 +1837,132 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 29 */,
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(1);
+class Option {
+    constructor(val, displ) {
+        this.value = val;
+        this.display = displ;
+    }
+}
+exports.Option = Option;
+const selectFadeOutClassName = 'select-check-fade-out';
+class SelectArea extends React.Component {
+    render() {
+        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: this.props.onChange }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
+        }));
+    }
+}
+class Select extends React.Component {
+    constructor(props) {
+        super(props);
+        this.change = this.change.bind(this);
+        this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
+        this._decideInitialStatus = this._decideInitialStatus.bind(this);
+        const status = this._decideInitialStatus();
+        this.state = {
+            status: status,
+        };
+    }
+    _decideInitialStatus() {
+        if (this.props.defaultValue) {
+            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            if (!value) {
+                return "";
+            }
+            else {
+                return value.display;
+            }
+        }
+        else {
+            return this.props.options[0].display;
+        }
+    }
+    componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+        const defaultHeight = 30;
+        this.scrollDiv.style.height = defaultHeight + "px";
+        this.interval = setInterval(() => {
+            const movableArea = this.innerDiv.scrollTop /
+                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            this.scrollDiv.style.top = "" + offset + "px";
+        }, 20);
+        const divMove = (e) => {
+            const boundingRect = this.selectDiv.getBoundingClientRect();
+            const fuzz = .2;
+            const height = boundingRect.bottom - boundingRect.top;
+            const bottom = boundingRect.bottom - fuzz * height;
+            const top = boundingRect.top + fuzz * height;
+            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            const percentage = (adjusted - top) / (bottom - top);
+            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        };
+        function mouseUp() {
+            window.removeEventListener('mousemove', divMove, true);
+        }
+        function mouseDown() {
+            window.addEventListener('mousemove', divMove, true);
+        }
+        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
+        window.addEventListener('mouseup', mouseUp, false);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+        clearInterval(this.interval);
+    }
+    /**
+     * Uncheck the input if clicked outside
+     * Best to leave the typing generic because typescript does _not_
+     * like non-generics with dom.
+     */
+    handleClickOutside(event) {
+        if (this.inputDiv && !this.wrapper.contains(event.target)) {
+            this.inputDiv.checked = false;
+        }
+    }
+    lazyAnimationAdder(event) {
+        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
+            this.selectDiv.classList.add(selectFadeOutClassName);
+        }
+    }
+    change(event) {
+        const target = event.target;
+        if (this.props.onChange) {
+            this.props.onChange(target.value);
+        }
+        // Cool trick to get the label for the input
+        const elem = document.querySelector('label[for="' + target.id + '"]');
+        this.setState({
+            status: elem.innerHTML,
+        });
+        this.inputDiv.checked = false;
+    }
+    render() {
+        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
+                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("b", { className: 'select-arrow' })),
+            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
+                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, onChange: this.change }),
+                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
+    }
+}
+exports.Select = Select;
+
+
+/***/ }),
 /* 30 */,
 /* 31 */,
 /* 32 */,
@@ -1854,137 +1979,156 @@ module.exports = function spread(callback) {
 /* 43 */,
 /* 44 */,
 /* 45 */,
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
-var MailView_1 = __webpack_require__(47);
-ReactDOM.render(React.createElement(MailView_1.MailView, null), document.querySelector("mail-form"));
-
-
-/***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var axios_1 = __webpack_require__(10);
-var LocalResourceResolver_1 = __webpack_require__(48);
-var mail_list_url = '/mock/mail_lists.json';
-var mail_data_location = 'mailData';
-var MailView = /** @class */ (function (_super) {
-    __extends(MailView, _super);
-    function MailView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
-            lists: null,
-        };
-        _this.sendMail = _this.sendMail.bind(_this);
-        _this.scoopData = _this.scoopData.bind(_this);
-        _this.setData = _this.setData.bind(_this);
-        return _this;
-    }
-    MailView.prototype.componentDidMount = function () {
-        var _this = this;
-        axios_1.default.get(mail_list_url)
-            .then(function (res) {
-            _this.setState({
-                lists: res.data.lists,
-            });
-            var item = LocalResourceResolver_1.getResource(_this, mail_data_location);
-            if (item !== null) {
-                _this.setData(JSON.parse(item));
-            }
-            window.setInterval(function () {
-                LocalResourceResolver_1.setResource(_this, mail_data_location, JSON.stringify(_this.scoopData()));
-            }, 5000);
-        })
-            .catch(function (res) {
-        });
-    };
-    MailView.prototype.scoopData = function () {
-        var data = {
-            list: this.mailingList.value,
-            title: this.titleElem.value,
-            body: this.bodyElem.value
-        };
-        return data;
-    };
-    MailView.prototype.setData = function (data) {
-        this.mailingList.value = data.list;
-        this.titleElem.value = data.title;
-        this.bodyElem.value = data.body;
-    };
-    MailView.prototype.sendMail = function (event) {
-        event.preventDefault();
-        var data = this.scoopData();
-        console.log(data);
-    };
-    MailView.prototype.render = function () {
-        var _this = this;
-        if (this.state.lists === null) {
-            return React.createElement("p", null, "Loading");
-        }
-        /* We don't want this to be a form so that we can type <return>
-            Freely */
-        return (React.createElement("div", { className: "mail-view grid" },
-            React.createElement("div", { className: "row row-offset-1" },
-                React.createElement("div", { className: "col-6" },
-                    React.createElement("select", { id: "mailId", ref: function (input) { _this.mailingList = input; } }, this.state.lists.map(function (list, idx) {
-                        return React.createElement("option", { value: list.key, key: idx }, list.name);
-                    })))),
-            React.createElement("div", { className: "row row-offset-1" },
-                React.createElement("div", { className: "col-8" },
-                    React.createElement("input", { type: "text", placeholder: "Title", ref: function (input) { _this.titleElem = input; }, className: "mail-title" }))),
-            React.createElement("div", { className: "row row-offset-1" },
-                React.createElement("div", { className: "col-12" },
-                    React.createElement("textarea", { placeholder: "Body", ref: function (input) { _this.bodyElem = input; }, className: "mail-body" }))),
-            React.createElement("div", { className: "row row-offset-1" },
-                React.createElement("div", { className: "col-4" },
-                    React.createElement("button", { type: "submit", onClick: this.sendMail }, "Submit")))));
-    };
-    return MailView;
-}(React.Component));
-exports.MailView = MailView;
-
-
-/***/ }),
+/* 46 */,
+/* 47 */,
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var obfuscationMappings = {
+const React = __webpack_require__(1);
+const ReactDOM = __webpack_require__(9);
+const MailView_1 = __webpack_require__(49);
+ReactDOM.render(React.createElement(MailView_1.MailView, null), document.querySelector("mail-form"));
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(1);
+const axios_1 = __webpack_require__(10);
+const LocalResourceResolver_1 = __webpack_require__(50);
+const Select_1 = __webpack_require__(29);
+const mail_list_url = '/mock/mail_lists.json';
+const mail_data_location = 'mailData';
+class MailView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            lists: null,
+        };
+        this.sendMail = this.sendMail.bind(this);
+        this.scoopData = this.scoopData.bind(this);
+        this.setData = this.setData.bind(this);
+        this.switch = this.switch.bind(this);
+    }
+    componentDidMount() {
+        axios_1.default.get(mail_list_url)
+            .then((res) => {
+            this.setState({
+                lists: res.data.lists,
+            });
+            this.mailingList = res.data.lists[0].value;
+            const item = LocalResourceResolver_1.getResource(this, mail_data_location);
+            if (item !== null) {
+                this.setData(JSON.parse(item));
+            }
+            window.setInterval(() => {
+                LocalResourceResolver_1.setResource(this, mail_data_location, JSON.stringify(this.scoopData()));
+            }, 5000);
+        })
+            .catch((res) => {
+        });
+    }
+    switch(value) {
+        this.mailingList = value;
+    }
+    scoopData() {
+        const data = {
+            list: this.mailingList,
+            title: this.titleElem.value,
+            body: this.bodyElem.value
+        };
+        return data;
+    }
+    setData(data) {
+        this.mailingList.value = data.list;
+        this.titleElem.value = data.title;
+        this.bodyElem.value = data.body;
+    }
+    sendMail(event) {
+        event.preventDefault();
+        const data = this.scoopData();
+        console.log(data);
+    }
+    render() {
+        if (this.state.lists === null) {
+            return React.createElement("p", null, "Loading");
+        }
+        const selectData = this.state.lists.map((list, idx) => {
+            return {
+                value: list.key,
+                display: list.name
+            };
+        });
+        /* We don't want this to be a form so that we can type <return>
+            Freely */
+        return (React.createElement("div", { className: "mail-view grid" },
+            React.createElement("div", { className: "row row-offset-1" },
+                React.createElement("div", { className: "col-6 col-es-12" },
+                    React.createElement(Select_1.Select, { options: selectData, onChange: this.switch, name: "mailState" }))),
+            React.createElement("div", { className: "row row-offset-1" },
+                React.createElement("div", { className: "col-8" },
+                    React.createElement("input", { type: "text", placeholder: "Title", ref: (input) => { this.titleElem = input; }, className: "mail-title" }))),
+            React.createElement("div", { className: "row row-offset-1" },
+                React.createElement("div", { className: "col-12" },
+                    React.createElement("textarea", { placeholder: "Body", ref: (input) => { this.bodyElem = input; }, className: "mail-body" }))),
+            React.createElement("div", { className: "row row-offset-1" },
+                React.createElement("div", { className: "col-4" },
+                    React.createElement("button", { type: "submit", onClick: this.sendMail }, "Submit")))));
+    }
+}
+exports.MailView = MailView;
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * This class serves as a resource resolver for classes.
+ * This manages local storage so none of the classes conflict
+ * The classes only need to make sure that their resources are unique
+ * in of themselves.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Mappings from imported classes to random strings.
+ */
+const obfuscationMappings = {
     'MailView': 'ysjiUtKPV7',
 };
+/**
+ * Generates key pattern from an instance and an arg
+ * arg being the requested key
+ */
+function _generateKey(instance, arg) {
+    const name = instance.constructor.name;
+    const obf = obfuscationMappings[name];
+    return name + obf;
+}
+/**
+ * Returns a string given the class and the key <arg>
+ */
 function getResource(instance, arg) {
-    var name = instance.constructor.name;
-    var obf = obfuscationMappings[name];
-    return localStorage.getItem(arg + obf);
+    const key = _generateKey(instance, arg);
+    return localStorage.getItem(key);
     ;
 }
 exports.getResource = getResource;
+/**
+ * Sets the requested key <arg> of class <instance> to <value>
+ */
 function setResource(instance, arg, value) {
-    var name = instance.constructor.name;
-    var obf = obfuscationMappings[name];
-    localStorage.setItem(arg + obf, value);
+    const key = _generateKey(instance, arg);
+    localStorage.setItem(key, value);
 }
 exports.setResource = setResource;
 

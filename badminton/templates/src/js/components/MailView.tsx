@@ -2,15 +2,16 @@ import * as React from "react";
 import * as ReactDOM from 'react-dom';
 import axios from 'axios';
 import {getResource, setResource} from '../common/LocalResourceResolver';
+import {Select} from '../common/Select';
 
 const mail_list_url = '/mock/mail_lists.json'
 const mail_data_location = 'mailData';
 
 export class MailView extends React.Component<any, any> {
 
-	private mailingList: HTMLSelectElement;
 	private bodyElem: HTMLTextAreaElement;
 	private titleElem: HTMLInputElement;
+	private mailingList: any;
 
 	constructor(props: any) {
 		super(props);
@@ -21,6 +22,7 @@ export class MailView extends React.Component<any, any> {
 		this.sendMail = this.sendMail.bind(this);
 		this.scoopData = this.scoopData.bind(this);
 		this.setData = this.setData.bind(this);
+		this.switch = this.switch.bind(this);
 	}
 
 	componentDidMount() {
@@ -29,6 +31,8 @@ export class MailView extends React.Component<any, any> {
 				this.setState({
 					lists: res.data.lists,
 				})
+
+				this.mailingList = res.data.lists[0].value;
 
 				const item = getResource(this, mail_data_location);
 
@@ -45,9 +49,13 @@ export class MailView extends React.Component<any, any> {
 			})
 	}
 
+	switch(value: any) {
+		this.mailingList = value;
+	}
+
 	scoopData() {
 		const data = {
-			list: this.mailingList.value,
+			list: this.mailingList,
 			title: this.titleElem.value,
 			body: this.bodyElem.value
 		};
@@ -73,16 +81,22 @@ export class MailView extends React.Component<any, any> {
 			return <p>Loading</p>
 		}
 
+		const selectData = this.state.lists.map((list: any, idx: number) => {
+					return {
+						value: list.key,
+						display: list.name
+					}
+				});
+
 		/* We don't want this to be a form so that we can type <return>
 			Freely */
 		return (<div className="mail-view grid">
 			<div className="row row-offset-1">
-			<div className="col-6">
-			<select id="mailId" ref={(input) => { this.mailingList = input; }}>
-				{this.state.lists.map((list: any, idx: number) => {
-					return <option value={list.key} key={idx}>{list.name}</option>
-				})}
-			</select>
+			<div className="col-6 col-es-12">
+			<Select 
+				options={selectData}
+				onChange={this.switch} 
+	    		name="mailState" />
 			</div>
 			</div>
 

@@ -13,6 +13,8 @@ export class Slider extends React.Component<SliderProps, {}> {
 	constructor(props: SliderProps) {
 	    super(props);
 	    this.onChange = this.onChange.bind(this);
+	    // Since checked is optional, use a double !!
+	    // To get a boolean value
 	    this.selected = !!this.props.checked;
 	}
 

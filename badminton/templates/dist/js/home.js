@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 41);
+/******/ 	return __webpack_require__(__webpack_require__.s = 43);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var isBuffer = __webpack_require__(12);
 
 /*global toString:true*/
@@ -403,10 +403,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(6);
+    adapter = __webpack_require__(5);
   }
   return adapter;
 }
@@ -481,16 +481,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +502,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -698,7 +692,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -709,7 +703,7 @@ var settle = __webpack_require__(15);
 var buildURL = __webpack_require__(17);
 var parseHeaders = __webpack_require__(18);
 var isURLSameOrigin = __webpack_require__(19);
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(20);
 
 module.exports = function xhrAdapter(config) {
@@ -883,10 +877,10 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -911,7 +905,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -923,7 +917,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -949,6 +943,12 @@ module.exports = Cancel;
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -962,7 +962,7 @@ module.exports = __webpack_require__(11);
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(3);
 var Axios = __webpack_require__(13);
 var defaults = __webpack_require__(2);
 
@@ -997,9 +997,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(9);
+axios.Cancel = __webpack_require__(8);
 axios.CancelToken = __webpack_require__(27);
-axios.isCancel = __webpack_require__(8);
+axios.isCancel = __webpack_require__(7);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -1152,7 +1152,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(7);
+var createError = __webpack_require__(6);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -1585,7 +1585,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(24);
-var isCancel = __webpack_require__(8);
+var isCancel = __webpack_require__(7);
 var defaults = __webpack_require__(2);
 var isAbsoluteURL = __webpack_require__(25);
 var combineURLs = __webpack_require__(26);
@@ -1745,7 +1745,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(9);
+var Cancel = __webpack_require__(8);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -1840,56 +1840,44 @@ module.exports = function spread(callback) {
 /* 29 */,
 /* 30 */,
 /* 31 */,
-/* 32 */
+/* 32 */,
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var axios_1 = __webpack_require__(10);
-var default_pic_url = "/assets/default_profile.png";
-var bio_url = '/mock/bio.json';
-var ProfileView = /** @class */ (function (_super) {
-    __extends(ProfileView, _super);
-    function ProfileView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+const React = __webpack_require__(1);
+const axios_1 = __webpack_require__(10);
+const default_pic_url = "/assets/default_profile.png";
+const bio_url = '/mock/bio.json';
+class ProfileView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             person: null,
         };
-        return _this;
     }
-    ProfileView.prototype.componentDidMount = function () {
-        var _this = this;
+    componentDidMount() {
         axios_1.default.get(bio_url, {
             params: {
                 member_id: this.props.member_id
             }
         })
-            .then(function (res) {
-            _this.setState({
+            .then((res) => {
+            this.setState({
                 person: res.data
             });
         })
-            .catch(function (res) {
+            .catch((res) => {
             console.log(res);
         });
-    };
-    ProfileView.prototype.render = function () {
+    }
+    render() {
         if (this.state.person === null) {
             return null;
         }
-        var person = this.state.person;
+        const person = this.state.person;
         var url = person.picture;
         if (url === null) {
             url = default_pic_url;
@@ -1901,14 +1889,12 @@ var ProfileView = /** @class */ (function (_super) {
                 React.createElement("div", { className: "col-6" },
                     React.createElement("h2", null, person.name),
                     React.createElement("p", null, person.bio))));
-    };
-    return ProfileView;
-}(React.Component));
+    }
+}
 exports.ProfileView = ProfileView;
 
 
 /***/ }),
-/* 33 */,
 /* 34 */,
 /* 35 */,
 /* 36 */,
@@ -1916,58 +1902,41 @@ exports.ProfileView = ProfileView;
 /* 38 */,
 /* 39 */,
 /* 40 */,
-/* 41 */
+/* 41 */,
+/* 42 */,
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var ReactDOM = __webpack_require__(3);
-var HomeView_1 = __webpack_require__(42);
+const React = __webpack_require__(1);
+const ReactDOM = __webpack_require__(9);
+const HomeView_1 = __webpack_require__(44);
 ReactDOM.render(React.createElement(HomeView_1.HomeView, null), document.querySelector("home-view"));
 
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var axios_1 = __webpack_require__(10);
-var ProfileView_1 = __webpack_require__(32);
-var stat_urls = "/mock/stats.json";
-var announce_url = "/mock/announcements.json";
-var GameView = /** @class */ (function (_super) {
-    __extends(GameView, _super);
-    function GameView() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    GameView.prototype.render = function () {
+const React = __webpack_require__(1);
+const axios_1 = __webpack_require__(10);
+const ProfileView_1 = __webpack_require__(33);
+const stat_urls = "/mock/stats.json";
+const announce_url = "/mock/announcements.json";
+class GameView extends React.Component {
+    render() {
         return (React.createElement("tr", { className: "row-2" },
             React.createElement("td", { className: "col-3 col-es-6" }, this.props.my_score),
             React.createElement("td", { className: "col-3 col-es-6" }, this.props.their_score)));
-    };
-    return GameView;
-}(React.Component));
-var StatView = /** @class */ (function (_super) {
-    __extends(StatView, _super);
-    function StatView() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
-    StatView.prototype.render = function () {
+}
+class StatView extends React.Component {
+    render() {
         return (React.createElement("div", null,
             React.createElement("h2", null, "Most Recent Games"),
             React.createElement("table", { className: "stats-table" },
@@ -1975,35 +1944,31 @@ var StatView = /** @class */ (function (_super) {
                     React.createElement("tr", null,
                         React.createElement("th", { className: "col-3 col-es-6" }, "Your Score"),
                         React.createElement("th", { className: "col-3 col-es-6" }, "My Score"))),
-                React.createElement("tbody", null, this.props.stats.games.map(function (game, idx) {
+                React.createElement("tbody", null, this.props.stats.games.map((game, idx) => {
                     return React.createElement(GameView, { key: idx, my_score: game.my_score, their_score: game.their_score });
                 })))));
-    };
-    return StatView;
-}(React.Component));
-var AnnounceView = /** @class */ (function (_super) {
-    __extends(AnnounceView, _super);
-    function AnnounceView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+    }
+}
+class AnnounceView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             title: null,
             body: null,
         };
-        return _this;
     }
-    AnnounceView.prototype.componentDidMount = function () {
-        var _this = this;
+    componentDidMount() {
         axios_1.default.get(announce_url)
-            .then(function (res) {
-            _this.setState({
+            .then((res) => {
+            this.setState({
                 title: res.data.title,
                 body: res.data.body,
             });
         })
-            .catch(function (res) {
+            .catch((res) => {
         });
-    };
-    AnnounceView.prototype.render = function () {
+    }
+    render() {
         if (this.state.title === null) {
             return React.createElement("p", null, "Loading Announcement");
         }
@@ -2011,36 +1976,32 @@ var AnnounceView = /** @class */ (function (_super) {
             React.createElement("h2", null, "Most Recent Announcment"),
             React.createElement("h3", null, this.state.title),
             React.createElement("p", null, this.state.body)));
-    };
-    return AnnounceView;
-}(React.Component));
-var HomeView = /** @class */ (function (_super) {
-    __extends(HomeView, _super);
-    function HomeView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
+    }
+}
+class HomeView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             stats: null,
             board_member: false
         };
-        _this.performRequest = _this.performRequest.bind(_this);
-        return _this;
+        this.performRequest = this.performRequest.bind(this);
     }
-    HomeView.prototype.componentDidMount = function () {
+    componentDidMount() {
         this.performRequest(stat_urls);
-    };
-    HomeView.prototype.performRequest = function (url) {
-        var _this = this;
+    }
+    performRequest(url) {
         axios_1.default.get(url)
-            .then(function (res) {
-            _this.setState({
+            .then((res) => {
+            this.setState({
                 stats: res.data.stat_data,
                 board_member: res.data.board_member
             });
         })
-            .catch(function (res) {
+            .catch((res) => {
         });
-    };
-    HomeView.prototype.render = function () {
+    }
+    render() {
         if (this.state.stats === null) {
             return null;
         }
@@ -2051,9 +2012,8 @@ var HomeView = /** @class */ (function (_super) {
             React.createElement("div", { className: "row-offset-2" },
                 React.createElement("h2", null, "Profile"),
                 React.createElement(ProfileView_1.ProfileView, { member_id: 1 }))));
-    };
-    return HomeView;
-}(React.Component));
+    }
+}
 exports.HomeView = HomeView;
 
 
