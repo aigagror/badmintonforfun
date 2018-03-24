@@ -136,9 +136,9 @@ def add_interested(interested):
         try:
             cursor.execute(query, [interested.first_name, interested.last_name, interested.formerBoardMember, interested.email])
         except IntegrityError:
-            return json.dumps({'code': 400, 'message': 'This person is already in the club.'})
+            return json.dumps({'message': 'This person is already in the club.'})
         else:
-            return json.dumps({'code': 200, 'message': 'OK'})
+            return json.dumps({'message': 'OK'})
 
 
 def promote_to_member(email, member):
@@ -157,9 +157,9 @@ def promote_to_member(email, member):
             arr = [email, member.level, member.private, member.dateJoined, member.bio]
             cursor.execute(query, arr)
         except IntegrityError:
-            return json.dumps({'code': 400, 'message': 'This person is already a member.'})
+            return json.dumps({'message': 'This person is already a member.'})
         else:
-            return json.dumps({'code': 200, 'message': 'OK'})
+            return json.dumps({'message': 'OK'})
 
 
 def promote_to_board_member(email, board_member):
@@ -177,9 +177,9 @@ def promote_to_board_member(email, board_member):
         try:
             cursor.execute(query, [email, board_member.job])
         except IntegrityError:
-            return json.dumps({'code': 400, 'message': 'This person is already a board member.'})
+            return json.dumps({'message': 'This person is already a board member.'})
         else:
-            return json.dumps({'code': 200, 'message': 'OK'})
+            return json.dumps({'message': 'OK'})
 
 
 def add_to_schedule(date, number_of_courts):
@@ -299,9 +299,9 @@ def add_court(court):
         try:
             cursor.execute(query, [court.id, court.number, court.queue])
         except IntegrityError:
-            return json.dumps({'code': 400, 'message': 'This court already exists.'})
+            return json.dumps({'message': 'This court already exists.'})
         else:
-            return json.dumps({'code': 200, 'message': 'OK'})
+            return json.dumps({'message': 'OK'})
 
 
 def edit_court_info(court_id, attribute, new_value):
@@ -322,9 +322,9 @@ def edit_court_info(court_id, attribute, new_value):
         try:
             cursor.execute(query, [new_value, court_id])
         except IntegrityError:
-            return json.dumps({'code': 400, 'message': 'This queue type does not exist.'})
+            return json.dumps({'message': 'This queue type does not exist.'})
         else:
-            return json.dumps({'code': 200, 'message': 'OK'})
+            return json.dumps({'message': 'OK'})
 
 
 def add_queue(queue):
@@ -336,8 +336,8 @@ def add_queue(queue):
         try:
             cursor.execute(query, [queue.type])
         except IntegrityError:
-            return json.dumps({'code': 400, 'message': 'This queue type already exists.'})
+            return json.dumps({'message': 'This queue type already exists.'})
         else:
-            return json.dumps({'code': 200, 'message': 'OK'})
+            return json.dumps({'message': 'OK'})
 
 

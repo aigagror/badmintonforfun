@@ -19,11 +19,9 @@ from django.urls import include, path
 from . import views
 
 urlpatterns = [
-    path('', views.index),
     path('api_home/', views.home),
-    path('api_elections/', views.elections),
     path('api_settings/', views.settings),
-    path('campaigns/', views.campaignView),
-    path('elections/', views.electionView)
+    path('campaigns/', views.campaignRouter),
+    path('elections/', views.electionRouter),
 ]
 
