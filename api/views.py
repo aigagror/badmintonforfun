@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .home_api import *
 from .election_api import *
 from .settings_api import *
@@ -20,6 +20,10 @@ def home(request):
     
     matches = get_matches(email)
     
+    schedule = get_schedule()
+
+    matches = get_matches(email)
+
     schedule = get_schedule()
 
     context = {
@@ -42,17 +46,17 @@ class Mini(object):
         self.job = job
 
 def elections(request):
-    curr_campaigns = get__current_campaigns()
+    curr_campaigns = get_current_campaigns()
     campaign_json = get_campaign("apoddar3@illinois.edu", "Treasurer")
     no_campaign_json = get_campaign("apoddar3@illinois.edu", "President")
 
     insert_one = edit_campaign(Mini("ezhuang2@illinois.edu", "Hello I'm Eddie", "Treasurer"))
-    after_insert = get__current_campaigns()
+    after_insert = get_current_campaigns()
 
     edit_one = edit_campaign(Mini("ezhuang2@illinois.edu", "I've been edited again!", "Treasurer"))
-    after_edit = get__current_campaigns()
+    after_edit = get_current_campaigns()
 
-    delete_election = delete_current_election()
+    #delete_election = delete_current_election()
     new_election = edit_election("2018-10-03")
     new_election_w_end = edit_election("2019-03-05", "2019-03-20")
 
@@ -72,7 +76,31 @@ def elections(request):
         'elections': election_list
     }
 
-    return render(request, 'api_elections.html', context)
+    if request.method == "POST":
+        dict_post = dict(request.POST.items())
+        return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
+
+
+    else:
+        return render(request, 'api_elections.html', context)
+
+
+def campaignView(request):
+    if request.method == "GET":
+        return get_current_campaigns()
+
+    # create a new campaign or edit a current campaign
+    if request.method == "POST":
+        dict_post = dict(request.POST.items())
+        return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
+
+def electionView(request):
+    if request.method == "GET":
+        return get_all_elections()
+
+    if request.method == "POST":
+        dict_post = dict(request.POST.items())
+        return edit_election(dict_post["date"], dict_post["endDate"])
 
 class Interested(object):
     first_name = ''
