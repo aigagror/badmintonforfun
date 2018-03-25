@@ -3,3 +3,5 @@
         <li><a href="{% url 'api:job' job %}">{{ job }}</a></li>
     {% endfor %}
 {% endif %}
+
+<a href="{% url 'api:all_votes' %}">View Votes</a>

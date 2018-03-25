@@ -51,6 +51,7 @@ def vote(request, job):
     campaigns = Campaign.objects.filter(election=election, job=job)
     try:
         campaign = Campaign.objects.get(pk=request.POST['vote'])
+        email = request.POST['email']
     except (KeyError, Campaign.DoesNotExist):
         # Redisplay the campaign voting form.
         return render(request, 'api_campaign.html', {
@@ -60,10 +61,21 @@ def vote(request, job):
         })
     else:
         # I think there's a name conflict which is why I renamed Member to MemberModel
-        member = MemberModel.objects.get(email='ezhuang2@illinois.edu')
+        member = MemberModel.objects.get(email=email)
         vote = Votes(voter=member, election=election, votee=campaign.campaigner)
         vote.save()
         return HttpResponseRedirect(reverse('api:election'))
+
+class VotesView(generic.ListView):
+    template_name = 'api_votes.html'
+    context_object_name = 'votes'
+
+    def get_queryset(self):
+        """Return all votes from the election"""
+        election = Election.objects.get(endDate=None)
+        votes = Votes.objects.filter(election=election)
+        return votes
+
 
 
 def campaign(request, job):

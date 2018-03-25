@@ -22,11 +22,10 @@ app_name = 'api'
 urlpatterns = [
     re_path(r'api_home/?$', views.home),
     re_path(r'api_settings/?$', views.settings),
+    path('api_election/all_votes/', views.VotesView.as_view(), name='all_votes'),
     path('api_election/<str:job>/', views.campaign, name='job'),
     path('api_election/<str:job>/vote/', views.vote, name='vote'),
     re_path(r'api_election/?$', views.ElectionView.as_view(), name='election'),
-
-
 
 
     re_path(r'campaign/?$', views.campaignRouter),
