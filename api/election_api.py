@@ -190,7 +190,7 @@ def get_current_election():
 
 def current_election():
     """
-        Returns the one current election going on
+    Returns the one current election going on
     :return:
     """
 
@@ -234,8 +234,7 @@ def start_election(startDate, endDate=None):
     """
 
     if endDate is None:
-        return run_connection("INSERT INTO api_election (date, endDate) VALUES\
-                                (%s, NULL)", startDate)
+        return run_connection("INSERT INTO api_election (date, endDate) VALUES (%s, NULL);", serializeDatetime(startDate))
     else:
         return run_connection("INSERT INTO api_election (date, endDate) VALUES\
                                  (%s, %s)", startDate, endDate)
@@ -284,11 +283,11 @@ def run_connection(execute, *args):
     with connection.cursor() as cursor:
         try:
             cursor.execute(execute, [arg for arg in args])
-            connection.commit()
         except IntegrityError:
             return HttpResponse(json.dumps({'code': 400, 'message': 'IntegrityError!'}),
                                 content_type='application/json', status=400)
-        except DatabaseError:
+        except DatabaseError as e:
+            print(e)
             return HttpResponse(json.dumps({'code': 400, 'message': 'DatabaseError!'}), content_type='application/json',
                                 status=400)
         else:
