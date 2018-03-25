@@ -1,4 +1,4 @@
-from django.db import connection, IntegrityError
+from django.db import connection, IntegrityError, ProgrammingError
 from .cursor import *
 import json
 from django.http import HttpResponse
@@ -41,8 +41,14 @@ def edit_member_info(email, attribute, new_value):
         SET ''' + attribute + '''=%s
         WHERE interested_ptr_id=%s;
         '''
-        cursor.execute(query, [new_value, email])
-
+        try:
+            cursor.execute(query, [new_value, email])
+        except ProgrammingError:
+            return HttpResponse(json.dumps({"status": "down", "message": "The attribute specified does not exist."}),
+                                content_type="application/json")
+        else:
+            return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted member info."}),
+                                content_type="application/json")
 
 def get_member_info(email):
     """
@@ -66,6 +72,24 @@ def get_member_info(email):
 
 
 # Board Members
+def edit_boardmember_info(email, new_value):
+    """
+    Edits the 'job' attribute of a board member.
+    :param email:
+    :param new_value:
+    :return:
+    """
+    with connection.cursor() as cursor:
+        query = '''
+        UPDATE api_member
+        SET job=%s
+        WHERE member_ptr_id=%s;
+        '''
+        cursor.execute(query, [new_value, email])
+        return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted member info."}),
+                            content_type="application/json")
+
+
 def get_interested():
     """
     Returns the names and emails of the interested exclusively
@@ -144,7 +168,8 @@ def remove_member(email):
                 '''
         cursor.execute(query, [email])
 
-    return HttpResponse(json.dumps({"status": "up", "message": "Successfully deleted member."}), content_type="application/json")
+    return HttpResponse(json.dumps({"status": "up", "message": "Successfully deleted member."}),
+                        content_type="application/json")
 
 
 def add_interested(interested):
@@ -213,6 +238,27 @@ def promote_to_board_member(email, board_member):
                                 content_type="application/json")
 
 
+def schedule_date_exists(date):
+    """
+    Returns True if there is already a tuple in api_schedule with 'date'
+    :param date:
+    :return:
+    """
+    with connection.cursor() as cursor:
+        query = '''
+        SELECT *
+        FROM api_boardmember
+        WHERE date=%s;
+        '''
+        cursor.execute(query, [date])
+        data = cursor.fetchall()
+
+        if len(data) == 0:
+            return False
+        else:
+            return True
+
+
 def add_to_schedule(date, number_of_courts):
     """
     Allow board members to insert the number of available courts on the specified date.
@@ -226,6 +272,8 @@ def add_to_schedule(date, number_of_courts):
                 VALUES (%s, %s)
                 '''
         cursor.execute(query, [date, number_of_courts])
+    return HttpResponse(json.dumps({"status": "up", "message": "Successfully added to schedule."}),
+                        content_type="application/json")
 
 
 def edit_schedule(date, number_of_courts):
@@ -242,6 +290,8 @@ def edit_schedule(date, number_of_courts):
                 WHERE date=%s
                 '''
         cursor.execute(query, [number_of_courts, date])
+    return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted schedule."}),
+                        content_type="application/json")
 
 def delete_from_schedule(date):
     """
@@ -255,7 +305,8 @@ def delete_from_schedule(date):
                 WHERE date=%s;
                 '''
         cursor.execute(query, [date])
-
+    return HttpResponse(json.dumps({"status": "up", "message": "Successfully deleted schedule."}),
+                        content_type="application/json")
 
 def get_schedule():
     """
@@ -321,6 +372,22 @@ def get_court(court_id):
     return results
 
 
+def court_id_exists(court_id):
+    with connection.cursor() as cursor:
+        query = '''
+        SELECT *
+        FROM api_court
+        WHERE id=%s;
+        '''
+        cursor.execute(query, [court_id])
+        data = cursor.fetchall()
+
+        if len(data) == 0:
+            return False
+        else:
+            return True
+
+
 def add_court(court):
     with connection.cursor() as cursor:
         query = '''
@@ -330,9 +397,11 @@ def add_court(court):
         try:
             cursor.execute(query, [court.id, court.number, court.queue])
         except IntegrityError:
-            return json.dumps({'message': 'This court already exists.'})
+            return HttpResponse(json.dumps({"status": "down", "message": "This court already exists."}),
+                                content_type="application/json")
         else:
-            return json.dumps({'message': 'OK'})
+            return HttpResponse(json.dumps({"status": "up", "message": "Successfully added court."}),
+                                content_type="application/json")
 
 
 def edit_court_info(court_id, attribute, new_value):
@@ -353,9 +422,14 @@ def edit_court_info(court_id, attribute, new_value):
         try:
             cursor.execute(query, [new_value, court_id])
         except IntegrityError:
-            return json.dumps({'message': 'This queue type does not exist.'})
+            return HttpResponse(json.dumps({"status": "down", "message": "This queue type does not exist."}),
+                                content_type="application/json")
+        except ProgrammingError:
+            return HttpResponse(json.dumps({"status": "down", "message": "The specified attribute does not exist."}),
+                                content_type="application/json")
         else:
-            return json.dumps({'message': 'OK'})
+            return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted court info."}),
+                                content_type="application/json")
 
 
 def get_all_queues():
@@ -378,9 +452,11 @@ def add_queue(queue):
         try:
             cursor.execute(query, [queue.type])
         except IntegrityError:
-            return json.dumps({'message': 'This queue type already exists.'})
+            return HttpResponse(json.dumps({"status": "down", "message": "This queue type already exists."}),
+                                content_type="application/json")
         else:
-            return json.dumps({'message': 'OK'})
+            return HttpResponse(json.dumps({"status": "up", "message": "Successfully added queue."}),
+                                content_type="application/json")
 
 
 def member_config(email):
@@ -450,7 +526,3 @@ def board_member_config():
     }
 
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
-
-
-def board_member_config_edit():
-    """"""
