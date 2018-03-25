@@ -19,8 +19,9 @@ from django.urls import include, path, re_path
 from . import views
 
 urlpatterns = [
-    path('api_home/', views.home),
-    path('api_settings/', views.settings),
+    re_path(r'api_home/?$', views.home),
+    re_path(r'api_settings/?$', views.settings),
+    re_path(r'api_election/?$', views.elections),
     re_path(r'campaign/?$', views.campaignRouter),
     re_path(r'election/create/?$', views.electionCreateRouter),
     re_path(r'election/?$', views.electionRouter),

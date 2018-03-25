@@ -77,8 +77,6 @@ def elections(request):
     if request.method == "POST":
         dict_post = dict(request.POST.items())
         return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
-
-
     else:
         return render(request, 'api_elections.html', context)
 
@@ -232,6 +230,7 @@ def electionCreateRouter(request):
         return HttpResponse("Missing required param {}".format(startKey), status=400)
     startDate = deserializeDateTime(dict_post[startKey])
     return start_election(startDate)
+
 
 class Interested(object):
     first_name = ''
