@@ -33,6 +33,6 @@ class ElectionTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get(reverse('api:election'))
-        self.assertEqual(response.json()['endDate'], '2018-02-17')
+        self.assertEqual(response.json()['endDate'], '2018-05-02')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'up')  # Now there is an election

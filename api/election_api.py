@@ -181,7 +181,7 @@ def get_current_election():
     """
 
     curr_election = Election.objects.raw("SELECT * FROM api_election \
-        WHERE date is not null AND date <= date('now') AND endDate IS NULL\
+        WHERE date is not null AND date <= date('now')\
         ORDER BY date DESC LIMIT 1;")
 
     if len(list(curr_election)) == 0:
