@@ -1,0 +1,16 @@
+<h1>{{ job }}</h1>
+
+
+{% if error_message %}<p><strong>{{ error_message }}</strong>
+</p>{% endif %}
+
+<form action="{% url 'api:vote' job %}" method="post">
+    {% csrf_token %}
+    {% if campaigns %}
+        {% for campaign in campaigns %}
+            <input type="radio" name="vote" id="vote{{ forloop.counter }}" value="{{ campaign.id }}" />
+            <label for="vote{{ forloop.counter }}">{{ campaign.campaigner }}: {{ campaign.pitch }}</label><br />
+        {% endfor %}
+    {% endif %}
+<input type="submit" value="Vote" />
+</form>

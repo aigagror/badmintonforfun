@@ -1,12 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
-
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from .home_api import *
 from .election_api import *
 from .settings_api import *
 from django.views.decorators.csrf import csrf_exempt
+from django.views import generic
+from django.urls import reverse
+from .models import Member as MemberModel
+
 
 def home(request):
     email = 'ezhuang2@illinois.edu'
@@ -34,6 +37,45 @@ def home(request):
 
     return HttpResponse(json.dumps(context), content_type="application/json")
 
+class ElectionView(generic.ListView):
+    template_name = 'api_elections.html'
+    context_object_name = 'jobs'
+
+    def get_queryset(self):
+        """Return the jobs"""
+        jobs = [job[1] for job in JOBS]
+        return jobs
+
+def vote(request, job):
+    election = Election.objects.get(endDate=None)
+    campaigns = Campaign.objects.filter(election=election, job=job)
+    try:
+        campaign = Campaign.objects.get(pk=request.POST['vote'])
+    except (KeyError, Campaign.DoesNotExist):
+        # Redisplay the campaign voting form.
+        return render(request, 'api_campaign.html', {
+            'campaigns': campaigns,
+            'error_message': "You didn't select a choice.",
+            'job': job
+        })
+    else:
+        # I think there's a name conflict which is why I renamed Member to MemberModel
+        member = MemberModel.objects.get(email='ezhuang2@illinois.edu')
+        vote = Votes(voter=member, election=election, votee=campaign.campaigner)
+        vote.save()
+        return HttpResponseRedirect(reverse('api:election'))
+
+
+def campaign(request, job):
+    election = Election.objects.get(endDate=None)
+    job = job.upper()
+    campaigns = Campaign.objects.filter(election=election, job=job)
+    context = {
+        'campaigns': campaigns,
+        'job': job,
+    }
+    return render(request, 'api_campaign.html', context)
+
 class Mini(object):
     email = ""
     pitch = ""
@@ -43,7 +85,7 @@ class Mini(object):
         self.pitch = pitch
         self.job = job
 
-def elections(request):
+def election(request):
     curr_campaigns = get_current_campaigns()
     campaign_json = get_campaign("apoddar3@illinois.edu", "Treasurer")
     no_campaign_json = get_campaign("apoddar3@illinois.edu", "President")

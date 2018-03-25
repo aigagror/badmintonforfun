@@ -18,10 +18,17 @@ from django.urls import path
 from django.urls import include, path, re_path
 from . import views
 
+app_name = 'api'
 urlpatterns = [
     re_path(r'api_home/?$', views.home),
     re_path(r'api_settings/?$', views.settings),
-    re_path(r'api_election/?$', views.elections),
+    path('api_election/<str:job>/', views.campaign, name='job'),
+    path('api_election/<str:job>/vote/', views.vote, name='vote'),
+    re_path(r'api_election/?$', views.ElectionView.as_view(), name='election'),
+
+
+
+
     re_path(r'campaign/?$', views.campaignRouter),
     re_path(r'election/create/?$', views.electionCreateRouter),
     re_path(r'election/?$', views.electionRouter),

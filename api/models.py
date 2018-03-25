@@ -92,11 +92,17 @@ class Votes(models.Model):
     election = models.ForeignKey(Election, on_delete=models.CASCADE, primary_key=True)
     voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE, unique=True)
 
+    def __str__(self):
+        return '{} voted for {}: {}'.format(self.voter, self.votee, self.election)
+
 class Campaign(models.Model):
     job = models.CharField(max_length=64, choices=JOBS)
     pitch = models.CharField(max_length=500)
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
     campaigner = models.ForeignKey(Member, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} for {}: {}'.format(self.campaigner, self.job, self.election)
 
 
 class Match(models.Model):
