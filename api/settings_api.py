@@ -144,6 +144,8 @@ def remove_member(email):
                 '''
         cursor.execute(query, [email])
 
+    return HttpResponse(json.dumps({"status": "up", "message": "Successfully deleted member."}), content_type="application/json")
+
 
 def add_interested(interested):
     """
@@ -159,9 +161,11 @@ def add_interested(interested):
         try:
             cursor.execute(query, [interested.first_name, interested.last_name, interested.formerBoardMember, interested.email])
         except IntegrityError:
-            return json.dumps({'message': 'This person is already in the club.'})
+            return HttpResponse(json.dumps({"status": "down", "message": "This person is already in the club."}),
+                                content_type="application/json")
         else:
-            return json.dumps({'message': 'OK'})
+            return HttpResponse(json.dumps({"status": "up", "message": "Successfully added an interested."}),
+                                content_type="application/json")
 
 
 def promote_to_member(email, member):
@@ -180,9 +184,11 @@ def promote_to_member(email, member):
             arr = [email, member.level, member.private, member.dateJoined, member.bio]
             cursor.execute(query, arr)
         except IntegrityError:
-            return json.dumps({'message': 'This person is already a member.'})
+            return HttpResponse(json.dumps({"status": "down", "message": "This person is already a member."}),
+                                content_type="application/json")
         else:
-            return json.dumps({'message': 'OK'})
+            return HttpResponse(json.dumps({"status": "up", "message": "Successfully promoted to member."}),
+                                content_type="application/json")
 
 
 def promote_to_board_member(email, board_member):
@@ -200,9 +206,11 @@ def promote_to_board_member(email, board_member):
         try:
             cursor.execute(query, [email, board_member.job])
         except IntegrityError:
-            return json.dumps({'message': 'This person is already a board member.'})
+            return HttpResponse(json.dumps({"status": "down", "message": "This person is already a board member."}),
+                                content_type="application/json")
         else:
-            return json.dumps({'message': 'OK'})
+            return HttpResponse(json.dumps({"status": "up", "message": "Successfully promoted to board member."}),
+                                content_type="application/json")
 
 
 def add_to_schedule(date, number_of_courts):
@@ -442,3 +450,7 @@ def board_member_config():
     }
 
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+
+
+def board_member_config_edit():
+    """"""
