@@ -76,5 +76,4 @@ def get_schedule():
         '''
         cursor.execute(query)
         results = dictfetchall(cursor)
-
     return results

@@ -165,7 +165,8 @@ def settingsRouter(request):
     :param request:
     :return:
     """
-    email = request.session.get('email', '')
+    # email = request.session.get('email', '')
+    email = 'ezhuang2@illinois.edu'
     if request.method == "GET":
         return member_config(email)
     elif request.method == "POST":
@@ -288,7 +289,11 @@ def settingsSchedulesRouter(request):
                             content_type="application/json")
     dict_post = dict(request.POST.items())
     if request.method == "GET":
-        return get_schedule()
+        if get_schedule():
+            return HttpResponse(json.dumps(get_schedule()), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps({"status": "down", "message": "There is nothing in the schedule."}),
+                                content_type="application/json")
     elif request.method == "POST":
         # INSERT or UPDATE
         p_date = dict_post.get('date', '')
@@ -321,7 +326,11 @@ def settingsCourtRouter(request):
         return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
                             content_type="application/json")
     if request.method == "GET":
-        return get_all_courts()
+        if get_all_courts():
+            return HttpResponse(json.dumps(get_all_courts()), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps({"status": "down", "message": "There are no courts stored in the database."}),
+                                content_type="application/json")
     elif request.method == "PUT":
         dict_post = dict(request.POST.items())
         p_court_id = dict_post.get('court_id', '')
@@ -366,7 +375,11 @@ def settingsQueueRouter(request):
         return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
                             content_type="application/json")
     if request.method == "GET":
-        return get_all_queues()
+        if get_all_queues():
+            return HttpResponse(json.dumps(get_all_queues()), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps({"status": "down", "message": "There are no queues."}),
+                                content_type="application/json")
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
         p_queue_type = dict_post.get('queue_type', '')

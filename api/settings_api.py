@@ -50,6 +50,7 @@ def edit_member_info(email, attribute, new_value):
             return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted member info."}),
                                 content_type="application/json")
 
+
 def get_member_info(email):
     """
     Retrieves all information on a member.
@@ -69,7 +70,6 @@ def get_member_info(email):
         cursor.execute(query, [email])
         results = dictfetchall(cursor)
     return results
-
 
 # Board Members
 def edit_boardmember_info(email, new_value):
@@ -124,7 +124,6 @@ def get_members():
         results = dictfetchall(cursor)
     return results
 
-
 def get_board_members():
     """
     Returns the names, emails, and jobs of the board members, exclusively
@@ -139,7 +138,6 @@ def get_board_members():
         cursor.execute(query)
         results = dictfetchall(cursor)
     return results
-
 
 def remove_member(email):
     """
@@ -184,7 +182,8 @@ def add_interested(interested):
         VALUES (%s, %s, %s, %s);
         '''
         try:
-            cursor.execute(query, [interested.first_name, interested.last_name, interested.formerBoardMember, interested.email])
+            cursor.execute(query, [interested.first_name, interested.last_name, interested.formerBoardMember,
+                                   interested.email])
         except IntegrityError:
             return HttpResponse(json.dumps({"status": "down", "message": "This person is already in the club."}),
                                 content_type="application/json")
@@ -293,6 +292,7 @@ def edit_schedule(date, number_of_courts):
     return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted schedule."}),
                         content_type="application/json")
 
+
 def delete_from_schedule(date):
     """
     Delete existing entry in api_schedule.
@@ -307,6 +307,7 @@ def delete_from_schedule(date):
         cursor.execute(query, [date])
     return HttpResponse(json.dumps({"status": "up", "message": "Successfully deleted schedule."}),
                         content_type="application/json")
+
 
 def get_schedule():
     """
@@ -358,7 +359,6 @@ def get_all_courts():
         results = dictfetchall(cursor)
     return results
 
-
 def get_court(court_id):
     with connection.cursor() as cursor:
         query = '''
@@ -370,7 +370,6 @@ def get_court(court_id):
         cursor.execute(query, [court_id])
         results = dictfetchall(cursor)
     return results
-
 
 def court_id_exists(court_id):
     with connection.cursor() as cursor:
@@ -442,7 +441,6 @@ def get_all_queues():
         results = dictfetchall(cursor)
     return results
 
-
 def add_queue(queue):
     with connection.cursor() as cursor:
         query = '''
@@ -470,13 +468,15 @@ def member_config(email):
     # Get this member's info
     my_info = get_member_info(email)
     if not my_info:
-        return HttpResponse(json.dumps({"status": "down", "message": "This person is not a member."}, indent=4, sort_keys=True), content_type="application/json")
+        return HttpResponse(
+            json.dumps({"status": "down", "message": "This person is not a member."}, indent=4, sort_keys=True),
+            content_type="application/json")
 
     # Convert 'dateJoined' attribute to be JSON serializable
     # datetime.datetime.utcnow().strftime(“ % Y - % m - % dT % H: % M: % SZ”)
     my_info[0].__setitem__('dateJoined', my_info[0].__getitem__('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
+    # my_info.dateJoined = my_info.dateJoined.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-    print(my_info)
     context['my_info'] = my_info
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
 
@@ -491,9 +491,10 @@ def member_config_edit(email, dict_post):
                         being updated, it won't be in the dictionary
     :return:
     """
-    for k,v in dict_post.items():
+    for k, v in dict_post.items():
         edit_member_info(email, k, v)
-    return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted member info."}), content_type="application/json")
+    return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted member info."}),
+                        content_type="application/json")
 
 
 def board_member_config():
@@ -506,13 +507,14 @@ def board_member_config():
     members = get_members()
     for m in members:
         m.__setitem__('dateJoined', m.get('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
-
+        # m.dateJoined = m.dateJoined.strftime('%Y-%m-%dT%H:%M:%SZ')
     interested = get_interested()
 
     # Get schedule
     schedule = get_schedule()
     for s in schedule:
         s.__setitem__('date', s.get('date').strftime('%Y-%m-%dT%H:%M:%SZ'))
+        # s.date = s.date.strftime('%Y-%m-%dT%H:%M:%SZ')
     all_courts = get_all_courts()
     all_queues = get_all_queues()
 
