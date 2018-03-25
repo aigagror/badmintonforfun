@@ -147,6 +147,11 @@ def campaignRouter(request):
 
 @restrictRouter(allowed=["GET", "POST"])
 def settingsRouter(request):
+    """
+    Allow members to get and edit their own settings.
+    :param request:
+    :return:
+    """
     email = request.session.get('email', '')
     if request.method == "GET":
         return member_config(email)
@@ -155,12 +160,90 @@ def settingsRouter(request):
         return member_config_edit(email, dict_post)
 
 
-@restrictRouter(allowed=["GET", "POST"])
+@restrictRouter(allowed=["GET"])
 def settingsBoardMemberRouter(request):
+    """
+    Allow board members to get boardmember-exclusive-info in settings
+    :param request:
+    :return:
+    """
+    # email = request.session.get('email', '')
+    email = 'ezhuang2@illinois.edu'
+    if not is_board_member(email):
+        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+                            content_type="application/json")
+
     if request.method == "GET":
         return board_member_config()
-    elif request.method == "POST":
+
+
+@restrictRouter(allowed=["POST"])
+def settingsPromoteMemberRouter(request):
+    """
+    Allow board members to promote interested->member, member->board member
+    :param request:
+    :return:
+    """
+    # email = request.session.get('email', '')
+    email = 'ezhuang2@illinois.edu'
+    if not is_board_member(email):
+        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+                            content_type="application/json")
+    if request.method == "POST":
+        dict_post = dict(request.POST.items())
+        p_email = dict_post.get('email', '')
+        p_member_info = dict_post.get('member_info', {})
+        p_boardmember_info = dict_post.get('boardmember_info', {})
+        if p_email == '':
+            return HttpResponse("Missing required param email", status=400)
+        if not p_member_info:
+            if not p_boardmember_info:
+                return HttpResponse("Missing required param member_info or boardmember_info", status=400)
+            else:
+                return promote_to_board_member(p_email, p_boardmember_info)
+        else:
+            return promote_to_member(p_email, p_member_info)
+
+
+@restrictRouter(allowed=["POST, DELETE"])
+def settingsEditMemberRouter(request):
+    """
+    Allow board members to edit information of a member OR remove them from the club
+    :param request:
+    :return:
+    """
+    # email = request.session.get('email', '')
+    email = 'ezhuang2@illinois.edu'
+    if not is_board_member(email):
+        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+                            content_type="application/json")
+    dict_post = dict(request.POST.items())
+    if request.method == "POST":
         foo = 0
+
+    elif request.method == "DELETE":
+        p_email = dict_post.get('email', '')
+        return remove_member(p_email)
+
+
+@restrictRouter(allowed=["POST"])
+def settingsInterestedCreateRouter(request):
+    """
+    Allows board members to add people to the club
+    :param request:
+    :return:
+    """
+    # email = request.session.get('email', '')
+    email = 'ezhuang2@illinois.edu'
+    if not is_board_member(email):
+        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+                            content_type="application/json")
+    dict_post = dict(request.POST.items())
+    if request.method == "POST":
+        p_interested_info = dict_post.get('interested_info', {})
+        if not p_interested_info:
+            return HttpResponse("Missing required param interested_info", status=400)
+        return add_interested(p_interested_info)
 
 
 @csrf_exempt

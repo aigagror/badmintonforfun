@@ -33,5 +33,9 @@ urlpatterns = [
     re_path(r'election/create/?$', views.electionCreateRouter),
     re_path(r'election/?$', views.electionRouter),
     re_path(r'settings/?$', views.settingsRouter),
+    re_path(r'settings/board_member/?$', views.settingsBoardMemberRouter),
+    re_path(r'settings/promote/?$', views.settingsPromoteMemberRouter),
+    re_path(r'settings/edit_member/?$', views.settingsEditMemberRouter),
+    re_path(r'settings/add_member/?$', views.settingsInterestedCreateRouter),
 ]
 
