@@ -148,26 +148,6 @@ def vote(request):
         electionDate = deserializeDateTime(dict_post[electionKey])
         return cast_vote(voterEmail, electionDate, voteeEmail)
 
-
-
-    campaigns = Campaign.objects.filter(election=election, job=job)
-    try:
-        campaign = Campaign.objects.get(pk=request.POST['vote'])
-        email = request.POST['email']
-    except (KeyError, Campaign.DoesNotExist):
-        # Redisplay the campaign voting form.
-        return render(request, 'api_campaign.html', {
-            'campaigns': campaigns,
-            'error_message': "You didn't select a choice.",
-            'job': job
-        })
-    else:
-        # I think there's a name conflict which is why I renamed Member to MemberModel
-        member = MemberModel.objects.get(email=email)
-        vote = Votes(voter=member, election=election, votee=campaign.campaigner)
-        vote.save()
-        return HttpResponseRedirect(reverse('api:election'))
-
 @restrictRouter(allowed=["GET"])
 def all_votes(request):
     return get_all_votes()
