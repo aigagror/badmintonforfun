@@ -89,8 +89,8 @@ class Election(models.Model):
 
 class Votes(models.Model):
     votee = models.ForeignKey(Member, related_name='votee', on_delete=models.SET_NULL, null=True)
-    election = models.ForeignKey(Election, on_delete=models.CASCADE, primary_key=True)
-    voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE, unique=True)
+    election = models.ForeignKey(Election, on_delete=models.CASCADE)
+    voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE)
 
     def __str__(self):
         return '{} voted for {}: {}'.format(self.voter, self.votee, self.election)

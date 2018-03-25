@@ -16,6 +16,14 @@
 },
 {
     "model": "api.party",
+    "pk": 2,
+    "fields": {
+        "queue": "CASUAL",
+        "leader": "ezhuang2@illinois.edu"
+    }
+},
+{
+    "model": "api.party",
     "pk": 3,
     "fields": {
         "queue": "CASUAL",
@@ -55,6 +63,15 @@
     "fields": {
         "first_name": "Di",
         "last_name": "When",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "donald@gmail.com",
+    "fields": {
+        "first_name": "Donald",
+        "last_name": "Trump",
         "formerBoardMember": false
     }
 },
@@ -195,10 +212,37 @@
 },
 {
     "model": "api.interested",
+    "pk": "obama@gmail.com",
+    "fields": {
+        "first_name": "Barack",
+        "last_name": "Obama",
+        "formerBoardMember": true
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "paul@gmail.com",
+    "fields": {
+        "first_name": "Paul",
+        "last_name": "Ryan",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
     "pk": "peiyuxu2@illinois.edu",
     "fields": {
         "first_name": "Perry",
         "last_name": "Xu",
+        "formerBoardMember": false
+    }
+},
+{
+    "model": "api.interested",
+    "pk": "rosa@gmail.com",
+    "fields": {
+        "first_name": "Rosa",
+        "last_name": "Rios",
         "formerBoardMember": false
     }
 },
@@ -290,7 +334,7 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "party": null,
+        "party": 3,
         "bio": ""
     }
 },
@@ -325,6 +369,17 @@
         "dateJoined": "2018-03-19",
         "party": null,
         "bio": ""
+    }
+},
+{
+    "model": "api.member",
+    "pk": "donald@gmail.com",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-25",
+        "party": null,
+        "bio": "It's tangible, it's solid, it's beautiful. It's artistic, from my standpoint, and I just love real estate."
     }
 },
 {
@@ -367,7 +422,7 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "party": null,
+        "party": 2,
         "bio": ""
     }
 },
@@ -494,6 +549,28 @@
 },
 {
     "model": "api.member",
+    "pk": "obama@gmail.com",
+    "fields": {
+        "level": 99999,
+        "private": false,
+        "dateJoined": "2018-03-25",
+        "party": null,
+        "bio": "Former President of the United States"
+    }
+},
+{
+    "model": "api.member",
+    "pk": "paul@gmail.com",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-25",
+        "party": null,
+        "bio": "Hi I"
+    }
+},
+{
+    "model": "api.member",
     "pk": "peiyuxu2@illinois.edu",
     "fields": {
         "level": 0,
@@ -501,6 +578,17 @@
         "dateJoined": "2018-03-19",
         "party": null,
         "bio": ""
+    }
+},
+{
+    "model": "api.member",
+    "pk": "rosa@gmail.com",
+    "fields": {
+        "level": 0,
+        "private": false,
+        "dateJoined": "2018-03-25",
+        "party": null,
+        "bio": "The current treasurer Rosa Gumataotao Rios, the sixth Latina ever to hold the job, advises top Treasury and finance officials and directly oversees the U.S. Mint and the Bureau of Engraving and Printing."
     }
 },
 {
@@ -614,6 +702,80 @@
     "pk": "yleung5@illinois.edu",
     "fields": {
         "job": "OFFICER"
+    }
+},
+{
+    "model": "api.election",
+    "pk": "2017-12-01",
+    "fields": {
+        "endDate": "2017-12-20"
+    }
+},
+{
+    "model": "api.election",
+    "pk": "2018-03-25",
+    "fields": {
+        "endDate": null
+    }
+},
+{
+    "model": "api.campaign",
+    "pk": 1,
+    "fields": {
+        "job": "PRESIDENT",
+        "pitch": "Make Badminton Great Again",
+        "election": "2017-12-01",
+        "campaigner": "ezhuang2@illinois.edu"
+    }
+},
+{
+    "model": "api.campaign",
+    "pk": 2,
+    "fields": {
+        "job": "PRESIDENT",
+        "pitch": "Hi I'm Eddie",
+        "election": "2018-03-25",
+        "campaigner": "ezhuang2@illinois.edu"
+    }
+},
+{
+    "model": "api.campaign",
+    "pk": 3,
+    "fields": {
+        "job": "PRESIDENT",
+        "pitch": "Change We can Believe In",
+        "election": "2018-03-25",
+        "campaigner": "obama@gmail.com"
+    }
+},
+{
+    "model": "api.campaign",
+    "pk": 4,
+    "fields": {
+        "job": "OFFICER",
+        "pitch": "Our founders got it right when they wrote in the Declaration of Independence that our rights come from nature and nature's God, not from government.",
+        "election": "2018-03-25",
+        "campaigner": "paul@gmail.com"
+    }
+},
+{
+    "model": "api.campaign",
+    "pk": 5,
+    "fields": {
+        "job": "TREASURER",
+        "pitch": "The current treasurer Rosa Gumataotao Rios, the sixth Latina ever to hold the job, advises top Treasury and finance officials and directly oversees the U.S. Mint and the Bureau of Engraving and Printing.",
+        "election": "2018-03-25",
+        "campaigner": "rosa@gmail.com"
+    }
+},
+{
+    "model": "api.campaign",
+    "pk": 6,
+    "fields": {
+        "job": "PRESIDENT",
+        "pitch": "We're going to build a net, and we're going to make Purdue pay for it",
+        "election": "2018-03-25",
+        "campaigner": "donald@gmail.com"
     }
 },
 {
@@ -832,6 +994,17 @@
         "startDate": "2018-03-19T16:59:42Z",
         "scoreA": 21,
         "scoreB": 12,
+        "court": null,
+        "tournament": null
+    }
+},
+{
+    "model": "api.match",
+    "pk": 21,
+    "fields": {
+        "startDate": "2018-03-23T17:37:59Z",
+        "scoreA": 12,
+        "scoreB": 23,
         "court": null,
         "tournament": null
     }
@@ -1334,6 +1507,13 @@
     "pk": 20,
     "fields": {
         "endDate": "2018-03-19T16:59:51Z"
+    }
+},
+{
+    "model": "api.finishedmatch",
+    "pk": 21,
+    "fields": {
+        "endDate": "2018-03-23T17:38:08Z"
     }
 }
 ]
