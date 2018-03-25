@@ -99,7 +99,8 @@ def start_campaign(campaign_dict):
     curr_election = get_current_election()
     if curr_election is not None:
         return run_connection("INSERT INTO api_campaign (job, pitch, election_id, campaigner_id) VALUES\
-                                (%s, %s, %s, %s)", campaign_dict["job"], campaign_dict["pitch"], curr_election["date"], campaign_dict["email"])
+                                (%s, %s, %s, %s)", campaign_dict["job"], campaign_dict["pitch"], curr_election.date,
+                              campaign_dict["email"])
     else:
         return HttpResponse(json.dumps({"message": "There is no election to campaign for!"}),
                             content_type='application/json', status=400)
@@ -137,23 +138,23 @@ def get_campaign(email, job):
                                 content_type='application/json', status=400)
 
 
-def edit_campaign(campaign):
+def edit_campaign(campaign_dict):
     """
         Given campaign information (email, job, pitch), edit the campaign pitch if it exists
     :param campaign:
     :return: 200 if successful, 400 if not
     """
 
-    if get_campaign(campaign.email, campaign.job).status_code == 400:
-        return start_campaign(campaign)
+    if get_campaign(campaign_dict["email"], campaign_dict["job"]).status_code == 400:
+        return start_campaign(campaign_dict)
 
     return run_connection("UPDATE api_campaign SET pitch=%s WHERE campaigner_id=%s AND job=%s",
-                          campaign.pitch, campaign.email, campaign.job)
+                          campaign_dict["pitch"], campaign_dict["email"], campaign_dict["job"])
 
 
 def delete_campaign(email, job):
-    if json.loads(get_campaign(email, job))['code'] == 400:
-        return HttpResponse(json.dumps({'code': 400, 'message': 'No campaign exists.'}), content_type='application/json',
+    if get_campaign(email, job).status_code == 400:
+        return HttpResponse(json.dumps({'message': 'No campaign exists.'}), content_type='application/json',
                             status=400)
 
     return run_connection("DELETE FROM api_campaign WHERE campaigner_id=%s AND job=%s", email, job)
