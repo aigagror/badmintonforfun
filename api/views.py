@@ -104,12 +104,23 @@ def campaignRouter(request):
         dict_post = dict(request.POST.items())
         return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
 
+
 @restrictRouter(allowed=["GET", "POST"])
 def settingsRouter(request):
+    email = request.session.get('email', '')
     if request.method == "GET":
-        return member_config()
+        return member_config(email)
     elif request.method == "POST":
-        return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
+        dict_post = dict(request.POST.items())
+        return member_config_edit(email, dict_post)
+
+
+@restrictRouter(allowed=["GET", "POST"])
+def settingsBoardMemberRouter(request):
+    if request.method == "GET":
+        return board_member_config()
+    elif request.method == "POST":
+        foo = 0
 
 
 @csrf_exempt
@@ -249,57 +260,3 @@ def settings(request):
     }
 
     return render(request, 'api_settings.html', context)
-
-
-def settings_view(request):
-    # email = request.session['email']
-    email = 'ezhuang2@illinois.edu'
-    if request.method == 'GET':
-        context = ''
-
-        # Get this member's info
-        my_info = get_member_info(email)
-        # Convert 'dateJoined' attribute to be JSON serializable
-        # datetime.datetime.utcnow().strftime(“ % Y - % m - % dT % H: % M: % SZ”)
-        my_info[0].__setitem__('dateJoined', my_info[0].__getitem__('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
-
-        if is_board_member(email):
-            # Get list of everybody (interested, members, boardmembers)
-            board_members = get_board_members()
-            members = get_members()
-            for m in members:
-                m.__setitem__('dateJoined', m.get('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
-
-            interested = get_interested()
-
-            # Get schedule
-            schedule = get_schedule()
-            for s in schedule:
-                s.__setitem__('date', s.get('date').strftime('%Y-%m-%dT%H:%M:%SZ'))
-            all_courts = get_all_courts()
-            all_queues = get_all_queues()
-
-            context = {
-                'board_members': board_members,
-                'members': members,
-                'interested': interested,
-                'schedule': schedule,
-                'all_courts': all_courts,
-                'all_queues': all_queues
-            }
-
-        context['my_info'] = my_info
-        return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
-
-    if request.method == 'POST':
-        if is_board_member(email):
-            dict_post = dict(request.POST.items())
-
-
-def settings_available_courts(request):
-    today = datetime.datetime.today().strftime('%Y-%m-%d')
-    # If the date isn't specified, use today's date
-    available_courts = get_available_courts(request.GET.get('date', today))
-    context = {'available_courts': available_courts}
-
-    return HttpResponse(json.dumps(context), content_type="application/json")

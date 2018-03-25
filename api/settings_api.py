@@ -375,47 +375,70 @@ def add_queue(queue):
             return json.dumps({'message': 'OK'})
 
 
-def member_config():
-    data = {
-            "regular": [
-                    {
-                        "type": "bool",
-                        "name": "show_games",
-                        "display_name": "Show Games on Profile",
-                        "value": False
-                    },
-                    {
-                        "type": "option",
-                        "name": "abc",
-                        "display_name": "Show Games",
-                        "options": [
-                            {
-                                "name": "a",
-                                "value": "a"
-                            },
-                            {
-                                "name": "c",
-                                "value": "c"
-                            },
-                            {
-                                "name": "d",
-                                "value": "d"
-                            }
-                        ],
-                        "value": "c"
-                    },
-                    {
-                        "type": "text",
-                        "name": "display_name",
-                        "display_name": "Name",
-                        "value": "Lorem Ipsum"
-                    },
-                    {
-                        "type": "bool",
-                        "name": "get_emails",
-                        "display_name": "Receive Emails",
-                        "value": False
-                    }
-                ]
-            }
-    return HttpResponse(json.dumps(data), content_type="application/json")
+def member_config(email):
+    """
+    GET function to see settings information for members
+    :param email:
+    :return:
+    """
+    context = {}
+    # email = 'ezhuang2@illinois.edu'
+    # Get this member's info
+    my_info = get_member_info(email)
+    if not my_info:
+        return HttpResponse(json.dumps({"status": "down", "message": "This person is not a member."}, indent=4, sort_keys=True), content_type="application/json")
+
+    # Convert 'dateJoined' attribute to be JSON serializable
+    # datetime.datetime.utcnow().strftime(“ % Y - % m - % dT % H: % M: % SZ”)
+    my_info[0].__setitem__('dateJoined', my_info[0].__getitem__('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
+
+    print(my_info)
+    context['my_info'] = my_info
+    return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+
+
+def member_config_edit(email, dict_post):
+    """
+    Updates attribute values for a member
+    Ex: update 'private' to True and 'bio' to 'Hi'
+            dict_post = {'private' = True, 'bio' = 'Hi'}
+    :param email: member
+    :param dict_post: Dictionary containing the new values for the keys we want updated. If an attribute is not
+                        being updated, it won't be in the dictionary
+    :return:
+    """
+    for k,v in dict_post.items():
+        edit_member_info(email, k, v)
+    return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted member info."}), content_type="application/json")
+
+
+def board_member_config():
+    """
+    GET function to see settings information exclusive to board members
+    :return:
+    """
+    # Get list of everybody (interested, members, boardmembers)
+    board_members = get_board_members()
+    members = get_members()
+    for m in members:
+        m.__setitem__('dateJoined', m.get('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
+
+    interested = get_interested()
+
+    # Get schedule
+    schedule = get_schedule()
+    for s in schedule:
+        s.__setitem__('date', s.get('date').strftime('%Y-%m-%dT%H:%M:%SZ'))
+    all_courts = get_all_courts()
+    all_queues = get_all_queues()
+
+    context = {
+        'board_members': board_members,
+        'members': members,
+        'interested': interested,
+        'schedule': schedule,
+        'all_courts': all_courts,
+        'all_queues': all_queues
+    }
+
+    return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
