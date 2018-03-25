@@ -160,7 +160,7 @@ def get_current_campaigns():
         for c in results:
             campaign_dict = {}
             campaign_dict["email"] = c.campaigner_id
-            campaign_dict["name"] = c.campaigner_id
+            campaign_dict["name"] = str(c.campaigner)
             campaign_dict["id"] = c.id
             campaign_dict["job"] = c.job
             campaign_dict["pitch"] = c.pitch
@@ -183,7 +183,6 @@ def get_current_election():
     curr_election = Election.objects.raw("SELECT * FROM api_election \
         WHERE date is not null AND date <= date('now') AND endDate IS NULL\
         ORDER BY date DESC LIMIT 1")
-    print(curr_election[0])
     if len(list(curr_election)) == 0:
         return None
     else:
