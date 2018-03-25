@@ -180,11 +180,10 @@ def get_current_election():
     :return:
     """
 
-    # curr_election = Election.objects.raw("SELECT * FROM api_election \
-    #     WHERE date is not null AND date <= date('now') AND endDate IS NULL\
-    #     ORDER BY date DESC LIMIT 1;")
+    curr_election = Election.objects.raw("SELECT * FROM api_election \
+        WHERE date is not null AND date <= date('now') AND endDate IS NULL\
+        ORDER BY date DESC LIMIT 1;")
 
-    curr_election = Election.objects.raw("SELECT * FROM api_election")
     if len(list(curr_election)) == 0:
         return None
     else:
@@ -244,16 +243,13 @@ def start_election(startDate, endDate=None):
 
 def get_election(startDate, endDate=None):
     with connection.cursor() as cursor:
-        if endDate is None:
-            cursor.execute("SELECT * FROM api_election WHERE date=%s AND endDate=NULL", [startDate])
-        else:
-            cursor.execute("SELECT * FROM api_election WHERE date=%s AND endDate=%s", [startDate, endDate])
+        cursor.execute("SELECT * FROM api_election WHERE date=%s", [serializeDate(startDate)])
         election = dictfetchone(cursor)
 
     if election:
         return HttpResponse(json.dumps({'code': 200, 'message': 'OK',
-                                        'election': {'date': election.date.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                                                     'endDate': election.endDate.strftime("%Y-%m-%dT%H:%M:%SZ")}}),
+                                        'election': {'date': serializeDate(election['date']),
+                                                     'endDate': serializeDate(election['endDate']) if election['endDate'] is not None else 'TBA'}}),
                             content_type='application/json')
     else:
         return HttpResponse(json.dumps({'code': 400, 'message': 'There is no election that starts on this date!'}),
@@ -264,10 +260,10 @@ def edit_election(startDate, endDate=None):
     if get_election(startDate).status_code == 400:
         return start_election(startDate, endDate)
 
-    if endDate is None:
-        return run_connection("SELECT * FROM api_election WHERE date=%s AND endDate=NULL", startDate)
+    if endDate is not None:
+        return run_connection("UPDATE api_election SET endDate = %s WHERE date = %s", endDate, startDate)
     else:
-        return run_connection("SELECT * FROM api_election WHERE date=%s AND endDate=%s", startDate, endDate)
+        return run_connection("UPDATE api_election SET endDate = NULL WHERE date = %s", startDate)
 
 
 def delete_current_election():

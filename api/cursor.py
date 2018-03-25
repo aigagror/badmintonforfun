@@ -29,7 +29,9 @@ def deserializeDate(strObj):
     if not isinstance(strObj, str):
         raise ValueError("{} is not a string".format(strObj))
 
-    return datetime.datetime.strptime(strObj, dateFormatString)
+    return datetime.datetime.strptime(strObj, dateFormatString).date()
+
+# NOTE: There is an important distinction between date and datetime
 
 def serializeDateTime(dateTimeObj):
     if not isinstance(dateTimeObj, datetime.datetime):

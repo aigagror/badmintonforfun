@@ -444,10 +444,10 @@ def electionRouter(request):
         endKey = "endDate"
         if startKey not in dict_post:
             return HttpResponse("Missing required param {}".format(startKey), status=400)
-        startDate = deserializeDateTime(dict_post[startKey])
+        startDate = deserializeDate(dict_post[startKey])
         endDate = dict_post.get(endKey, None)
         if endDate != None:
-            endDate = deserializeDateTime(endDate)
+            endDate = deserializeDate(endDate)
         return edit_election(startDate, endDate)
 
 @csrf_exempt
