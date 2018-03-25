@@ -26,6 +26,9 @@ urlpatterns = [
     re_path(r'election/?$', views.electionRouter, name='election'),
 
     re_path(r'campaign/?$', views.campaignRouter, name='campaign'),
+
+    #separate for testing purposes: POST requests for finding/creating a campaign
+    re_path(r'campaign/find/?$', views.campaignFindRouter, name='find_campaign'),
     re_path(r'campaign/create/?$', views.campaignCreateRouter, name='create_campaign'),
 
     re_path(r'settings/member/?$', views.settingsRouter),

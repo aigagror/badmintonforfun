@@ -170,10 +170,15 @@ def campaignRouter(request):
         # django doesn't have anything that handles delete so...
         dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
         validate_keys(["job", "email"], dict_delete)
-
         return delete_campaign(dict_delete["email"], dict_delete["job"])
 
 
+@csrf_exempt
+@restrictRouter(allowed=["POST"])
+def campaignFindRouter(request):
+    dict_post = dict(request.POST.items())
+    validate_keys(["job", "email"], dict_post)
+    return get_campaign(dict_post["email"], dict_post["job"])
 
 
 @csrf_exempt
