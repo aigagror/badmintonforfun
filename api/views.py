@@ -66,6 +66,7 @@ def vote(request, job):
         vote.save()
         return HttpResponseRedirect(reverse('api:election'))
 
+
 class VotesView(generic.ListView):
     template_name = 'api_votes.html'
     context_object_name = 'votes'
