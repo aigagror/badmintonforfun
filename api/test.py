@@ -8,11 +8,13 @@ class ElectionTest(TestCase):
     def test_get_election(self):
         response = self.client.get(reverse('api:election'))
         self.assertEqual(response.status_code, 200)
-        print(response.content)
+        self.assertEqual(response.json()['status'], 'down') # No current election
 
     def test_create_election(self):
-        date = datetime.date(2018, 4, 1)
-        response = self.client.post(reverse('api:create_election'), {'startDate': cursor.serializeDatetime(date)})
+        date = datetime.date(2018, 3, 24)
+        response = self.client.post(reverse('api:create_election'), {'startDate': cursor.serializeDate(date)})
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get(reverse('api:election'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'up')  # Now there is an election

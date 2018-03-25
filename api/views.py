@@ -462,7 +462,7 @@ def electionCreateRouter(request):
     startKey = "startDate"
     if startKey not in dict_post:
         return HttpResponse("Missing required param {}".format(startKey), status=400)
-    startDate = deserializeDateTime(dict_post[startKey])
+    startDate = deserializeDate(dict_post[startKey])
     return start_election(startDate)
 
 

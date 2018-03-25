@@ -180,9 +180,11 @@ def get_current_election():
     :return:
     """
 
-    curr_election = Election.objects.raw("SELECT * FROM api_election \
-        WHERE date is not null AND date <= date('now') AND endDate IS NULL\
-        ORDER BY date DESC LIMIT 1")
+    # curr_election = Election.objects.raw("SELECT * FROM api_election \
+    #     WHERE date is not null AND date <= date('now') AND endDate IS NULL\
+    #     ORDER BY date DESC LIMIT 1;")
+
+    curr_election = Election.objects.raw("SELECT * FROM api_election")
     if len(list(curr_election)) == 0:
         return None
     else:
@@ -234,7 +236,7 @@ def start_election(startDate, endDate=None):
     """
 
     if endDate is None:
-        return run_connection("INSERT INTO api_election (date, endDate) VALUES (%s, NULL);", serializeDatetime(startDate))
+        return run_connection("INSERT INTO api_election (date, endDate) VALUES (%s, NULL);", serializeDate(startDate))
     else:
         return run_connection("INSERT INTO api_election (date, endDate) VALUES\
                                  (%s, %s)", startDate, endDate)

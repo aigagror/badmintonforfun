@@ -17,19 +17,31 @@ def dictfetchone(cursor):
         return {}
     return dict(zip(columns, row))
 
-dateFormatString = "%Y-%m-%dT%H:%M:%SZ"
+dateTimeFormatString = "%Y-%m-%dT%H:%M:%SZ"
+dateFormatString = "%Y-%m-%d"
 
-def serializeDatetime(dateObj):
+def serializeDate(dateObj):
     if not isinstance(dateObj, datetime.date):
         raise ValueError("{} is not a date".format(dateObj))
-
     return dateObj.strftime(dateFormatString)
+
+def deserializeDate(strObj):
+    if not isinstance(strObj, str):
+        raise ValueError("{} is not a string".format(strObj))
+
+    return datetime.datetime.strptime(strObj, dateFormatString)
+
+def serializeDateTime(dateTimeObj):
+    if not isinstance(dateTimeObj, datetime.datetime):
+        raise ValueError("{} is not a date time".format(dateTimeObj))
+
+    return dateTimeObj.strftime(dateTimeFormatString)
 
 def deserializeDateTime(strObj):
     if not isinstance(strObj, str):
         raise ValueError("{} is not a string".format(strObj))
 
-    return datetime.datetime.strptime(strObj, dateFormatString)
+    return datetime.datetime.strptime(strObj, dateTimeFormatString)
 
 def serializeModel(model):
 
@@ -43,7 +55,7 @@ def serializeModel(model):
             if isinstance(val, dict):
                 _serializeDict(val)
             elif isinstance(val, datetime.date):
-                json[key] = serializeDatetime(val)
+                json[key] = serializeDateTime(val)
 
         return json
 
