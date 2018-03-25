@@ -55,7 +55,7 @@ def serializeModel(model):
             if isinstance(val, dict):
                 _serializeDict(val)
             elif isinstance(val, datetime.date):
-                json[key] = serializeDateTime(val)
+                json[key] = serializeDate(val)
 
         return json
 
