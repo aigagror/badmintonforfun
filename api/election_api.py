@@ -22,7 +22,7 @@ def get_all_votes():
         cursor.execute(query)
 
         results = dictfetchall(cursor)
-    return HttpResponse(json.dump(results), content_type='application/json')
+    return HttpResponse(json.dumps(results), content_type='application/json')
 
 def get_votes_from_member(email):
     """
@@ -40,7 +40,7 @@ def get_votes_from_member(email):
         cursor.execute(query, [email])
 
         results = dictfetchall(cursor)
-    return HttpResponse(json.dump(results), content_type='application/json')
+    return HttpResponse(json.dumps(results), content_type='application/json')
 
 def cast_vote(voter_email, election_date, votee_email):
     """
@@ -73,7 +73,7 @@ def cast_vote(voter_email, election_date, votee_email):
             WHERE voter_id = %s AND election_id = %s
             """
             cursor.execute(query, [votee_email, voter_email, election_date])
-    return HttpResponse(json.dump({"message": "Vote successfully cast"}), content_type='application/json')
+    return HttpResponse(json.dumps({"message": "Vote successfully cast"}), content_type='application/json')
 
 
 def start_campaign(campaign_dict):

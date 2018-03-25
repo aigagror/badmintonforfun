@@ -36,3 +36,9 @@ class ElectionTest(TestCase):
         self.assertEqual(response.json()['endDate'], '2018-05-02')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'up')  # Now there is an election
+
+class VotesTest(TestCase):
+
+    def test_get_all_votes(self):
+        response = self.client.get(reverse('api:all_votes'))
+        self.assertEqual(len(response.json()), 0)

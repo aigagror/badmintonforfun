@@ -21,10 +21,9 @@ from . import views
 app_name = 'api'
 urlpatterns = [
     re_path(r'election/all_votes/?$', views.all_votes, name='all_votes'),
+    re_path(r'election/vote/?$', views.vote, name='vote'),
     re_path(r'election/create/?$', views.electionCreateRouter, name='create_election'),
     re_path(r'election/?$', views.electionRouter, name='election'),
-
-    re_path(r'vote/?$', views.vote, name='vote'),
 
     re_path(r'campaign/?$', views.campaignRouter),
     re_path(r'campaign/create/?$', views.campaignCreateRouter),
