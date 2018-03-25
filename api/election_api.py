@@ -15,13 +15,17 @@ def get_all_votes():
 
     with connection.cursor() as cursor:
         query = """
-        SELECT *
+        SELECT voter_id, election_id, votee_id
         FROM api_votes, api_election
-        WHERE api_election.endDate = NULL AND api_votes.election_id = api_election.date;
+        WHERE api_election.date <= date('now') AND api_votes.election_id = api_election.date;
         """
         cursor.execute(query)
 
         results = dictfetchall(cursor)
+        for result in results:
+            ret = serializeDate(result['election_id'])
+            result['election_id'] = ret
+
     return HttpResponse(json.dumps(results), content_type='application/json')
 
 def get_votes_from_member(email):
@@ -60,11 +64,20 @@ def cast_vote(voter_email, election_date, votee_email):
         """
         cursor.execute(query, [voter_email, election_date, votee_email])
         if cursor.fetchone()[0] <= 0:
+
+            # Get max id
+            query = """
+            SELECT MAX(id) 
+            FROM api_votes;
+            """
+            cursor.execute(query)
+            new_id = cursor.fetchone()[0] + 1 if cursor.fetchone()[0] is not None else 0
+
             # Insert
             query = """
-            INSERT INTO api_votes VALUES(%s, %s, %s)
+            INSERT INTO api_votes(id, voter_id, election_id, votee_id) VALUES(%s, %s, %s, %s)
             """
-            cursor.execute(query, [voter_email, election_date, votee_email])
+            cursor.execute(query, [new_id, voter_email, election_date, votee_email])
         else:
             # Update
             query="""

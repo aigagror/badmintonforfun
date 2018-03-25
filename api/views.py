@@ -145,7 +145,7 @@ def vote(request):
 
         voterEmail = dict_post[voterKey]
         voteeEmail = dict_post[voteeKey]
-        electionDate = deserializeDateTime(dict_post[electionKey])
+        electionDate = deserializeDate(dict_post[electionKey])
         return cast_vote(voterEmail, electionDate, voteeEmail)
 
 @restrictRouter(allowed=["GET"])
