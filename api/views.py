@@ -289,12 +289,27 @@ def settingsEditMemberRouter(request):
     if not is_board_member(email):
         return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
                             content_type="application/json")
+
     dict_post = dict(request.POST.items())
     if request.method == "POST":
-        foo = 0
+        p_email = dict_post.get('email', '')
+        if p_email == '':
+            return HttpResponse("Missing required param email", status=400)
+
+        p_attr_to_change = dict_post.get('attr_to_change', '')
+        p_new_value = dict_post.get('new_value', '')
+        if p_attr_to_change == '' or p_new_value == '' or p_email:
+            return HttpResponse("Missing required param attr_to_change or new_value", status=400)
+
+        if is_board_member(p_email):
+            return edit_boardmember_info(p_email, p_new_value)  # only attribute to edit is 'job'
+        else:
+            return edit_member_info(p_email, p_attr_to_change, p_new_value)
 
     elif request.method == "DELETE":
         p_email = dict_post.get('email', '')
+        if p_email == '':
+            return HttpResponse("Missing required param email", status=400)
         return remove_member(p_email)
 
 
@@ -316,6 +331,107 @@ def settingsInterestedCreateRouter(request):
         if not p_interested_info:
             return HttpResponse("Missing required param interested_info", status=400)
         return add_interested(p_interested_info)
+
+
+@restrictRouter(allowed=["GET", "POST", "DELETE"])
+def settingsSchedulesRouter(request):
+    """
+    Allows board members to get the whole schedule and add to/edit/delete from schedule
+    :param request:
+    :return:
+    """
+    # email = request.session.get('email', '')
+    email = 'ezhuang2@illinois.edu'
+    if not is_board_member(email):
+        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+                            content_type="application/json")
+    dict_post = dict(request.POST.items())
+    if request.method == "GET":
+        return get_schedule()
+    elif request.method == "POST":
+        # INSERT or UPDATE
+        p_date = dict_post.get('date', '')
+        p_number_of_courts = dict_post.get('number_of_courts', 0)
+
+        if p_date == '':
+            return HttpResponse("Missing required param date", status=400)
+
+        if schedule_date_exists(p_date):
+            return edit_schedule(p_date, p_number_of_courts)
+        else:
+            return add_to_schedule(p_date, p_number_of_courts)
+    elif request.method == "DELETE":
+        p_date = dict_post.get('delete_date', '')
+        if p_date == '':
+            return HttpResponse("Missing required param delete_date", status=400)
+        return delete_from_schedule(p_date)
+
+
+@restrictRouter(allowed=["GET", "POST"])
+def settingsCourtRouter(request):
+    """
+    Allows board members to get the info on all courts and add/edit courts
+    :param request:
+    :return:
+    """
+    # email = request.session.get('email', '')
+    email = 'ezhuang2@illinois.edu'
+    if not is_board_member(email):
+        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+                            content_type="application/json")
+    if request.method == "GET":
+        return get_all_courts()
+    elif request.method == "PUT":
+        dict_post = dict(request.POST.items())
+        p_court_id = dict_post.get('court_id', '')
+        p_attr_to_change = dict_post.get('attr_to_change', '') # 'queue_id', 'number', or 'id'
+        p_new_value = dict_post.get('new_value', '')
+        if p_court_id == '' or p_attr_to_change == '' or p_new_value == '':
+            return HttpResponse("Missing required param court_id or attr_to_change or new_value", status=400)
+        if court_id_exists(p_court_id):
+            edit_court_info(p_court_id, p_attr_to_change, p_new_value)
+        else:
+            p_number = dict_post.get('number', 0)
+            p_queue_type = dict_post.get('queue', '')
+            if p_queue_type == '':
+                return HttpResponse("Missing required param queue", status=400)
+            return add_court(Court(p_court_id, p_number, p_queue_type))
+
+@restrictRouter(allowed=["GET"])
+def settingsAvailableCourtsRouter(request):
+    """
+    Allows board members to get the available courts on a certain day from the schedule
+    :param request:
+    :return:
+    """
+    # email = request.session.get('email', '')
+    email = 'ezhuang2@illinois.edu'
+    if not is_board_member(email):
+        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+                            content_type="application/json")
+    if request.method == "GET":
+        dict_post = dict(request.GET.items())
+        g_date = dict_post.get('date', '')
+        if g_date == '':
+            return HttpResponse("Missing required param date", status=400)
+        return get_available_courts(g_date)
+
+
+@restrictRouter(allowed=["GET", "POST"])
+def settingsQueueRouter(request):
+    # email = request.session.get('email', '')
+    email = 'ezhuang2@illinois.edu'
+    if not is_board_member(email):
+        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+                            content_type="application/json")
+    if request.method == "GET":
+        return get_all_queues()
+    elif request.method == "POST":
+        dict_post = dict(request.POST.items())
+        p_queue_type = dict_post.get('queue_type', '')
+        if p_queue_type == '':
+            return HttpResponse("Missing required param queue_type", status=400)
+        return add_queue(p_queue_type)
 
 
 @csrf_exempt
