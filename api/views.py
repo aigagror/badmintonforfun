@@ -46,40 +46,7 @@ class ElectionView(generic.ListView):
         jobs = [job[1] for job in JOBS]
         return jobs
 
-def vote(request, job):
-    election = Election.objects.get(endDate=None)
-    campaigns = Campaign.objects.filter(election=election, job=job)
-    try:
-        campaign = Campaign.objects.get(pk=request.POST['vote'])
-        email = request.POST['email']
-    except (KeyError, Campaign.DoesNotExist):
-        # Redisplay the campaign voting form.
-        return render(request, 'api_campaign.html', {
-            'campaigns': campaigns,
-            'error_message': "You didn't select a choice.",
-            'job': job
-        })
-    else:
-        # I think there's a name conflict which is why I renamed Member to MemberModel
-        member = MemberModel.objects.get(email=email)
-        vote = Votes(voter=member, election=election, votee=campaign.campaigner)
-        vote.save()
-        return HttpResponseRedirect(reverse('api:election'))
-
-
-class VotesView(generic.ListView):
-    template_name = 'api_votes.html'
-    context_object_name = 'votes'
-
-    def get_queryset(self):
-        """Return all votes from the election"""
-        election = Election.objects.get(endDate=None)
-        votes = Votes.objects.filter(election=election)
-        return votes
-
-
-
-def campaign(request, job):
+def campaigns(request, job):
     election = Election.objects.get(endDate=None)
     job = job.upper()
     campaigns = Campaign.objects.filter(election=election, job=job)
@@ -149,14 +116,106 @@ def restrictRouter(allowed=list(), incomplete=list()):
         return _func
     return _restrictRouter
 
+@restrictRouter(allowed=["GET", "POST"])
+def vote(request):
+    """
+    GET -- Gets votes of given member
+    POST -- Casts/updates a vote for the current election
+    :param request:
+    :param job:
+    :return:
+    """
+
+    if request.method == "GET":
+        dict_get = dict(request.GET.items())
+        emailKey = "email"
+        if emailKey not in dict_get:
+            return HttpResponse("Missing required param {}".format(emailKey), status=400)
+        email = dict_get[emailKey]
+        return get_votes_from_member(email)
+    elif request.method == "POST":
+        dict_post = dict(request.POST.items())
+        voterKey = "voter"
+        electionKey = "electionDate"
+        voteeKey = "votee"
+        keys = [voterKey, electionKey, voteeKey]
+        for key in keys:
+            if key not in dict_post:
+                return HttpResponse("Missing required param {}".format(key), status=400)
+
+        voterEmail = dict_post[voterKey]
+        voteeEmail = dict_post[voteeKey]
+        electionDate = deserializeDateTime(dict_post[electionKey])
+        return cast_vote(voterEmail, electionDate, voteeEmail)
+
+
+
+    campaigns = Campaign.objects.filter(election=election, job=job)
+    try:
+        campaign = Campaign.objects.get(pk=request.POST['vote'])
+        email = request.POST['email']
+    except (KeyError, Campaign.DoesNotExist):
+        # Redisplay the campaign voting form.
+        return render(request, 'api_campaign.html', {
+            'campaigns': campaigns,
+            'error_message': "You didn't select a choice.",
+            'job': job
+        })
+    else:
+        # I think there's a name conflict which is why I renamed Member to MemberModel
+        member = MemberModel.objects.get(email=email)
+        vote = Votes(voter=member, election=election, votee=campaign.campaigner)
+        vote.save()
+        return HttpResponseRedirect(reverse('api:election'))
+
+@restrictRouter(allowed=["GET"])
+def all_votes(request):
+    return get_all_votes()
+
 @restrictRouter(allowed=["GET", "POST"], incomplete=["DELETE"])
 def campaignRouter(request):
+    """
+    GET -- Gets all campaigns of current election
+    POST -- Edits a campaign
+    :param request:
+    :return:
+    """
     if request.method == "GET":
         return get_current_campaigns()
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
         return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
 
+
+
+@csrf_exempt
+@restrictRouter(allowed=["POST"])
+def campaignCreateRouter(request):
+    """
+    POST -- Creates an campaign
+    :param request:
+    :return:
+    """
+    dict_post = dict(request.POST.items())
+    jobKey = "job"
+    pitchKey = "pitch"
+    dateKey = "electionDate"
+    email = "email"
+
+    keys = [jobKey, pitchKey, dateKey, email]
+
+    for key in keys:
+        if key not in dict_post:
+            return HttpResponse("Missing required param {}".format(key), status=400)
+    date = deserializeDateTime(dict_post[dateKey])
+
+    campaign_dict = {
+        "job": dict_post[jobKey],
+        "pitch": dict_post[pitchKey],
+        "date": date,
+        "email": dict_post[email],
+    }
+    return start_campaign(campaign_dict)
 
 @restrictRouter(allowed=["GET", "POST"])
 def settingsRouter(request):
@@ -262,6 +321,12 @@ def settingsInterestedCreateRouter(request):
 @csrf_exempt
 @restrictRouter(allowed=["GET", "POST"], incomplete=["DELETE"])
 def electionRouter(request):
+    """
+    GET -- Gets the current election
+    POST -- Edits an election
+    :param request:
+    :return:
+    """
     if request.method == "GET":
         return current_election()
     elif request.method == "POST":
@@ -279,6 +344,11 @@ def electionRouter(request):
 @csrf_exempt
 @restrictRouter(allowed=["POST"])
 def electionCreateRouter(request):
+    """
+    POST -- Creates an election
+    :param request:
+    :return:
+    """
     dict_post = dict(request.POST.items())
     startKey = "startDate"
     if startKey not in dict_post:

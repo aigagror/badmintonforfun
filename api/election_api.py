@@ -7,17 +7,86 @@ from datetime import datetime
 import json
 
 
-def start_campaign(campaign):
+def get_all_votes():
+    """
+    Returns all of the votes from the current election if there are any
+    :return:
     """
 
-    :param campaign: an object containing the email, pitch, and job for the campaign
+    with connection.cursor() as cursor:
+        query = """
+        SELECT *
+        FROM api_votes, api_election
+        WHERE api_election.endDate = NULL AND api_votes.election_id = api_election.date;
+        """
+        cursor.execute(query)
+
+        results = dictfetchall(cursor)
+    return HttpResponse(json.dump(results), content_type='application/json')
+
+def get_votes_from_member(email):
+    """
+    Returns all of the votes for the given member in the current election
+    :param email:
+    :return:
+    """
+
+    with connection.cursor() as cursor:
+        query = """
+        SELECT *
+        FROM api_votes, api_election, api_member
+        WHERE api_election.endDate = NULL AND api_votes.election_id = api_election.date AND api_votes.voter_id = %s;
+        """
+        cursor.execute(query, [email])
+
+        results = dictfetchall(cursor)
+    return HttpResponse(json.dump(results), content_type='application/json')
+
+def cast_vote(voter_email, election_date, votee_email):
+    """
+    Inserts/updates a vote
+    :param voter_email:
+    :param election_date:
+    :param votee_email:
+    :return:
+    """
+
+    # Check if vote exists
+    with connection.cursor() as cursor:
+        query = """
+        SELECT COUNT(*)
+        FROM api_votes
+        WHERE voter_id = %s AND election_id = %s AND votee_id = %s
+        """
+        cursor.execute(query, [voter_email, election_date, votee_email])
+        if cursor.fetchone()[0] <= 0:
+            # Insert
+            query = """
+            INSERT INTO api_votes VALUES(%s, %s, %s)
+            """
+            cursor.execute(query, [voter_email, election_date, votee_email])
+        else:
+            # Update
+            query="""
+            UPDATE api_votes
+            SET votee_id = %s
+            WHERE voter_id = %s AND election_id = %s
+            """
+            cursor.execute(query, [votee_email, voter_email, election_date])
+    return HttpResponse(json.dump({"message": "Vote successfully cast"}), content_type='application/json')
+
+
+def start_campaign(campaign_dict):
+    """
+
+    :param campaign_dict: an object containing the email, pitch, and job for the campaign
     :return: 200 if successful, 400 if not
     """
 
     curr_election = get_current_election()
     if curr_election is not None:
         return run_connection("INSERT INTO api_campaign (job, pitch, election_id, campaigner_id) VALUES\
-                                (%s, %s, %s, %s)", campaign.job, campaign.pitch, curr_election.date, campaign.email)
+                                (%s, %s, %s, %s)", campaign_dict["job"], campaign_dict["pitch"], curr_election["date"], campaign_dict["email"])
     else:
         return HttpResponse(json.dumps({"message": "There is no election to campaign for!"}),
                             content_type='application/json', status=400)
