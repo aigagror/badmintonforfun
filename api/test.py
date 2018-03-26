@@ -127,7 +127,7 @@ class SettingsTest(TestCase):
     def test_promote(self):
         interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False,
                            'email': 'ezhuang2@illinois.edu'}
-        response = self.client.post(reverse('api:add_member'), interested_dict)
+        response = self.client.post(reverse('api:add_interested'), interested_dict)
         self.assertEqual(response.json()['status'], 'up')
         self.assertEqual(response.status_code, 200)
 
@@ -144,7 +144,7 @@ class SettingsTest(TestCase):
 
     def test_get_member_info(self):
         interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False, 'email': 'ezhuang2@illinois.edu'}
-        response = self.client.post(reverse('api:add_member'), interested_dict)
+        response = self.client.post(reverse('api:add_interested'), interested_dict)
         self.assertEqual(response.json()['status'], 'up')
         self.assertEqual(response.status_code, 200)
 
@@ -160,9 +160,10 @@ class SettingsTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_board_member_info(self):
+
         interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False,
                            'email': 'ezhuang2@illinois.edu'}
-        response = self.client.post(reverse('api:add_member'), interested_dict)
+        response = self.client.post(reverse('api:add_interested'), interested_dict)
         self.assertEqual(response.json()['status'], 'up')
         self.assertEqual(response.status_code, 200)
 
@@ -186,7 +187,7 @@ class SettingsTest(TestCase):
         # Get a member in the db
         interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False,
                            'email': 'ezhuang2@illinois.edu'}
-        response = self.client.post(reverse('api:add_member'), interested_dict)
+        response = self.client.post(reverse('api:add_interested'), interested_dict)
         self.assertEqual(response.json()['status'], 'up')
         self.assertEqual(response.status_code, 200)
 
