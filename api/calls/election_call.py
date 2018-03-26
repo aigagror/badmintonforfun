@@ -4,6 +4,7 @@ from api.cursor_api import *
 from datetime import datetime
 import json
 
+
 #votes
 def get_all_votes():
     """
@@ -22,6 +23,7 @@ def get_all_votes():
         results = dictfetchall(cursor)
 
     return HttpResponse(json.dumps(results), content_type='application/json')
+
 
 def get_votes_from_member(email):
     """
@@ -83,6 +85,7 @@ def cast_vote(voter_email, election_date, votee_email):
             cursor.execute(query, [votee_email, voter_email, election_date])
     return HttpResponse(json.dumps({"message": "Vote successfully cast"}), content_type='application/json')
 
+
 #campaigns
 def start_campaign(campaign_dict):
     """
@@ -101,7 +104,8 @@ def start_campaign(campaign_dict):
         return HttpResponse(json.dumps({"message": "There is no election to campaign for!"}),
                             content_type='application/json', status=400)
 
-def get_campaign(email, job):
+
+def get_campaign(id, email, job):
     """
         Get the member's campaign
     :param email:
@@ -142,15 +146,15 @@ def edit_campaign(campaign_dict):
     :return: 200 if successful, 400 if not
     """
 
-    if get_campaign(campaign_dict["email"], campaign_dict["job"]).status_code == 400:
+    if get_campaign(campaign_dict["id"], campaign_dict["email"], campaign_dict["job"]).status_code == 400:
         return start_campaign(campaign_dict)
 
     return run_connection("UPDATE api_campaign SET pitch=%s WHERE campaigner_id=%s AND job=%s",
                           campaign_dict["pitch"], campaign_dict["email"], campaign_dict["job"])
 
 
-def delete_campaign(email, job):
-    if get_campaign(email, job).status_code == 400:
+def delete_campaign(id, email, job):
+    if get_campaign(id, email, job).status_code == 400:
         return HttpResponse(json.dumps({'message': 'No campaign exists.'}), content_type='application/json',
                             status=400)
 
