@@ -193,7 +193,6 @@ def get_current_election():
     Returns the one current election and all of its campaigns
     :return:
     """
-
     curr_election = Election.objects.raw("SELECT * FROM api_election AS election\
         WHERE election.date is not null AND election.date <= date('now')\
         ORDER BY election.date DESC LIMIT 1;")
@@ -202,7 +201,7 @@ def get_current_election():
         return None
     else:
         election = curr_election[0]
-        campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [serializeDate(election.date)])
+        campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [election.id])
         return {'election': election, 'campaigns': campaigns}
 
 def current_election():

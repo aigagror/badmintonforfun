@@ -20,10 +20,11 @@ class ElectionTest(TestCase):
         self.test_create_election()
 
         response = self.client.get(reverse('api:election'))
-        self.assertEqual(response.json()['date'], '2018-03-24')
-        self.assertIsNone(response.json()['endDate'])
+        json = response.json()
+        self.assertEqual(json['date'], '2018-03-24')
+        self.assertIsNone(json['endDate'])
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['status'], 'up')  # Now there is an election
+        self.assertEqual(json['status'], 'up')  # Now there is an election
 
 
     def test_edit_election(self):
