@@ -10,99 +10,6 @@ from django.views import generic
 from django.urls import reverse
 from .models import Member as MemberModel
 
-
-def home(request):
-    email = 'ezhuang2@illinois.edu'
-
-    announcements = get_announcements()
-    profile = get_member(email)
-
-    stats = get_stats(email)
-    
-    matches = get_matches(email)
-    
-    schedule = get_schedule()
-
-    matches = get_matches(email)
-
-    schedule = get_schedule()
-
-    context = {
-        # 'announcements': announcements,
-        'profile': profile,
-        'stats': stats,
-        # 'matches': matches,
-        # 'schedule': schedule
-    }
-
-    return HttpResponse(json.dumps(context), content_type="application/json")
-
-class ElectionView(generic.ListView):
-    template_name = 'api_elections.html'
-    context_object_name = 'jobs'
-
-    def get_queryset(self):
-        """Return the jobs"""
-        jobs = [job[1] for job in JOBS]
-        return jobs
-
-def campaigns(request, job):
-    election = Election.objects.get(endDate=None)
-    job = job.upper()
-    campaigns = Campaign.objects.filter(election=election, job=job)
-    context = {
-        'campaigns': campaigns,
-        'job': job,
-    }
-    return render(request, 'api_campaign.html', context)
-
-class Mini(object):
-    email = ""
-    pitch = ""
-    job = ""
-    def __init__(self, email, pitch, job):
-        self.email = email
-        self.pitch = pitch
-        self.job = job
-
-def election(request):
-    curr_campaigns = get_current_campaigns()
-    campaign_json = get_campaign("apoddar3@illinois.edu", "Treasurer")
-    no_campaign_json = get_campaign("apoddar3@illinois.edu", "President")
-
-    insert_one = edit_campaign(Mini("ezhuang2@illinois.edu", "Hello I'm Eddie", "Treasurer"))
-    after_insert = get_current_campaigns()
-
-    edit_one = edit_campaign(Mini("ezhuang2@illinois.edu", "I've been edited again!", "Treasurer"))
-    after_edit = get_current_campaigns()
-
-    #delete_election = delete_current_election()
-    new_election = edit_election("2018-10-03")
-    new_election_w_end = edit_election("2019-03-05", "2019-03-20")
-
-    election_list = get_all_elections()
-
-    context = {
-        'campaigns': curr_campaigns,
-        'foundCampaign': campaign_json,
-        'noCampaign': no_campaign_json,
-        'insertResult': insert_one,
-        'afterInserting': after_insert,
-        'edit': edit_one,
-        'afterEditing': after_edit,
-        'deleted': delete_election,
-        'oneElection': new_election,
-        'twoElections': new_election_w_end,
-        'elections': election_list
-    }
-
-    if request.method == "POST":
-        dict_post = dict(request.POST.items())
-        return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
-    else:
-        return render(request, 'api_elections.html', context)
-
-
 def restrictRouter(allowed=list(), incomplete=list()):
     def _restrictRouter(func):
         def _func(request, *args, **kwargs):
@@ -115,6 +22,10 @@ def restrictRouter(allowed=list(), incomplete=list()):
 
         return _func
     return _restrictRouter
+
+@restrictRouter(allowed=["GET"])
+def announcements(request):
+    foo = 0
 
 @restrictRouter(allowed=["GET", "POST"])
 def vote(request):
