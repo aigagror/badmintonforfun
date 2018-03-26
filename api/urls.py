@@ -20,6 +20,9 @@ from . import views
 
 app_name = 'api'
 urlpatterns = [
+
+    re_path(r'announcements/?$', views.announcements, name='announcement'),
+
     re_path(r'election/all_votes/?$', views.all_votes, name='all_votes'),
     re_path(r'election/vote/?$', views.vote, name='vote'),
     re_path(r'election/create/?$', views.electionCreateRouter, name='create_election'),
