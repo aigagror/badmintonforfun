@@ -1,6 +1,6 @@
-from .models import *
+from api.models import *
 from django.db import connection
-from .cursor import *
+from api.cursor import *
 
 # def my_custom_sql(self):
 #     with connection.cursor() as cursor:
