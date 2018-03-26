@@ -278,15 +278,14 @@ def get_election(startDate, endDate=None):
                             content_type='application/json', status=400)
 
 
-def edit_election(startDate, endDate=None):
+def edit_election(id, startDate, endDate):
     if get_election(startDate).status_code == 400:
         return start_election(startDate, endDate)
 
+    if startDate is not None:
+        run_connection("UPDATE api_election SET startDate = %s WHERE id = %s", startDate, id)
     if endDate is not None:
-        return run_connection("UPDATE api_election SET endDate = %s WHERE date = %s", endDate, startDate)
-    else:
-        return run_connection("UPDATE api_election SET endDate = NULL WHERE date = %s", startDate)
-
+        run_connection("UPDATE api_election SET endDate = %s WHERE id = %s", endDate, id)
 
 def delete_current_election():
     today = str(datetime.now(pytz.utc).date())

@@ -441,11 +441,11 @@ def settingsQueueRouter(request):
 
 
 @csrf_exempt
-@restrictRouter(allowed=["GET", "POST", "DELETE"])
+@restrictRouter(allowed=["GET", "POST"])
 def electionRouter(request):
     """
     GET -- Gets the current election
-    POST -- Edits an election
+    POST -- Edits/deletes an election
     :param request:
     :return:
     """
@@ -453,21 +453,22 @@ def electionRouter(request):
         return current_election()
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
+        idKey = "id"
         startKey = "startDate"
         endKey = "endDate"
-        if startKey not in dict_post:
-            return HttpResponse("Missing required param {}".format(startKey), status=400)
-        startDate = deserializeDate(dict_post[startKey])
+        deleteKey = "delete"
+        if idKey not in dict_post:
+            return HttpResponse("Missing required param {}".format(idKey), status=400)
+        id = int(dict_post[id])
+        startDate = dict_post.get(startKey, None)
+        startDate = deserializeDate(startDate) if startDate != None else None
+
         endDate = dict_post.get(endKey, None)
-        if endDate != None:
-            endDate = deserializeDate(endDate)
-        return edit_election(startDate, endDate)
-    elif request.method == "DELETE":
-        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        if not validate_keys(["id"], dict_delete):
-            HttpResponse(json.dumps({'message': 'Missing parameters'}),
-                         content_type='application/json', status=400)
-        delete_election(dict_delete["id"])
+        endDate = deserializeDate(endDate) if endDate != None else None
+
+        if deleteKey in dict_post:
+            delete_election(id)
+        return edit_election(id, startDate, endDate)
 
 
 
