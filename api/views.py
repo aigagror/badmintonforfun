@@ -25,6 +25,16 @@ def restrictRouter(allowed=list(), incomplete=list()):
 def announcements(request):
     foo = 0
 
+@restrictRouter(allowed=["GET"])
+def top_players(request):
+    """
+    GET -- Gets the top 5 players
+    :param request:
+    :return:
+    """
+    return get_top_players()
+
+
 @restrictRouter(allowed=["GET", "POST"])
 def vote(request):
     """

@@ -22,6 +22,7 @@ app_name = 'api'
 urlpatterns = [
 
     re_path(r'announcements/?$', views.announcements, name='announcement'),
+    re_path(r'members/top_players?$', views.top_players, name='top_players'),
 
     re_path(r'election/all_votes/?$', views.all_votes, name='all_votes'),
     re_path(r'election/vote/?$', views.vote, name='vote'),
