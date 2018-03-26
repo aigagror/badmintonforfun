@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
+from api.api.announcement import *
 from api.api.home import *
 from api.api.election import *
 from api.api.settings import *
@@ -23,8 +24,24 @@ def restrictRouter(allowed=list(), incomplete=list()):
         return _func
     return _restrictRouter
 
-@restrictRouter(allowed=["GET"])
+@restrictRouter(incomplete=["GET", "POST"])
 def announcements(request):
+    """
+    GET - Get the 3 latest announcements
+    POST - Edit an announcement
+    :param request:
+    :return:
+    """
+    if request.method == "GET":
+        return get_announcements()
+
+@restrictRouter(incomplete=["POST"])
+def create_announcement(request):
+    """
+    POST - Creates an announcement
+    :param request:
+    :return:
+    """
     foo = 0
 
 @restrictRouter(allowed=["GET"])
@@ -109,7 +126,9 @@ def campaignRouter(request):
     elif request.method == "DELETE":
         # django doesn't have anything that handles delete so...
         dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        validate_keys(["job", "email"], dict_delete)
+        if not validate_keys(["job", "email"], dict_delete):
+            HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                         content_type='application/json', status=400)
         return delete_campaign(dict_delete["email"], dict_delete["job"])
 
 
@@ -117,7 +136,9 @@ def campaignRouter(request):
 @restrictRouter(allowed=["POST"])
 def campaignFindRouter(request):
     dict_post = dict(request.POST.items())
-    validate_keys(["job", "email"], dict_post)
+    if not validate_keys(["job", "email"], dict_post):
+        HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                     content_type='application/json', status=400)
     return get_campaign(dict_post["email"], dict_post["job"])
 
 
@@ -136,7 +157,9 @@ def campaignCreateRouter(request):
 
     keys = [jobKey, pitchKey, email]
 
-    validate_keys(keys, dict_post)
+    if not validate_keys(keys, dict_post):
+        HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                     content_type='application/json', status=400)
 
     campaign_dict = {
         "job": dict_post[jobKey],
@@ -149,7 +172,9 @@ def campaignCreateRouter(request):
 def validate_keys(keys, validate_dict):
     for key in keys:
         if key not in validate_dict:
-            return HttpResponse("Missing required param {}".format(key), status=400)
+            return False
+
+    return True
 
 
 @restrictRouter(allowed=["GET", "POST"])
@@ -257,11 +282,15 @@ def settingsEditMemberRouter(request):
 
     elif request.method == "DELETE":
         dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        validate_keys(["email"], dict_delete)
+        if not validate_keys(["email"], dict_delete):
+            HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                         content_type='application/json', status=400)
         return remove_member(dict_delete['email'])
 
     dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-    validate_keys(["job", "email"], dict_delete)
+    if not validate_keys(["job", "email"], dict_delete):
+        HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                     content_type='application/json', status=400)
     return delete_campaign(dict_delete["email"], dict_delete["job"])
 
 
@@ -331,7 +360,9 @@ def settingsSchedulesRouter(request):
             return add_to_schedule(p_date, p_number_of_courts)
     elif request.method == "DELETE":
         dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        validate_keys(["date"], dict_delete)
+        if not validate_keys(["date"], dict_delete):
+            HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                         content_type='application/json', status=400)
         return delete_from_schedule(dict_delete["date"])
 
 
@@ -359,16 +390,22 @@ def settingsCourtRouter(request):
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
         p_court_id = dict_post.get('court_id', '')
-        validate_keys('court_id', dict_post)
+        if not validate_keys('court_id', dict_post):
+            HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                         content_type='application/json', status=400)
         if court_id_exists(p_court_id):
             p_attr_to_change = dict_post.get('attr_to_change', '')  # 'queue_id', 'number', or 'id'
             p_new_value = dict_post.get('new_value', '')
-            validate_keys({'attr_to_change', 'new_value'}, dict_post)
+            if not validate_keys({'attr_to_change', 'new_value'}, dict_post):
+                HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                             content_type='application/json', status=400)
             return edit_court_info(p_court_id, p_attr_to_change, p_new_value)
         else:
             p_number = dict_post.get('number', 0)
             p_queue_type = dict_post.get('queue', '')
-            validate_keys({'number', 'queue'}, dict_post)
+            if not validate_keys({'number', 'queue'}, dict_post):
+                HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                             content_type='application/json', status=400)
             return add_court(Court(p_court_id, p_number, p_queue_type))
 
 
@@ -411,16 +448,18 @@ def settingsQueueRouter(request):
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
         p_queue_type = dict_post.get('queue_type', '')
-        validate_keys('queue_type', dict_post)
+        if not validate_keys('queue_type', dict_post):
+            HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                         content_type='application/json', status=400)
         return add_queue(p_queue_type)
 
 
 @csrf_exempt
-@restrictRouter(allowed=["GET", "POST"], incomplete=["DELETE"])
+@restrictRouter(allowed=["GET", "POST"])
 def electionRouter(request):
     """
     GET -- Gets the current election
-    POST -- Edits an election
+    POST -- Edits/deletes an election
     :param request:
     :return:
     """
@@ -428,15 +467,24 @@ def electionRouter(request):
         return current_election()
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
+        idKey = "id"
         startKey = "startDate"
         endKey = "endDate"
-        if startKey not in dict_post:
-            return HttpResponse("Missing required param {}".format(startKey), status=400)
-        startDate = deserializeDate(dict_post[startKey])
+        deleteKey = "delete"
+        if idKey not in dict_post:
+            return HttpResponse("Missing required param {}".format(idKey), status=400)
+        id = int(dict_post[id])
+        startDate = dict_post.get(startKey, None)
+        startDate = deserializeDate(startDate) if startDate != None else None
+
         endDate = dict_post.get(endKey, None)
-        if endDate != None:
-            endDate = deserializeDate(endDate)
-        return edit_election(startDate, endDate)
+        endDate = deserializeDate(endDate) if endDate != None else None
+
+        if deleteKey in dict_post:
+            delete_election(id)
+        return edit_election(id, startDate, endDate)
+
+
 
 @csrf_exempt
 @restrictRouter(allowed=["POST"])

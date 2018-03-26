@@ -195,7 +195,7 @@ def get_current_election():
     :return:
     """
     curr_election = Election.objects.raw("SELECT * FROM api_election AS election\
-        WHERE election.date is not null AND election.date <= date('now')\
+        WHERE endDate IS NULL OR endDate >= date('now')\
         ORDER BY election.date DESC LIMIT 1;")
 
     if len(list(curr_election)) == 0:
@@ -221,6 +221,7 @@ def current_election():
         serialize["campaigns"] = []
         for campaign in campaigns:
             campaign_json = serializeModel(campaign)
+            campaign_json["name"] = str(campaign)
             serialize["campaigns"].append(campaign_json)
         return HttpResponse(json.dumps(serialize), content_type='application/json')
 
@@ -277,15 +278,14 @@ def get_election(startDate, endDate=None):
                             content_type='application/json', status=400)
 
 
-def edit_election(startDate, endDate=None):
+def edit_election(id, startDate, endDate):
     if get_election(startDate).status_code == 400:
         return start_election(startDate, endDate)
 
+    if startDate is not None:
+        run_connection("UPDATE api_election SET startDate = %s WHERE id = %s", startDate, id)
     if endDate is not None:
-        return run_connection("UPDATE api_election SET endDate = %s WHERE date = %s", endDate, startDate)
-    else:
-        return run_connection("UPDATE api_election SET endDate = NULL WHERE date = %s", startDate)
-
+        run_connection("UPDATE api_election SET endDate = %s WHERE id = %s", endDate, id)
 
 def delete_current_election():
     today = str(datetime.now(pytz.utc).date())
@@ -294,8 +294,8 @@ def delete_current_election():
     return run_connection("DELETE FROM api_election WHERE date <= %s AND endDate >= %s", today, today)
 
 
-def delete_election(startDate):
-    return run_connection("DELETE FROM api_election WHERE date=%s", startDate)
+def delete_election(id):
+    return run_connection("DELETE FROM api_election WHERE id=%s", id)
 
 
 def run_connection(execute, *args):
@@ -303,11 +303,11 @@ def run_connection(execute, *args):
         try:
             cursor.execute(execute, [arg for arg in args])
         except IntegrityError:
-            return HttpResponse(json.dumps({'code': 400, 'message': 'IntegrityError!'}),
+            return HttpResponse(json.dumps({'message': 'IntegrityError!'}),
                                 content_type='application/json', status=400)
         except DatabaseError as e:
             print(e)
-            return HttpResponse(json.dumps({'code': 400, 'message': 'DatabaseError!'}), content_type='application/json',
+            return HttpResponse(json.dumps({'message': 'DatabaseError!'}), content_type='application/json',
                                 status=400)
         else:
-            return HttpResponse(json.dumps({'code': 200, 'message': 'OK'}), content_type='application/json')
+            return HttpResponse(json.dumps({'message': 'OK'}), content_type='application/json')
