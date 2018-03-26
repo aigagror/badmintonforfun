@@ -246,7 +246,7 @@ def schedule_date_exists(date):
     with connection.cursor() as cursor:
         query = '''
         SELECT *
-        FROM api_boardmember
+        FROM api_schedule
         WHERE date=%s;
         '''
         cursor.execute(query, [date])
@@ -396,7 +396,7 @@ def add_court(court):
         try:
             cursor.execute(query, [court.id, court.number, court.queue])
         except IntegrityError:
-            return HttpResponse(json.dumps({"status": "down", "message": "This court already exists."}),
+            return HttpResponse(json.dumps({"status": "down", "message": "This court already exists or the queue specified does not exist."}),
                                 content_type="application/json")
         else:
             return HttpResponse(json.dumps({"status": "up", "message": "Successfully added court."}),
@@ -441,14 +441,14 @@ def get_all_queues():
         results = dictfetchall(cursor)
     return results
 
-def add_queue(queue):
+def add_queue(queue_type):
     with connection.cursor() as cursor:
         query = '''
         INSERT INTO api_queue (type)
         VALUES (%s)
         '''
         try:
-            cursor.execute(query, [queue.type])
+            cursor.execute(query, [queue_type])
         except IntegrityError:
             return HttpResponse(json.dumps({"status": "down", "message": "This queue type already exists."}),
                                 content_type="application/json")

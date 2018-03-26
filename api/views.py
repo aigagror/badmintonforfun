@@ -284,7 +284,7 @@ def settingsPromoteMemberRouter(request):
             return promote_to_member(p_email, member)
 
 
-@restrictRouter(allowed=["POST, DELETE"])
+@restrictRouter(allowed=["POST", "DELETE"])
 def settingsEditMemberRouter(request):
     """
     Allow board members to edit information of a member OR remove them from the club
@@ -292,13 +292,13 @@ def settingsEditMemberRouter(request):
     :return:
     """
     # email = request.session.get('email', '')
-    email = 'ezhuang2@illinois.edu'
-    if not is_board_member(email):
-        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-                            content_type="application/json")
+    # email = 'ezhuang2@illinois.edu'
+    # if not is_board_member(email):
+    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+    #                         content_type="application/json")
 
-    dict_post = dict(request.POST.items())
     if request.method == "POST":
+        dict_post = dict(request.POST.items())
         p_email = dict_post.get('email', '')
         if p_email == '':
             return HttpResponse("Missing required param email", status=400)
@@ -314,10 +314,13 @@ def settingsEditMemberRouter(request):
             return edit_member_info(p_email, p_attr_to_change, p_new_value)
 
     elif request.method == "DELETE":
-        p_email = dict_post.get('email', '')
-        if p_email == '':
-            return HttpResponse("Missing required param email", status=400)
-        return remove_member(p_email)
+        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+        validate_keys(["email"], dict_delete)
+        return remove_member(dict_delete['email'])
+
+    dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+    validate_keys(["job", "email"], dict_delete)
+    return delete_campaign(dict_delete["email"], dict_delete["job"])
 
 
 @restrictRouter(allowed=["POST"])
@@ -354,14 +357,19 @@ def settingsSchedulesRouter(request):
     :return:
     """
     # email = request.session.get('email', '')
-    email = 'ezhuang2@illinois.edu'
-    if not is_board_member(email):
-        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-                            content_type="application/json")
+    # email = 'ezhuang2@illinois.edu'
+    # if not is_board_member(email):
+    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+    #                         content_type="application/json")
     dict_post = dict(request.POST.items())
     if request.method == "GET":
-        if get_schedule():
-            return HttpResponse(json.dumps(get_schedule()), content_type="application/json")
+        schedule = get_schedule()
+        if schedule:
+            # Convert date format to be JSON serializable
+            for s in schedule:
+                s.__setitem__('date', s.get('date').strftime('%Y-%m-%dT%H:%M:%SZ'))
+            context = {'status': 'up', 'schedule': schedule}
+            return HttpResponse(json.dumps(context), content_type="application/json")
         else:
             return HttpResponse(json.dumps({"status": "down", "message": "There is nothing in the schedule."}),
                                 content_type="application/json")
@@ -378,10 +386,9 @@ def settingsSchedulesRouter(request):
         else:
             return add_to_schedule(p_date, p_number_of_courts)
     elif request.method == "DELETE":
-        p_date = dict_post.get('delete_date', '')
-        if p_date == '':
-            return HttpResponse("Missing required param delete_date", status=400)
-        return delete_from_schedule(p_date)
+        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+        validate_keys(["date"], dict_delete)
+        return delete_from_schedule(dict_delete["date"])
 
 
 @restrictRouter(allowed=["GET", "POST"])
@@ -392,30 +399,31 @@ def settingsCourtRouter(request):
     :return:
     """
     # email = request.session.get('email', '')
-    email = 'ezhuang2@illinois.edu'
-    if not is_board_member(email):
-        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-                            content_type="application/json")
+    # email = 'ezhuang2@illinois.edu'
+    # if not is_board_member(email):
+    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+    #                         content_type="application/json")
     if request.method == "GET":
-        if get_all_courts():
-            return HttpResponse(json.dumps(get_all_courts()), content_type="application/json")
+        courts = get_all_courts()
+        if courts:
+            context = {'status': 'up', 'courts': courts}
+            return HttpResponse(json.dumps(context), content_type="application/json")
         else:
             return HttpResponse(json.dumps({"status": "down", "message": "There are no courts stored in the database."}),
                                 content_type="application/json")
-    elif request.method == "PUT":
+    elif request.method == "POST":
         dict_post = dict(request.POST.items())
         p_court_id = dict_post.get('court_id', '')
-        p_attr_to_change = dict_post.get('attr_to_change', '') # 'queue_id', 'number', or 'id'
-        p_new_value = dict_post.get('new_value', '')
-        if p_court_id == '' or p_attr_to_change == '' or p_new_value == '':
-            return HttpResponse("Missing required param court_id or attr_to_change or new_value", status=400)
+        validate_keys('court_id', dict_post)
         if court_id_exists(p_court_id):
-            edit_court_info(p_court_id, p_attr_to_change, p_new_value)
+            p_attr_to_change = dict_post.get('attr_to_change', '')  # 'queue_id', 'number', or 'id'
+            p_new_value = dict_post.get('new_value', '')
+            validate_keys({'attr_to_change', 'new_value'}, dict_post)
+            return edit_court_info(p_court_id, p_attr_to_change, p_new_value)
         else:
             p_number = dict_post.get('number', 0)
             p_queue_type = dict_post.get('queue', '')
-            if p_queue_type == '':
-                return HttpResponse("Missing required param queue", status=400)
+            validate_keys({'number', 'queue'}, dict_post)
             return add_court(Court(p_court_id, p_number, p_queue_type))
 
 @restrictRouter(allowed=["GET"])
@@ -441,21 +449,22 @@ def settingsAvailableCourtsRouter(request):
 @restrictRouter(allowed=["GET", "POST"])
 def settingsQueueRouter(request):
     # email = request.session.get('email', '')
-    email = 'ezhuang2@illinois.edu'
-    if not is_board_member(email):
-        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-                            content_type="application/json")
+    # email = 'ezhuang2@illinois.edu'
+    # if not is_board_member(email):
+    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+    #                         content_type="application/json")
     if request.method == "GET":
-        if get_all_queues():
-            return HttpResponse(json.dumps(get_all_queues()), content_type="application/json")
+        queues = get_all_queues()
+        if queues:
+            context = {'status': 'up', 'queues': queues}
+            return HttpResponse(json.dumps(context), content_type="application/json")
         else:
             return HttpResponse(json.dumps({"status": "down", "message": "There are no queues."}),
                                 content_type="application/json")
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
         p_queue_type = dict_post.get('queue_type', '')
-        if p_queue_type == '':
-            return HttpResponse("Missing required param queue_type", status=400)
+        validate_keys('queue_type', dict_post)
         return add_queue(p_queue_type)
 
 
@@ -544,12 +553,6 @@ class Court(object):
         self.queue = queue
 
 
-class Queue(object):
-    type = ''
-
-    def __init__(self, type):
-        self.type = type
-
 def settings(request):
     #remove_member('johndoe@email.com')
     add_interested(Interested('John', 'Doe', False, 'johndoe@email.com'))
@@ -575,9 +578,9 @@ def settings(request):
     #delete_from_schedule('2018-03-21')
     schedule = get_schedule()
 
-    add_queue(Queue('CASUAL'))
-    add_queue(Queue('RANKED'))
-    add_queue(Queue('KOTH'))
+    add_queue('CASUAL')
+    add_queue('RANKED')
+    add_queue('KOTH')
 
     add_court(Court(1, 4, 'CASUAL'))
     add_court(Court(2, 2, 'RANKED'))
