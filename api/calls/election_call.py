@@ -1,7 +1,5 @@
 from api.models import *
 import pytz
-from django.db import connection, DatabaseError, IntegrityError
-from django.http import HttpResponse
 from api.cursor_api import *
 from datetime import datetime
 import json
@@ -294,18 +292,3 @@ def delete_current_election():
 
 def delete_election(id):
     return run_connection("DELETE FROM api_election WHERE id=%s", id)
-
-
-def run_connection(execute, *args):
-    with connection.cursor() as cursor:
-        try:
-            cursor.execute(execute, [arg for arg in args])
-        except IntegrityError:
-            return HttpResponse(json.dumps({'message': 'IntegrityError!'}),
-                                content_type='application/json', status=400)
-        except DatabaseError as e:
-            print(e)
-            return HttpResponse(json.dumps({'message': 'DatabaseError!'}), content_type='application/json',
-                                status=400)
-        else:
-            return HttpResponse(json.dumps({'message': 'OK'}), content_type='application/json')

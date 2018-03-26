@@ -1,5 +1,6 @@
 from api.calls.announcement_call import get_announcements
 from api.routers.router import restrictRouter
+from api.routers.router import validate_keys
 
 
 @restrictRouter(incomplete=["GET", "POST"])
@@ -12,6 +13,9 @@ def announcements(request):
     """
     if request.method == "GET":
         return get_announcements()
+    elif request.method == "POST":
+        dict_post = dict(request.POST.items())
+        validate_keys(["id"], dict_post)
 
 
 @restrictRouter(incomplete=["POST"])

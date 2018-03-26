@@ -1,5 +1,10 @@
 import datetime
+import json
+
+from django.db import connection, IntegrityError, DatabaseError
 from django.forms.models import model_to_dict
+from django.http import HttpResponse
+
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
@@ -62,3 +67,18 @@ def serializeModel(model):
         return json
 
     return _serializeDict(model_to_dict(model))
+
+
+def run_connection(execute, *args):
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute(execute, [arg for arg in args])
+        except IntegrityError:
+            return HttpResponse(json.dumps({'message': 'IntegrityError!'}),
+                                content_type='application/json', status=400)
+        except DatabaseError as e:
+            print(e)
+            return HttpResponse(json.dumps({'message': 'DatabaseError!'}), content_type='application/json',
+                                status=400)
+        else:
+            return HttpResponse(json.dumps({'message': 'OK'}), content_type='application/json')
