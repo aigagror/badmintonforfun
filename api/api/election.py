@@ -2,7 +2,7 @@ from api.models import *
 import pytz
 from django.db import connection, DatabaseError, IntegrityError
 from django.http import HttpResponse
-from api.cursor import *
+from api.cursor_api import *
 from datetime import datetime
 import json
 

@@ -1,15 +1,6 @@
 from api.models import *
 from django.db import connection
-from api.cursor import *
-
-# def my_custom_sql(self):
-#     with connection.cursor() as cursor:
-#         cursor.execute("UPDATE bar SET foo = 1 WHERE baz = %s", [self.baz])
-#         cursor.execute("SELECT foo FROM bar WHERE baz = %s", [self.baz])
-#         row = cursor.fetchone()
-#
-#     return row
-
+from api.cursor_api import *
 
 def get_announcements():
     with connection.cursor() as cursor:

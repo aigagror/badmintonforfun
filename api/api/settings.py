@@ -1,5 +1,5 @@
 from django.db import connection, IntegrityError, ProgrammingError
-from api.cursor import *
+from api.cursor_api import *
 import json
 from django.http import HttpResponse
 

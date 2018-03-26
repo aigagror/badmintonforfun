@@ -5,6 +5,7 @@ from django.shortcuts import render
 from api.api.home import *
 from api.api.election import *
 from api.api.settings import *
+from api.api.match import *
 from django.views.decorators.csrf import csrf_exempt
 
 

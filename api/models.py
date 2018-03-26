@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from .cursor import serializeDate
+from .cursor_api import serializeDate
 
 # Create your models here.
 

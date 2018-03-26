@@ -2,14 +2,14 @@ import datetime
 from django.test import TestCase, Client
 from django.test.utils import setup_test_environment
 from django.urls import reverse
-from api import cursor
+from api import cursor_api
 
 class ElectionTest(TestCase):
     test_date = datetime.date(2018, 3, 24)
 
     def test_create_election(self):
         date = self.test_date
-        response = self.client.post(reverse('api:create_election'), {'startDate': cursor.serializeDate(date)})
+        response = self.client.post(reverse('api:create_election'), {'startDate': cursor_api.serializeDate(date)})
         self.assertEqual(response.status_code, 200)
 
     def test_get_election(self):
@@ -31,7 +31,7 @@ class ElectionTest(TestCase):
         self.test_create_election()
         date = self.test_date
         endDate = datetime.date(2018, 5, 2)
-        response = self.client.post(reverse('api:election'), {'startDate': cursor.serializeDate(date), 'endDate': cursor.serializeDate(endDate)})
+        response = self.client.post(reverse('api:election'), {'startDate': cursor_api.serializeDate(date), 'endDate': cursor_api.serializeDate(endDate)})
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get(reverse('api:election'))
@@ -44,7 +44,7 @@ class CampaignTest(TestCase):
 
     def test_create_election(self):
         date = self.test_date
-        response = self.client.post(reverse('api:create_election'), {'startDate': cursor.serializeDate(date)})
+        response = self.client.post(reverse('api:create_election'), {'startDate': cursor_api.serializeDate(date)})
         self.assertEqual(response.status_code, 200)
 
     def test_get_campaign(self):
@@ -100,7 +100,7 @@ class VotesTest(TestCase):
 
     def test_create_election(self):
         date = self.test_date
-        response = self.client.post(reverse('api:create_election'), {'startDate': cursor.serializeDate(date)})
+        response = self.client.post(reverse('api:create_election'), {'startDate': cursor_api.serializeDate(date)})
         self.assertEqual(response.status_code, 200)
 
     def test_cast_votes(self):
@@ -108,7 +108,7 @@ class VotesTest(TestCase):
         voter_email = 'ezhuang2@illinois.edu'
         votee_email = 'obama@gmail.com'
         election_date = self.test_date
-        response = self.client.post(reverse('api:vote'), {'voter': voter_email, 'electionDate': cursor.serializeDate(election_date), 'votee': votee_email})
+        response = self.client.post(reverse('api:vote'), {'voter': voter_email, 'electionDate': cursor_api.serializeDate(election_date), 'votee': votee_email})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['message'], 'Vote successfully cast')
 
