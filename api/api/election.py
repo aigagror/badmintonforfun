@@ -169,15 +169,11 @@ def get_current_campaigns():
     results = Campaign.objects.raw("SELECT * FROM api_campaign WHERE api_campaign.election_id = %s",
                                    [curr_election.date])
 
+
     if results:
         campaign_list = []
         for c in results:
-            campaign_dict = {}
-            campaign_dict["email"] = c.campaigner_id
-            campaign_dict["name"] = c.campaigner_id
-            campaign_dict["id"] = c.id
-            campaign_dict["job"] = c.job
-            campaign_dict["pitch"] = c.pitch
+            campaign_dict = serializeModel(c)
             campaign_list.append(campaign_dict)
 
         alphaOrder = sorted(list(set([i["job"] for i in campaign_list])))
@@ -253,7 +249,7 @@ def get_all_elections():
 
 def start_election(startDate, endDate=None):
     """
-        Starts an election with optional endDate
+    Starts an election with optional endDate
     """
 
     if endDate is None:

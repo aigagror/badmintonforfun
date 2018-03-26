@@ -459,7 +459,7 @@ def electionRouter(request):
         deleteKey = "delete"
         if idKey not in dict_post:
             return HttpResponse("Missing required param {}".format(idKey), status=400)
-        id = int(dict_post[id])
+        id = int(dict_post[idKey])
         startDate = dict_post.get(startKey, None)
         startDate = deserializeDate(startDate) if startDate != None else None
 
