@@ -102,6 +102,7 @@ def vote(request):
 def all_votes(request):
     return get_all_votes()
 
+@csrf_exempt
 @restrictRouter(allowed=["GET", "POST", "DELETE"])
 def campaignRouter(request):
     """
@@ -118,6 +119,7 @@ def campaignRouter(request):
         return edit_campaign(dict_post)
     elif request.method == "DELETE":
         # django doesn't have anything that handles delete so...
+
         dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
         if not validate_keys(["job", "email"], dict_delete):
             HttpResponse(json.dumps({'message': 'Missing parameters'}),
@@ -441,7 +443,7 @@ def settingsQueueRouter(request):
 
 
 @csrf_exempt
-@restrictRouter(allowed=["GET", "POST"])
+@restrictRouter(allowed=["GET", "POST", "DELETE"])
 def electionRouter(request):
     """
     GET -- Gets the current election
@@ -456,7 +458,6 @@ def electionRouter(request):
         idKey = "id"
         startKey = "startDate"
         endKey = "endDate"
-        deleteKey = "delete"
         if idKey not in dict_post:
             return HttpResponse("Missing required param {}".format(idKey), status=400)
         id = int(dict_post[idKey])
@@ -466,10 +467,10 @@ def electionRouter(request):
         endDate = dict_post.get(endKey, None)
         endDate = deserializeDate(endDate) if endDate != None else None
 
-        if deleteKey in dict_post:
-            delete_election(id)
         return edit_election(id, startDate, endDate)
-
+    elif request.method == "DELETE":
+        idKey = "id"
+        delete_election(id)
 
 
 @csrf_exempt
