@@ -70,12 +70,6 @@ class CampaignTest(TestCase):
         response = self.client.post(reverse('api:create_election'), {'startDate': cursor_api.serializeDate(date)})
         self.assertEqual(response.status_code, 200)
 
-    def test_get_campaign(self):
-        self.test_create_campaign()
-        response = self.client.post(reverse('api:find_campaign'), {'id': 1, 'email': 'donghao2@illinois.edu', 'job': 'OFFICER'})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['pitch'], 'Hello I am a test case')
-
     def test_create_campaign(self):
         self.test_create_election()
         position = 'OFFICER'
