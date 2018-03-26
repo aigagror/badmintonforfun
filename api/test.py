@@ -76,10 +76,24 @@ class CampaignTest(TestCase):
         position = 'PRESIDENT'
         email_id='donghao2@illinois.edu'
         response = self.client.post(reverse('api:create_campaign'), {'job': position, 'pitch': "Hi",
-                                                                     'email': 'donghao2@illinois.edu'})
+                                                                     'email': email_id})
         self.assertEqual(response.status_code, 200)
         response = self.client.delete(reverse('api:campaign'), {'job': position, 'email': email_id})
         self.assertEqual(response.status_code, 200)
+
+    def test_get_all_campaigns(self):
+        self.test_create_campaign()
+        position = 'OFFICER'
+        email_id = 'harryr2@illinois.edu'
+        response = self.client.post(reverse('api:create_campaign'), {'job': position, 'pitch': "Hello I am Harry",
+                                                                     'email': email_id})
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse('api:campaign'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["campaigns"], [{'email': 'donghao2@illinois.edu', 'name': 'donghao2@illinois.edu', 'id': 1, 'job': 'OFFICER',
+          'pitch': 'Hello I am a test case'}, {'email': 'harryr2@illinois.edu', 'name': 'harryr2@illinois.edu',
+                                               'id': 2, 'job': 'OFFICER', 'pitch': 'Hello I am Harry'}])
+
 
 class VotesTest(TestCase):
     test_date = datetime.date(2018, 3, 24)
@@ -107,7 +121,6 @@ class VotesTest(TestCase):
 
         response = self.client.get(reverse('api:all_votes'))
         self.assertEqual(len(response.json()), 1)
-
 
 
 class SettingsTest(TestCase):

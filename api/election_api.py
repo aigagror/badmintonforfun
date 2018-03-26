@@ -161,7 +161,8 @@ def delete_campaign(email, job):
 
 def get_current_campaigns():
 
-    curr_election = get_current_election()
+    curr_election_dict = get_current_election()
+    curr_election = curr_election_dict["election"]
     if curr_election is None:
         return HttpResponse(json.dumps({"message": "OK", "campaigns": []}), content_type='application/json')
 
@@ -173,7 +174,7 @@ def get_current_campaigns():
         for c in results:
             campaign_dict = {}
             campaign_dict["email"] = c.campaigner_id
-            campaign_dict["name"] = str(c.campaigner)
+            campaign_dict["name"] = c.campaigner_id
             campaign_dict["id"] = c.id
             campaign_dict["job"] = c.job
             campaign_dict["pitch"] = c.pitch
