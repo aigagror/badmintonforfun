@@ -152,7 +152,7 @@ def vote(request):
 def all_votes(request):
     return get_all_votes()
 
-@restrictRouter(allowed=["GET", "POST"], incomplete=["DELETE"])
+@restrictRouter(allowed=["GET", "POST", "DELETE"])
 def campaignRouter(request):
     """
     GET -- Gets all campaigns of current election
@@ -164,8 +164,21 @@ def campaignRouter(request):
         return get_current_campaigns()
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
-        return edit_campaign(Mini(dict_post["email"], dict_post["pitch"], dict_post["job"]))
+        validate_keys(["job", "pitch", "email"], dict_post)
+        return edit_campaign(dict_post)
+    elif request.method == "DELETE":
+        # django doesn't have anything that handles delete so...
+        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+        validate_keys(["job", "email"], dict_delete)
+        return delete_campaign(dict_delete["email"], dict_delete["job"])
 
+
+@csrf_exempt
+@restrictRouter(allowed=["POST"])
+def campaignFindRouter(request):
+    dict_post = dict(request.POST.items())
+    validate_keys(["job", "email"], dict_post)
+    return get_campaign(dict_post["email"], dict_post["job"])
 
 
 @csrf_exempt
@@ -179,23 +192,24 @@ def campaignCreateRouter(request):
     dict_post = dict(request.POST.items())
     jobKey = "job"
     pitchKey = "pitch"
-    dateKey = "electionDate"
     email = "email"
 
-    keys = [jobKey, pitchKey, dateKey, email]
+    keys = [jobKey, pitchKey, email]
 
-    for key in keys:
-        if key not in dict_post:
-            return HttpResponse("Missing required param {}".format(key), status=400)
-    date = deserializeDateTime(dict_post[dateKey])
+    validate_keys(keys, dict_post)
 
     campaign_dict = {
         "job": dict_post[jobKey],
         "pitch": dict_post[pitchKey],
-        "date": date,
         "email": dict_post[email],
     }
     return start_campaign(campaign_dict)
+
+
+def validate_keys(keys, validate_dict):
+    for key in keys:
+        if key not in validate_dict:
+            return HttpResponse("Missing required param {}".format(key), status=400)
 
 @restrictRouter(allowed=["GET", "POST"])
 def settingsRouter(request):
