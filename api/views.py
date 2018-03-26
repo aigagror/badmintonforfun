@@ -22,8 +22,23 @@ def restrictRouter(allowed=list(), incomplete=list()):
         return _func
     return _restrictRouter
 
-@restrictRouter(allowed=["GET"])
+@restrictRouter(incomplete=["GET", "POST"])
 def announcements(request):
+    """
+    GET - Get the 3 latest announcements
+    POST - Edit an announcement
+    :param request:
+    :return:
+    """
+    foo = 0
+
+@restrictRouter(incomplete=["POST"])
+def create_announcement(request):
+    """
+    POST - Creates an announcement
+    :param request:
+    :return:
+    """
     foo = 0
 
 @restrictRouter(allowed=["GET"])
