@@ -195,7 +195,7 @@ def get_current_election():
     :return:
     """
     curr_election = Election.objects.raw("SELECT * FROM api_election AS election\
-        WHERE election.date is not null AND election.date <= date('now')\
+        WHERE (election.date != NULL OR election.date >= date('now')) AND election.date <= date('now')\
         ORDER BY election.date DESC LIMIT 1;")
 
     if len(list(curr_election)) == 0:
@@ -304,11 +304,11 @@ def run_connection(execute, *args):
         try:
             cursor.execute(execute, [arg for arg in args])
         except IntegrityError:
-            return HttpResponse(json.dumps({'code': 400, 'message': 'IntegrityError!'}),
+            return HttpResponse(json.dumps({'message': 'IntegrityError!'}),
                                 content_type='application/json', status=400)
         except DatabaseError as e:
             print(e)
-            return HttpResponse(json.dumps({'code': 400, 'message': 'DatabaseError!'}), content_type='application/json',
+            return HttpResponse(json.dumps({'message': 'DatabaseError!'}), content_type='application/json',
                                 status=400)
         else:
-            return HttpResponse(json.dumps({'code': 200, 'message': 'OK'}), content_type='application/json')
+            return HttpResponse(json.dumps({'message': 'OK'}), content_type='application/json')
