@@ -24,22 +24,21 @@ def campaignRouter(request):
         return edit_campaign(dict_post)
     elif request.method == "DELETE":
         # django doesn't have anything that handles delete so...
-
         dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        if not validate_keys(["job", "email"], dict_delete):
+        if not validate_keys(["id", "job", "email"], dict_delete):
             HttpResponse(json.dumps({'message': 'Missing parameters'}),
                          content_type='application/json', status=400)
-        return delete_campaign(dict_delete["email"], dict_delete["job"])
+        return delete_campaign(dict_delete["id"], dict_delete["email"], dict_delete["job"])
 
 
 @csrf_exempt
 @restrictRouter(allowed=["POST"])
 def campaignFindRouter(request):
     dict_post = dict(request.POST.items())
-    if not validate_keys(["job", "email"], dict_post):
+    if not validate_keys(["id", "job", "email"], dict_post):
         HttpResponse(json.dumps({'message': 'Missing parameters'}),
                      content_type='application/json', status=400)
-    return get_campaign(dict_post["email"], dict_post["job"])
+    return get_campaign(dict_post["id"], dict_post["email"], dict_post["job"])
 
 
 @csrf_exempt
