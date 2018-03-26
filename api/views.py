@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
+from api.api.announcement import *
 from api.api.home import *
 from api.api.election import *
 from api.api.settings import *
@@ -31,7 +32,8 @@ def announcements(request):
     :param request:
     :return:
     """
-    foo = 0
+    if request.method == "GET":
+        return get_announcements()
 
 @restrictRouter(incomplete=["POST"])
 def create_announcement(request):

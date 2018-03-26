@@ -221,6 +221,7 @@ def current_election():
         serialize["campaigns"] = []
         for campaign in campaigns:
             campaign_json = serializeModel(campaign)
+            campaign_json["name"] = str(campaign)
             serialize["campaigns"].append(campaign_json)
         return HttpResponse(json.dumps(serialize), content_type='application/json')
 
