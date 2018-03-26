@@ -35,10 +35,32 @@ class ElectionTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get(reverse('api:election'))
-        json = response.json()
         self.assertEqual(response.json()['endDate'], '2018-05-02')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'up')  # Now there is an election
+
+    def test_delete_election(self):
+        self.test_create_election()
+
+        voter_email = 'ezhuang2@illinois.edu'
+        votee_email = 'obama@gmail.com'
+        election_date = self.test_date
+        response = self.client.post(reverse('api:vote'),
+                                    {'voter': voter_email, 'electionDate': cursor_api.serializeDate(election_date),
+                                     'votee': votee_email})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['message'], 'Vote successfully cast')
+
+        position = 'OFFICER'
+        pitch = 'Hello I am a test case'
+        email_id = 'donghao2@illinois.edu'
+        response = self.client.post(reverse('api:create_campaign'),
+                                    {'id': 1, 'job': position, 'pitch': pitch, 'email': email_id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['message'], 'OK')
+
+        response = self.client.delete(reverse('api:election'), {'id': 1})
+        self.assertEqual(response.status_code, 200)
 
 class CampaignTest(TestCase):
     test_date = datetime.date(2018, 3, 24)

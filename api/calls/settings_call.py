@@ -359,6 +359,7 @@ def get_all_courts():
         results = dictfetchall(cursor)
     return results
 
+
 def get_court(court_id):
     with connection.cursor() as cursor:
         query = '''
@@ -440,6 +441,7 @@ def get_all_queues():
         cursor.execute(query)
         results = dictfetchall(cursor)
     return results
+
 
 def add_queue(queue_type):
     with connection.cursor() as cursor:

@@ -287,12 +287,10 @@ def edit_election(id, startDate, endDate):
         ret =  run_connection("UPDATE api_election SET endDate = %s WHERE id = %s", serializeDate(endDate), id)
     return ret
 
-def delete_current_election():
-    today = str(datetime.now(pytz.utc).date())
-    # delete = Election.objects.raw("DELETE FROM api_election WHERE date <= %s AND endDate >= %s", [today, today])
-
-    return run_connection("DELETE FROM api_election WHERE date <= %s AND endDate >= %s", today, today)
-
-
 def delete_election(id):
+
+    with connection.cursor() as cursor:
+        cursor.execute("DELETE FROM api_votes WHERE election_id= %s", [id])
+        cursor.execute("DELETE FROM api_campaign WHERE election_id=%s", [id])
+
     return run_connection("DELETE FROM api_election WHERE id=%s", id)
