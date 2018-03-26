@@ -18,3 +18,4 @@ def create_announcement(datetime, title, entry):
     return HttpResponse(json.dumps({"message": "Successfully created an announcement"}), content_type='application/json')
 
 def edit_announcement(id, title=None, body=None):
+    foo = 0
