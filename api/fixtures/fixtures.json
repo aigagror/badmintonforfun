@@ -422,7 +422,7 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "party": 2,
+        "party": null,
         "bio": ""
     }
 },
@@ -706,16 +706,46 @@
 },
 {
     "model": "api.election",
-    "pk": "2017-12-01",
+    "pk": 0,
     "fields": {
-        "endDate": "2017-12-20"
+        "date": "2018-03-25",
+        "endDate": null
     }
 },
 {
-    "model": "api.election",
-    "pk": "2018-03-25",
+    "model": "api.votes",
+    "pk": 1,
     "fields": {
-        "endDate": null
+        "votee": "obama@gmail.com",
+        "election": "2018-03-25",
+        "voter": "ezhuang2@illinois.edu"
+    }
+},
+{
+    "model": "api.votes",
+    "pk": 2,
+    "fields": {
+        "votee": "rosa@gmail.com",
+        "election": "2018-03-25",
+        "voter": "donald@gmail.com"
+    }
+},
+{
+    "model": "api.votes",
+    "pk": 3,
+    "fields": {
+        "votee": "paul@gmail.com",
+        "election": "2018-03-25",
+        "voter": "obama@gmail.com"
+    }
+},
+{
+    "model": "api.votes",
+    "pk": 4,
+    "fields": {
+        "votee": "rosa@gmail.com",
+        "election": "2018-03-25",
+        "voter": "ezhuang2@illinois.edu"
     }
 },
 {
