@@ -211,7 +211,7 @@ def current_election():
     """
 
     election_dict = get_current_election()
-    if election_dict == None:
+    if election_dict is None:
         return HttpResponse(json.dumps({"status": "down", "message": "Sorry there is no election!"}), content_type='application/json')
     else:
         serialize = serializeModel(election_dict['election'])
