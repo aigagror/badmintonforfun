@@ -22,9 +22,6 @@ def get_all_votes():
         cursor.execute(query)
 
         results = dictfetchall(cursor)
-        for result in results:
-            ret = serializeDate(result['election_id'])
-            result['election_id'] = ret
 
     return HttpResponse(json.dumps(results), content_type='application/json')
 
@@ -96,7 +93,8 @@ def start_campaign(campaign_dict):
     :return: 200 if successful, 400 if not
     """
 
-    curr_election = get_current_election()
+    curr_election_dict = get_current_election()
+    curr_election = curr_election_dict['election']
     if curr_election is not None:
         return run_connection("INSERT INTO api_campaign (job, pitch, election_id, campaigner_id) VALUES\
                                 (%s, %s, %s, %s)", campaign_dict["job"], campaign_dict["pitch"], curr_election.date,
@@ -112,7 +110,8 @@ def get_campaign(email, job):
     :return: campaign information if campaign exists
     """
 
-    curr_election = get_current_election()
+    curr_election_dict = get_current_election()
+    curr_election = curr_election_dict['election']
     if curr_election is None:
         return HttpResponse(json.dumps({'code': 400, 'message': 'There is no election.'}), content_type='application/json',
                             status=400)
@@ -202,7 +201,9 @@ def get_current_election():
     if len(list(curr_election)) == 0:
         return None
     else:
-        return curr_election[0]
+        election = curr_election[0]
+        campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [serializeDate(election.date)])
+        return {'election': election, 'campaigns': campaigns}
 
 def current_election():
     """
@@ -210,12 +211,17 @@ def current_election():
     :return:
     """
 
-    election = get_current_election()
-    if election == None:
+    election_dict = get_current_election()
+    if election_dict == None:
         return HttpResponse(json.dumps({"status": "down", "message": "Sorry there is no election!"}), content_type='application/json')
     else:
-        serialize = serializeModel(election)
+        serialize = serializeModel(election_dict['election'])
         serialize["status"] = "up"
+        campaigns = election_dict['campaigns']
+        serialize["campaigns"] = []
+        for campaign in campaigns:
+            campaign_json = serializeModel(campaign)
+            serialize["campaigns"].append(campaign_json)
         return HttpResponse(json.dumps(serialize), content_type='application/json')
 
 
