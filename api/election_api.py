@@ -191,13 +191,13 @@ def get_current_campaigns():
 #elections
 def get_current_election():
     """
-        Returns the one current election going on
+    Returns the one current election and all of its campaigns
     :return:
     """
 
-    curr_election = Election.objects.raw("SELECT * FROM api_election \
-        WHERE date is not null AND date <= date('now')\
-        ORDER BY date DESC LIMIT 1;")
+    curr_election = Election.objects.raw("SELECT * FROM api_election AS election\
+        WHERE election.date is not null AND election.date <= date('now')\
+        ORDER BY election.date DESC LIMIT 1;")
 
     if len(list(curr_election)) == 0:
         return None

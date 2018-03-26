@@ -43,12 +43,11 @@ class Party(models.Model):
 
 
 class Court(models.Model):
-    id = models.AutoField(primary_key=True)
     number = models.IntegerField()
     queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Tournament(models.Model):
-    date = models.DateField('date of tournament', primary_key=True)
+    date = models.DateField('date of tournament', unique=True)
 
 class Interested(models.Model):
     first_name = models.CharField(max_length=64)
@@ -81,7 +80,7 @@ class BoardMember(Member):
     job = models.CharField(max_length=64, choices=JOBS)
 
 class Election(models.Model):
-    date = models.DateField('date of the election', primary_key=True)
+    date = models.DateField('date of the election', unique=True)
     endDate = models.DateField('election end date', null=True, blank=True)
 
     def __str__(self):
@@ -145,7 +144,7 @@ class FinishedMatch(Match):
             raise ValidationError('Someone should have at least 21 points')
 
 class Announcement(models.Model):
-    date = models.DateTimeField('date of announcement', primary_key=True)
+    date = models.DateTimeField('date of announcement', unique=True)
     title = models.CharField(max_length=64)
     entry = models.CharField(max_length=500)
 
@@ -153,7 +152,7 @@ class Announcement(models.Model):
         return '{}'.format(self.title)
 
 class Schedule(models.Model):
-    date = models.DateField('date of session', primary_key=True)
+    date = models.DateField('date of session', unique=True)
     number_of_courts = models.IntegerField(default=4)
 
     def __str__(self):
