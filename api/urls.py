@@ -13,41 +13,46 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
-from django.urls import include, path, re_path
-from . import views
+from django.urls import re_path
+
+import api.routers.announcement_router
+import api.routers.campaign_router
+import api.routers.election_router
+import api.routers.match_router
+import api.routers.settings_router
+import api.routers.votes_router
+from api.routers import router
 
 app_name = 'api'
 urlpatterns = [
 
 
-    re_path(r'announcements/?$', views.announcements, name='announcement'),
-    re_path(r'announcements/create/?$', views.create_announcement, name='create_announcement'),
-    re_path(r'members/top_players?$', views.top_players, name='top_players'),
+    re_path(r'announcements/?$', api.routers.announcement_router.announcements, name='announcement'),
+    re_path(r'announcements/create/?$', api.routers.announcement_router.create_announcement, name='create_announcement'),
+    re_path(r'members/top_players?$', api.routers.match_router.top_players, name='top_players'),
 
-    re_path(r'election/all_votes/?$', views.all_votes, name='all_votes'),
-    re_path(r'election/vote/?$', views.vote, name='vote'),
-    re_path(r'election/create/?$', views.electionCreateRouter, name='create_election'),
-    re_path(r'election/?$', views.electionRouter, name='election'),
+    re_path(r'election/all_votes/?$', api.routers.votes_router.all_votes, name='all_votes'),
+    re_path(r'election/vote/?$', api.routers.votes_router.vote, name='vote'),
+    re_path(r'election/create/?$', api.routers.election_router.electionCreateRouter, name='create_election'),
+    re_path(r'election/?$', api.routers.election_router.electionRouter, name='election'),
 
-    re_path(r'campaign/?$', views.campaignRouter, name='campaign'),
+    re_path(r'campaign/?$', api.routers.campaign_router.campaignRouter, name='campaign'),
 
     #separate for testing purposes: POST requests for finding/creating a campaign
-    re_path(r'campaign/find/?$', views.campaignFindRouter, name='find_campaign'),
-    re_path(r'campaign/create/?$', views.campaignCreateRouter, name='create_campaign'),
+    re_path(r'campaign/find/?$', api.routers.campaign_router.campaignFindRouter, name='find_campaign'),
+    re_path(r'campaign/create/?$', api.routers.campaign_router.campaignCreateRouter, name='create_campaign'),
 
-    re_path(r'settings/member/?$', views.settingsRouter, name='member_info'),
-    re_path(r'settings/boardmember/?$', views.settingsBoardMemberRouter, name='boardmember_info'),
-    re_path(r'settings/promote/?$', views.settingsPromoteMemberRouter, name='promote'),
-    re_path(r'settings/member/edit/?$', views.settingsEditMemberRouter, name='edit_member'),
-    re_path(r'settings/interested/add/?$', views.settingsInterestedCreateRouter, name='add_interested'),
-    re_path(r'settings/schedule/?$', views.settingsSchedulesRouter, name='schedule'),
-    re_path(r'settings/courts/?$', views.settingsCourtRouter, name='courts'),
-    re_path(r'settings/courts/available/?$', views.settingsAvailableCourtsRouter, name='available_courts'),
-    re_path(r'settings/queue/?$', views.settingsQueueRouter, name='queue'),
+    re_path(r'settings/member/?$', api.routers.settings_router.settingsRouter, name='member_info'),
+    re_path(r'settings/boardmember/?$', api.routers.settings_router.settingsBoardMemberRouter, name='boardmember_info'),
+    re_path(r'settings/promote/?$', api.routers.settings_router.settingsPromoteMemberRouter, name='promote'),
+    re_path(r'settings/member/edit/?$', api.routers.settings_router.settingsEditMemberRouter, name='edit_member'),
+    re_path(r'settings/interested/add/?$', api.routers.settings_router.settingsInterestedCreateRouter, name='add_interested'),
+    re_path(r'settings/schedule/?$', api.routers.settings_router.settingsSchedulesRouter, name='schedule'),
+    re_path(r'settings/courts/?$', api.routers.settings_router.settingsCourtRouter, name='courts'),
+    re_path(r'settings/courts/available/?$', api.routers.settings_router.settingsAvailableCourtsRouter, name='available_courts'),
+    re_path(r'settings/queue/?$', api.routers.settings_router.settingsQueueRouter, name='queue'),
 
-    re_path(r'queue/party/next?$', views.settingsQueueRouter, name='queue_next_party')
+    re_path(r'queue/party/next?$', api.routers.settings_router.settingsQueueRouter, name='queue_next_party')
 
 ]
 

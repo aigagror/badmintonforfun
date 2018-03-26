@@ -1,4 +1,4 @@
-from ..cursor_api import *
+from api.cursor_api import *
 from django.db import connection
 from django.http import HttpResponse
 import json

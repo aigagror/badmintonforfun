@@ -259,9 +259,9 @@ def start_election(startDate, endDate=None):
                                  (%s, %s)", startDate, endDate)
 
 
-def get_election(startDate, endDate=None):
+def get_election(id):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM api_election WHERE date=%s", [serializeDate(startDate)])
+        cursor.execute("SELECT * FROM api_election WHERE id=%s", [id])
         election = dictfetchone(cursor)
 
     if election:
@@ -275,13 +275,15 @@ def get_election(startDate, endDate=None):
 
 
 def edit_election(id, startDate, endDate):
-    if get_election(startDate).status_code == 400:
+    if get_election(id).status_code == 400:
         return start_election(startDate, endDate)
 
+    ret = HttpResponse(json.dumps({"message": "Nothing edited"}), content_type='application/json', status=400)
     if startDate is not None:
-        run_connection("UPDATE api_election SET startDate = %s WHERE id = %s", startDate, id)
+        ret =  run_connection("UPDATE api_election SET date = %s WHERE id = %s", serializeDate(startDate), id)
     if endDate is not None:
-        run_connection("UPDATE api_election SET endDate = %s WHERE id = %s", endDate, id)
+        ret =  run_connection("UPDATE api_election SET endDate = %s WHERE id = %s", serializeDate(endDate), id)
+    return ret
 
 def delete_current_election():
     today = str(datetime.now(pytz.utc).date())

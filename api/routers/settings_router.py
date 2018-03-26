@@ -1,175 +1,17 @@
+import json
+
 from django.http import HttpResponse
 from django.shortcuts import render
 
-# Create your views here.
-from api.api.announcement import *
-from api.api.home import *
-from api.api.election import *
-from api.api.settings import *
-from api.api.queue import *
-from api.api.match import *
-from django.views.decorators.csrf import csrf_exempt
+from api.calls.election_call import delete_campaign
+from api.calls.home_call import get_schedule
+from api.calls.settings_call import member_config, member_config_edit, is_board_member, board_member_config, \
+    promote_to_board_member, promote_to_member, edit_boardmember_info, edit_member_info, remove_member, add_interested, \
+    schedule_date_exists, edit_schedule, add_to_schedule, delete_from_schedule, get_all_courts, court_id_exists, \
+    edit_court_info, add_court, get_available_courts, get_all_queues, add_queue, get_board_members, get_members, \
+    get_interested, get_member_info
+from api.routers.router import restrictRouter, validate_keys
 
-
-def restrictRouter(allowed=list(), incomplete=list()):
-    def _restrictRouter(func):
-        def _func(request, *args, **kwargs):
-            if request.method in incomplete:
-                return HttpResponse("Coming soon!", status=501)
-            elif request.method not in allowed:
-                return HttpResponse("Invalid request verb {}".format(request.method), status=400)
-            else:
-                return func(request, *args, **kwargs)
-
-        return _func
-    return _restrictRouter
-
-@restrictRouter(incomplete=["GET", "POST"])
-def announcements(request):
-    """
-    GET - Get the 3 latest announcements
-    POST - Edit an announcement
-    :param request:
-    :return:
-    """
-    if request.method == "GET":
-        return get_announcements()
-
-@restrictRouter(incomplete=["POST"])
-def create_announcement(request):
-    """
-    POST - Creates an announcement
-    :param request:
-    :return:
-    """
-    foo = 0
-
-@restrictRouter(allowed=["GET"])
-def top_players(request):
-    """
-    GET -- Gets the top 5 players
-    :param request:
-    :return:
-    """
-    return get_top_players()
-
-@restrictRouter(allowed=["GET"])
-def next_on_queue(request):
-    """
-    GET -- The next party on the specified queue to play
-    :param request:
-    :return:
-    """
-    if request.method == "GET":
-        dict_get = dict(request.GET.items())
-        validate_keys('queue_type', dict_get)
-        return get_next_on_queue(dict_get['queue_type'])
-
-
-@restrictRouter(allowed=["GET", "POST"])
-def vote(request):
-    """
-    GET -- Gets votes of given member
-    POST -- Casts/updates a vote for the current election
-    :param request:
-    :param job:
-    :return:
-    """
-
-    if request.method == "GET":
-        dict_get = dict(request.GET.items())
-        emailKey = "email"
-        if emailKey not in dict_get:
-            return HttpResponse("Missing required param {}".format(emailKey), status=400)
-        email = dict_get[emailKey]
-        return get_votes_from_member(email)
-    elif request.method == "POST":
-        dict_post = dict(request.POST.items())
-        voterKey = "voter"
-        electionKey = "electionDate"
-        voteeKey = "votee"
-        keys = [voterKey, electionKey, voteeKey]
-        for key in keys:
-            if key not in dict_post:
-                return HttpResponse("Missing required param {}".format(key), status=400)
-
-        voterEmail = dict_post[voterKey]
-        voteeEmail = dict_post[voteeKey]
-        electionDate = deserializeDate(dict_post[electionKey])
-        return cast_vote(voterEmail, electionDate, voteeEmail)
-
-@restrictRouter(allowed=["GET"])
-def all_votes(request):
-    return get_all_votes()
-
-@csrf_exempt
-@restrictRouter(allowed=["GET", "POST", "DELETE"])
-def campaignRouter(request):
-    """
-    GET -- Gets all campaigns of current election
-    POST -- Edits a campaign
-    :param request:
-    :return:
-    """
-    if request.method == "GET":
-        return get_current_campaigns()
-    elif request.method == "POST":
-        dict_post = dict(request.POST.items())
-        validate_keys(["job", "pitch", "email"], dict_post)
-        return edit_campaign(dict_post)
-    elif request.method == "DELETE":
-        # django doesn't have anything that handles delete so...
-
-        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        if not validate_keys(["job", "email"], dict_delete):
-            HttpResponse(json.dumps({'message': 'Missing parameters'}),
-                         content_type='application/json', status=400)
-        return delete_campaign(dict_delete["email"], dict_delete["job"])
-
-
-@csrf_exempt
-@restrictRouter(allowed=["POST"])
-def campaignFindRouter(request):
-    dict_post = dict(request.POST.items())
-    if not validate_keys(["job", "email"], dict_post):
-        HttpResponse(json.dumps({'message': 'Missing parameters'}),
-                     content_type='application/json', status=400)
-    return get_campaign(dict_post["email"], dict_post["job"])
-
-
-@csrf_exempt
-@restrictRouter(allowed=["POST"])
-def campaignCreateRouter(request):
-    """
-    POST -- Creates an campaign
-    :param request:
-    :return:
-    """
-    dict_post = dict(request.POST.items())
-    jobKey = "job"
-    pitchKey = "pitch"
-    email = "email"
-
-    keys = [jobKey, pitchKey, email]
-
-    if not validate_keys(keys, dict_post):
-        HttpResponse(json.dumps({'message': 'Missing parameters'}),
-                     content_type='application/json', status=400)
-
-    campaign_dict = {
-        "job": dict_post[jobKey],
-        "pitch": dict_post[pitchKey],
-        "email": dict_post[email],
-    }
-    return start_campaign(campaign_dict)
-
-
-def validate_keys(keys, validate_dict):
-    for key in keys:
-        if key not in validate_dict:
-            return False
-
-    return True
 
 @restrictRouter(allowed=["GET", "POST"])
 def settingsRouter(request):
@@ -398,6 +240,7 @@ def settingsCourtRouter(request):
                              content_type='application/json', status=400)
             return add_court(Court(p_court_id, p_number, p_queue_type))
 
+
 @restrictRouter(allowed=["GET"])
 def settingsAvailableCourtsRouter(request):
     """
@@ -440,99 +283,6 @@ def settingsQueueRouter(request):
             HttpResponse(json.dumps({'message': 'Missing parameters'}),
                          content_type='application/json', status=400)
         return add_queue(p_queue_type)
-
-
-@csrf_exempt
-@restrictRouter(allowed=["GET", "POST", "DELETE"])
-def electionRouter(request):
-    """
-    GET -- Gets the current election
-    POST -- Edits/deletes an election
-    :param request:
-    :return:
-    """
-    if request.method == "GET":
-        return current_election()
-    elif request.method == "POST":
-        dict_post = dict(request.POST.items())
-        idKey = "id"
-        startKey = "startDate"
-        endKey = "endDate"
-        if idKey not in dict_post:
-            return HttpResponse("Missing required param {}".format(idKey), status=400)
-        id = int(dict_post[idKey])
-        startDate = dict_post.get(startKey, None)
-        startDate = deserializeDate(startDate) if startDate != None else None
-
-        endDate = dict_post.get(endKey, None)
-        endDate = deserializeDate(endDate) if endDate != None else None
-
-        return edit_election(id, startDate, endDate)
-    elif request.method == "DELETE":
-        idKey = "id"
-        delete_election(id)
-
-
-@csrf_exempt
-@restrictRouter(allowed=["POST"])
-def electionCreateRouter(request):
-    """
-    POST -- Creates an election
-    :param request:
-    :return:
-    """
-    dict_post = dict(request.POST.items())
-    startKey = "startDate"
-    if startKey not in dict_post:
-        return HttpResponse("Missing required param {}".format(startKey), status=400)
-    startDate = deserializeDate(dict_post[startKey])
-    return start_election(startDate)
-
-
-class Interested(object):
-    first_name = ''
-    last_name = ''
-    formerBoardMember = False
-    email = ''
-
-    def __init__(self, first_name, last_name, formerBoardMember, email):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.formerBoardMember = formerBoardMember
-        self.email = email
-
-
-class Member(object):
-    level = ''
-    private = False
-    dateJoined = ''
-    # queue = ''
-    bio = ''
-
-    def __init__(self, level, private, dateJoined, bio):
-        self.level = level
-        self.private = private
-        self.dateJoined = dateJoined
-        # self.queue = queue
-        self.bio = bio
-
-
-class BoardMember(object):
-    job = ''
-
-    def __init__(self, job):
-        self.job = job
-
-
-class Court(object):
-    id = ''
-    number = ''
-    queue = ''
-
-    def __init__(self, id, number, queue):
-        self.id = id
-        self.number = number
-        self.queue = queue
 
 
 def settings(request):
@@ -593,3 +343,49 @@ def settings(request):
     }
 
     return render(request, 'api_settings.html', context)
+
+
+class Interested(object):
+    first_name = ''
+    last_name = ''
+    formerBoardMember = False
+    email = ''
+
+    def __init__(self, first_name, last_name, formerBoardMember, email):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.formerBoardMember = formerBoardMember
+        self.email = email
+
+
+class Member(object):
+    level = ''
+    private = False
+    dateJoined = ''
+    # queue = ''
+    bio = ''
+
+    def __init__(self, level, private, dateJoined, bio):
+        self.level = level
+        self.private = private
+        self.dateJoined = dateJoined
+        # self.queue = queue
+        self.bio = bio
+
+
+class BoardMember(object):
+    job = ''
+
+    def __init__(self, job):
+        self.job = job
+
+
+class Court(object):
+    id = ''
+    number = ''
+    queue = ''
+
+    def __init__(self, id, number, queue):
+        self.id = id
+        self.number = number
+        self.queue = queue
