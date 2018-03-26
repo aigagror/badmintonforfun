@@ -1,7 +1,11 @@
-from api.calls.announcement_call import get_announcements
+from api.calls.announcement_call import *
 from api.routers.router import restrictRouter
 from api.routers.router import validate_keys
 
+_id_key = "id"
+_datetime_key = "datetime"
+_title_key = "title"
+_entry_key = "entry"
 
 @restrictRouter(incomplete=["GET", "POST"])
 def announcements(request):
@@ -14,8 +18,11 @@ def announcements(request):
     if request.method == "GET":
         return get_announcements()
     elif request.method == "POST":
+
         dict_post = dict(request.POST.items())
-        validate_keys(["id"], dict_post)
+        validate_keys([_id_key], dict_post)
+        return edit_announcement(dict_post[_id_key], dict_post[_title_key], dict_post[_entry_key])
+
 
 
 @restrictRouter(incomplete=["POST"])
@@ -25,4 +32,6 @@ def create_announcement(request):
     :param request:
     :return:
     """
-    foo = 0
+    dict_post = dict(request.POST.items())
+    validate_keys([_datetime_key, _title_key, _entry_key], dict_post)
+    create_announcement(dict_post[_datetime_key], dict_post[_title_key], dict_post[_entry_key])

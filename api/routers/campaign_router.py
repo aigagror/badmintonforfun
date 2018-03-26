@@ -8,17 +8,15 @@ from api.routers.router import restrictRouter, validate_keys
 
 
 @csrf_exempt
-@restrictRouter(allowed=["GET", "POST", "DELETE"])
+@restrictRouter(allowed=["POST", "DELETE"])
 def campaignRouter(request):
     """
-    GET -- Gets all campaigns of current election
     POST -- Edits a campaign
     :param request:
     :return:
     """
-    if request.method == "GET":
-        return get_current_campaigns()
-    elif request.method == "POST":
+
+    if request.method == "POST":
         dict_post = dict(request.POST.items())
         validate_keys(["job", "pitch", "email"], dict_post)
         return edit_campaign(dict_post)

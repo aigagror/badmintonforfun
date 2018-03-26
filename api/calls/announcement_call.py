@@ -12,10 +12,23 @@ def get_announcements():
 
 def create_announcement(datetime, title, entry):
     with connection.cursor() as cursor:
-        cursor.execute("INSERT INTO api_announcement(date, title, entry) VALUES(%s, %s, %s)", [serializeDateTime(datetime, )])
-        results = dictfetchall(cursor)
+        cursor.execute("INSERT INTO api_announcement(date, title, entry) VALUES(%s, %s, %s)", [serializeDateTime(datetime), title, entry])
 
     return HttpResponse(json.dumps({"message": "Successfully created an announcement"}), content_type='application/json')
 
-def edit_announcement(id, title=None, body=None):
-    foo = 0
+def edit_announcement(id, title=None, entry=None):
+    title_query = """
+    UPDATE api_announcement SET title = %s WHERE id = %s
+    """
+
+    entry_query = """
+    UPDATE api_announcement SET entry = %s WHERE id = %s
+    """
+
+    ret = HttpResponse(json.dumps({"message": "Didn't edit any announcement"}), content_type='application/json', status=400)
+    if title is not None:
+        ret = run_connection(title_query, title, id)
+    if entry is not None:
+        ret = run_connection(entry_query, entry, id)
+
+    return ret

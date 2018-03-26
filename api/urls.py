@@ -31,15 +31,18 @@ urlpatterns = [
     re_path(r'announcements/create/?$', api.routers.announcement_router.create_announcement, name='create_announcement'),
     re_path(r'members/top_players?$', api.routers.match_router.top_players, name='top_players'),
 
+    # Gets all votes
     re_path(r'election/all_votes/?$', api.routers.votes_router.all_votes, name='all_votes'),
+    # Create/edit/delete votes
     re_path(r'election/vote/?$', api.routers.votes_router.vote, name='vote'),
+    # Creats a campaign
     re_path(r'election/create/?$', api.routers.election_router.electionCreateRouter, name='create_election'),
+    # Gets current election and all of its campaigns
     re_path(r'election/?$', api.routers.election_router.electionRouter, name='election'),
 
+    # Edits campaign
     re_path(r'campaign/?$', api.routers.campaign_router.campaignRouter, name='campaign'),
-
-    #separate for testing purposes: POST requests for finding/creating a campaign
-    re_path(r'campaign/find/?$', api.routers.campaign_router.campaignFindRouter, name='find_campaign'),
+    # Creates a campaign
     re_path(r'campaign/create/?$', api.routers.campaign_router.campaignCreateRouter, name='create_campaign'),
 
     re_path(r'settings/member/?$', api.routers.settings_router.settingsRouter, name='member_info'),
