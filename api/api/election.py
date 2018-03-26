@@ -195,7 +195,7 @@ def get_current_election():
     :return:
     """
     curr_election = Election.objects.raw("SELECT * FROM api_election AS election\
-        WHERE (election.date != NULL OR election.date >= date('now')) AND election.date <= date('now')\
+        WHERE endDate IS NULL OR endDate >= date('now')\
         ORDER BY election.date DESC LIMIT 1;")
 
     if len(list(curr_election)) == 0:
