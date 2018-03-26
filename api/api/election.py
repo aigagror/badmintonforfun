@@ -295,8 +295,8 @@ def delete_current_election():
     return run_connection("DELETE FROM api_election WHERE date <= %s AND endDate >= %s", today, today)
 
 
-def delete_election(startDate):
-    return run_connection("DELETE FROM api_election WHERE date=%s", startDate)
+def delete_election(id):
+    return run_connection("DELETE FROM api_election WHERE id=%s", id)
 
 
 def run_connection(execute, *args):

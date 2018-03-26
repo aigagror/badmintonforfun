@@ -419,7 +419,7 @@ def settingsQueueRouter(request):
 
 
 @csrf_exempt
-@restrictRouter(allowed=["GET", "POST"], incomplete=["DELETE"])
+@restrictRouter(allowed=["GET", "POST", "DELETE"])
 def electionRouter(request):
     """
     GET -- Gets the current election
@@ -440,6 +440,12 @@ def electionRouter(request):
         if endDate != None:
             endDate = deserializeDate(endDate)
         return edit_election(startDate, endDate)
+    elif request.method == "DELETE":
+        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+        validate_keys(["id"], dict_delete)
+        delete_election(dict_delete["id"])
+
+
 
 @csrf_exempt
 @restrictRouter(allowed=["POST"])
