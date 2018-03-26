@@ -457,29 +457,31 @@ def add_queue(queue_type):
                                 content_type="application/json")
 
 
-def member_config(email):
+def member_config(session_email):
     """
     GET function to see settings information for members
     :param email:
     :return:
     """
     context = {}
-    # email = 'ezhuang2@illinois.edu'
+    # session_email = 'ezhuang2@illinois.edu'
     # Get this member's info
-    # print(email)
-    my_info = get_member_info(email)
-    if len(my_info) == 0:
+    info_list = get_member_info(session_email)
+    if len(info_list) == 0:
         return HttpResponse(
             json.dumps({"status": "down", "message": "This person is not a member."}, indent=4, sort_keys=True),
             content_type="application/json")
+    my_info = info_list[0]
 
     # Convert 'dateJoined' attribute to be JSON serializable
     # datetime.datetime.utcnow().strftime(“ % Y - % m - % dT % H: % M: % SZ”)
-    my_info[0].__setitem__('dateJoined', my_info[0].__getitem__('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
-    # my_info.dateJoined = my_info.dateJoined.strftime('%Y-%m-%dT%H:%M:%SZ')
+    my_info.__setitem__('dateJoined', my_info[0].__getitem__('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
 
-    context['my_info'] = my_info
-    context['status'] = 'up'
+    context = {
+        'private': my_info.__getitem__('private'),
+
+    }
+
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
 
 

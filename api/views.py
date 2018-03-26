@@ -37,7 +37,7 @@ def top_players(request):
     return get_top_players()
 
 @restrictRouter(allowed=["GET"])
-def next_on_queue(request):
+def nextOnQueueRouter(request):
     """
     GET -- The next party on the specified queue to play
     :param request:
@@ -46,7 +46,14 @@ def next_on_queue(request):
     if request.method == "GET":
         dict_get = dict(request.GET.items())
         validate_keys('queue_type', dict_get)
-        return get_next_on_queue(dict_get['queue_type'])
+        next_party = get_next_on_queue(dict_get['queue_type'])
+        if next_party:
+            context = {'status': 'up', 'next_party': next_party}
+            return HttpResponse(json.dumps(context),
+                                content_type="application/json")
+        else:
+            return HttpResponse(json.dumps({"status": "down", "message": "There is nothing in the schedule."}),
+                                content_type="application/json")
 
 
 @restrictRouter(allowed=["GET", "POST"])
@@ -144,25 +151,25 @@ def validate_keys(keys, validate_dict):
         if key not in validate_dict:
             return HttpResponse("Missing required param {}".format(key), status=400)
 
+
 @restrictRouter(allowed=["GET", "POST"])
 def settingsRouter(request):
     """
-    Allow members to get and edit their own settings.
+    Allow all members to get and edit their own settings.
     :param request:
     :return:
     """
-    # email = request.session.get('email', '')
-    # email = 'ezhuang2@illinois.edu'
+    # 'session_email' should be the email of the member who's logged in
+    session_email = request.session.get('session_email', '')
+
     if request.method == "GET":
-        dict_get = dict(request.GET.items())
-        email = dict_get.get('email', '')
-        return member_config(email)
+        return member_config(session_email)
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
-        email = dict_post.get('email', '')
-        return member_config_edit(email, dict_post)
+        return member_config_edit(session_email, dict_post)
 
 
+@csrf_exempt
 @restrictRouter(allowed=["GET"])
 def settingsBoardMemberRouter(request):
     """
@@ -170,18 +177,17 @@ def settingsBoardMemberRouter(request):
     :param request:
     :return:
     """
-    # email = request.session.get('email', '')
-    # email = 'ezhuang2@illinois.edu'
-    dict_get = dict(request.GET.items())
-    email = dict_get.get('email', '')
-    if not is_board_member(email):
-        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-                            content_type="application/json")
+    # 'session_email' should be the email of the member who's logged in
+    # session_email = request.session.get('session_email', '')
+    # if not is_board_member(session_email):
+    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+    #                         content_type="application/json")
 
     if request.method == "GET":
         return board_member_config()
 
 
+@csrf_exempt
 @restrictRouter(allowed=["POST"])
 def settingsPromoteMemberRouter(request):
     """
@@ -217,6 +223,7 @@ def settingsPromoteMemberRouter(request):
             return promote_to_member(p_email, member)
 
 
+@csrf_exempt
 @restrictRouter(allowed=["POST", "DELETE"])
 def settingsEditMemberRouter(request):
     """
@@ -242,8 +249,10 @@ def settingsEditMemberRouter(request):
             return HttpResponse("Missing required param attr_to_change or new_value", status=400)
 
         if is_board_member(p_email):
+            print("boardmember")
             return edit_boardmember_info(p_email, p_new_value)  # only attribute to edit is 'job'
         else:
+            print("hi")
             return edit_member_info(p_email, p_attr_to_change, p_new_value)
 
     elif request.method == "DELETE":
@@ -256,6 +265,7 @@ def settingsEditMemberRouter(request):
     return delete_campaign(dict_delete["email"], dict_delete["job"])
 
 
+@csrf_exempt
 @restrictRouter(allowed=["POST"])
 def settingsInterestedCreateRouter(request):
     """
@@ -282,6 +292,7 @@ def settingsInterestedCreateRouter(request):
         return add_interested(interested)
 
 
+@csrf_exempt
 @restrictRouter(allowed=["GET", "POST", "DELETE"])
 def settingsSchedulesRouter(request):
     """
@@ -324,6 +335,7 @@ def settingsSchedulesRouter(request):
         return delete_from_schedule(dict_delete["date"])
 
 
+@csrf_exempt
 @restrictRouter(allowed=["GET", "POST"])
 def settingsCourtRouter(request):
     """
@@ -359,6 +371,8 @@ def settingsCourtRouter(request):
             validate_keys({'number', 'queue'}, dict_post)
             return add_court(Court(p_court_id, p_number, p_queue_type))
 
+
+@csrf_exempt
 @restrictRouter(allowed=["GET"])
 def settingsAvailableCourtsRouter(request):
     """
@@ -378,7 +392,7 @@ def settingsAvailableCourtsRouter(request):
             return HttpResponse("Missing required param date", status=400)
         return get_available_courts(g_date)
 
-
+@csrf_exempt
 @restrictRouter(allowed=["GET", "POST"])
 def settingsQueueRouter(request):
     # email = request.session.get('email', '')
