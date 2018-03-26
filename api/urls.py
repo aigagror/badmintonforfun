@@ -43,6 +43,9 @@ urlpatterns = [
     re_path(r'settings/schedule/?$', views.settingsSchedulesRouter, name='schedule'),
     re_path(r'settings/courts/?$', views.settingsCourtRouter, name='courts'),
     re_path(r'settings/courts/available/?$', views.settingsAvailableCourtsRouter, name='available_courts'),
-    re_path(r'settings/queue/?$', views.settingsQueueRouter, name='queue')
+    re_path(r'settings/queue/?$', views.settingsQueueRouter, name='queue'),
+
+    re_path(r'queue/party/next?$', views.settingsQueueRouter, name='queue_next_party')
+
 ]
 

@@ -5,6 +5,7 @@ from django.shortcuts import render
 from api.api.home import *
 from api.api.election import *
 from api.api.settings import *
+from api.api.queue import *
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -33,6 +34,18 @@ def top_players(request):
     :return:
     """
     return get_top_players()
+
+@restrictRouter(allowed=["GET"])
+def next_on_queue(request):
+    """
+    GET -- The next party on the specified queue to play
+    :param request:
+    :return:
+    """
+    if request.method == "GET":
+        dict_get = dict(request.GET.items())
+        validate_keys('queue_type', dict_get)
+        return get_next_on_queue(dict_get['queue_type'])
 
 
 @restrictRouter(allowed=["GET", "POST"])
