@@ -1,14 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import render
 
 # Create your views here.
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
-from .home_api import *
-from .election_api import *
-from .settings_api import *
+from api.api.home import *
+from api.api.election import *
+from api.api.settings import *
 from django.views.decorators.csrf import csrf_exempt
-from django.views import generic
-from django.urls import reverse
-from .models import Member as MemberModel
+
 
 def restrictRouter(allowed=list(), incomplete=list()):
     def _restrictRouter(func):
