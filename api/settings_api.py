@@ -466,8 +466,9 @@ def member_config(email):
     context = {}
     # email = 'ezhuang2@illinois.edu'
     # Get this member's info
+    # print(email)
     my_info = get_member_info(email)
-    if not my_info:
+    if len(my_info) == 0:
         return HttpResponse(
             json.dumps({"status": "down", "message": "This person is not a member."}, indent=4, sort_keys=True),
             content_type="application/json")
@@ -478,6 +479,7 @@ def member_config(email):
     # my_info.dateJoined = my_info.dateJoined.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     context['my_info'] = my_info
+    context['status'] = 'up'
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
 
 
@@ -524,7 +526,8 @@ def board_member_config():
         'interested': interested,
         'schedule': schedule,
         'all_courts': all_courts,
-        'all_queues': all_queues
+        'all_queues': all_queues,
+        'status': 'up'
     }
 
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")

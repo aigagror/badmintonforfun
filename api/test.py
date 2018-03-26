@@ -67,3 +67,39 @@ class VotesTest(TestCase):
 
 
 
+class SettingsTest(TestCase):
+    def test_promote(self):
+        interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False,
+                           'email': 'ezhuang2@illinois.edu'}
+        response = self.client.post(reverse('api:add_member'), interested_dict)
+        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.status_code, 200)
+
+        member_dict = {'email': 'ezhuang2@illinois.edu', 'level': 0, 'private': False, 'dateJoined': '2018-03-19',
+                       'bio': 'Hello, my name is Eddie.'}
+        response = self.client.post(reverse('api:promote'), member_dict)
+        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.status_code, 200)
+
+        boardmember_dict = {'email': 'ezhuang2@illinois.edu', 'job': 'PRESIDENT'}
+        response = self.client.post(reverse('api:promote'), boardmember_dict)
+        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_member_info(self):
+        interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False, 'email': 'ezhuang2@illinois.edu'}
+        response = self.client.post(reverse('api:add_member'), interested_dict)
+        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.status_code, 200)
+
+        member_dict = {'email': 'ezhuang2@illinois.edu', 'level': 0, 'private': False, 'dateJoined': '2018-03-19', 'bio': 'Hello, my name is Eddie.'}
+        response = self.client.post(reverse('api:promote'), member_dict)
+        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse('api:member_info'), {'email': 'ezhuang2@illinois.edu'})
+        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_board_member_info(self):
+        foo = 0

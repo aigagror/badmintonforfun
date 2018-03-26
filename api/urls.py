@@ -28,14 +28,14 @@ urlpatterns = [
     re_path(r'campaign/?$', views.campaignRouter),
     re_path(r'campaign/create/?$', views.campaignCreateRouter),
 
-    re_path(r'settings/member/?$', views.settingsRouter),
-    re_path(r'settings/boardmember/?$', views.settingsBoardMemberRouter),
-    re_path(r'settings/promote/?$', views.settingsPromoteMemberRouter),
-    re_path(r'settings/member/edit/?$', views.settingsEditMemberRouter),
-    re_path(r'settings/member/add/?$', views.settingsInterestedCreateRouter),
-    re_path(r'settings/schedule/?$', views.settingsSchedulesRouter),
-    re_path(r'settings/courts/?$', views.settingsCourtRouter),
-    re_path(r'settings/courts/available/?$', views.settingsAvailableCourtsRouter),
-    re_path(r'settings/queue/?$', views.settingsQueueRouter)
+    re_path(r'settings/member/?$', views.settingsRouter, name='member_info'),
+    re_path(r'settings/boardmember/?$', views.settingsBoardMemberRouter, name='boardmember_info'),
+    re_path(r'settings/promote/?$', views.settingsPromoteMemberRouter, name='promote'),
+    re_path(r'settings/member/edit/?$', views.settingsEditMemberRouter, name='edit_member'),
+    re_path(r'settings/interested/add/?$', views.settingsInterestedCreateRouter, name='add_member'),
+    re_path(r'settings/schedule/?$', views.settingsSchedulesRouter, name='schedule'),
+    re_path(r'settings/courts/?$', views.settingsCourtRouter, name='courts'),
+    re_path(r'settings/courts/available/?$', views.settingsAvailableCourtsRouter, name='available_courts'),
+    re_path(r'settings/queue/?$', views.settingsQueueRouter, name='queue')
 ]
 
