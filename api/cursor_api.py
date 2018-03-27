@@ -22,7 +22,7 @@ def dictfetchone(cursor):
         return {}
     return dict(zip(columns, row))
 
-dateTimeFormatString = "%Y-%m-%dT%H:%M:%SZ"
+dateTimeFormatString = "%Y-%m-%d %H:%M:%S"
 dateFormatString = "%Y-%m-%d"
 
 def serializeDate(dateObj):
@@ -67,6 +67,15 @@ def serializeModel(model):
         return json
 
     return _serializeDict(model_to_dict(model))
+
+
+def serializeSetOfModels(models):
+    ret = []
+    for model in models:
+        s = serializeModel(model)
+        ret.append(s)
+
+    return ret
 
 
 def run_connection(execute, *args):

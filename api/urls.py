@@ -22,11 +22,19 @@ import api.routers.match_router
 import api.routers.settings_router
 import api.routers.votes_router
 from api.routers import router
+import api.routers.demo
 
 app_name = 'api'
 urlpatterns = [
 
+    re_path(r'demo/matches/?$', api.routers.demo.matches, name='demo_matches'),
+    re_path(r'demo/matches/create/?$', api.routers.demo.create_match, name='demo_matches_create'),
+    re_path(r'demo/matches/delete/?$', api.routers.demo.delete_match, name='demo_matches_delete'),
 
+    re_path(r'demo/election/?$', api.routers.demo.index, name='demo_election'),
+    re_path(r'demo/election/vote/?$', api.routers.demo.vote, name='demo_vote'),
+
+    # Gets the 3 latest announcements | Edits an announcement
     re_path(r'announcements/?$', api.routers.announcement_router.announcements, name='announcement'),
     re_path(r'announcements/create/?$', api.routers.announcement_router.create_announcement, name='create_announcement'),
     re_path(r'members/top_players?$', api.routers.match_router.top_players, name='top_players'),
@@ -35,7 +43,7 @@ urlpatterns = [
     re_path(r'election/all_votes/?$', api.routers.votes_router.all_votes, name='all_votes'),
     # Create/edit/delete votes
     re_path(r'election/vote/?$', api.routers.votes_router.vote, name='vote'),
-    # Creats a campaign
+    # Createss a campaign
     re_path(r'election/create/?$', api.routers.election_router.electionCreateRouter, name='create_election'),
     # Gets current election and all of its campaigns
     re_path(r'election/?$', api.routers.election_router.electionRouter, name='election'),

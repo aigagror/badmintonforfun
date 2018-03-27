@@ -14,9 +14,9 @@ def get_all_votes():
 
     with connection.cursor() as cursor:
         query = """
-        SELECT voter_id, election_id, votee_id
+        SELECT voter_id AS voter, election_id AS election, votee_id AS votee
         FROM api_votes, api_election
-        WHERE api_election.date <= date('now') AND api_votes.election_id = api_election.date;
+        WHERE api_election.date <= date('now') AND api_votes.election_id = api_election.id;
         """
         cursor.execute(query)
 
@@ -43,7 +43,7 @@ def get_votes_from_member(email):
         results = dictfetchall(cursor)
     return HttpResponse(json.dumps(results), content_type='application/json')
 
-def cast_vote(voter_email, election_date, votee_email):
+def cast_vote(voter_email, id):
     """
     Inserts/updates a vote
     :param voter_email:
@@ -52,37 +52,26 @@ def cast_vote(voter_email, election_date, votee_email):
     :return:
     """
 
+    campaign = Campaign.objects.get(pk=id)
+    if campaign == None:
+        HttpResponse(json.dumps({"message": "Unknown campaign"}), content_type='application/json', status=400)
+
     # Check if vote exists
     with connection.cursor() as cursor:
+        # Get max id
         query = """
-        SELECT COUNT(*)
-        FROM api_votes
-        WHERE voter_id = %s AND election_id = %s AND votee_id = %s
-        """
-        cursor.execute(query, [voter_email, election_date, votee_email])
-        if cursor.fetchone()[0] <= 0:
+                    SELECT MAX(id) 
+                    FROM api_votes;
+                    """
+        cursor.execute(query)
+        result = cursor.fetchone()
+        new_id = result[0] + 1 if result is not None else 0
 
-            # Get max id
-            query = """
-            SELECT MAX(id) 
-            FROM api_votes;
-            """
-            cursor.execute(query)
-            new_id = cursor.fetchone()[0] + 1 if cursor.fetchone()[0] is not None else 0
-
-            # Insert
-            query = """
-            INSERT INTO api_votes(id, voter_id, election_id, votee_id) VALUES(%s, %s, %s, %s)
-            """
-            cursor.execute(query, [new_id, voter_email, election_date, votee_email])
-        else:
-            # Update
-            query="""
-            UPDATE api_votes
-            SET votee_id = %s
-            WHERE voter_id = %s AND election_id = %s
-            """
-            cursor.execute(query, [votee_email, voter_email, election_date])
+        # Insert
+        query = """
+                    INSERT INTO api_votes(id, voter_id, election_id, votee_id) VALUES(%s, %s, %s, %s)
+                    """
+        cursor.execute(query, [new_id, voter_email, campaign.election_id, campaign.campaigner_id])
     return HttpResponse(json.dumps({"message": "Vote successfully cast"}), content_type='application/json')
 
 
@@ -219,7 +208,7 @@ def current_election():
         serialize["campaigns"] = []
         for campaign in campaigns:
             campaign_json = serializeModel(campaign)
-            campaign_json["name"] = str(campaign)
+            campaign_json["name"] = str(campaign.campaigner)
             serialize["campaigns"].append(campaign_json)
         return HttpResponse(json.dumps(serialize), content_type='application/json')
 

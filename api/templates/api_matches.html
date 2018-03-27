@@ -1,0 +1,21 @@
+<h1>Matches</h1>
+<a href="{% url 'api:demo_matches_create' %}">Create a match</a>
+<br />
+{% if matches %}
+    {% for match in matches %}
+        <strong>{{ match.scoreA }} to {{ match.scoreB }}</strong>
+        <form action="{% url 'api:demo_matches_delete' %}" method="post">
+            <button type="submit" name="id" value="{{ match.id }}" id="delete">Delete</button>
+        </form>
+
+        <p>
+            {% for p in match.A %}
+                {{ p.first_name }} {{ p.last_name }},
+            {% endfor %}
+            vs.
+            {% for p in match.B %}
+                {{ p.first_name }} {{ p.last_name }},
+            {% endfor %}
+        </p>
+    {% endfor %}
+{% endif %}
