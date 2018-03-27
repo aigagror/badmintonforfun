@@ -47,6 +47,7 @@ class Court(models.Model):
 
 class Tournament(models.Model):
     date = models.DateField('date of tournament', unique=True)
+    endDate = models.DateField('end date of tournament', unique=True, null=True, blank=True)
 
 class Interested(models.Model):
     first_name = models.CharField(max_length=64)
