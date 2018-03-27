@@ -33,7 +33,7 @@ class Queue(models.Model):
 
 class Party(models.Model):
     queue = models.ForeignKey(Queue, on_delete=models.CASCADE)
-    
+
     def __str__(self):
         members = Member.objects.filter(party=self.id)
         ret = str(self.leader) + ':'
@@ -43,7 +43,6 @@ class Party(models.Model):
 
 
 class Court(models.Model):
-    number = models.IntegerField()
     queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Tournament(models.Model):
