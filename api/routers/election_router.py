@@ -7,7 +7,6 @@ from api.calls.election_call import current_election, edit_election, delete_elec
 from api.cursor_api import deserializeDate
 from api.routers.router import restrictRouter
 
-
 @csrf_exempt
 @restrictRouter(allowed=["GET", "POST", "DELETE"])
 def electionRouter(request):
