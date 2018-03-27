@@ -18,7 +18,7 @@ def campaignRouter(request):
 
     if request.method == "POST":
         dict_post = dict(request.POST.items())
-        validate_keys(["job", "pitch", "email"], dict_post)
+        validate_keys(["id", "job", "pitch", "email"], dict_post)
         return edit_campaign(dict_post)
     elif request.method == "DELETE":
         # django doesn't have anything that handles delete so...
@@ -26,6 +26,7 @@ def campaignRouter(request):
         if not validate_keys(["id", "job", "email"], dict_delete):
             HttpResponse(json.dumps({'message': 'Missing parameters'}),
                          content_type='application/json', status=400)
+        print(dict_delete)
         return delete_campaign(dict_delete["id"], dict_delete["email"], dict_delete["job"])
 
 

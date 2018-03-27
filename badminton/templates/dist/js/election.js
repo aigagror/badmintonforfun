@@ -2089,6 +2089,54 @@ function capitalize(str) {
 class ElectionCandidate extends React.Component {
     constructor(props) {
         super(props);
+        this.deleteCandidate = this.deleteCandidate.bind(this);
+        this.updateCandidate = this.updateCandidate.bind(this);
+        this.state = {
+            pitch: this.props.person.pitch,
+        };
+        this.previousTimeout = null;
+    }
+    deleteCandidate(event) {
+        axios_1.default.delete(campaign_url, {
+            headers: { 'Content-Type': 'text/plain' },
+            data: JSON.stringify({
+                id: this.props.person.election,
+                job: this.props.person.job,
+                email: this.props.person.campaigner,
+            }),
+        })
+            .then((res) => {
+            window.location.reload(true);
+        })
+            .catch((res) => {
+            console.log(res);
+        });
+        event.preventDefault();
+    }
+    updateCandidate(event) {
+        if (this.previousTimeout != null) {
+            clearTimeout(this.previousTimeout);
+            this.previousTimeout = null;
+        }
+        this.setState({
+            pitch: event.target.value,
+        });
+        const makeRequest = () => {
+            let data = new FormData();
+            data.append('id', this.props.person.election);
+            data.append('job', this.props.person.job);
+            data.append('pitch', this.state.pitch);
+            data.append('email', this.props.person.campaigner);
+            axios_1.default.post(campaign_url, data)
+                .then((res) => {
+                this.previousTimeout = null;
+            })
+                .catch((res) => {
+                this.previousTimeout = null;
+                console.log(res);
+            });
+        };
+        this.previousTimeout = setTimeout(makeRequest, 1000);
     }
     render() {
         return (React.createElement("div", null,
@@ -2096,11 +2144,11 @@ class ElectionCandidate extends React.Component {
                 React.createElement("div", { className: "col-1 row-2" },
                     React.createElement(RadioButton_1.RadioButton, { name: this.props.role, id: "" + this.props.person.id, value: this.props.person.id, defaultChecked: this.props.person.name })),
                 React.createElement("div", { className: "col-8 row-2 election-label-div" },
-                    React.createElement("label", { htmlFor: "" + this.props.person.id, className: "election-label" }, this.props.person.name))),
-            React.createElement("div", { className: "row col-offset-1 col-10" },
-                React.createElement("p", null,
-                    "Pitch: ",
-                    this.props.person.pitch))));
+                    React.createElement("label", { htmlFor: "" + this.props.person.id, className: "election-label" }, this.props.person.name)),
+                React.createElement("div", { className: "col-2 row-2" },
+                    React.createElement("button", { onClick: this.deleteCandidate }, "X"))),
+            React.createElement("div", { className: "row col-offset-1 col-12" },
+                React.createElement("textarea", { value: this.state.pitch, onChange: this.updateCandidate }))));
     }
 }
 class ElectionRole extends React.Component {
@@ -2113,7 +2161,7 @@ class ElectionRole extends React.Component {
                 React.createElement("div", { className: "col-3" },
                     React.createElement("h3", null, this.props.role))),
             this.props.candidates.map((key, idx) => {
-                return React.createElement(ElectionCandidate, { person: key, role: this.props.role, key: idx });
+                return React.createElement(ElectionCandidate, { person: key, role: this.props.role, key: idx, refresh: this.props.refresh });
             })));
     }
 }
@@ -2145,14 +2193,12 @@ class ElectionUp extends React.Component {
         });
     }
     deleteElection() {
-        console.log(this.props.id);
         axios_1.default.delete(election_url, {
             headers: { 'Content-Type': 'text/plain' },
             data: JSON.stringify({ id: this.props.id, }),
         })
             .then((res) => {
             this.props.refresh();
-            console.log("delete");
         })
             .catch((res) => {
             console.log(res);
@@ -2164,7 +2210,7 @@ class ElectionUp extends React.Component {
                 React.createElement("button", { onClick: this.deleteElection }, "Delete Election"),
                 React.createElement("form", { onSubmit: this.submitVotes },
                     this.state.campaigns.map((campaign, idx) => {
-                        return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx });
+                        return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx, refresh: this.props.refresh });
                     }),
                     React.createElement("div", { className: "row row-offset-2" },
                         React.createElement("button", { type: "submit" }, "Submit Votes"))),

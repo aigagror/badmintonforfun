@@ -22,8 +22,62 @@ function capitalize(str: string): string {
 class ElectionCandidate extends React.Component<any, any> {
 	person: any;
 	role: string;
+	previousTimeout: any;
 	constructor(props: any) {
 		super(props);
+		this.deleteCandidate = this.deleteCandidate.bind(this);
+		this.updateCandidate = this.updateCandidate.bind(this);
+		this.state = {
+			pitch: this.props.person.pitch,
+		}
+		this.previousTimeout = null;
+	}
+
+	deleteCandidate(event: any) {
+		axios.delete(campaign_url, {
+		  headers: { 'Content-Type': 'text/plain' },
+		  data: JSON.stringify({
+		  	id: this.props.person.election,
+		  	job: this.props.person.job,
+		  	email: this.props.person.campaigner,
+		  }),
+		})
+		.then((res: any) => {
+			window.location.reload(true);
+		})
+		.catch((res: any) => {
+			console.log(res);
+		})
+
+		event.preventDefault();
+	}
+
+	updateCandidate(event: any) {
+		if (this.previousTimeout != null) {
+			 clearTimeout(this.previousTimeout);
+			 this.previousTimeout = null;
+		}
+
+		this.setState({
+			pitch: event.target.value,
+		})
+
+		const makeRequest = () => {
+			let data = new FormData();
+			data.append('id', this.props.person.election);
+			data.append('job', this.props.person.job);
+			data.append('pitch', this.state.pitch);
+			data.append('email', this.props.person.campaigner);
+			axios.post(campaign_url, data)
+				.then((res: any) => {
+					this.previousTimeout = null;
+				})
+				.catch((res: any) => {
+					this.previousTimeout = null;
+					console.log(res);
+				})
+		}
+		this.previousTimeout = setTimeout(makeRequest, 1000);
 	}
 
 	render() {
@@ -37,10 +91,15 @@ class ElectionCandidate extends React.Component<any, any> {
 			<div className="col-8 row-2 election-label-div">
 			<label htmlFor={""+this.props.person.id} className="election-label">{this.props.person.name}</label>
 			</div>
+
+			<div className="col-2 row-2">
+			<button onClick={this.deleteCandidate}>X</button>
+			</div>
 			</div>
 
-			<div className="row col-offset-1 col-10">
-			<p>Pitch: {this.props.person.pitch}</p>
+			<div className="row col-offset-1 col-12">
+			<textarea value={this.state.pitch} onChange={this.updateCandidate}>
+			</textarea>
 			</div>
 			</div>
 			);
@@ -61,7 +120,11 @@ class ElectionRole extends React.Component<any, any> {
 			</div>
 			{
 				this.props.candidates.map((key: any, idx: any) => {
-					return <ElectionCandidate person={key} role={this.props.role} key={idx}/>
+					return <ElectionCandidate 
+						person={key} 
+						role={this.props.role} 
+						key={idx}
+						refresh={this.props.refresh} />
 				})
 			}
 			</div>
@@ -105,14 +168,12 @@ class ElectionUp extends React.Component<any, any> {
 	}
 
 	deleteElection() {
-		console.log(this.props.id);
 		axios.delete(election_url, {
 		  headers: { 'Content-Type': 'text/plain' },
 		  data: JSON.stringify({id: this.props.id,}),
 		})
 		.then((res: any) => {
 			this.props.refresh();
-			console.log("delete");
 		})
 		.catch((res: any) => {
 			console.log(res);
@@ -127,7 +188,11 @@ class ElectionUp extends React.Component<any, any> {
 		<form onSubmit={this.submitVotes}>
 		{
 			this.state.campaigns.map((campaign: any, idx: number) => { 
-				return <ElectionRole role={campaign[0]} candidates={campaign[1]} key={idx}/>
+				return <ElectionRole 
+					role={campaign[0]} 
+					candidates={campaign[1]} 
+					key={idx} 
+					refresh={this.props.refresh}/>
 			})
 		}
 		<div className="row row-offset-2">

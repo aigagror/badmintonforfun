@@ -121,8 +121,8 @@ def get_campaign(id, email, job):
                             status=400)
 
     with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM api_campaign, api_election WHERE api_campaign.job=%s AND api_campaign.election_id=%s \
-                       AND api_campaign.campaigner_id=%s", [job, curr_election.date, email])
+        cursor.execute("SELECT * FROM api_campaign, api_election WHERE api_campaign.job=%s AND api_campaign.election_id=%s\
+                       AND api_campaign.campaigner_id=%s", [job, curr_election.id, email])
         result = dictfetchone(cursor)
         if result:
             if result['endDate'] is None:
