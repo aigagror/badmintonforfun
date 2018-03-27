@@ -1,36 +1,5 @@
 [
 {
-    "model": "api.queue",
-    "pk": "CASUAL",
-    "fields": {}
-},
-{
-    "model": "api.queue",
-    "pk": "KOTH",
-    "fields": {}
-},
-{
-    "model": "api.queue",
-    "pk": "RANKED",
-    "fields": {}
-},
-{
-    "model": "api.party",
-    "pk": 2,
-    "fields": {
-        "queue": "CASUAL",
-        "leader": "ezhuang2@illinois.edu"
-    }
-},
-{
-    "model": "api.party",
-    "pk": 3,
-    "fields": {
-        "queue": "CASUAL",
-        "leader": "apoddar3@illinois.edu"
-    }
-},
-{
     "model": "api.interested",
     "pk": "apoddar3@illinois.edu",
     "fields": {
@@ -334,7 +303,7 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "party": 3,
+        "party": null,
         "bio": ""
     }
 },

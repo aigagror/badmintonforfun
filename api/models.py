@@ -22,7 +22,7 @@ TEAMS = (
     )
 
 class Queue(models.Model):
-    type = models.CharField(max_length=64, choices=QUEUE_TYPE, primary_key=True)
+    type = models.CharField(max_length=64, choices=QUEUE_TYPE, unique=True)
 
     def __str__(self):
         parties = Party.objects.filter(queue=self)
