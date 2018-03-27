@@ -33,8 +33,7 @@ class Queue(models.Model):
 
 class Party(models.Model):
     queue = models.ForeignKey(Queue, on_delete=models.CASCADE)
-    leader = models.OneToOneField('Member', related_name='my_party', on_delete=models.CASCADE) # Using a string to avoid Python's compile error of circular reference
-
+    
     def __str__(self):
         members = Member.objects.filter(party=self.id)
         ret = str(self.leader) + ':'
