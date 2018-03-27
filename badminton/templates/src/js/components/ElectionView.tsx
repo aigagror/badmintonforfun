@@ -222,20 +222,20 @@ class CampaignResponse {
 	id: string;
 	endDate: string;
 	date: string;
+	order: string[];
 	campaigns: Campaign[];
 }
 
 const convertResponseToHierarchy = (res: CampaignResponse): any => {
 	const ret: any = {};
-	const order: string[] = [...new Set(res.campaigns.map(e => e.job))];
-	for (var i of order) {
+	for (var i of res.order) {
 		ret[i] = [];
 	}
 
 	for (var campaigner of res.campaigns) {
 		ret[campaigner.job].push(campaigner);
 	}
-	return [ret, order];
+	return ret;
 }
 
 export class ElectionView extends React.Component<{}, any> {
@@ -260,11 +260,11 @@ export class ElectionView extends React.Component<{}, any> {
 				const status = res.data.status;
 				var pack;
 				if (status === "up") {
-					const [hierarchy, order] = convertResponseToHierarchy(res.data);
-					const pack = <ElectionUp order={order} 
+					const hierarchy = convertResponseToHierarchy(res.data);
+					const pack = <ElectionUp order={res.data.order} 
 						id={res.data.id}
 						campaigns={hierarchy} 
-						roles={order} 
+						roles={res.data.order} 
 						refresh={this.performRequest}/>;
 
 					_this_ref.setState({

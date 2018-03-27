@@ -3,7 +3,9 @@ import pytz
 from api.cursor_api import *
 from datetime import datetime
 import json
+from ..models import JOBS
 
+jobs_list = [x[0] for x in JOBS]
 
 #votes
 def get_all_votes():
@@ -98,7 +100,7 @@ def start_campaign(campaign_dict):
     curr_election = curr_election_dict['election']
     if curr_election is not None:
         return run_connection("INSERT INTO api_campaign (job, pitch, election_id, campaigner_id) VALUES\
-                                (%s, %s, %s, %s)", campaign_dict["job"], campaign_dict["pitch"], curr_election.date,
+                                (%s, %s, %s, %s)", campaign_dict["job"], campaign_dict["pitch"], curr_election.id,
                               campaign_dict["email"])
     else:
         return HttpResponse(json.dumps({"message": "There is no election to campaign for!"}),
@@ -217,6 +219,7 @@ def current_election():
         serialize["status"] = "up"
         campaigns = election_dict['campaigns']
         serialize["campaigns"] = []
+        serialize['order'] = jobs_list
         for campaign in campaigns:
             campaign_json = serializeModel(campaign)
             campaign_json["name"] = str(campaign)

@@ -2230,14 +2230,13 @@ class CampaignResponse {
 }
 const convertResponseToHierarchy = (res) => {
     const ret = {};
-    const order = [...new Set(res.campaigns.map(e => e.job))];
-    for (var i of order) {
+    for (var i of res.order) {
         ret[i] = [];
     }
     for (var campaigner of res.campaigns) {
         ret[campaigner.job].push(campaigner);
     }
-    return [ret, order];
+    return ret;
 };
 class ElectionView extends React.Component {
     constructor(props) {
@@ -2256,8 +2255,8 @@ class ElectionView extends React.Component {
             const status = res.data.status;
             var pack;
             if (status === "up") {
-                const [hierarchy, order] = convertResponseToHierarchy(res.data);
-                const pack = React.createElement(ElectionUp, { order: order, id: res.data.id, campaigns: hierarchy, roles: order, refresh: this.performRequest });
+                const hierarchy = convertResponseToHierarchy(res.data);
+                const pack = React.createElement(ElectionUp, { order: res.data.order, id: res.data.id, campaigns: hierarchy, roles: res.data.order, refresh: this.performRequest });
                 _this_ref.setState({
                     election_data: pack,
                     election: LoadingState.Loaded,
@@ -2314,6 +2313,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const Select_1 = __webpack_require__(29);
 const Popup_1 = __webpack_require__(30);
+const axios_1 = __webpack_require__(10);
+const campaignCreate = '/api/campaign/create';
 class RegisterElectionView extends React.Component {
     constructor(props) {
         super(props);
@@ -2347,10 +2348,19 @@ class RegisterElectionView extends React.Component {
         this.openDiv.addEventListener('animationend', this._animationListener);
     }
     submit() {
-        console.log("Pitch", this.state.pitchValue);
-        console.log("State", this.campaignType);
-        this.setState({
-            popup: React.createElement(Popup_1.Popup, { title: "Campaign Submitted", message: "Election Campaign has been submitted", callback: () => window.location.reload(true) })
+        const email = 'ezhuang2@illinois.edu';
+        let data = new FormData();
+        data.append('pitch', this.state.pitchValue);
+        data.append('job', this.campaignType);
+        data.append('email', email);
+        axios_1.default.post(campaignCreate, data)
+            .then((res) => {
+            this.setState({
+                popup: React.createElement(Popup_1.Popup, { title: "Campaign Submitted", message: "Election Campaign has been submitted", callback: () => window.location.reload(true) })
+            });
+        })
+            .catch((res) => {
+            console.log(res);
         });
     }
     render() {
