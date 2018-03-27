@@ -1,0 +1,33 @@
+{% if match %}
+    <h1>Edit Match</h1>
+    <a href="{% url 'api:demo_matches' %}">View Matches</a>
+
+    <form action="{% url 'api:demo_matches_edit' match.id %}" method="post">
+        <input hidden name="id" value="{{ match.id }}">
+        <label for="score_a">Team A:</label>
+        <input type="number" name="scoreA" id="score_a" value="{{ match.scoreA }}">
+
+        <label for="score_b">Team B:</label>
+        <input type="number" name="scoreB" id="score_b" value="{{ match.scoreB }}">
+        <br />
+
+        <label for="playerA">Player A</label>
+        <select name="playerA">
+            {% for m in members %}
+                <option {% if m.email == match.A.0.email %}selected{% endif %}>{{ m.email }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="playerB">Player B</label>
+        <select name="playerB">
+            {% for m in members %}
+                <option {% if m.interested_ptr == match.B.0.email %}selected{% endif %}>{{ m.email }}</option>
+            {% endfor %}
+        </select>
+        <br />
+
+        <input type="submit">
+    </form>
+{% else %}
+    No match found
+{% endif %}

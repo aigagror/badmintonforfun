@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import re_path
+from django.urls import re_path, path
 
 import api.routers.announcement_router
 import api.routers.campaign_router
@@ -30,6 +30,8 @@ urlpatterns = [
     re_path(r'demo/matches/?$', api.routers.demo.matches, name='demo_matches'),
     re_path(r'demo/matches/create/?$', api.routers.demo.create_match, name='demo_matches_create'),
     re_path(r'demo/matches/delete/?$', api.routers.demo.delete_match, name='demo_matches_delete'),
+    path('demo/matches/<int:match_id>/edit/', api.routers.demo.edit_match, name='demo_matches_edit'),
+    re_path(r'demo/players/top/?$', api.routers.demo.top_players, name='demo_top_players'),
 
     re_path(r'demo/election/?$', api.routers.demo.index, name='demo_election'),
     re_path(r'demo/election/vote/?$', api.routers.demo.vote, name='demo_vote'),

@@ -9,8 +9,52 @@ from api.calls.election_call import *
 from api.calls.match_call import *
 from api.calls.match_call import create_match as call_create_match
 from api.calls.match_call import delete_match as call_delete_match
+from api.calls.match_call import edit_match as call_edit_match
 import ast
 from django.urls import reverse
+
+@restrictRouter(allowed=["GET"])
+def top_players(request):
+    response = get_top_players()
+    content = response.content.decode()
+
+    context = {
+        'topPlayers': json.loads(content)
+    }
+    print(context)
+    return render(request, 'api_rankings.html', context)
+
+@csrf_exempt
+@restrictRouter(allowed=["GET", "POST"])
+def edit_match(request, match_id):
+    if request.method == "GET":
+        response = get_match(match_id)
+        content = response.content.decode()
+
+        all_members = Member.objects.raw("SELECT * FROM api_member")
+        s_members = serializeSetOfModels(all_members)
+
+        context = {
+            'match': json.loads(content),
+            'members': s_members
+        }
+        print(context)
+        return render(request, 'api_matches_edit.html', context)
+    elif request.method == "POST":
+        dict_post = dict(request.POST.items())
+        idKey = "id"
+        scoreAKey = "scoreA"
+        scoreBKey = "scoreB"
+        playerAKey = "playerA"
+        playerBKey = "playerB"
+        if not validate_keys([idKey, scoreAKey, scoreBKey, playerAKey, playerBKey], dict_post):
+            return HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                                content_type='application/json', status=400)
+        score_a = int(dict_post[scoreAKey])
+        score_b = int(dict_post[scoreBKey])
+        id = int(dict_post[idKey])
+        response = call_edit_match(id, score_a, score_b, [dict_post[playerAKey]], [dict_post[playerBKey]])
+        return HttpResponseRedirect(reverse('api:demo_matches'))
 
 @restrictRouter(allowed=["GET", "POST"])
 def matches(request):
