@@ -749,7 +749,8 @@
         "scoreA": 16,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -760,7 +761,8 @@
         "scoreA": 19,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -771,7 +773,8 @@
         "scoreA": 5,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -782,7 +785,8 @@
         "scoreA": 21,
         "scoreB": 16,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -793,7 +797,8 @@
         "scoreA": 16,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -804,7 +809,8 @@
         "scoreA": 21,
         "scoreB": 19,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -815,7 +821,8 @@
         "scoreA": 11,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -826,7 +833,8 @@
         "scoreA": 21,
         "scoreB": 15,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -837,7 +845,8 @@
         "scoreA": 11,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -848,7 +857,8 @@
         "scoreA": 14,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -859,7 +869,8 @@
         "scoreA": 10,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -870,7 +881,8 @@
         "scoreA": 14,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -881,7 +893,8 @@
         "scoreA": 21,
         "scoreB": 10,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -892,7 +905,8 @@
         "scoreA": 26,
         "scoreB": 24,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -903,7 +917,8 @@
         "scoreA": 21,
         "scoreB": 10,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -914,7 +929,8 @@
         "scoreA": 19,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -925,7 +941,8 @@
         "scoreA": 21,
         "scoreB": 15,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -936,7 +953,8 @@
         "scoreA": 10,
         "scoreB": 21,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -947,7 +965,8 @@
         "scoreA": 21,
         "scoreB": 8,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -958,7 +977,8 @@
         "scoreA": 21,
         "scoreB": 12,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -969,7 +989,8 @@
         "scoreA": 12,
         "scoreB": 23,
         "court": null,
-        "tournament": null
+        "tournament": null,
+        "endDateTime": null
     }
 },
 {
@@ -1330,153 +1351,6 @@
         "member": "sujayd2@illinois.edu",
         "team": "A",
         "match": 20
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 1,
-    "fields": {
-        "endDate": "2018-03-19T16:48:03Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 2,
-    "fields": {
-        "endDate": "2018-03-19T16:49:26Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 3,
-    "fields": {
-        "endDate": "2018-03-19T16:50:57Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 4,
-    "fields": {
-        "endDate": "2018-03-19T16:51:15Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 5,
-    "fields": {
-        "endDate": "2018-03-19T16:53:25Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 6,
-    "fields": {
-        "endDate": "2018-03-19T16:53:44Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 7,
-    "fields": {
-        "endDate": "2018-03-19T16:53:59Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 8,
-    "fields": {
-        "endDate": "2018-03-19T16:54:13Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 9,
-    "fields": {
-        "endDate": "2018-03-19T16:54:31Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 10,
-    "fields": {
-        "endDate": "2018-03-19T16:55:06Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 11,
-    "fields": {
-        "endDate": "2018-03-19T16:55:27Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 12,
-    "fields": {
-        "endDate": "2018-03-19T16:55:44Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 13,
-    "fields": {
-        "endDate": "2018-03-19T16:56:00Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 14,
-    "fields": {
-        "endDate": "2018-03-19T16:56:18Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 15,
-    "fields": {
-        "endDate": "2018-03-19T16:58:18Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 16,
-    "fields": {
-        "endDate": "2018-03-19T16:58:40Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 17,
-    "fields": {
-        "endDate": "2018-03-19T16:58:59Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 18,
-    "fields": {
-        "endDate": "2018-03-19T16:59:19Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 19,
-    "fields": {
-        "endDate": "2018-03-19T16:59:35Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 20,
-    "fields": {
-        "endDate": "2018-03-19T16:59:51Z"
-    }
-},
-{
-    "model": "api.finishedmatch",
-    "pk": 21,
-    "fields": {
-        "endDate": "2018-03-23T17:38:08Z"
     }
 },
 {

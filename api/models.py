@@ -112,6 +112,15 @@ class Match(models.Model):
     court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True, blank=True)
     tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True)
 
+    endDateTime = models.DateTimeField('date time ended', null=True, blank=True)
+
+    def clean(self):
+        if self.endDateTime is not None:
+            if abs(self.scoreA - self.scoreB) < 2:
+                raise ValidationError('Violates win by 2 rule')
+            if self.scoreA < 21 and self.scoreB < 21:
+                raise ValidationError('Someone should have at least 21 points')
+
     def __str__(self):
         plays = PlayedIn.objects.filter(match=self)
         team_a_members = []
@@ -135,14 +144,6 @@ class PlayedIn(models.Model):
     def __str__(self):
         return '{}:{}'.format(self.member, self.match)
 
-class FinishedMatch(Match):
-    endDate = models.DateTimeField('date ended')
-
-    def clean(self):
-        if abs(self.scoreA - self.scoreB) < 2:
-            raise ValidationError('Violates win by 2 rule')
-        if self.scoreA < 21 and self.scoreB < 21:
-            raise ValidationError('Someone should have at least 21 points')
 
 class Announcement(models.Model):
     date = models.DateTimeField('date of announcement', unique=True)
