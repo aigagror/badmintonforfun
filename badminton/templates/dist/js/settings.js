@@ -2243,42 +2243,19 @@ class SettingsView extends React.Component {
             regular_settings: null,
             board_settings: null,
             loading: true,
-            regular: true,
         };
     }
     performRequest() {
-        const regular = this.state.regular;
-        if (this.state.regular) {
-            axios_1.default.get(reg_url)
-                .then((res) => {
-                this.setState({
-                    loading: false,
-                    regular: !regular,
-                    regular_settings: React.createElement(StandardSettings, { data: res.data }),
-                    board_settings: null
-                });
-            })
-                .catch((res) => {
+        axios_1.default.get(reg_url)
+            .then((res) => {
+            this.setState({
+                loading: false,
+                regular_settings: React.createElement(StandardSettings, { data: res.data.regular }),
+                board_settings: null
             });
-        }
-        else {
-            axios_1.default.get(member_url)
-                .then((res1) => {
-                axios_1.default.get(reg_url)
-                    .then((res) => {
-                    this.setState({
-                        loading: false,
-                        regular: !regular,
-                        regular_settings: React.createElement(StandardSettings, { data: res.data }),
-                        board_settings: React.createElement(BoardSettings, { data: res1.data })
-                    });
-                })
-                    .catch((res) => {
-                });
-            })
-                .catch((res) => {
-            });
-        }
+        })
+            .catch((res) => {
+        });
     }
     componentDidMount() {
         this.performRequest();
@@ -2294,7 +2271,6 @@ class SettingsView extends React.Component {
     render() {
         return React.createElement("div", { className: "election-view" },
             React.createElement("h2", null, "Toggle Board View"),
-            React.createElement(Slider_1.Slider, { change: this.switch }),
             this.state.regular_settings !== null &&
                 this.state.regular_settings,
             this.state.board_settings !== null &&

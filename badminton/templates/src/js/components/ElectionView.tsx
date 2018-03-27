@@ -6,8 +6,9 @@ import { RegisterElectionView } from "./RegisterElection";
 import { RadioButton } from '../common/RadioButton';
 import { Select, Option } from "../common/Select";
 
-const election_url = '/api/elections';
-const campaign_url = '/api/campaign';
+const election_url = '/api/election/';
+const campaign_url = '/api/campaign/';
+const election_create_url = '/api/election/create/';
 
 enum LoadingState {
     Loading,
@@ -21,8 +22,62 @@ function capitalize(str: string): string {
 class ElectionCandidate extends React.Component<any, any> {
 	person: any;
 	role: string;
+	previousTimeout: any;
 	constructor(props: any) {
 		super(props);
+		this.deleteCandidate = this.deleteCandidate.bind(this);
+		this.updateCandidate = this.updateCandidate.bind(this);
+		this.state = {
+			pitch: this.props.person.pitch,
+		}
+		this.previousTimeout = null;
+	}
+
+	deleteCandidate(event: any) {
+		axios.delete(campaign_url, {
+		  headers: { 'Content-Type': 'text/plain' },
+		  data: JSON.stringify({
+		  	id: this.props.person.election,
+		  	job: this.props.person.job,
+		  	email: this.props.person.campaigner,
+		  }),
+		})
+		.then((res: any) => {
+			window.location.reload(true);
+		})
+		.catch((res: any) => {
+			console.log(res);
+		})
+
+		event.preventDefault();
+	}
+
+	updateCandidate(event: any) {
+		if (this.previousTimeout != null) {
+			 clearTimeout(this.previousTimeout);
+			 this.previousTimeout = null;
+		}
+
+		this.setState({
+			pitch: event.target.value,
+		})
+
+		const makeRequest = () => {
+			let data = new FormData();
+			data.append('id', this.props.person.election);
+			data.append('job', this.props.person.job);
+			data.append('pitch', this.state.pitch);
+			data.append('email', this.props.person.campaigner);
+			axios.post(campaign_url, data)
+				.then((res: any) => {
+					this.previousTimeout = null;
+				})
+				.catch((res: any) => {
+					this.previousTimeout = null;
+					console.log(res);
+				})
+		}
+		this.previousTimeout = setTimeout(makeRequest, 1000);
 	}
 
 	render() {
@@ -30,16 +85,21 @@ class ElectionCandidate extends React.Component<any, any> {
 			<div className="row">
 			<div className="col-1 row-2">
 			<RadioButton name={this.props.role} id={""+this.props.person.id}
-				value={this.props.person.id} defaultChecked={this.props.person.voted} />
+				value={this.props.person.id} defaultChecked={this.props.person.name} />
 			</div>
 
 			<div className="col-8 row-2 election-label-div">
 			<label htmlFor={""+this.props.person.id} className="election-label">{this.props.person.name}</label>
 			</div>
+
+			<div className="col-2 row-2">
+			<button onClick={this.deleteCandidate}>X</button>
+			</div>
 			</div>
 
-			<div className="row col-offset-1 col-10">
-			<p>Pitch: {this.props.person.pitch}</p>
+			<div className="row col-offset-1 col-12">
+			<textarea value={this.state.pitch} onChange={this.updateCandidate}>
+			</textarea>
 			</div>
 			</div>
 			);
@@ -60,7 +120,11 @@ class ElectionRole extends React.Component<any, any> {
 			</div>
 			{
 				this.props.candidates.map((key: any, idx: any) => {
-					return <ElectionCandidate person={key} role={this.props.role} key={idx}/>
+					return <ElectionCandidate 
+						person={key} 
+						role={this.props.role} 
+						key={idx}
+						refresh={this.props.refresh} />
 				})
 			}
 			</div>
@@ -84,6 +148,8 @@ class ElectionUp extends React.Component<any, any> {
 			campaigns: campaigns,
 		}
 		this.submitVotes = this.submitVotes.bind(this);
+
+		this.deleteElection = this.deleteElection.bind(this);
 	}
 
 	submitVotes(event: any) {
@@ -101,13 +167,32 @@ class ElectionUp extends React.Component<any, any> {
 		});
 	}
 
+	deleteElection() {
+		axios.delete(election_url, {
+		  headers: { 'Content-Type': 'text/plain' },
+		  data: JSON.stringify({id: this.props.id,}),
+		})
+		.then((res: any) => {
+			this.props.refresh();
+		})
+		.catch((res: any) => {
+			console.log(res);
+		})
+
+	}
+
 	render() {
 		return (<>
 		<div className="grid">
+		<button onClick={this.deleteElection}>Delete Election</button>
 		<form onSubmit={this.submitVotes}>
 		{
 			this.state.campaigns.map((campaign: any, idx: number) => { 
-				return <ElectionRole role={campaign[0]} candidates={campaign[1]} key={idx}/>
+				return <ElectionRole 
+					role={campaign[0]} 
+					candidates={campaign[1]} 
+					key={idx} 
+					refresh={this.props.refresh}/>
 			})
 		}
 		<div className="row row-offset-2">
@@ -121,13 +206,42 @@ class ElectionUp extends React.Component<any, any> {
 	}
 }
 
+function dateNow() {
+	const d = new Date();
+    var month = '' + (d.getMonth() + 1);
+    var day = '' + d.getDate();
+    var year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
 class ElectionDown extends React.Component<any, any> {
 	constructor(props: any) {
 		super(props);
+
+		this.createElection = this.createElection.bind(this);
+	}
+
+	createElection() {
+		let data = new FormData();
+		data.append('startDate', dateNow());
+		axios.post(election_create_url, data, {
+			headers: {"Content-Type": "multipart/form-data"}
+		})
+		.then((res: any) => {
+			this.props.refresh()
+		}).catch((res: any) => {
+			console.log(res);
+		})
 	}
 
 	render() {
-		return (<p>{this.props.message}</p>);
+		return (<>
+			<p>{this.props.message}</p> <button onClick={this.createElection}>Create</button>
+			</>);
 	}
 }
 
@@ -161,14 +275,18 @@ class ElectionResults extends React.Component<any, any> {
 }
 
 class Campaign {
-	pitch: string;
+	campaigner: string;
 	job: string;
-	email: string;
+	election: string;
 	id: number;
-	name: string;
+	pitch: string;
 }
 
 class CampaignResponse {
+	status: string;
+	id: string;
+	endDate: string;
+	date: string;
 	order: string[];
 	campaigns: Campaign[];
 }
@@ -196,42 +314,32 @@ export class ElectionView extends React.Component<{}, any> {
 	    	error: null,
 	    }
 	    this.performRequest = this.performRequest.bind(this);
-	    //this.switch = this.switch.bind(this);
 	    this.componentDidMount = this.componentDidMount.bind(this);
 	}
 
 	performRequest() {
 		const _this_ref = this;
-		const followUp = () => {
-			axios.get(campaign_url)
-				.then(res => {
-					const casted = res.data as CampaignResponse;
-					const hierarchy = convertResponseToHierarchy(casted);
-					const pack = <ElectionUp order={casted.order} 
-						campaigns={hierarchy} 
-						roles={casted.order} />;
-					_this_ref.setState({
-						election_data: pack,
-						election: LoadingState.Loaded,
-						up: status
-					})
-				})
-				.catch(res => {
-					this.setState({
-						error: res,
-					});
-				})
-		}
 
 		axios.get(election_url)
 			.then(res => {
 				const status = res.data.status;
 				var pack;
 				if (status === "up") {
-					followUp();
+					const hierarchy = convertResponseToHierarchy(res.data);
+					const pack = <ElectionUp order={res.data.order} 
+						id={res.data.id}
+						campaigns={hierarchy} 
+						roles={res.data.order} 
+						refresh={this.performRequest}/>;
+
+					_this_ref.setState({
+						election_data: pack,
+						election: LoadingState.Loaded,
+						up: status
+					})
 				} else if (status === "down") {
 					_this_ref.setState({
-						election_data: <ElectionDown message={res.data.message} />,
+						election_data: <ElectionDown message={res.data.message || "Not Up"} refresh={this.performRequest}/>,
 						election: LoadingState.Loaded,
 						up: status
 					})
@@ -249,21 +357,6 @@ export class ElectionView extends React.Component<{}, any> {
 				});
 			});
 	}
-
-/*
-	switch(value: any) {
-		if (this.state.election !== LoadingState.Loaded) {
-			return;
-		}
-
-		if (value === 'up') {
-			this.performRequest(election_url);
-		} else if (value === 'down') {
-			this.performRequest(election_not_url);
-		} else {
-			this.performRequest(election_results_url);
-		}
-	} */
 
 
 	componentDidMount() {

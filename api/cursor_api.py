@@ -83,6 +83,7 @@ def run_connection(execute, *args):
         try:
             cursor.execute(execute, [arg for arg in args])
         except IntegrityError:
+            raise
             return HttpResponse(json.dumps({'message': 'IntegrityError!'}),
                                 content_type='application/json', status=400)
         except DatabaseError as e:
