@@ -713,42 +713,6 @@
     }
 },
 {
-    "model": "api.votes",
-    "pk": 1,
-    "fields": {
-        "votee": "obama@gmail.com",
-        "election": 0,
-        "voter": "ezhuang2@illinois.edu"
-    }
-},
-{
-    "model": "api.votes",
-    "pk": 2,
-    "fields": {
-        "votee": "rosa@gmail.com",
-        "election": 0,
-        "voter": "donald@gmail.com"
-    }
-},
-{
-    "model": "api.votes",
-    "pk": 3,
-    "fields": {
-        "votee": "paul@gmail.com",
-        "election": 0,
-        "voter": "obama@gmail.com"
-    }
-},
-{
-    "model": "api.votes",
-    "pk": 4,
-    "fields": {
-        "votee": "rosa@gmail.com",
-        "election": 0,
-        "voter": "ezhuang2@illinois.edu"
-    }
-},
-{
     "model": "api.campaign",
     "pk": 1,
     "fields": {
@@ -1639,7 +1603,7 @@
     "pk": 12,
     "fields": {
         "app_label": "api",
-        "model": "votes"
+        "model": "vote"
     }
 },
 {
@@ -2023,27 +1987,27 @@
     "model": "auth.permission",
     "pk": 34,
     "fields": {
-        "name": "Can add votes",
+        "name": "Can add vote",
         "content_type": 12,
-        "codename": "add_votes"
+        "codename": "add_vote"
     }
 },
 {
     "model": "auth.permission",
     "pk": 35,
     "fields": {
-        "name": "Can change votes",
+        "name": "Can change vote",
         "content_type": 12,
-        "codename": "change_votes"
+        "codename": "change_vote"
     }
 },
 {
     "model": "auth.permission",
     "pk": 36,
     "fields": {
-        "name": "Can delete votes",
+        "name": "Can delete vote",
         "content_type": 12,
-        "codename": "delete_votes"
+        "codename": "delete_vote"
     }
 },
 {

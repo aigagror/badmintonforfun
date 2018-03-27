@@ -87,13 +87,6 @@ class Election(models.Model):
     def __str__(self):
         return '{} to {}'.format(self.date, self.endDate)
 
-class Votes(models.Model):
-    votee = models.ForeignKey(Member, related_name='votee', on_delete=models.SET_NULL, null=True)
-    election = models.ForeignKey(Election, on_delete=models.CASCADE)
-    voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return '{} voted for {}: {}'.format(self.voter, self.votee, self.election)
 
 class Campaign(models.Model):
     job = models.CharField(max_length=64, choices=JOBS)
@@ -103,6 +96,14 @@ class Campaign(models.Model):
 
     def __str__(self):
         return '{} for {}: {}'.format(self.campaigner, self.job, self.election)
+
+
+class Vote(models.Model):
+    campaign = models.ForeignKey(Campaign, related_name='vote', on_delete=models.CASCADE)
+    voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} voted for {}: {}'.format(self.voter, self.votee, self.election)
 
 
 class Match(models.Model):
