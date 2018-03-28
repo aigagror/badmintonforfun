@@ -25,17 +25,15 @@ def vote(request):
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
         voterKey = "voter"
-        electionKey = "electionDate"
-        voteeKey = "votee"
-        keys = [voterKey, electionKey, voteeKey]
+        campaignKey = "campaign"
+        keys = [voterKey, campaignKey]
         for key in keys:
             if key not in dict_post:
                 return HttpResponse("Missing required param {}".format(key), status=400)
 
-        voterEmail = dict_post[voterKey]
-        voteeEmail = dict_post[voteeKey]
-        electionDate = deserializeDate(dict_post[electionKey])
-        return cast_vote(voterEmail, electionDate, voteeEmail)
+        voter_id = dict_post[voterKey]
+        campaign_id = int(dict_post[campaignKey])
+        return cast_vote(voter_id, campaign_id)
 
 
 @restrictRouter(allowed=["GET"])

@@ -1,9 +1,6 @@
-from api.models import *
-import pytz
-from api.cursor_api import *
-from datetime import datetime
+from ..cursor_api import *
 import json
-from ..models import JOBS
+from ..models import *
 
 jobs_list = [x[0] for x in JOBS]
 
@@ -16,9 +13,11 @@ def get_all_votes():
 
     with connection.cursor() as cursor:
         query = """
-        SELECT voter_id AS voter, election_id AS election, votee_id AS votee
-        FROM api_votes, api_election
-        WHERE api_election.date <= date('now') AND api_votes.election_id = api_election.id;
+        SELECT voter.first_name, voter.last_name, votee.first_name, votee.last_name
+        FROM api_vote AS vote, api_election AS election, api_campaign AS campaign, api_interested AS voter, api_interested AS votee
+        WHERE (election.endDate IS NULL OR election.endDate >= date('now')) 
+        AND vote.campaign_id = campaign.id AND campaign.election_id = election.id
+        AND votee.id = campaign.campaigner_id AND voter.id = vote.voter_id;
         """
         cursor.execute(query)
 
@@ -37,24 +36,24 @@ def get_votes_from_member(email):
     with connection.cursor() as cursor:
         query = """
         SELECT *
-        FROM api_votes, api_election, api_member
-        WHERE api_election.endDate = NULL AND api_votes.election_id = api_election.date AND api_votes.voter_id = %s;
+        FROM api_vote, api_election, api_member
+        WHERE api_election.endDate = NULL AND api_vote.election_id = api_election.date AND api_vote.voter_id = %s;
         """
         cursor.execute(query, [email])
 
         results = dictfetchall(cursor)
     return HttpResponse(json.dumps(results), content_type='application/json')
 
-def cast_vote(voter_email, id):
+def cast_vote(voter_id, campaign_id):
     """
     Inserts/updates a vote
-    :param voter_email:
+    :param voter_id:
     :param election_date:
     :param votee_email:
     :return:
     """
 
-    campaign = Campaign.objects.get(pk=id)
+    campaign = Campaign.objects.get(pk=campaign_id)
     if campaign == None:
         HttpResponse(json.dumps({"message": "Unknown campaign"}), content_type='application/json', status=400)
 
@@ -63,17 +62,17 @@ def cast_vote(voter_email, id):
         # Get max id
         query = """
                     SELECT MAX(id) 
-                    FROM api_votes;
+                    FROM api_vote;
                     """
         cursor.execute(query)
         result = cursor.fetchone()
-        new_id = result[0] + 1 if result is not None else 0
+        new_id = result[0] + 1 if result[0] is not None else 0
 
         # Insert
         query = """
-                    INSERT INTO api_votes(id, voter_id, election_id, votee_id) VALUES(%s, %s, %s, %s)
+                    INSERT INTO api_vote(id, voter_id, campaign_id) VALUES(%s, %s, %s)
                     """
-        cursor.execute(query, [new_id, voter_email, campaign.election_id, campaign.campaigner_id])
+        cursor.execute(query, [new_id, voter_id, campaign.id])
     return HttpResponse(json.dumps({"message": "Vote successfully cast"}), content_type='application/json')
 
 
@@ -84,13 +83,16 @@ def start_campaign(campaign_dict):
     :param campaign_dict: an object containing the email, pitch, and job for the campaign
     :return: 200 if successful, 400 if not
     """
+    email = campaign_dict['email']
+    interesteds = Interested.objects.raw("SELECT * FROM api_interested WHERE email = %s", [email])
+    interested = interesteds[0]
 
     curr_election_dict = get_current_election()
     curr_election = curr_election_dict['election']
     if curr_election is not None:
         return run_connection("INSERT INTO api_campaign (job, pitch, election_id, campaigner_id) VALUES\
                                 (%s, %s, %s, %s)", campaign_dict["job"], campaign_dict["pitch"], curr_election.id,
-                              campaign_dict["email"])
+                              interested.id)
     else:
         return HttpResponse(json.dumps({"message": "There is no election to campaign for!"}),
                             content_type='application/json', status=400)
@@ -264,7 +266,7 @@ def get_election(id):
                                                      'endDate': serializeDate(election['endDate']) if election['endDate'] is not None else 'TBA'}}),
                             content_type='application/json')
     else:
-        return HttpResponse(json.dumps({'code': 400, 'message': 'There is no election that starts on this date!'}),
+        return HttpResponse(json.dumps({'message': 'There is no election that starts on this date!'}),
                             content_type='application/json', status=400)
 
 
@@ -281,8 +283,19 @@ def edit_election(id, startDate, endDate):
 
 def delete_election(id):
 
-    with connection.cursor() as cursor:
-        cursor.execute("DELETE FROM api_votes WHERE election_id= %s", [id])
-        cursor.execute("DELETE FROM api_campaign WHERE election_id=%s", [id])
+    elections = Election.objects.raw("SELECT * FROM api_election WHERE id = %s", [id])
 
-    return run_connection("DELETE FROM api_election WHERE id=%s", id)
+    if len(list(elections)) == 0:
+        return HttpResponse(json.dumps({'message': 'No election found'}),
+                     content_type='application/json', status=400)
+
+    election = elections[0]
+    campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [election.id])
+    with connection.cursor() as cursor:
+        for campaign in campaigns:
+            # TODO: Check these responses
+            response = run_connection("DELETE FROM api_vote WHERE campaign_id = %s", campaign.id)
+            response = run_connection("DELETE FROM api_campaign WHERE id=%s", campaign.id)
+
+    response = run_connection("DELETE FROM api_election WHERE id=%s", id)
+    return response

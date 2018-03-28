@@ -5,11 +5,7 @@ from django.shortcuts import render
 
 from api.calls.election_call import delete_campaign
 from api.calls.home_call import get_schedule
-from api.calls.settings_call import member_config, member_config_edit, is_board_member, board_member_config, \
-    promote_to_board_member, promote_to_member, edit_boardmember_info, edit_member_info, remove_member, add_interested, \
-    schedule_date_exists, edit_schedule, add_to_schedule, delete_from_schedule, get_all_courts, court_id_exists, \
-    edit_court_info, add_court, get_available_courts, get_all_queues, add_queue, get_board_members, get_members, \
-    get_interested, get_member_info
+from api.calls.settings_call import *
 from api.routers.router import restrictRouter, validate_keys
 
 
@@ -24,12 +20,18 @@ def settingsRouter(request):
     # email = 'ezhuang2@illinois.edu'
     if request.method == "GET":
         dict_get = dict(request.GET.items())
-        email = dict_get.get('email', '')
-        return member_config(email)
+        id = dict_get.get('id', None)
+        if id is None:
+            return HttpResponse(json.dumps({"status": "down", "message": "No such member"}),
+                                content_type="application/json")
+        return member_config(id)
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
-        email = dict_post.get('email', '')
-        return member_config_edit(email, dict_post)
+        id = dict_post.get('id', None)
+        if id is None:
+            return HttpResponse(json.dumps({"status": "down", "message": "No such member"}),
+                                content_type="application/json")
+        return member_config_edit(id, dict_post)
 
 
 @restrictRouter(allowed=["GET"])
@@ -42,8 +44,8 @@ def settingsBoardMemberRouter(request):
     # email = request.session.get('email', '')
     # email = 'ezhuang2@illinois.edu'
     dict_get = dict(request.GET.items())
-    email = dict_get.get('email', '')
-    if not is_board_member(email):
+    id = dict_get.get('id', '')
+    if not is_board_member(id):
         return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
                             content_type="application/json")
 
@@ -58,32 +60,26 @@ def settingsPromoteMemberRouter(request):
     :param request:
     :return:
     """
-    # email = request.session.get('email', '')
-    # email = 'ezhuang2@illinois.edu'
-    # if not is_board_member(email):
-    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-    #                         content_type="application/json")
     if request.method == "POST":
         dict_post = dict(request.POST.items())
-        p_email = dict_post.get('email', '')
-        # Member info
-        p_level = dict_post.get('level', 0)
-        p_private = dict_post.get('private', False)
-        p_dateJoined = dict_post.get('dateJoined', '')
-        p_bio = dict_post.get('bio', '')
-        # Board member info
-        p_job = dict_post.get('job', '')
-        if p_email == '':
-            return HttpResponse("Missing required param email", status=400)
-        if not p_dateJoined:
-            if not p_job:
-                return HttpResponse("Missing required param member info or boardmember info", status=400)
-            else:
-                board_member = BoardMember(p_job)
-                return promote_to_board_member(p_email, board_member)
+        p_id = dict_post.get('id', '')
+        if p_id == '':
+            return HttpResponse(json.dumps({"message": "Missing required param id"}), status=400, content_type='application/json')
+        id = int(p_id)
+        if is_board_member(id):
+            job = dict_post.get('job', None)
+            if job is None:
+                return HttpResponse(json.dumps({"message": "Missing required param job"}), status=400, content_type='application/json')
+            edit_boardmember_info(id, job)
+        if is_member(id):
+            job = dict_post.get('job', None)
+            if job is None:
+                return HttpResponse(json.dumps({"message": "Missing required param job"}), status=400, content_type='application/json')
+            return promote_to_board_member(id, job)
+        if is_interested(id):
+            return promote_to_member(id)
         else:
-            member = Member(p_level, p_private, p_dateJoined, p_bio)
-            return promote_to_member(p_email, member)
+            return HttpResponse(json.dumps({"message": "Person not found"}), status=400, content_type='application/json')
 
 
 @restrictRouter(allowed=["POST", "DELETE"])
@@ -103,12 +99,12 @@ def settingsEditMemberRouter(request):
         dict_post = dict(request.POST.items())
         p_email = dict_post.get('email', '')
         if p_email == '':
-            return HttpResponse("Missing required param email", status=400)
+            return HttpResponse(json.dumps({"message": "Missing required param email"}), status=400, content_type='application/json')
 
         p_attr_to_change = dict_post.get('attr_to_change', '')
         p_new_value = dict_post.get('new_value', '')
         if p_attr_to_change == '' or p_new_value == '' or p_email:
-            return HttpResponse("Missing required param attr_to_change or new_value", status=400)
+            return HttpResponse(json.dumps({"message": "Missing required param attr_to_change or new_value"}), status=400, content_type='application/json')
 
         if is_board_member(p_email):
             return edit_boardmember_info(p_email, p_new_value)  # only attribute to edit is 'job'
@@ -147,9 +143,9 @@ def settingsInterestedCreateRouter(request):
         p_first_name = dict_post.get('first_name', '')
         p_last_name = dict_post.get('last_name', '')
         p_formerBoardMember= dict_post.get('formerBoardMember', False)
-        p_email = dict_post.get('email', '')
-        if not p_email:
-            return HttpResponse("Missing required param interested_info", status=400)
+        p_email = dict_post.get('email', None)
+        if p_email is None:
+            return HttpResponse(json.dumps({"message": "Missing required param interested_info"}), status=400, content_type='application/json')
         interested = Interested(p_first_name, p_last_name,
                                 p_formerBoardMember, p_email)
         return add_interested(interested)
@@ -185,7 +181,7 @@ def settingsSchedulesRouter(request):
         p_number_of_courts = dict_post.get('number_of_courts', 0)
 
         if p_date == '':
-            return HttpResponse("Missing required param date", status=400)
+            return HttpResponse(json.dumps({"message": "Missing required param date"}), status=400, content_type='application/json')
 
         if schedule_date_exists(p_date):
             return edit_schedule(p_date, p_number_of_courts)
@@ -233,12 +229,11 @@ def settingsCourtRouter(request):
                              content_type='application/json', status=400)
             return edit_court_info(p_court_id, p_attr_to_change, p_new_value)
         else:
-            p_number = dict_post.get('number', 0)
             p_queue_type = dict_post.get('queue', '')
-            if not validate_keys({'number', 'queue'}, dict_post):
+            if not validate_keys({'queue'}, dict_post):
                 HttpResponse(json.dumps({'message': 'Missing parameters'}),
                              content_type='application/json', status=400)
-            return add_court(Court(p_court_id, p_number, p_queue_type))
+            return add_court(Court(id=p_court_id, queue=p_queue_type))
 
 
 @restrictRouter(allowed=["GET"])
@@ -257,7 +252,7 @@ def settingsAvailableCourtsRouter(request):
         dict_post = dict(request.GET.items())
         g_date = dict_post.get('date', '')
         if g_date == '':
-            return HttpResponse("Missing required param date", status=400)
+            return HttpResponse(json.dumps({"message": "Missing required param date"}), status=400, content_type='application/json')
         return get_available_courts(g_date)
 
 
@@ -314,14 +309,14 @@ def settings(request):
     add_queue('RANKED')
     add_queue('KOTH')
 
-    add_court(Court(1, 4, 'CASUAL'))
-    add_court(Court(2, 2, 'RANKED'))
-    add_court(Court(3, 8, 'CASUAL'))
-    add_court(Court(4, 4, 'KOTH'))
-    add_court(Court(5, 2, 'RANKED'))
-    add_court(Court(6, 2, 'RANKED'))
-    add_court(Court(7, 2, 'RANKED'))
-    add_court(Court(8, 2, 'RANKED'))
+    add_court(Court(1, 'CASUAL'))
+    add_court(Court(2, 'RANKED'))
+    add_court(Court(3, 'CASUAL'))
+    add_court(Court(4, 'KOTH'))
+    add_court(Court(5, 'RANKED'))
+    add_court(Court(6, 'RANKED'))
+    add_court(Court(7, 'RANKED'))
+    add_court(Court(8, 'RANKED'))
 
     check_court_date = '2018-03-31'
     available_courts = {'date': check_court_date, 'courts': get_available_courts(check_court_date)}
@@ -382,10 +377,8 @@ class BoardMember(object):
 
 class Court(object):
     id = ''
-    number = ''
     queue = ''
 
-    def __init__(self, id, number, queue):
+    def __init__(self, id, queue):
         self.id = id
-        self.number = number
         self.queue = queue
