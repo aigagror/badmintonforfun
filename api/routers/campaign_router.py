@@ -11,7 +11,8 @@ from api.routers.router import restrictRouter, validate_keys
 @restrictRouter(allowed=["POST", "DELETE"])
 def campaignRouter(request):
     """
-    POST -- Edits a campaign
+    POST -- Takes json data with campaign id, job, and email to edit the corresponding campaign
+    DELETE -- Takes raw data with campaign id, job, and email to delete the corresponding campaign
     :param request:
     :return:
     """
@@ -33,6 +34,12 @@ def campaignRouter(request):
 @csrf_exempt
 @restrictRouter(allowed=["POST"])
 def campaignFindRouter(request):
+    """
+        I should probably change this later so it's a get request but no one seems to be using this route anyway so
+        POST -- Takes json data with campaign id, job, and email to find a corresponding campaign
+    :param request:
+    :return:
+    """
     dict_post = dict(request.POST.items())
     if not validate_keys(["id", "job", "email"], dict_post):
         HttpResponse(json.dumps({'message': 'Missing parameters'}),
@@ -44,7 +51,7 @@ def campaignFindRouter(request):
 @restrictRouter(allowed=["POST"])
 def campaignCreateRouter(request):
     """
-    POST -- Creates an campaign
+    POST -- Takes json data with campaign job, pitch, and email to create a new campaign
     :param request:
     :return:
     """
