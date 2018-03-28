@@ -1,9 +1,6 @@
-from api.models import *
-import pytz
-from api.cursor_api import *
-from datetime import datetime
+from ..cursor_api import *
 import json
-from ..models import JOBS
+from ..models import *
 
 jobs_list = [x[0] for x in JOBS]
 
@@ -86,13 +83,16 @@ def start_campaign(campaign_dict):
     :param campaign_dict: an object containing the email, pitch, and job for the campaign
     :return: 200 if successful, 400 if not
     """
+    email = campaign_dict['email']
+    interesteds = Interested.objects.raw("SELECT * FROM api_interested WHERE email = %s", [email])
+    interested = interesteds[0]
 
     curr_election_dict = get_current_election()
     curr_election = curr_election_dict['election']
     if curr_election is not None:
         return run_connection("INSERT INTO api_campaign (job, pitch, election_id, campaigner_id) VALUES\
                                 (%s, %s, %s, %s)", campaign_dict["job"], campaign_dict["pitch"], curr_election.id,
-                              campaign_dict["email"])
+                              interested.id)
     else:
         return HttpResponse(json.dumps({"message": "There is no election to campaign for!"}),
                             content_type='application/json', status=400)
