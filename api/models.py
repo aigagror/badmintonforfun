@@ -53,7 +53,7 @@ class Interested(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
     formerBoardMember = models.BooleanField(default=False)
-    email = models.EmailField(primary_key=True)
+    email = models.EmailField(unique=True)
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
