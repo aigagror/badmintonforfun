@@ -3,6 +3,21 @@ from django.test import TestCase, Client
 from django.test.utils import setup_test_environment
 from django.urls import reverse
 from api import cursor_api
+from .models import *
+
+
+def create_election():
+    voter = Member(first_name='Michelle', last_name='Obama', email='michelle@usa.com',
+                   dateJoined=datetime.date.today())
+    voter.save()
+    campaigner = Member(first_name='Barack', last_name='Obama', email='obama@usa.com',
+                        dateJoined=datetime.date.today())
+    campaigner.save()
+    election = Election(date=datetime.date.today())
+    election.save()
+    campaign = Campaign(job='PRESIDENT', campaigner=campaigner, election=election)
+    campaign.save()
+    return election, campaign, voter
 
 class ElectionTest(TestCase):
     test_date = datetime.date(2018, 3, 24)
@@ -40,26 +55,9 @@ class ElectionTest(TestCase):
         self.assertEqual(response.json()['status'], 'up')  # Now there is an election
 
     def test_delete_election(self):
-        self.test_create_election()
+        election, campaign, voter = create_election()
 
-        voter_email = 'ezhuang2@illinois.edu'
-        votee_email = 'obama@gmail.com'
-        election_date = self.test_date
-        response = self.client.post(reverse('api:vote'),
-                                    {'voter': voter_email, 'electionDate': cursor_api.serializeDate(election_date),
-                                     'votee': votee_email})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['message'], 'Vote successfully cast')
-
-        position = 'OFFICER'
-        pitch = 'Hello I am a test case'
-        email_id = 'donghao2@illinois.edu'
-        response = self.client.post(reverse('api:create_campaign'),
-                                    {'id': 1, 'job': position, 'pitch': pitch, 'email': email_id})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['message'], 'OK')
-
-        response = self.client.delete(reverse('api:election'), {'id': 1})
+        response = self.client.delete(reverse('api:election'), {'id': election.id})
         self.assertEqual(response.status_code, 200)
 
 class CampaignTest(TestCase):
@@ -109,14 +107,11 @@ class VotesTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_cast_votes(self):
-        self.test_create_election()
-        voter_email = 'ezhuang2@illinois.edu'
-        votee_email = 'obama@gmail.com'
-        election_date = self.test_date
-        response = self.client.post(reverse('api:vote'), {'voter': voter_email, 'electionDate': cursor_api.serializeDate(election_date), 'votee': votee_email})
+        election, campaign, voter = create_election()
+
+        response = self.client.post(reverse('api:vote'), {'voter': voter.id, 'campaign': campaign.id})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['message'], 'Vote successfully cast')
-
 
     def test_get_all_votes(self):
         response = self.client.get(reverse('api:all_votes'))
@@ -133,75 +128,74 @@ class SettingsTest(TestCase):
         interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False,
                            'email': 'ezhuang2@illinois.edu'}
         response = self.client.post(reverse('api:add_interested'), interested_dict)
-        self.assertEqual(response.json()['status'], 'up')
+        j = response.json()
+        self.assertEqual(j['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
-        member_dict = {'email': 'ezhuang2@illinois.edu', 'level': 0, 'private': False, 'dateJoined': '2018-03-19',
-                       'bio': 'Hello, my name is Eddie.'}
+        member_dict = {'id': 1}
         response = self.client.post(reverse('api:promote'), member_dict)
-        self.assertEqual(response.json()['status'], 'up')
+        j = response.json()
+        self.assertEqual(j['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
-        boardmember_dict = {'email': 'ezhuang2@illinois.edu', 'job': 'PRESIDENT'}
+        boardmember_dict = {'id': 1, 'job': 'PRESIDENT'}
         response = self.client.post(reverse('api:promote'), boardmember_dict)
-        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.json()['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
     def test_get_member_info(self):
         interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False, 'email': 'ezhuang2@illinois.edu'}
         response = self.client.post(reverse('api:add_interested'), interested_dict)
-        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.json()['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
-        member_dict = {'email': 'ezhuang2@illinois.edu', 'level': 0, 'private': False, 'dateJoined': '2018-03-19', 'bio':'Hello, my name is Eddie.'}
+        member_dict = {'id': 1}
         response = self.client.post(reverse('api:promote'), member_dict)
-        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.json()['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.get(reverse('api:member_info'), {'email': 'ezhuang2@illinois.edu'})
-        self.assertEqual(response.json()['status'], 'up')
-        self.assertEqual(response.json()['my_info'][0].__getitem__('bio'), 'Hello, my name is Eddie.')
-        self.assertEqual(response.json()['my_info'][0].__getitem__('email'), 'ezhuang2@illinois.edu')
+        response = self.client.get(reverse('api:member_info'), {'id': 1})
+        j = response.json()
+        self.assertEqual(j['status'], 'up')
+        self.assertEqual(j['bio'], '')
+        self.assertEqual(j['email'], 'ezhuang2@illinois.edu')
         self.assertEqual(response.status_code, 200)
 
     def test_get_board_member_info(self):
         interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False,
                            'email': 'ezhuang2@illinois.edu'}
         response = self.client.post(reverse('api:add_interested'), interested_dict)
-        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.json()['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
-        member_dict = {'email': 'ezhuang2@illinois.edu', 'level': 0, 'private': False, 'dateJoined': '2018-03-19',
-                       'bio': 'Hello, my name is Eddie.'}
+        member_dict = {'id': 1}
         response = self.client.post(reverse('api:promote'), member_dict)
-        self.assertEqual(response.json()['status'], 'up')
+        j = response.json()
+        self.assertEqual(j['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
-        boardmember_dict = {'email': 'ezhuang2@illinois.edu', 'job': 'PRESIDENT'}
+        boardmember_dict = {'id': 1, 'job': 'PRESIDENT'}
         response = self.client.post(reverse('api:promote'), boardmember_dict)
-        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.json()['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.get(reverse('api:boardmember_info'), {'email': 'ezhuang2@illinois.edu'})
-        self.assertEqual(response.json()['status'], 'up')
+        response = self.client.get(reverse('api:boardmember_info'), {'id': 1})
+        j = response.json()
+        self.assertEqual(j['status'], 'up')
         self.assertEqual(response.status_code, 200)
 
 
     def test_delete_member(self):
         # Get a member in the db
-        interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False,
-                           'email': 'ezhuang2@illinois.edu'}
-        response = self.client.post(reverse('api:add_interested'), interested_dict)
-        self.assertEqual(response.json()['status'], 'up')
-        self.assertEqual(response.status_code, 200)
+        interested = Interested(first_name='Eddie', last_name='Huang', email='ezhuang2@illinois.edu')
+        interested.save()
 
-        member_dict = {'email': 'ezhuang2@illinois.edu', 'level': 0, 'private': False, 'dateJoined': '2018-03-19',
-                       'bio': 'Hello, my name is Eddie.'}
+        member_dict = {'id': interested.id}
         response = self.client.post(reverse('api:promote'), member_dict)
-        self.assertEqual(response.json()['status'], 'up')
+        self.assertEqual(response.json()['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.get(reverse('api:member_info'), {'email': 'ezhuang2@illinois.edu'})
+        response = self.client.get(reverse('api:member_info'), {'id': interested.id})
         self.assertEqual(response.json()['status'], 'up')
         self.assertEqual(response.status_code, 200)
 
@@ -281,7 +275,7 @@ class SettingsTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Add a court with a CASUAL queue
-        response = self.client.post(reverse('api:courts'), {'court_id': '1', 'number': '2', 'queue': 'CASUAL'})
+        response = self.client.post(reverse('api:courts'), {'court_id': '1', 'queue': 'CASUAL'})
         self.assertEqual(response.json()['status'], 'up')
         self.assertEqual(response.status_code, 200)
 
@@ -289,7 +283,6 @@ class SettingsTest(TestCase):
         response = self.client.get(reverse('api:courts'), {})
         self.assertEqual(response.json()['status'], 'up')
         self.assertEqual(response.json()['courts'][0].__getitem__('id'), 1)
-        self.assertEqual(response.json()['courts'][0].__getitem__('number'), 2)
         self.assertEqual(response.json()['courts'][0].__getitem__('queue_id'), 'CASUAL')
         self.assertEqual(response.status_code, 200)
 

@@ -37,7 +37,7 @@ def electionRouter(request):
         idKey = "id"
         dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
         if idKey not in dict_delete:
-            return HttpResponse("Missing required param {}".format(idKey), status=400)
+            return HttpResponse(json.dumps({"message": "Missing required param {}".format(idKey)}, status=400))
         return delete_election(dict_delete[idKey])
 
 

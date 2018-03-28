@@ -2,27 +2,33 @@ from django.db import connection, IntegrityError, ProgrammingError
 from api.cursor_api import *
 import json
 from django.http import HttpResponse
+from ..models import *
 
 
-def is_board_member(email):
+def is_member(id):
+    all = Member.objects.raw("SELECT * FROM api_member")
+    foo = list(all)
+    members = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id = %s", [id])
+    return len(list(members)) > 0
+
+
+def is_interested(id):
+    all = Interested.objects.raw("SELECT * FROM api_interested")
+    foo = list(all)
+    interesteds = Interested.objects.raw('SELECT * FROM api_interested WHERE id = %s', [id])
+    return len(list(interesteds)) > 0
+
+def is_board_member(id):
     """
     Returns if the member with 'email' is a board member or not
     :param email:
     :return:
     """
-    with connection.cursor() as cursor:
-        query = '''
-        SELECT member_ptr_id
-        FROM api_boardmember
-        WHERE member_ptr_id=%s;
-        '''
-        cursor.execute(query, [email])
-        data = cursor.fetchall()
+    all = BoardMember.objects.raw("SELECT * FROM api_boardmember")
+    foo = list(all)
+    boards = BoardMember.objects.raw("SELECT * FROM api_boardmember WHERE member_ptr_id = %s", [id])
+    return len(list(boards)) > 0
 
-        if len(data) == 0:
-            return False
-        else:
-            return True
 
 
 # Members
@@ -176,66 +182,42 @@ def add_interested(interested):
     :param interested: Object that contains first_name, last_name, formerBoardMember, and email of a joining interested
     :return:
     """
-    with connection.cursor() as cursor:
-        query = '''
-        INSERT INTO api_interested (first_name, last_name, formerBoardMember, email)
-        VALUES (%s, %s, %s, %s);
-        '''
-        try:
-            cursor.execute(query, [interested.first_name, interested.last_name, interested.formerBoardMember,
-                                   interested.email])
-        except IntegrityError:
-            return HttpResponse(json.dumps({"status": "down", "message": "This person is already in the club."}),
-                                content_type="application/json")
-        else:
-            return HttpResponse(json.dumps({"status": "up", "message": "Successfully added an interested."}),
-                                content_type="application/json")
+
+    query = '''
+                INSERT INTO api_interested (first_name, last_name, formerBoardMember, email)
+                VALUES (%s, %s, %s, %s);
+                '''
+    return run_connection(query, interested.first_name, interested.last_name, interested.formerBoardMember, interested.email)
 
 
-def promote_to_member(email, member):
+def promote_to_member(id):
     """
     Promotes an existing Interested to a Member
     :param email: The email of the Interested to be promoted
     :param member: Object that contains level, private, dateJoined, queue, and bio of new member
     :return:
     """
-    with connection.cursor() as cursor:
-        query = '''
-        INSERT INTO api_member (interested_ptr_id, level, private, dateJoined, bio)
-        VALUES (%s, %s, %s, %s, %s);
-        '''
-        try:
-            arr = [email, member.level, member.private, member.dateJoined, member.bio]
-            cursor.execute(query, arr)
-        except IntegrityError:
-            return HttpResponse(json.dumps({"status": "down", "message": "This person is already a member."}),
-                                content_type="application/json")
-        else:
-            return HttpResponse(json.dumps({"status": "up", "message": "Successfully promoted to member."}),
-                                content_type="application/json")
+    today = datetime.date.today()
+    query = '''
+            INSERT INTO api_member (interested_ptr_id, dateJoined, level, private, bio)
+            VALUES (%s, %s, 0, 0, '');
+            '''
+    s_today = serializeDate(today)
+    return run_connection(query, id, s_today)
 
-
-def promote_to_board_member(email, board_member):
+def promote_to_board_member(id, job):
     """
     Promotes an existing Member to a BoardMember
-    :param email: The email of the Member to be promoted
+    :param id: The email of the Member to be promoted
     :param board_member: Object that contains job of a new board member
     :return:
+    
     """
-    with connection.cursor() as cursor:
-        query = '''
-        INSERT INTO api_boardmember (member_ptr_id, job)
-        VALUES (%s, %s);
-        '''
-        try:
-            cursor.execute(query, [email, board_member.job])
-        except IntegrityError:
-            return HttpResponse(json.dumps({"status": "down", "message": "This person is already a board member."}),
-                                content_type="application/json")
-        else:
-            return HttpResponse(json.dumps({"status": "up", "message": "Successfully promoted to board member."}),
-                                content_type="application/json")
-
+    query = '''
+            INSERT INTO api_boardmember (member_ptr_id, job)
+            VALUES (%s, %s);
+            '''
+    return run_connection(query, id, job)
 
 def schedule_date_exists(date):
     """
@@ -391,11 +373,11 @@ def court_id_exists(court_id):
 def add_court(court):
     with connection.cursor() as cursor:
         query = '''
-        INSERT INTO api_court (id, number, queue_id)
-        VALUES (%s, %s, %s)
+        INSERT INTO api_court (id, queue_id)
+        VALUES (%s, %s)
         '''
         try:
-            cursor.execute(query, [court.id, court.number, court.queue])
+            cursor.execute(query, [court.id, court.queue])
         except IntegrityError:
             return HttpResponse(json.dumps({"status": "down", "message": "This court already exists or the queue specified does not exist."}),
                                 content_type="application/json")
@@ -459,30 +441,21 @@ def add_queue(queue_type):
                                 content_type="application/json")
 
 
-def member_config(email):
+def member_config(id):
     """
     GET function to see settings information for members
-    :param email:
+    :param id:
     :return:
     """
-    context = {}
-    # email = 'ezhuang2@illinois.edu'
-    # Get this member's info
-    # print(email)
-    my_info = get_member_info(email)
-    if len(my_info) == 0:
-        return HttpResponse(
-            json.dumps({"status": "down", "message": "This person is not a member."}, indent=4, sort_keys=True),
-            content_type="application/json")
 
-    # Convert 'dateJoined' attribute to be JSON serializable
-    # datetime.datetime.utcnow().strftime(“ % Y - % m - % dT % H: % M: % SZ”)
-    my_info[0].__setitem__('dateJoined', my_info[0].__getitem__('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
-    # my_info.dateJoined = my_info.dateJoined.strftime('%Y-%m-%dT%H:%M:%SZ')
+    members = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id = %s", [id])
+    if len(list(members)) == 0:
+        return HttpResponse(json.dumps({"status": "down", "message": "This person is not a member."}), content_type="application/json")
 
-    context['my_info'] = my_info
-    context['status'] = 'up'
-    return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+    member = members[0]
+    data = serializeModel(member)
+    data['status'] = 'up'
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 def member_config_edit(email, dict_post):
