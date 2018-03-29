@@ -55,14 +55,12 @@ urlpatterns = [
     # Creates a campaign
     re_path(r'campaign/create/?$', api.routers.campaign_router.campaignCreateRouter, name='create_campaign'),
 
-    re_path(r'settings/member/?$', api.routers.settings_router.settingsRouter, name='member_info'),
-    re_path(r'settings/boardmember/?$', api.routers.settings_router.settingsBoardMemberRouter, name='boardmember_info'),
-    re_path(r'settings/promote/?$', api.routers.settings_router.settingsPromoteMemberRouter, name='promote'),
-    re_path(r'settings/member/edit/?$', api.routers.settings_router.settingsEditMemberRouter, name='edit_member'),
+    re_path(r'settings/member/?$', api.routers.settings_router.settingsRouter, name='member_settings'),
+    re_path(r'settings/boardmembers/?$', api.routers.settings_router.settingsBoardMemberRouter, name='boardmembers'),
+    re_path(r'settings/members/all?$', api.routers.settings_router.settingsAllMembersRouter, name='all_members'),
     re_path(r'settings/interested/add/?$', api.routers.settings_router.settingsInterestedCreateRouter, name='add_interested'),
     re_path(r'settings/schedule/?$', api.routers.settings_router.settingsSchedulesRouter, name='schedule'),
     re_path(r'settings/courts/?$', api.routers.settings_router.settingsCourtRouter, name='courts'),
-    re_path(r'settings/courts/available/?$', api.routers.settings_router.settingsAvailableCourtsRouter, name='available_courts'),
     re_path(r'settings/queue/?$', api.routers.settings_router.settingsQueueRouter, name='queue'),
 
     re_path(r'queue/party/next?$', api.routers.settings_router.settingsQueueRouter, name='queue_next_party')

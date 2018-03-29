@@ -13,130 +13,129 @@ from api.routers.router import restrictRouter, validate_keys
 def settingsRouter(request):
     """
     Allow members to get and edit their own settings.
+    Expect input/output dictionary to be of the form
+    {
+        'private': _,
+        'bio': _
+    }
     :param request:
     :return:
     """
-    # email = request.session.get('email', '')
-    # email = 'ezhuang2@illinois.edu'
+    session_id = request.session.get('session_id', None)
     if request.method == "GET":
-        dict_get = dict(request.GET.items())
-        id = dict_get.get('id', None)
-        if id is None:
-            return HttpResponse(json.dumps({"status": "down", "message": "No such member"}),
+        if session_id is None:
+            return HttpResponse(json.dumps({"message": "No such member"}),
                                 content_type="application/json")
-        return member_config(id)
+        return member_config(session_id)
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
-        id = dict_post.get('id', None)
-        if id is None:
-            return HttpResponse(json.dumps({"status": "down", "message": "No such member"}),
+        if not validate_keys(["private", "bio"], dict_post):
+            HttpResponse(json.dumps({'message': 'Missing parameters private or bio'}),
+                         content_type='application/json', status=400)
+        if session_id is None:
+            return HttpResponse(json.dumps({"message": "No such member"}),
                                 content_type="application/json")
-        return member_config_edit(id, dict_post)
+        return member_config_edit(session_id, dict_post)
 
 
-@restrictRouter(allowed=["GET"])
+@restrictRouter(allowed=["GET", "POST"])
 def settingsBoardMemberRouter(request):
     """
-    Allow board members to get boardmember-exclusive-info in settings
+    Allow board members to get/edit list of boardmembers.
+    Expect input/output dictionary to be of the form
+    {
+        'boardmembers': [
+            {
+                'member_id': _
+                'first_name': _
+                'last_name': _
+                'email': _
+                'job': _
+            },
+            ...
+        ]
+    }
     :param request:
     :return:
     """
-    # email = request.session.get('email', '')
-    # email = 'ezhuang2@illinois.edu'
-    dict_get = dict(request.GET.items())
-    id = dict_get.get('id', '')
-    if not is_board_member(id):
-        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+    session_id = request.session.get('session_id', '')
+    if not is_board_member(session_id):
+        return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
 
     if request.method == "GET":
-        return board_member_config()
-
-
-@restrictRouter(allowed=["POST"])
-def settingsPromoteMemberRouter(request):
-    """
-    Allow board members to promote interested->member, member->board member (Removed board member check for testing)
-    :param request:
-    :return:
-    """
-    if request.method == "POST":
+        return boardmembers_config()
+    elif request.method == "POST":
+        # Can only change their jobs
         dict_post = dict(request.POST.items())
-        p_id = dict_post.get('id', '')
-        if p_id == '':
-            return HttpResponse(json.dumps({"message": "Missing required param id"}), status=400, content_type='application/json')
-        id = int(p_id)
-        if is_board_member(id):
-            job = dict_post.get('job', None)
-            if job is None:
-                return HttpResponse(json.dumps({"message": "Missing required param job"}), status=400, content_type='application/json')
-            edit_boardmember_info(id, job)
-        if is_member(id):
-            job = dict_post.get('job', None)
-            if job is None:
-                return HttpResponse(json.dumps({"message": "Missing required param job"}), status=400, content_type='application/json')
-            return promote_to_board_member(id, job)
-        if is_interested(id):
-            return promote_to_member(id)
-        else:
-            return HttpResponse(json.dumps({"message": "Person not found"}), status=400, content_type='application/json')
-
-
-@restrictRouter(allowed=["POST", "DELETE"])
-def settingsEditMemberRouter(request):
-    """
-    Allow board members to edit information of a member OR remove them from the club
-    :param request:
-    :return:
-    """
-    # email = request.session.get('email', '')
-    # email = 'ezhuang2@illinois.edu'
-    # if not is_board_member(email):
-    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-    #                         content_type="application/json")
-
-    if request.method == "POST":
-        dict_post = dict(request.POST.items())
-        p_email = dict_post.get('email', '')
-        if p_email == '':
-            return HttpResponse(json.dumps({"message": "Missing required param email"}), status=400, content_type='application/json')
-
-        p_attr_to_change = dict_post.get('attr_to_change', '')
-        p_new_value = dict_post.get('new_value', '')
-        if p_attr_to_change == '' or p_new_value == '' or p_email:
-            return HttpResponse(json.dumps({"message": "Missing required param attr_to_change or new_value"}), status=400, content_type='application/json')
-
-        if is_board_member(p_email):
-            return edit_boardmember_info(p_email, p_new_value)  # only attribute to edit is 'job'
-        else:
-            return edit_member_info(p_email, p_attr_to_change, p_new_value)
-
-    elif request.method == "DELETE":
-        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        if not validate_keys(["email"], dict_delete):
-            HttpResponse(json.dumps({'message': 'Missing parameters'}),
+        if not validate_keys(["member_id", "job"], dict_post):
+            HttpResponse(json.dumps({'message': 'Missing parameters member_id or job'}),
                          content_type='application/json', status=400)
-        return remove_member(dict_delete['email'])
+        return boardmembers_config_edit(dict_post)
 
-    dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-    if not validate_keys(["job", "email"], dict_delete):
-        HttpResponse(json.dumps({'message': 'Missing parameters'}),
-                     content_type='application/json', status=400)
-    return delete_campaign(dict_delete["email"], dict_delete["job"])
+
+@restrictRouter(allowed=["GET", "POST", "DELETE"])
+def settingsAllMembersRouter(request):
+    """
+    Allows boardmembers to get/edit/delete information on all the people in the club (interested, members, boardmembers)
+    Expect input/output dictionary to be of the form
+    {
+        'members': [
+            {
+                'member_id': _, (Used for promoting/demoting/deletion)
+                'first_name': _,
+                'last_name': _,
+                'email': _,
+                'status': _ (Interested, Member, Boardmember)
+            },
+            ...
+        ]
+    }
+    :param request:
+    :return:
+    """
+    session_id = request.session.get('session_id', '')
+    if not is_board_member(session_id):
+        return HttpResponse(json.dumps({"message": "You are not a board member."}),
+                            content_type="application/json")
+    if request.method == "GET":
+        return get_all_club_members()
+    elif request.method == "POST":
+        # Promote/demote members (Interested, Member, Boardmember)
+        # Going to Boardmember, the default 'job'='OFFICER'
+        dict_post = dict(request.POST.items())
+        if not validate_keys(["members"], dict_post):
+            HttpResponse(json.dumps({'message': 'Missing parameters members'}),
+                         content_type='application/json', status=400)
+        return update_all_club_members_status(dict_post)
+    elif request.method == "DELETE":
+        # Here, the dictionary should ONLY contain the information for members that should be deleted
+        # Remove people from the db completely
+        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+        if not validate_keys(["members"], dict_delete):
+            HttpResponse(json.dumps({'message': 'Missing parameter members'}),
+                         content_type='application/json', status=400)
+        return remove_member(dict_delete)
 
 
 @restrictRouter(allowed=["POST"])
 def settingsInterestedCreateRouter(request):
     """
-    Allows board members to add people to the club. (Removed the board member check for testing)
+    Allows board members to add people to the club.
+    Expect input dictionary to be of the form
+    {
+        'first_name': _,
+        'last_name': _,
+        'formerBoardMember': _,
+        'email': _
+    }
     :param request:
     :return:
     """
-    # email = request.session.get('email', '')
-    # email = 'ezhuang2@illinois.edu'
-    # if not is_board_member(email):
-    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-    #                         content_type="application/json")
+    session_id = request.session.get('session_id', '')
+    if not is_board_member(session_id):
+        return HttpResponse(json.dumps({"message": "You are not a board member."}),
+                            content_type="application/json")
 
     dict_post = dict(request.POST.items())
     if request.method == "POST":
@@ -145,7 +144,7 @@ def settingsInterestedCreateRouter(request):
         p_formerBoardMember= dict_post.get('formerBoardMember', False)
         p_email = dict_post.get('email', None)
         if p_email is None:
-            return HttpResponse(json.dumps({"message": "Missing required param interested_info"}), status=400, content_type='application/json')
+            return HttpResponse(json.dumps({"message": "Missing required param email"}), status=400, content_type='application/json')
         interested = Interested(p_first_name, p_last_name,
                                 p_formerBoardMember, p_email)
         return add_interested(interested)
@@ -155,129 +154,105 @@ def settingsInterestedCreateRouter(request):
 def settingsSchedulesRouter(request):
     """
     Allows board members to get the whole schedule and add to/edit/delete from schedule
+    Expect input/output dictionary to be of the form
+    {
+        'schedule': [
+            {
+                'date': _,
+                'number_of_courts': _
+            },
+            ...
+        ]
+    }
     :param request:
     :return:
     """
-    # email = request.session.get('email', '')
-    # email = 'ezhuang2@illinois.edu'
-    # if not is_board_member(email):
-    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-    #                         content_type="application/json")
+    session_id = request.session.get('session_id', '')
+    if not is_board_member(session_id):
+        return HttpResponse(json.dumps({"message": "You are not a board member."}),
+                            content_type="application/json")
     dict_post = dict(request.POST.items())
     if request.method == "GET":
-        schedule = get_schedule()
-        if schedule:
-            # Convert date format to be JSON serializable
-            for s in schedule:
-                s.__setitem__('date', s.get('date').strftime('%Y-%m-%dT%H:%M:%SZ'))
-            context = {'status': 'up', 'schedule': schedule}
-            return HttpResponse(json.dumps(context), content_type="application/json")
-        else:
-            return HttpResponse(json.dumps({"status": "down", "message": "There is nothing in the schedule."}),
-                                content_type="application/json")
+        return schedule_to_dict()
     elif request.method == "POST":
         # INSERT or UPDATE
-        p_date = dict_post.get('date', '')
-        p_number_of_courts = dict_post.get('number_of_courts', 0)
-
-        if p_date == '':
-            return HttpResponse(json.dumps({"message": "Missing required param date"}), status=400, content_type='application/json')
-
-        if schedule_date_exists(p_date):
-            return edit_schedule(p_date, p_number_of_courts)
-        else:
-            return add_to_schedule(p_date, p_number_of_courts)
-    elif request.method == "DELETE":
-        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        if not validate_keys(["date"], dict_delete):
-            HttpResponse(json.dumps({'message': 'Missing parameters'}),
+        dict_post = dict(request.POST.items())
+        if not validate_keys(["schedule"], dict_post):
+            HttpResponse(json.dumps({'message': 'Missing parameter schedule'}),
                          content_type='application/json', status=400)
-        return delete_from_schedule(dict_delete["date"])
+        return addto_edit_schedule(dict_post)
+    elif request.method == "DELETE":
+        # The provided dictionary should ONLY contain information on the entries that are
+        # intended to be deleted.
+        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+        if not validate_keys(["schedule"], dict_delete):
+            HttpResponse(json.dumps({'message': 'Missing parameter schedule'}),
+                         content_type='application/json', status=400)
+        return delete_multiple_from_schedule(dict_delete)
 
 
 @restrictRouter(allowed=["GET", "POST"])
 def settingsCourtRouter(request):
     """
-    Allows board members to get the info on all courts and add/edit courts
+    Allows board members to get the info on all courts and add/edit courts.
+    Expect the input/output dictionary to be of the form
+    {
+        'courts': [
+            {
+                'court_id': _,
+                'queue_id': _
+            },
+            ...
+        ]
+    }
     :param request:
     :return:
     """
-    # email = request.session.get('email', '')
-    # email = 'ezhuang2@illinois.edu'
-    # if not is_board_member(email):
-    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-    #                         content_type="application/json")
-    if request.method == "GET":
-        courts = get_all_courts()
-        if courts:
-            context = {'status': 'up', 'courts': courts}
-            return HttpResponse(json.dumps(context), content_type="application/json")
-        else:
-            return HttpResponse(json.dumps({"status": "down", "message": "There are no courts stored in the database."}),
-                                content_type="application/json")
-    elif request.method == "POST":
-        dict_post = dict(request.POST.items())
-        p_court_id = dict_post.get('court_id', '')
-        if not validate_keys('court_id', dict_post):
-            HttpResponse(json.dumps({'message': 'Missing parameters'}),
-                         content_type='application/json', status=400)
-        if court_id_exists(p_court_id):
-            p_attr_to_change = dict_post.get('attr_to_change', '')  # 'queue_id', 'number', or 'id'
-            p_new_value = dict_post.get('new_value', '')
-            if not validate_keys({'attr_to_change', 'new_value'}, dict_post):
-                HttpResponse(json.dumps({'message': 'Missing parameters'}),
-                             content_type='application/json', status=400)
-            return edit_court_info(p_court_id, p_attr_to_change, p_new_value)
-        else:
-            p_queue_type = dict_post.get('queue', '')
-            if not validate_keys({'queue'}, dict_post):
-                HttpResponse(json.dumps({'message': 'Missing parameters'}),
-                             content_type='application/json', status=400)
-            return add_court(Court(id=p_court_id, queue=p_queue_type))
-
-
-@restrictRouter(allowed=["GET"])
-def settingsAvailableCourtsRouter(request):
-    """
-    Allows board members to get the available courts on a certain day from the schedule
-    :param request:
-    :return:
-    """
-    # email = request.session.get('email', '')
-    email = 'ezhuang2@illinois.edu'
-    if not is_board_member(email):
-        return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
+    session_id = request.session.get('session_id', '')
+    if not is_board_member(session_id):
+        return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
     if request.method == "GET":
-        dict_post = dict(request.GET.items())
-        g_date = dict_post.get('date', '')
-        if g_date == '':
-            return HttpResponse(json.dumps({"message": "Missing required param date"}), status=400, content_type='application/json')
-        return get_available_courts(g_date)
+        return get_all_courts_formmated()
+    elif request.method == "POST":
+        # Used to add new courts OR change the queue types for the courts
+        dict_post = dict(request.POST.items())
+        if not validate_keys(['courts'], dict_post):
+            HttpResponse(json.dumps({'message': 'Missing parameter courts'}),
+                         content_type='application/json', status=400)
+        return addto_edit_courts_formatted(dict_post)
 
 
 @restrictRouter(allowed=["GET", "POST"])
 def settingsQueueRouter(request):
-    # email = request.session.get('email', '')
-    # email = 'ezhuang2@illinois.edu'
-    # if not is_board_member(email):
-    #     return HttpResponse(json.dumps({"status": "down", "message": "You are not a board member."}),
-    #                         content_type="application/json")
+    """
+    Allows boardmembers to get all the current queues in db or add more queue types
+    Expect the input/output dictionary to be of the form
+    {
+        'queues': [
+            {
+                'queue_id': _,
+                'queue_type': _
+            },
+            ...
+        ]
+    }
+    :param request:
+    :return:
+    """
+    session_id = request.session.get('session_id', '')
+    if not is_board_member(session_id):
+        return HttpResponse(json.dumps({"message": "You are not a board member."}),
+                            content_type="application/json")
     if request.method == "GET":
-        queues = get_all_queues()
-        if queues:
-            context = {'status': 'up', 'queues': queues}
-            return HttpResponse(json.dumps(context), content_type="application/json")
-        else:
-            return HttpResponse(json.dumps({"status": "down", "message": "There are no queues."}),
-                                content_type="application/json")
+        return get_all_courts_formmated()
     elif request.method == "POST":
+        # Used to add more queue types to the db
         dict_post = dict(request.POST.items())
-        p_queue_type = dict_post.get('queue_type', '')
-        if not validate_keys('queue_type', dict_post):
-            HttpResponse(json.dumps({'message': 'Missing parameters'}),
+        if not validate_keys('queues', dict_post):
+            HttpResponse(json.dumps({'message': 'Missing parameter queues'}),
                          content_type='application/json', status=400)
-        return add_queue(p_queue_type)
+        return add_queues_formatted(dict_post)
 
 
 def settings(request):

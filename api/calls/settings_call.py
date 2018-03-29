@@ -2,25 +2,51 @@ from django.db import connection, IntegrityError, ProgrammingError
 from api.cursor_api import *
 import json
 from django.http import HttpResponse
+
+from api.routers.router import validate_keys
 from ..models import *
 
+def get_status(id):
+    """
+    Returns "Boardmember", "Member", or "Interested" (or "Not found" if not in db)
+    :param id:
+    :return:
+    """
+    if is_board_member(id):
+        return "Boardmember"
+    elif is_member(id):
+        return "Member"
+    elif is_interested(id):
+        return "Interested"
+    else:
+        return "Not found"
 
 def is_member(id):
+    """
+    Returns true if this id is only a member
+    :param id:
+    :return:
+    """
     all = Member.objects.raw("SELECT * FROM api_member")
     foo = list(all)
-    members = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id = %s", [id])
+    members = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND interested_ptr_id NOT IN (SELECT member_ptr_id FROM api_boardmember)", [id])
     return len(list(members)) > 0
 
 
 def is_interested(id):
+    """
+    Returns true if this id is only interested
+    :param id:
+    :return:
+    """
     all = Interested.objects.raw("SELECT * FROM api_interested")
     foo = list(all)
-    interesteds = Interested.objects.raw('SELECT * FROM api_interested WHERE id = %s', [id])
+    interesteds = Interested.objects.raw('SELECT * FROM api_interested WHERE id=%s AND id NOT IN (SELECT interested_ptr_id FROM api_member)', [id])
     return len(list(interesteds)) > 0
 
 def is_board_member(id):
     """
-    Returns if the member with 'email' is a board member or not
+    Returns true if this id is a board member
     :param email:
     :return:
     """
@@ -32,7 +58,7 @@ def is_board_member(id):
 
 
 # Members
-def edit_member_info(email, attribute, new_value):
+def edit_member_info(id, attribute, new_value):
     """
     Edits the specified attribute of a member.
     The attributes available to edit are 'level', 'private', 'dateJoined', 'bio', and possibly 'queue'?
@@ -48,12 +74,12 @@ def edit_member_info(email, attribute, new_value):
         WHERE interested_ptr_id=%s;
         '''
         try:
-            cursor.execute(query, [new_value, email])
+            cursor.execute(query, [new_value, id])
         except ProgrammingError:
-            return HttpResponse(json.dumps({"status": "down", "message": "The attribute specified does not exist."}),
+            return HttpResponse(json.dumps({"message": "The attribute specified does not exist."}),
                                 content_type="application/json")
         else:
-            return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted member info."}),
+            return HttpResponse(json.dumps({"message": "Successfully editted member info."}),
                                 content_type="application/json")
 
 
@@ -78,11 +104,11 @@ def get_member_info(email):
     return results
 
 # Board Members
-def edit_boardmember_info(email, new_value):
+def edit_boardmember_job(id, new_job):
     """
     Edits the 'job' attribute of a board member.
-    :param email:
-    :param new_value:
+    :param id:
+    :param new_job:
     :return:
     """
     with connection.cursor() as cursor:
@@ -91,8 +117,8 @@ def edit_boardmember_info(email, new_value):
         SET job=%s
         WHERE member_ptr_id=%s;
         '''
-        cursor.execute(query, [new_value, email])
-        return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted member info."}),
+        cursor.execute(query, [new_job, id])
+        return HttpResponse(json.dumps({"message": "Successfully editted boardmember job."}),
                             content_type="application/json")
 
 
@@ -101,56 +127,50 @@ def get_interested():
     Returns the names and emails of the interested exclusively
     :return:
     """
-    with connection.cursor() as cursor:
-        query = '''
-        SELECT *
-        FROM api_interested
-        WHERE email NOT IN (
-            SELECT interested_ptr_id
-            FROM api_member
-        )
-        '''
-        cursor.execute(query)
-        results = dictfetchall(cursor)
-    return results
+    # with connection.cursor() as cursor:
+    #     query = '''
+    #     SELECT *
+    #     FROM api_interested
+    #     WHERE email NOT IN (
+    #         SELECT interested_ptr_id
+    #         FROM api_member
+    #     )
+    #     '''
+    #     cursor.execute(query)
+    #     results = dictfetchall(cursor)
+    # return results
+    return Interested.objects.raw("SELECT * FROM api_interested WHERE id NOT IN (SELECT interested_ptr_id FROM api_member)")
 
 
 def get_members():
     """
-    Returns the names and emails of the members (includes board members)
+    Returns the names and emails of the members, exclusively (not board members)
     :return:
     """
-    with connection.cursor() as cursor:
-        query = '''
-        SELECT *
-        FROM api_interested, api_member
-        WHERE api_interested.email = interested_ptr_id;
-        '''
-        cursor.execute(query)
-        results = dictfetchall(cursor)
-    return results
+    # with connection.cursor() as cursor:
+    #     query = '''
+    #     SELECT *
+    #     FROM api_interested, api_member
+    #     WHERE api_interested.email = interested_ptr_id;
+    #     '''
+    #     cursor.execute(query)
+    #     results = dictfetchall(cursor)
+    # return results
+    return (Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id NOT IN (SELECT member_ptr_id FROM api_boardmember)"))
 
 def get_board_members():
     """
-    Returns the names, emails, and jobs of the board members, exclusively
+    Returns information on the board members, exclusively
     :return:
     """
-    with connection.cursor() as cursor:
-        query = '''
-        SELECT *
-        FROM api_interested, api_boardmember
-        WHERE email = member_ptr_id;
-        '''
-        cursor.execute(query)
-        results = dictfetchall(cursor)
-    return results
+    return BoardMember.objects.raw("SELECT * FROM api_boardmember")
 
-def remove_member(email):
+def remove_member(member_id):
     """
     Deletes the tuple in api_interested with 'email'. This should delete any related tuples in
     api_member and api_boardmember.
     Works for removing Interested's, Member's, or BoardMember's
-    :param email: The email of the person we want to remove from the database
+    :param member_id: The id of the person we want to remove from the database
     :return:
     """
     with connection.cursor() as cursor:
@@ -158,21 +178,21 @@ def remove_member(email):
                 DELETE FROM api_boardmember
                 WHERE member_ptr_id=%s;
                 '''
-        cursor.execute(query, [email])
+        cursor.execute(query, [member_id])
 
         query = '''
                 DELETE FROM api_member
                 WHERE interested_ptr_id=%s;
                 '''
-        cursor.execute(query, [email])
+        cursor.execute(query, [member_id])
 
         query = '''
                 DELETE FROM api_interested
                 WHERE email=%s;
                 '''
-        cursor.execute(query, [email])
+        cursor.execute(query, [member_id])
 
-    return HttpResponse(json.dumps({"status": "up", "message": "Successfully deleted member."}),
+    return HttpResponse(json.dumps({"message": "Successfully deleted member."}),
                         content_type="application/json")
 
 
@@ -193,8 +213,7 @@ def add_interested(interested):
 def promote_to_member(id):
     """
     Promotes an existing Interested to a Member
-    :param email: The email of the Interested to be promoted
-    :param member: Object that contains level, private, dateJoined, queue, and bio of new member
+    :param id: The email of the Interested to be promoted
     :return:
     """
     today = datetime.date.today()
@@ -296,16 +315,16 @@ def get_schedule():
     Returns all the tuples in api_schedule in descending order
     :return:
     """
-    with connection.cursor() as cursor:
-        query = '''
-        SELECT * 
-        FROM api_schedule
-        ORDER BY date DESC;
-        '''
-        cursor.execute(query)
-        results = dictfetchall(cursor)
-    return results
-
+    # with connection.cursor() as cursor:
+    #     query = '''
+    #     SELECT *
+    #     FROM api_schedule
+    #     ORDER BY date DESC;
+    #     '''
+    #     cursor.execute(query)
+    #     results = dictfetchall(cursor)
+    # return results
+    return Schedule.objects.raw("SELECT * FROM api_schedule ORDER BY date DESC")
 
 def get_available_courts(date):
     """
@@ -332,14 +351,15 @@ def get_all_courts():
     Returns all courts
     :return:
     """
-    with connection.cursor() as cursor:
-        query = '''
-            SELECT *
-            FROM api_court;
-            '''
-        cursor.execute(query)
-        results = dictfetchall(cursor)
-    return results
+    # with connection.cursor() as cursor:
+    #     query = '''
+    #         SELECT *
+    #         FROM api_court;
+    #         '''
+    #     cursor.execute(query)
+    #     results = dictfetchall(cursor)
+    # return results
+    return Court.objects.raw("SELECT * FROM api_court")
 
 
 def get_court(court_id):
@@ -370,59 +390,55 @@ def court_id_exists(court_id):
             return True
 
 
-def add_court(court):
+def add_court(court_id, queue_id):
     with connection.cursor() as cursor:
         query = '''
         INSERT INTO api_court (id, queue_id)
         VALUES (%s, %s)
         '''
         try:
-            cursor.execute(query, [court.id, court.queue])
+            cursor.execute(query, [court_id, queue_id])
         except IntegrityError:
-            return HttpResponse(json.dumps({"status": "down", "message": "This court already exists or the queue specified does not exist."}),
+            return HttpResponse(json.dumps({"message": "This court already exists or the queue specified does not exist."}),
                                 content_type="application/json")
         else:
-            return HttpResponse(json.dumps({"status": "up", "message": "Successfully added court."}),
+            return HttpResponse(json.dumps({"message": "Successfully added court."}),
                                 content_type="application/json")
 
 
-def edit_court_info(court_id, attribute, new_value):
+def edit_court_queue(court_id, new_queue_id):
     """
-    Used to edit any attribute of the court with id=court_id. The attributes
-    available to edit are 'id', 'number', and 'queue_id'.
+    Used to edit the queue_id of the court with id=court_id.
     :param court_id: 
-    :param attribute: 
-    :param new_value: 
+    :param new_queue_id:
     :return: 
     """
     with connection.cursor() as cursor:
         query = '''
         UPDATE api_court
-        SET ''' + attribute + '''=%s
+        SET queue_id=%s
         WHERE id=%s;
         '''
         try:
-            cursor.execute(query, [new_value, court_id])
+            cursor.execute(query, [new_queue_id, court_id])
         except IntegrityError:
-            return HttpResponse(json.dumps({"status": "down", "message": "This queue type does not exist."}),
-                                content_type="application/json")
-        except ProgrammingError:
-            return HttpResponse(json.dumps({"status": "down", "message": "The specified attribute does not exist."}),
+            return HttpResponse(json.dumps({"message": "The specified queue id does not exist."}),
                                 content_type="application/json")
         else:
-            return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted court info."}),
+            return HttpResponse(json.dumps({"message": "Successfully updated the queue_id for the specified court."}),
                                 content_type="application/json")
 
 
 def get_all_queues():
-    with connection.cursor() as cursor:
-        query = '''
-        SELECT *
-        FROM api_queue
-        '''
-        cursor.execute(query)
-        results = dictfetchall(cursor)
-    return results
+    # with connection.cursor() as cursor:
+    #     query = '''
+    #     SELECT *
+    #     FROM api_queue
+    #     '''
+    #     cursor.execute(query)
+    #     results = dictfetchall(cursor)
+    # return results
+    return Queue.objects.raw("SELECT * FROM api_queue")
 
 
 def add_queue(queue_type):
@@ -434,75 +450,312 @@ def add_queue(queue_type):
         try:
             cursor.execute(query, [queue_type])
         except IntegrityError:
-            return HttpResponse(json.dumps({"status": "down", "message": "This queue type already exists."}),
+            return HttpResponse(json.dumps({"message": "This queue type already exists."}),
                                 content_type="application/json")
         else:
-            return HttpResponse(json.dumps({"status": "up", "message": "Successfully added queue."}),
+            return HttpResponse(json.dumps({"message": "Successfully added queue."}),
                                 content_type="application/json")
 
 
-def member_config(id):
+# The functions below are used to package information for the frontend to use
+
+def member_config(member_id):
     """
     GET function to see settings information for members
-    :param id:
+    :param member_id:
     :return:
     """
 
-    members = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id = %s", [id])
+    members = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id = %s", [member_id])
     if len(list(members)) == 0:
         return HttpResponse(json.dumps({"status": "down", "message": "This person is not a member."}), content_type="application/json")
 
     member = members[0]
-    data = serializeModel(member)
-    data['status'] = 'up'
+    # data = serializeModel(member)
+    data = {
+        'private': member.private,
+        'bio': member.bio
+    }
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
-def member_config_edit(email, dict_post):
+def member_config_edit(member_id, dict_post):
     """
     Updates attribute values for a member
     Ex: update 'private' to True and 'bio' to 'Hi'
             dict_post = {'private' = True, 'bio' = 'Hi'}
-    :param email: member
-    :param dict_post: Dictionary containing the new values for the keys we want updated. If an attribute is not
-                        being updated, it won't be in the dictionary
+    :param member_id: member
+    :param dict_post: Dictionary containing the new values for the keys we want updated.
     :return:
     """
     for k, v in dict_post.items():
-        edit_member_info(email, k, v)
-    return HttpResponse(json.dumps({"status": "up", "message": "Successfully editted member info."}),
+        edit_member_info(member_id, k, v)
+    return HttpResponse(json.dumps({"message": "Successfully editted member settings."}),
                         content_type="application/json")
 
 
-def board_member_config():
+def boardmembers_config():
     """
-    GET function to see settings information exclusive to board members
+    GET function to see list of board members
     :return:
     """
-    # Get list of everybody (interested, members, boardmembers)
-    board_members = get_board_members()
-    members = get_members()
-    for m in members:
-        m.__setitem__('dateJoined', m.get('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
-        # m.dateJoined = m.dateJoined.strftime('%Y-%m-%dT%H:%M:%SZ')
-    interested = get_interested()
-
-    # Get schedule
-    schedule = get_schedule()
-    for s in schedule:
-        s.__setitem__('date', s.get('date').strftime('%Y-%m-%dT%H:%M:%SZ'))
-        # s.date = s.date.strftime('%Y-%m-%dT%H:%M:%SZ')
-    all_courts = get_all_courts()
-    all_queues = get_all_queues()
-
-    context = {
-        'board_members': board_members,
-        'members': members,
-        'interested': interested,
-        'schedule': schedule,
-        'all_courts': all_courts,
-        'all_queues': all_queues,
-        'status': 'up'
-    }
+    # Get list of all boardmembers
+    boardmembers = get_board_members()
+    ret_list = []
+    for boardmember in boardmembers:
+        boardmember_dict = {
+            'member_id': boardmember.id,
+            'first_name': boardmember.first_name,
+            'last_name': boardmember.last_name,
+            'email': boardmember.email,
+            'job': boardmember.job
+        }
+        ret_list.append(boardmember_dict)
+    context = {'boardmembers': ret_list}
 
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+
+def boardmembers_config_edit(dict_post):
+    """
+    POST function to edit jobs of boardmembers
+    :param dict_post:
+    :return:
+    """
+    for boardmember in dict_post['boardmembers']:
+        member_id = boardmember['member_id']
+        new_job = boardmember['job']
+        edit_boardmember_job(member_id, new_job)
+    return HttpResponse(json.dumps({"message": "Successfully updated boardmember jobs."}),
+                        content_type="application/json")
+
+def get_all_club_members():
+    """
+    GET function to get info on all the people in the club
+    :return:
+    """
+    interested = get_interested()
+    ret_list = []
+    for interested_member in interested:
+        interested_dict = {
+            'member_id': interested_member.id,
+            'first_name': interested_member.first_name,
+            'last_name': interested_member.last_name,
+            'email': interested_member.email,
+            'status': "Interested"
+        }
+        ret_list.append(interested_dict)
+
+    members = get_members()
+    for member in members:
+        member_dict = {
+            'member_id': member.id,
+            'first_name': member.first_name,
+            'last_name': member.last_name,
+            'email': member.email,
+            'status': "Member"
+        }
+        ret_list.append(member_dict)
+
+    boardmembers = get_board_members()
+    for boardmember in boardmembers:
+        boardmember_dict = {
+            'member_id': boardmember.id,
+            'first_name': boardmember.first_name,
+            'last_name': boardmember.last_name,
+            'email': boardmember.email,
+            'status': "Boardmember"
+        }
+        ret_list.append(boardmember_dict)
+
+    context = {'members': ret_list}
+
+    return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+
+
+def update_all_club_members_status(dict_post):
+    """
+    POST request for boardmembers. Alter the statuses of members.
+    Assumes a list of members and a drop-down for each one with the choices (Interested, Member, Boardmember).
+    :param dict_post:
+    :return:
+    """
+    members = dict_post['members']
+    for member in members:
+        member_id = member['member_id']
+        new_status = member['status']
+        curr_status = get_status(member_id)
+
+        if new_status == "Boardmember":
+            if curr_status == "Member":
+                promote_to_board_member(member_id, "OFFICER")
+            elif curr_status == "Interested":
+                promote_to_member(member_id)
+                promote_to_board_member(member_id, "OFFICER")
+        elif new_status == "Member":
+            if curr_status == "Boardmember":
+                BoardMember.objects.raw("DELETE FROM api_boardmember WHERE member_ptr_id=%s", [member_id])
+            elif curr_status == "Interested":
+                promote_to_member(member_id)
+        elif new_status == "Interested":
+            if curr_status == "Boardmember":
+                BoardMember.objects.raw("DELETE FROM api_boardmember WHERE member_ptr_id=%s", [member_id])
+                Member.objects.raw("DELETE FROM api_member WHERE interested_ptr_id=%s", [member_id])
+            elif curr_status == "Member":
+                Member.objects.raw("DELETE FROM api_member WHERE interested_ptr_id=%s", [member_id])
+
+    return HttpResponse(json.dumps({"message": "Successfully updated club member statuses."}),
+                        content_type="application/json")
+
+def delete_multiple_club_members(dict_delete):
+    """
+    DELETE request for boardmembers to remove club members. The provided dictionary
+    should ONLY have the information for the club members that will be deleted
+    :param dict_delete:
+    :return:
+    """
+    members = dict_delete['members']
+    for member in members:
+        member_id = member['member_id']
+        remove_member(member_id)
+    return HttpResponse(json.dumps({"message": "Successfully removed club members."}),
+                        content_type="application/json")
+
+def schedule_to_dict():
+    """
+    Returns the schedule as a dictionary of the form
+    {
+        'schedule': [
+            {
+                'date': _,
+                'number_of_courts': _
+            },
+            ...
+        ]
+    }
+    :return:
+    """
+    schedule = get_schedule()
+    if len(schedule) == 0:
+        return HttpResponse(json.dumps({"message": "There is nothing in the schedule."}),
+                            content_type="application/json")
+    ret_list = []
+    for entry in schedule:
+        entry = serializeModel(entry)
+        entry_dict = {
+            'date': entry.date,
+            'number_of_courts': entry.number_of_courts
+        }
+        ret_list.append(entry_dict)
+
+    context = {'schedule': ret_list}
+
+    return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+
+
+def addto_edit_schedule(dict_post):
+    """
+    POST request for boardmembers to add to or edit entries in the schedule.
+    :param dict_post:
+    :return:
+    """
+    schedule = dict_post['schedule']
+    today = datetime.date.today()
+    for entry in schedule:
+        date = entry.get('date', today)
+        number_of_courts = entry.get('number_of_courts', 0)
+
+        if schedule_date_exists(date):
+            edit_schedule(date, number_of_courts)
+        else:
+            add_to_schedule(date, number_of_courts)
+
+    return HttpResponse(json.dumps({"message": "Successfully updated schedule."}),
+                        content_type="application/json")
+
+def delete_multiple_from_schedule(dict_delete):
+    """
+    DELETE request for boardmembers to delete entries from schedule. The dictionary should ONLY
+    contain information for the entries that they want to be deleted.
+    :param dict_delete:
+    :return:
+    """
+    schedule = dict_delete['schedule']
+    for entry in schedule:
+        date = entry.get('date', '')
+        # If the provided date doesn't exist, ignore and continue
+        if schedule_date_exists(date):
+            delete_from_schedule(date)
+
+    return HttpResponse(json.dumps({"message": "Successfully deleted entries from schedule."}),
+                        content_type="application/json")
+
+def get_all_courts_formmated():
+    """
+    GET request to get all the courts
+    :return:
+    """
+    courts = get_all_courts()
+    if len(courts) == 0:
+        return HttpResponse(json.dumps({"message": "There are no courts stored in the database."}),
+                            content_type="application/json")
+    ret_list = []
+    for c in courts:
+        court_dict = {
+            'court_id': c.id,
+            'queue_id': c.queue_id
+        }
+        ret_list.append(court_dict)
+    context = {'courts': ret_list}
+    return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+
+def addto_edit_courts_formatted(dict_post):
+    """
+    POST method
+    :param dict_post:
+    :return:
+    """
+    courts = dict_post['courts']
+    for c in courts:
+        if validate_keys(['court_id', 'queue_id'], c):
+            court_id = c['court_id']
+            queue_id = c['queue_id']
+            if court_id_exists(court_id):
+                edit_court_queue(court_id, queue_id)
+            else:
+                add_court(court_id, queue_id)
+    return HttpResponse(json.dumps({"message": "Successfully updated courts."}),
+                        content_type="application/json")
+
+
+def get_all_queues_formatted():
+    """
+    GET method
+    :return:
+    """
+    queues = get_all_queues()
+    if len(queues) == 0:
+        return HttpResponse(json.dumps({"message": "There are no queues."}),
+                            content_type="application/json")
+    ret_list = []
+    for q in queues:
+        queue_dict = {
+            'queue_id': q.id,
+            'queue_type': q.type
+        }
+        ret_list.append(queue_dict)
+    context = {'queues': ret_list}
+
+    return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+
+def add_queues_formatted(dict_post):
+    """
+    POST
+    :return:
+    """
+    queues = dict_post['queues']
+    for q in queues:
+        if validate_keys(['queue_type'], q):
+            queue_type = q['queue_type']
+            add_queue(queue_type)
+    return HttpResponse(json.dumps({"message": "Successfully added queue type."}),
+                        content_type="application/json")
