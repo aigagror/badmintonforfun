@@ -3,15 +3,35 @@ from django.views.decorators.csrf import csrf_exempt
 
 from api.calls.announcement_call import *
 from api.routers.router import *
-from api.routers.router import validate_keys
 from django.shortcuts import render
 from api.calls.election_call import *
 from api.calls.match_call import *
 from api.calls.match_call import create_match as call_create_match
 from api.calls.match_call import delete_match as call_delete_match
 from api.calls.match_call import edit_match as call_edit_match
+from api.calls.queue_call import *
 import ast
 from django.urls import reverse
+
+
+def response_to_dict(response):
+    """
+    Helper function to convert http responses to dictionaries
+    :param response:
+    :return:
+    """
+    content = response.content.decode()
+    context = json.loads(content)
+    return context
+
+
+@restrictRouter(allowed=["GET"])
+def queue(request):
+    response = get_queues()
+    context = response_to_dict(response)
+
+    return render(request, 'api_queue.html', context)
+
 
 @restrictRouter(allowed=["GET"])
 def top_players(request):

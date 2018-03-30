@@ -22,6 +22,8 @@ from api.routers import demo, router, votes_router, \
 app_name = 'api'
 urlpatterns = [
 
+    # Front-end demonstrations of backend functions
+    re_path(r'demo/?$', demo.queue, name='demo_index'),
     re_path(r'demo/matches/?$', demo.matches, name='demo_matches'),
     re_path(r'demo/matches/create/?$', demo.create_match, name='demo_matches_create'),
     re_path(r'demo/matches/delete/?$', demo.delete_match, name='demo_matches_delete'),
@@ -30,6 +32,8 @@ urlpatterns = [
 
     re_path(r'demo/election/?$', demo.index, name='demo_election'),
     re_path(r'demo/election/vote/?$', demo.vote, name='demo_vote'),
+
+    re_path(r'demo/queue/?$', demo.queue, name='demo_queue'),
 
     # Gets the 3 latest announcements | Edits an announcement
     re_path(r'announcements/?$', announcement_router.announcements, name='announcement'),

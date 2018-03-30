@@ -6,7 +6,10 @@ from api.cursor_api import http_respond
 def get_queues():
     queues = Queue.objects.raw("SELECT * FROM api_queue")
     dict = serializeSetOfModels(queues)
-    return http_respond(dict)
+    context = {
+        'queues': dict
+    }
+    return http_respond(context)
 
 
 def get_next_on_queue(queue_type):

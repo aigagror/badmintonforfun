@@ -79,6 +79,12 @@ def serializeSetOfModels(models):
 
 
 def run_connection(execute, *args):
+    """
+    This function should only be used for insertion, deletion or updating
+    :param execute:
+    :param args:
+    :return:
+    """
     with connection.cursor() as cursor:
         try:
             cursor.execute(execute, [arg for arg in args])
@@ -93,6 +99,15 @@ def run_connection(execute, *args):
 
 
 def http_respond(dict, message=None, status=None, code=200):
+    """
+    Helper function for all of those annoying HttpResponses with the json dumps and content_type.
+    Makes sure that 'message' and 'status' are keys in this dictionary
+    :param dict:
+    :param message:
+    :param status:
+    :param code:
+    :return:
+    """
     if 'message' not in dict:
         dict['message'] = message if message is not None else "OK"
     if 'status' not in dict:
