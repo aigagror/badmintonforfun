@@ -26,10 +26,10 @@ def get_all_votes():
     return HttpResponse(json.dumps(results), content_type='application/json')
 
 
-def get_votes_from_member(email):
+def get_votes_from_member(id):
     """
     Returns all of the votes for the given member in the current election
-    :param email:
+    :param id:
     :return:
     """
 
@@ -39,7 +39,7 @@ def get_votes_from_member(email):
         FROM api_vote, api_election, api_member
         WHERE api_election.endDate = NULL AND api_vote.election_id = api_election.date AND api_vote.voter_id = %s;
         """
-        cursor.execute(query, [email])
+        cursor.execute(query, [id])
 
         results = dictfetchall(cursor)
     return HttpResponse(json.dumps(results), content_type='application/json')
@@ -151,7 +151,7 @@ def delete_campaign(id, email, job):
         return HttpResponse(json.dumps({'message': 'No campaign exists.'}), content_type='application/json',
                             status=400)
 
-    return run_connection("DELETE FROM api_campaign WHERE campaigner_id=%s AND job=%s", email, job)
+    return run_connection("DELETE FROM api_campaign WHERE id=%s", id)
 
 
 def get_current_campaigns():

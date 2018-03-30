@@ -12,6 +12,8 @@ def announcements(request):
     """
     GET - Get the 3 latest announcements
     POST - Edit an announcement
+        Required Keys: id
+        Optional Keys: datetime, title, entry
     :param request:
     :return:
     """
@@ -29,6 +31,7 @@ def announcements(request):
 def create_announcement(request):
     """
     POST - Creates an announcement
+        Required Keys: datetime, title, entry
     :param request:
     :return:
     """

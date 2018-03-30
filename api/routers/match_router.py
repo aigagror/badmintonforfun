@@ -6,6 +6,7 @@ from api.routers.router import restrictRouter
 def top_players(request):
     """
     GET -- Gets the top 5 players
+        Required Keys: None
     :param request:
     :return:
     """

@@ -15,55 +15,54 @@ Including another URLconf
 """
 from django.urls import re_path, path
 
-import api.routers.announcement_router
-import api.routers.campaign_router
-import api.routers.election_router
-import api.routers.match_router
-import api.routers.settings_router
-import api.routers.votes_router
-from api.routers import router
-import api.routers.demo
+from api.routers import demo, router, votes_router, \
+    settings_router, match_router, election_router, \
+    campaign_router, announcement_router, queue_router
 
 app_name = 'api'
 urlpatterns = [
 
-    re_path(r'demo/matches/?$', api.routers.demo.matches, name='demo_matches'),
-    re_path(r'demo/matches/create/?$', api.routers.demo.create_match, name='demo_matches_create'),
-    re_path(r'demo/matches/delete/?$', api.routers.demo.delete_match, name='demo_matches_delete'),
-    path('demo/matches/<int:match_id>/edit/', api.routers.demo.edit_match, name='demo_matches_edit'),
-    re_path(r'demo/players/top/?$', api.routers.demo.top_players, name='demo_top_players'),
+    re_path(r'demo/matches/?$', demo.matches, name='demo_matches'),
+    re_path(r'demo/matches/create/?$', demo.create_match, name='demo_matches_create'),
+    re_path(r'demo/matches/delete/?$', demo.delete_match, name='demo_matches_delete'),
+    path('demo/matches/<int:match_id>/edit/', demo.edit_match, name='demo_matches_edit'),
+    re_path(r'demo/players/top/?$', demo.top_players, name='demo_top_players'),
 
-    re_path(r'demo/election/?$', api.routers.demo.index, name='demo_election'),
-    re_path(r'demo/election/vote/?$', api.routers.demo.vote, name='demo_vote'),
+    re_path(r'demo/election/?$', demo.index, name='demo_election'),
+    re_path(r'demo/election/vote/?$', demo.vote, name='demo_vote'),
 
     # Gets the 3 latest announcements | Edits an announcement
-    re_path(r'announcements/?$', api.routers.announcement_router.announcements, name='announcement'),
-    re_path(r'announcements/create/?$', api.routers.announcement_router.create_announcement, name='create_announcement'),
-    re_path(r'members/top_players?$', api.routers.match_router.top_players, name='top_players'),
+    re_path(r'announcements/?$', announcement_router.announcements, name='announcement'),
+    # Creates an announcement
+    re_path(r'announcements/create/?$', announcement_router.create_announcement, name='create_announcement'),
+
+    # Gets the top players
+    re_path(r'members/top_players?$', match_router.top_players, name='top_players'),
 
     # Gets all votes
-    re_path(r'election/all_votes/?$', api.routers.votes_router.all_votes, name='all_votes'),
+    re_path(r'election/all_votes/?$', votes_router.all_votes, name='all_votes'),
     # Create/edit/delete votes
-    re_path(r'election/vote/?$', api.routers.votes_router.vote, name='vote'),
-    # Createss a campaign
-    re_path(r'election/create/?$', api.routers.election_router.electionCreateRouter, name='create_election'),
+    re_path(r'election/vote/?$', votes_router.vote, name='vote'),
+    # Creates an election
+    re_path(r'election/create/?$', election_router.electionCreateRouter, name='create_election'),
     # Gets current election and all of its campaigns
-    re_path(r'election/?$', api.routers.election_router.electionRouter, name='election'),
+    re_path(r'election/?$', election_router.electionRouter, name='election'),
 
-    # Edits campaign
-    re_path(r'campaign/?$', api.routers.campaign_router.campaignRouter, name='campaign'),
     # Creates a campaign
-    re_path(r'campaign/create/?$', api.routers.campaign_router.campaignCreateRouter, name='create_campaign'),
+    re_path(r'campaign/create/?$', campaign_router.campaignCreateRouter, name='create_campaign'),
+    # Edits campaign
+    re_path(r'campaign/?$', campaign_router.campaignRouter, name='campaign'),
 
-    re_path(r'settings/member/?$', api.routers.settings_router.settingsRouter, name='member_settings'),
-    re_path(r'settings/boardmembers/?$', api.routers.settings_router.settingsBoardMemberRouter, name='boardmembers'),
-    re_path(r'settings/members/all?$', api.routers.settings_router.settingsAllMembersRouter, name='all_members'),
-    re_path(r'settings/interested/add/?$', api.routers.settings_router.settingsInterestedCreateRouter, name='add_interested'),
-    re_path(r'settings/schedule/?$', api.routers.settings_router.settingsSchedulesRouter, name='schedule'),
-    re_path(r'settings/courts/?$', api.routers.settings_router.settingsCourtRouter, name='courts'),
-    re_path(r'settings/queue/?$', api.routers.settings_router.settingsQueueRouter, name='queue'),
+    re_path(r'settings/member/?$', settings_router.settingsRouter, name='member_settings'),
+    re_path(r'settings/boardmembers/?$', settings_router.settingsBoardMemberRouter, name='boardmembers'),
+    re_path(r'settings/members/all?$', settings_router.settingsAllMembersRouter, name='all_members'),
+    re_path(r'settings/interested/add/?$', settings_router.settingsInterestedCreateRouter, name='add_interested'),
+    re_path(r'settings/schedule/?$', settings_router.settingsSchedulesRouter, name='schedule'),
+    re_path(r'settings/courts/?$', settings_router.settingsCourtRouter, name='courts'),
+    re_path(r'settings/queue/?$', settings_router.settingsQueueRouter, name='queue'),
 
-    re_path(r'queue/party/next?$', api.routers.settings_router.settingsQueueRouter, name='queue_next_party')
+    re_path(r'queue/party/next?$', queue_router.next_on_queue, name='queue_next_party'),
+    re_path(r'queue/')
 
 ]
 

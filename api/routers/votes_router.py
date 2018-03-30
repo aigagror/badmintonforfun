@@ -9,7 +9,9 @@ from api.routers.router import restrictRouter
 def vote(request):
     """
     GET -- Gets votes of given member
+        Required Keys: id
     POST -- Casts/updates a vote for the current election
+        Required Keys: voter, campaign
     :param request:
     :param job:
     :return:
@@ -17,11 +19,11 @@ def vote(request):
 
     if request.method == "GET":
         dict_get = dict(request.GET.items())
-        emailKey = "email"
-        if emailKey not in dict_get:
-            return HttpResponse("Missing required param {}".format(emailKey), status=400)
-        email = dict_get[emailKey]
-        return get_votes_from_member(email)
+        idKey = "id"
+        if idKey not in dict_get:
+            return HttpResponse("Missing required param {}".format(idKey), status=400)
+        id = dict_get[idKey]
+        return get_votes_from_member(id)
     elif request.method == "POST":
         dict_post = dict(request.POST.items())
         voterKey = "voter"
@@ -38,4 +40,10 @@ def vote(request):
 
 @restrictRouter(allowed=["GET"])
 def all_votes(request):
+    """
+    GET - Gets all votes of the current campaign
+        Required Keys: None
+    :param request:
+    :return:
+    """
     return get_all_votes()

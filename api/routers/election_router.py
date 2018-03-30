@@ -12,7 +12,12 @@ from api.routers.router import restrictRouter
 def electionRouter(request):
     """
     GET -- Gets the current election
-    POST -- Edits/deletes an election
+        Required Keys: None
+    POST -- Edits an election
+        Required Keys: id
+        Optional Keys: startDate, endDate
+    DELETE -- Deletes an election
+        Required Keys: id
     :param request:
     :return:
     """
@@ -46,6 +51,7 @@ def electionRouter(request):
 def electionCreateRouter(request):
     """
     POST -- Creates an election
+        Required Keys: startDate
     :param request:
     :return:
     """

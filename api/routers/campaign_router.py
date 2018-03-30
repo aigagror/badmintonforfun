@@ -11,8 +11,11 @@ from api.routers.router import restrictRouter, validate_keys
 @restrictRouter(allowed=["POST", "DELETE"])
 def campaignRouter(request):
     """
-    POST -- Takes json data with campaign id, job, and email to edit the corresponding campaign
-    DELETE -- Takes raw data with campaign id, job, and email to delete the corresponding campaign
+    POST -- Edits the corresponding campaign
+        Required Keys: id
+        Optional Keys: job, email
+    DELETE -- Deletes a campaign
+        Required Keys: id
     :param request:
     :return:
     """
@@ -52,6 +55,7 @@ def campaignFindRouter(request):
 def campaignCreateRouter(request):
     """
     POST -- Takes json data with campaign job, pitch, and email to create a new campaign
+        Required Keys: job, pitch, email
     :param request:
     :return:
     """
