@@ -84,11 +84,18 @@ def run_connection(execute, *args):
             cursor.execute(execute, [arg for arg in args])
         except IntegrityError:
             raise
-            return HttpResponse(json.dumps({'message': 'IntegrityError!'}),
-                                content_type='application/json', status=400)
+            return http_respond({}, message='Integerity Error!', code=400)
         except DatabaseError as e:
             print(e)
-            return HttpResponse(json.dumps({'message': 'DatabaseError!'}), content_type='application/json',
-                                status=400)
+            return http_respond({}, message='Database Error!', code=400)
         else:
-            return HttpResponse(json.dumps({'message': 'OK'}), content_type='application/json')
+            return http_respond({})
+
+
+def http_respond(dict, message=None, status=None, code=200):
+    if 'message' not in dict:
+        dict['message'] = message if message is not None else "OK"
+    if 'status' not in dict:
+        dict['status'] = status if status is not None else "up"
+
+    return HttpResponse(json.dumps(dict), content_type='application/json', status=code)

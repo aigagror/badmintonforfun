@@ -58,11 +58,12 @@ urlpatterns = [
     re_path(r'settings/members/all?$', settings_router.settingsAllMembersRouter, name='all_members'),
     re_path(r'settings/interested/add/?$', settings_router.settingsInterestedCreateRouter, name='add_interested'),
     re_path(r'settings/schedule/?$', settings_router.settingsSchedulesRouter, name='schedule'),
-    re_path(r'settings/courts/?$', settings_router.settingsCourtRouter, name='courts'),
-    re_path(r'settings/queue/?$', settings_router.settingsQueueRouter, name='queue'),
+    re_path(r'settings/courts/?$', settings_router.settingsCourtRouter, name='court_settings'),
+    re_path(r'settings/queue/?$', settings_router.settingsQueueRouter, name='queue_settings'),
 
+    # Gets the queues
+    re_path(r'queue/?$', queue_router.get_queues, name='queues'),
     re_path(r'queue/party/next?$', queue_router.next_on_queue, name='queue_next_party'),
-    re_path(r'queue/')
 
 ]
 

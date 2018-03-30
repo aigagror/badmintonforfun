@@ -1,7 +1,13 @@
-from django.db import connection, IntegrityError, ProgrammingError
 from api.cursor_api import *
-import json
-from django.http import HttpResponse
+from api.models import Queue
+from api.cursor_api import http_respond
+
+
+def get_queues():
+    queues = Queue.objects.raw("SELECT * FROM api_queue")
+    dict = serializeSetOfModels(queues)
+    return http_respond(dict)
+
 
 def get_next_on_queue(queue_type):
     """
