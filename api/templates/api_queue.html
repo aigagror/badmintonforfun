@@ -1,7 +1,26 @@
 {% if queues %}
     {% for queue in queues %}
-        <p>{{ queue.type }}</p>
+        <p>{{ queue.type }}<br />
+            {% for party in queue.parties %}
+                <a href="{% url 'api:demo_edit_party' party.id %}">Party</a>: {{ party }}<br />
+            {% endfor %}
+        </p>
+        <br />
     {% endfor %}
+
+
+    <form action="{% url 'api:create_party' %}" method="post">
+        <select name="queue_id">
+        {% for queue in queues %}
+            <option value="{{ queue.id }}">{{ queue.type }}</option>
+        {% endfor %}
+
+        <label for="members">A comma separated list of member ids to include in the party</label>
+        <input type="text" name="member_ids" id="members">
+        </select>
+        <input type="submit">
+    </form>
+
 {% else %}
     No active queues
 {% endif %}

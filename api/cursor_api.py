@@ -90,15 +90,15 @@ def run_connection(execute, *args):
             cursor.execute(execute, [arg for arg in args])
         except IntegrityError:
             raise
-            return http_respond({}, message='Integerity Error!', code=400)
+            return http_response({}, message='Integerity Error!', code=400, status="down")
         except DatabaseError as e:
             print(e)
-            return http_respond({}, message='Database Error!', code=400)
+            return http_response({}, message='Database Error!', code=400, status="down")
         else:
-            return http_respond({})
+            return http_response({})
 
 
-def http_respond(dict, message=None, status=None, code=200):
+def http_response(dict, message=None, status=None, code=200):
     """
     Helper function for all of those annoying HttpResponses with the json dumps and content_type.
     Makes sure that 'message' and 'status' are keys in this dictionary

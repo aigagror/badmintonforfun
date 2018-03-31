@@ -16,6 +16,7 @@ def get_queues(request):
 def next_on_queue(request):
     """
     GET -- The next party on the specified queue to play
+        Required Keys: queue_type
     :param request:
     :return:
     """
