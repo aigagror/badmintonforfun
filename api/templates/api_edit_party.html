@@ -1,0 +1,41 @@
+<h1>Party ID: {{ party.id }}</h1>
+<form action="{% url 'api:edit_party' %}" method="post">
+    <input hidden name="id" value="{{ party.id }}">
+    <input hidden name="delete" value="0">
+
+    <select name="queue_id">
+    {% for queue in queues %}
+        <option value="{{ queue.id }}" {% if queue.id == party.queue_id %}{{ selected }}{% endif %}>{{ queue.type }}</option>
+    {% endfor %}
+    </select>
+
+    <input type="submit">
+</form>
+
+<form action="{% url 'api:edit_party' %}" method="post">
+    <input hidden name="id" value="{{ party.id }}">
+    <input hidden name="delete" value="0">
+
+    Add member
+    <select name="add_members">
+    {% for member in members %}
+        <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
+    {% endfor %}
+    </select>
+
+    <input type="submit">
+</form>
+
+<form action="{% url 'api:edit_party' %}" method="post">
+    <input hidden name="id" value="{{ party.id }}">
+    <input hidden name="delete" value="0">
+
+    Remove member
+    <select name="remove_members">
+    {% for member in party.members %}
+        <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
+    {% endfor %}
+    </select>
+
+    <input type="submit">
+</form>

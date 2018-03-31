@@ -90,10 +90,10 @@ def run_connection(execute, *args):
             cursor.execute(execute, [arg for arg in args])
         except IntegrityError:
             raise
-            return http_response({}, message='Integerity Error!', code=400)
+            return http_response({}, message='Integerity Error!', code=400, status="down")
         except DatabaseError as e:
             print(e)
-            return http_response({}, message='Database Error!', code=400)
+            return http_response({}, message='Database Error!', code=400, status="down")
         else:
             return http_response({})
 

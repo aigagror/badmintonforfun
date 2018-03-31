@@ -10,7 +10,8 @@ from api.calls.match_call import create_match as call_create_match
 from api.calls.match_call import delete_match as call_delete_match
 from api.calls.match_call import edit_match as call_edit_match
 from api.calls.queue_call import *
-import ast
+from api.calls.party_call import *
+from api.calls.member_call import *
 from django.urls import reverse
 
 
@@ -23,6 +24,29 @@ def response_to_dict(response):
     content = response.content.decode()
     context = json.loads(content)
     return context
+
+@restrictRouter(allowed=["GET"])
+def edit_party(request, party_id):
+    response = get_party(party_id)
+    party_dict = response_to_dict(response)
+    party_dict = party_dict['party']
+
+    response = get_queues()
+    queues_list = response_to_dict(response)
+    queues_list = queues_list['queues']
+
+    response = get_all_members()
+    members_list = response_to_dict(response)
+    members_list = members_list['members']
+
+    context = {
+        'party': party_dict,
+        'queues': queues_list,
+        'members': members_list,
+    }
+    return render(request, 'api_edit_party.html', context)
+
+
 
 
 @restrictRouter(allowed=["GET"])

@@ -35,6 +35,7 @@ urlpatterns = [
     re_path(r'demo/election/vote/?$', demo.vote, name='demo_vote'),
 
     re_path(r'demo/queue/?$', demo.queue, name='demo_queue'),
+    path('demo/queue/party/<int:party_id>/', demo.edit_party, name='demo_edit_party'),
 
     # Gets the 3 latest announcements | Edits an announcement
     re_path(r'announcements/?$', announcement_router.announcements, name='announcement'),

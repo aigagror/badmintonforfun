@@ -2,7 +2,7 @@
     {% for queue in queues %}
         <p>{{ queue.type }}<br />
             {% for party in queue.parties %}
-                <a href="{% url 'api:edit_party' %}">Party</a>: {{ party }}<br />
+                <a href="{% url 'api:demo_edit_party' party.id %}">Party</a>: {{ party }}<br />
             {% endfor %}
         </p>
         <br />
