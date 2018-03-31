@@ -521,7 +521,8 @@ def boardmembers_config_edit(dict_post):
     :param dict_post:
     :return:
     """
-    for boardmember in dict_post['boardmembers']:
+    boardmembers = dict_post['boardmembers']
+    for boardmember in boardmembers:
         member_id = boardmember['member_id']
         new_job = boardmember['job']
         edit_boardmember_job(member_id, new_job)
@@ -635,7 +636,7 @@ def schedule_to_dict():
     :return:
     """
     schedule = get_schedule()
-    if len(schedule) == 0:
+    if not schedule:
         return HttpResponse(json.dumps({"message": "There is nothing in the schedule."}),
                             content_type="application/json")
     ret_list = []
@@ -695,7 +696,7 @@ def get_all_courts_formmated():
     :return:
     """
     courts = get_all_courts()
-    if len(courts) == 0:
+    if not courts == 0:
         return HttpResponse(json.dumps({"message": "There are no courts stored in the database."}),
                             content_type="application/json")
     ret_list = []
@@ -733,7 +734,7 @@ def get_all_queues_formatted():
     :return:
     """
     queues = get_all_queues()
-    if len(queues) == 0:
+    if not queues:
         return HttpResponse(json.dumps({"message": "There are no queues."}),
                             content_type="application/json")
     ret_list = []

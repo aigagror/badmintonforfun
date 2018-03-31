@@ -2,13 +2,14 @@ import json
 
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 from api.calls.election_call import delete_campaign
 from api.calls.home_call import get_schedule
 from api.calls.settings_call import *
 from api.routers.router import restrictRouter, validate_keys
 
-
+@csrf_exempt
 @restrictRouter(allowed=["GET", "POST"])
 def settingsRouter(request):
     """
@@ -21,7 +22,8 @@ def settingsRouter(request):
     :param request:
     :return:
     """
-    session_id = request.session.get('session_id', None)
+    # session_id = request.session.get('session_id', None)
+    session_id = 8 # ezhuang2@illinois.edu
     if request.method == "GET":
         if session_id is None:
             return HttpResponse(json.dumps({"message": "No such member"}),
@@ -38,6 +40,7 @@ def settingsRouter(request):
         return member_config_edit(session_id, dict_post)
 
 
+@csrf_exempt
 @restrictRouter(allowed=["GET", "POST"])
 def settingsBoardMemberRouter(request):
     """
@@ -58,7 +61,8 @@ def settingsBoardMemberRouter(request):
     :param request:
     :return:
     """
-    session_id = request.session.get('session_id', '')
+    # session_id = request.session.get('session_id', None)
+    session_id = 8  # ezhuang2@illinois.edu
     if not is_board_member(session_id):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
@@ -68,12 +72,14 @@ def settingsBoardMemberRouter(request):
     elif request.method == "POST":
         # Can only change their jobs
         dict_post = dict(request.POST.items())
-        if not validate_keys(["member_id", "job"], dict_post):
+        print(str(dict_post))
+        if not validate_keys(["boardmembers"], dict_post):
             HttpResponse(json.dumps({'message': 'Missing parameters member_id or job'}),
                          content_type='application/json', status=400)
         return boardmembers_config_edit(dict_post)
 
 
+@csrf_exempt
 @restrictRouter(allowed=["GET", "POST", "DELETE"])
 def settingsAllMembersRouter(request):
     """
@@ -94,7 +100,8 @@ def settingsAllMembersRouter(request):
     :param request:
     :return:
     """
-    session_id = request.session.get('session_id', '')
+    # session_id = request.session.get('session_id', None)
+    session_id = 8  # ezhuang2@illinois.edu
     if not is_board_member(session_id):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
@@ -118,6 +125,7 @@ def settingsAllMembersRouter(request):
         return remove_member(dict_delete)
 
 
+@csrf_exempt
 @restrictRouter(allowed=["POST"])
 def settingsInterestedCreateRouter(request):
     """
@@ -132,7 +140,8 @@ def settingsInterestedCreateRouter(request):
     :param request:
     :return:
     """
-    session_id = request.session.get('session_id', '')
+    # session_id = request.session.get('session_id', None)
+    session_id = 8  # ezhuang2@illinois.edu
     if not is_board_member(session_id):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
@@ -150,6 +159,7 @@ def settingsInterestedCreateRouter(request):
         return add_interested(interested)
 
 
+@csrf_exempt
 @restrictRouter(allowed=["GET", "POST", "DELETE"])
 def settingsSchedulesRouter(request):
     """
@@ -167,7 +177,8 @@ def settingsSchedulesRouter(request):
     :param request:
     :return:
     """
-    session_id = request.session.get('session_id', '')
+    # session_id = request.session.get('session_id', None)
+    session_id = 8  # ezhuang2@illinois.edu
     if not is_board_member(session_id):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
@@ -191,6 +202,7 @@ def settingsSchedulesRouter(request):
         return delete_multiple_from_schedule(dict_delete)
 
 
+@csrf_exempt
 @restrictRouter(allowed=["GET", "POST"])
 def settingsCourtRouter(request):
     """
@@ -208,7 +220,8 @@ def settingsCourtRouter(request):
     :param request:
     :return:
     """
-    session_id = request.session.get('session_id', '')
+    # session_id = request.session.get('session_id', None)
+    session_id = 8  # ezhuang2@illinois.edu
     if not is_board_member(session_id):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
@@ -223,6 +236,7 @@ def settingsCourtRouter(request):
         return addto_edit_courts_formatted(dict_post)
 
 
+@csrf_exempt
 @restrictRouter(allowed=["GET", "POST"])
 def settingsQueueRouter(request):
     """
@@ -240,12 +254,13 @@ def settingsQueueRouter(request):
     :param request:
     :return:
     """
-    session_id = request.session.get('session_id', '')
+    # session_id = request.session.get('session_id', None)
+    session_id = 8  # ezhuang2@illinois.edu
     if not is_board_member(session_id):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
     if request.method == "GET":
-        return get_all_courts_formmated()
+        return get_all_queues_formatted()
     elif request.method == "POST":
         # Used to add more queue types to the db
         dict_post = dict(request.POST.items())
@@ -253,66 +268,6 @@ def settingsQueueRouter(request):
             HttpResponse(json.dumps({'message': 'Missing parameter queues'}),
                          content_type='application/json', status=400)
         return add_queues_formatted(dict_post)
-
-
-def settings(request):
-    #remove_member('johndoe@email.com')
-    add_interested(Interested('John', 'Doe', False, 'johndoe@email.com'))
-    new_member_info = Member(0, False, '2018-03-20', 'My name is John Doe and I like badminton')
-    promote_to_member('johndoe@email.com', new_member_info)
-    #promote_to_board_member('johndoe@email.com', BoardMember('Test Job'))
-
-    #edit_member_info('johndoe@email.com', 'private', True)
-    #edit_bio('johndoe@email.com', 'edit 2')
-    #edit_privacy('johndoe@email.com', False)
-
-    #remove_member('johndoe@email.com')
-
-    board_members = get_board_members()
-    members = get_members()
-    interested = get_interested()
-    member_info = get_member_info('ezhuang2@illinois.edu')
-    print(member_info[0].__getitem__('dateJoined'))
-    member_info[0].__setitem__('dateJoined', member_info[0].__getitem__('dateJoined').strftime('%Y-%m-%dT%H:%M:%SZ'))
-
-    #add_to_schedule('2018-03-21', 8)
-    #edit_schedule('2018-03-21', 2)
-    #delete_from_schedule('2018-03-21')
-    schedule = get_schedule()
-
-    add_queue('CASUAL')
-    add_queue('RANKED')
-    add_queue('KOTH')
-
-    add_court(Court(1, 'CASUAL'))
-    add_court(Court(2, 'RANKED'))
-    add_court(Court(3, 'CASUAL'))
-    add_court(Court(4, 'KOTH'))
-    add_court(Court(5, 'RANKED'))
-    add_court(Court(6, 'RANKED'))
-    add_court(Court(7, 'RANKED'))
-    add_court(Court(8, 'RANKED'))
-
-    check_court_date = '2018-03-31'
-    available_courts = {'date': check_court_date, 'courts': get_available_courts(check_court_date)}
-
-    edit_court_info(1, 'queue_id', 'KOTH')
-    all_courts = get_all_courts()
-
-    is_bm = is_board_member('apoddar3@illinois.edu')
-
-    context = {
-        'board_members': board_members,
-        'members': members,
-        'interested': interested,
-        'member_info': member_info,
-        'schedule': schedule,
-        'available_courts': available_courts,
-        'all_courts': all_courts,
-        'is_bm': is_bm
-    }
-
-    return render(request, 'api_settings.html', context)
 
 
 class Interested(object):
