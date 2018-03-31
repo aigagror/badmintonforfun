@@ -1,15 +1,28 @@
 from api.cursor_api import *
-from api.models import Queue
-from api.cursor_api import http_respond
+from api.models import Queue, Party, Member
+from api.cursor_api import http_response
 
 
 def get_queues():
+    dict = {}
+    dict['queues'] = []
     queues = Queue.objects.raw("SELECT * FROM api_queue")
-    dict = serializeSetOfModels(queues)
-    context = {
-        'queues': dict
-    }
-    return http_respond(context)
+    for queue in queues:
+        queue_dict = serializeModel(queue)
+        queue_dict['parties'] = []
+        parties = Party.objects.raw("SELECT * FROM api_party WHERE queue_id = %s", [queue.id])
+        for party in parties:
+            party_dict = serializeModel(party)
+
+            members = Member.objects.raw("SELECT * FROM api_member WHERE party_id = %s", [party.id])
+            members_dict = serializeSetOfModels(members)
+            party_dict['members'] = members_dict
+
+            queue_dict['parties'].append(party_dict)
+
+        dict['queues'].append(queue_dict)
+
+    return http_response(dict)
 
 
 from api.cursor_api import dictfetchall

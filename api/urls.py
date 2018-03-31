@@ -1,6 +1,6 @@
 """badminton_server URL Configuration
 
-The `urlpatterns` list routes URLs to views. For more information please see:
+The `urlpatterns` list routes URLs to views. For more information please see
     https://docs.djangoproject.com/en/2.0/topics/http/urls/
 Examples:
 Function views
@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.urls import re_path, path
 
+import api.routers.party_router
 from api.routers import demo, router, votes_router, \
     settings_router, match_router, election_router, \
     campaign_router, announcement_router, queue_router
@@ -65,9 +66,15 @@ urlpatterns = [
     re_path(r'settings/courts/?$', settings_router.settingsCourtRouter, name='court_settings'),
     re_path(r'settings/queue/?$', settings_router.settingsQueueRouter, name='queue_settings'),
 
-    # Gets the queues
+    # Gets the queues with all the parties on them
     re_path(r'queue/?$', queue_router.get_queues, name='queues'),
+    # Creates a party
+    re_path(r'queue/party/create/?$', api.routers.party_router.create_party, name='create_party'),
+    # Edits/deletes a party
+    re_path(r'queue/party/edit/?$', api.routers.party_router.edit_party, name='edit_party'),
+    # Gets the next part on the queue
     re_path(r'queue/party/next?$', queue_router.next_on_queue, name='queue_next_party'),
+
 
 ]
 
