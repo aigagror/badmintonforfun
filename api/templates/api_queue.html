@@ -2,4 +2,6 @@
     {% for queue in queues %}
         <p>{{ queue.type }}</p>
     {% endfor %}
+{% else %}
+    No active queues
 {% endif %}
