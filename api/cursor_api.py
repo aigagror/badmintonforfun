@@ -1,5 +1,10 @@
 import datetime
+import json
+
+from django.db import connection, IntegrityError, DatabaseError
 from django.forms.models import model_to_dict
+from django.http import HttpResponse
+
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
@@ -17,7 +22,7 @@ def dictfetchone(cursor):
         return {}
     return dict(zip(columns, row))
 
-dateTimeFormatString = "%Y-%m-%dT%H:%M:%SZ"
+dateTimeFormatString = "%Y-%m-%d %H:%M:%S"
 dateFormatString = "%Y-%m-%d"
 
 def serializeDate(dateObj):
@@ -62,3 +67,50 @@ def serializeModel(model):
         return json
 
     return _serializeDict(model_to_dict(model))
+
+
+def serializeSetOfModels(models):
+    ret = []
+    for model in models:
+        s = serializeModel(model)
+        ret.append(s)
+
+    return ret
+
+
+def run_connection(execute, *args):
+    """
+    This function should only be used for insertion, deletion or updating
+    :param execute:
+    :param args:
+    :return:
+    """
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute(execute, [arg for arg in args])
+        except IntegrityError:
+            raise
+            return http_respond({}, message='Integerity Error!', code=400)
+        except DatabaseError as e:
+            print(e)
+            return http_respond({}, message='Database Error!', code=400)
+        else:
+            return http_respond({})
+
+
+def http_respond(dict, message=None, status=None, code=200):
+    """
+    Helper function for all of those annoying HttpResponses with the json dumps and content_type.
+    Makes sure that 'message' and 'status' are keys in this dictionary
+    :param dict:
+    :param message:
+    :param status:
+    :param code:
+    :return:
+    """
+    if 'message' not in dict:
+        dict['message'] = message if message is not None else "OK"
+    if 'status' not in dict:
+        dict['status'] = status if status is not None else "up"
+
+    return HttpResponse(json.dumps(dict), content_type='application/json', status=code)

@@ -1,6 +1,9 @@
 import * as React from 'react';
 import {Select, Option} from '../common/Select';
 import {Popup} from '../common/Popup';
+import axios from 'axios';
+
+const campaignCreate = '/api/campaign/create';
 
 export class RegisterElectionView extends React.Component<any, any> {
 
@@ -46,13 +49,22 @@ export class RegisterElectionView extends React.Component<any, any> {
 	}
 
 	submit() {
-		console.log("Pitch", this.state.pitchValue);
-		console.log("State", this.campaignType);
-		this.setState({
-			popup: <Popup title="Campaign Submitted" 
-				message="Election Campaign has been submitted"
-				callback={()=>window.location.reload(true)} />
-		})
+		const email = 'ezhuang2@illinois.edu';
+		let data = new FormData();
+		data.append('pitch', this.state.pitchValue);
+		data.append('job', this.campaignType);
+		data.append('email', email);
+		axios.post(campaignCreate, data)
+			.then((res: any) => {
+				this.setState({
+					popup: <Popup title="Campaign Submitted" 
+						message="Election Campaign has been submitted"
+						callback={()=>window.location.reload(true)} />
+				});
+			})
+			.catch((res: any) => {
+				console.log(res);
+			})
 	}
 
 	render() {

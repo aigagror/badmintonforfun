@@ -1,0 +1,7 @@
+<h1>Top Players</h1>
+<a href="{% url 'api:demo_matches' %}">View Matches</a>
+{% if topPlayers %}
+    {% for p in topPlayers %}
+        <p>{{ p.info.first_name }} {{ p.info.last_name }} | Wins: {{ p.wins }}, Total: {{ p.total_games }}</p>
+    {% endfor %}
+{% endif %}

@@ -22,7 +22,7 @@ TEAMS = (
     )
 
 class Queue(models.Model):
-    type = models.CharField(max_length=64, choices=QUEUE_TYPE, primary_key=True)
+    type = models.CharField(max_length=64, choices=QUEUE_TYPE, unique=True)
 
     def __str__(self):
         parties = Party.objects.filter(queue=self)
@@ -33,7 +33,6 @@ class Queue(models.Model):
 
 class Party(models.Model):
     queue = models.ForeignKey(Queue, on_delete=models.CASCADE)
-    leader = models.OneToOneField('Member', related_name='my_party', on_delete=models.CASCADE) # Using a string to avoid Python's compile error of circular reference
 
     def __str__(self):
         members = Member.objects.filter(party=self.id)
@@ -44,17 +43,17 @@ class Party(models.Model):
 
 
 class Court(models.Model):
-    number = models.IntegerField()
     queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
 
 class Tournament(models.Model):
     date = models.DateField('date of tournament', unique=True)
+    endDate = models.DateField('end date of tournament', unique=True, null=True, blank=True)
 
 class Interested(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
     formerBoardMember = models.BooleanField(default=False)
-    email = models.EmailField(primary_key=True)
+    email = models.EmailField(unique=True)
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
@@ -87,13 +86,6 @@ class Election(models.Model):
     def __str__(self):
         return '{} to {}'.format(self.date, self.endDate)
 
-class Votes(models.Model):
-    votee = models.ForeignKey(Member, related_name='votee', on_delete=models.SET_NULL, null=True)
-    election = models.ForeignKey(Election, on_delete=models.CASCADE)
-    voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return '{} voted for {}: {}'.format(self.voter, self.votee, self.election)
 
 class Campaign(models.Model):
     job = models.CharField(max_length=64, choices=JOBS)
@@ -105,12 +97,29 @@ class Campaign(models.Model):
         return '{} for {}: {}'.format(self.campaigner, self.job, self.election)
 
 
+class Vote(models.Model):
+    campaign = models.ForeignKey(Campaign, related_name='vote', on_delete=models.CASCADE)
+    voter = models.ForeignKey(Member, related_name='voter', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{} voted for {}: {}'.format(self.voter, self.votee, self.election)
+
+
 class Match(models.Model):
-    startDate = models.DateTimeField('date started')
+    startDateTime = models.DateTimeField('date time started')
     scoreA = models.IntegerField()
     scoreB = models.IntegerField()
     court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True, blank=True)
     tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True)
+
+    endDateTime = models.DateTimeField('date time ended', null=True, blank=True)
+
+    def clean(self):
+        if self.endDateTime is not None:
+            if abs(self.scoreA - self.scoreB) < 2:
+                raise ValidationError('Violates win by 2 rule')
+            if self.scoreA < 21 and self.scoreB < 21:
+                raise ValidationError('Someone should have at least 21 points')
 
     def __str__(self):
         plays = PlayedIn.objects.filter(match=self)
@@ -135,14 +144,6 @@ class PlayedIn(models.Model):
     def __str__(self):
         return '{}:{}'.format(self.member, self.match)
 
-class FinishedMatch(Match):
-    endDate = models.DateTimeField('date ended')
-
-    def clean(self):
-        if abs(self.scoreA - self.scoreB) < 2:
-            raise ValidationError('Violates win by 2 rule')
-        if self.scoreA < 21 and self.scoreB < 21:
-            raise ValidationError('Someone should have at least 21 points')
 
 class Announcement(models.Model):
     date = models.DateTimeField('date of announcement', unique=True)

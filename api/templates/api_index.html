@@ -1,12 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<a href="api_home/">home</a>
-<a href="api_elections/">elections</a>
-<a href="api_settings/">settings</a>
-</body>
-</html>
+<h1>Election</h1>
+<h2>{{ date }}</h2>
+
+<h1>Campaigns</h1>
+<form action="{% url 'api:demo_vote' %}" method="post">
+    {% for campaign in campaigns %}
+        <input type="radio" name="id" value="{{ campaign.id }}">
+        <b>{{ campaign.name }}</b>
+        <i>{{ campaign.job }}</i>
+        <p>{{ campaign.pitch }}</p>
+    {% endfor %}
+    <input type="submit">
+</form>

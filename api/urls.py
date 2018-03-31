@@ -13,41 +13,61 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
-from django.urls import include, path, re_path
-from . import views
+from django.urls import re_path, path
+
+from api.routers import demo, router, votes_router, \
+    settings_router, match_router, election_router, \
+    campaign_router, announcement_router, queue_router
 
 app_name = 'api'
 urlpatterns = [
 
+    # Front-end demonstrations of backend functions
+    re_path(r'demo/?$', demo.queue, name='demo_index'),
+    re_path(r'demo/matches/?$', demo.matches, name='demo_matches'),
+    re_path(r'demo/matches/create/?$', demo.create_match, name='demo_matches_create'),
+    re_path(r'demo/matches/delete/?$', demo.delete_match, name='demo_matches_delete'),
+    path('demo/matches/<int:match_id>/edit/', demo.edit_match, name='demo_matches_edit'),
+    re_path(r'demo/players/top/?$', demo.top_players, name='demo_top_players'),
 
-    re_path(r'announcements/?$', views.announcements, name='announcement'),
-    re_path(r'announcements/create/?$', views.create_announcement, name='create_announcement'),
-    re_path(r'members/top_players?$', views.top_players, name='top_players'),
+    re_path(r'demo/election/?$', demo.index, name='demo_election'),
+    re_path(r'demo/election/vote/?$', demo.vote, name='demo_vote'),
 
-    re_path(r'election/all_votes/?$', views.all_votes, name='all_votes'),
-    re_path(r'election/vote/?$', views.vote, name='vote'),
-    re_path(r'election/create/?$', views.electionCreateRouter, name='create_election'),
-    re_path(r'election/?$', views.electionRouter, name='election'),
+    re_path(r'demo/queue/?$', demo.queue, name='demo_queue'),
 
-    re_path(r'campaign/?$', views.campaignRouter, name='campaign'),
+    # Gets the 3 latest announcements | Edits an announcement
+    re_path(r'announcements/?$', announcement_router.announcements, name='announcement'),
+    # Creates an announcement
+    re_path(r'announcements/create/?$', announcement_router.create_announcement, name='create_announcement'),
 
-    #separate for testing purposes: POST requests for finding/creating a campaign
-    re_path(r'campaign/find/?$', views.campaignFindRouter, name='find_campaign'),
-    re_path(r'campaign/create/?$', views.campaignCreateRouter, name='create_campaign'),
+    # Gets the top players
+    re_path(r'members/top_players?$', match_router.top_players, name='top_players'),
 
-    re_path(r'settings/member/?$', views.settingsRouter, name='member_info'),
-    re_path(r'settings/boardmember/?$', views.settingsBoardMemberRouter, name='boardmember_info'),
-    re_path(r'settings/promote/?$', views.settingsPromoteMemberRouter, name='promote'),
-    re_path(r'settings/member/edit/?$', views.settingsEditMemberRouter, name='edit_member'),
-    re_path(r'settings/interested/add/?$', views.settingsInterestedCreateRouter, name='add_interested'),
-    re_path(r'settings/schedule/?$', views.settingsSchedulesRouter, name='schedule'),
-    re_path(r'settings/courts/?$', views.settingsCourtRouter, name='courts'),
-    re_path(r'settings/courts/available/?$', views.settingsAvailableCourtsRouter, name='available_courts'),
-    re_path(r'settings/queue/?$', views.settingsQueueRouter, name='queue'),
+    # Gets all votes
+    re_path(r'election/all_votes/?$', votes_router.all_votes, name='all_votes'),
+    # Create/edit/delete votes
+    re_path(r'election/vote/?$', votes_router.vote, name='vote'),
+    # Creates an election
+    re_path(r'election/create/?$', election_router.electionCreateRouter, name='create_election'),
+    # Gets current election and all of its campaigns
+    re_path(r'election/?$', election_router.electionRouter, name='election'),
 
-    re_path(r'queue/party/next?$', views.nextOnQueueRouter, name='queue_next_party')
+    # Creates a campaign
+    re_path(r'campaign/create/?$', campaign_router.campaignCreateRouter, name='create_campaign'),
+    # Edits campaign
+    re_path(r'campaign/?$', campaign_router.campaignRouter, name='campaign'),
+
+    re_path(r'settings/member/?$', settings_router.settingsRouter, name='member_settings'),
+    re_path(r'settings/boardmembers/?$', settings_router.settingsBoardMemberRouter, name='boardmembers'),
+    re_path(r'settings/members/all?$', settings_router.settingsAllMembersRouter, name='all_members'),
+    re_path(r'settings/interested/add/?$', settings_router.settingsInterestedCreateRouter, name='add_interested'),
+    re_path(r'settings/schedule/?$', settings_router.settingsSchedulesRouter, name='schedule'),
+    re_path(r'settings/courts/?$', settings_router.settingsCourtRouter, name='court_settings'),
+    re_path(r'settings/queue/?$', settings_router.settingsQueueRouter, name='queue_settings'),
+
+    # Gets the queues
+    re_path(r'queue/?$', queue_router.get_queues, name='queues'),
+    re_path(r'queue/party/next?$', queue_router.next_on_queue, name='queue_next_party'),
 
 ]
 

@@ -1,0 +1,28 @@
+<h1>Create a Match</h1>
+<a href="{% url 'api:demo_matches' %}">View Matches</a>
+
+<form action="{% url 'api:demo_matches_create' %}" method="post">
+    <label for="score_a">Team A:</label>
+    <input type="number" name="scoreA" id="score_a" value="0">
+
+    <label for="score_b">Team B:</label>
+    <input type="number" name="scoreB" id="score_b" value="0">
+    <br />
+
+    <label for="playerA">Player A</label>
+    <select name="playerA">
+        {% for m in members %}
+            <option>{{ m.email }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="playerB">Player B</label>
+    <select name="playerB">
+        {% for m in members %}
+            <option>{{ m.email }}</option>
+        {% endfor %}
+    </select>
+    <br />
+
+    <input type="submit">
+</form>
