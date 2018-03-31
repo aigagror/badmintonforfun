@@ -23,7 +23,7 @@ app_name = 'api'
 urlpatterns = [
 
     # Front-end demonstrations of backend functions
-    re_path(r'demo/?$', demo.queue, name='demo_index'),
+    re_path(r'demo/?$', demo.index, name='demo_index'),
     re_path(r'demo/matches/?$', demo.matches, name='demo_matches'),
     re_path(r'demo/matches/create/?$', demo.create_match, name='demo_matches_create'),
     re_path(r'demo/matches/delete/?$', demo.delete_match, name='demo_matches_delete'),

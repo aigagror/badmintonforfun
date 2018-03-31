@@ -119,7 +119,7 @@ def _players(match_id, team):
     query = """
     SELECT * 
     FROM api_interested, api_playedin 
-    WHERE api_playedin.match_id = %s AND api_playedin.member_id = api_interested.email
+    WHERE api_playedin.match_id = %s AND api_playedin.member_id = api_interested.id
       AND api_playedin.team = %s
     """
     players = Interested.objects.raw(query, [match_id, team])

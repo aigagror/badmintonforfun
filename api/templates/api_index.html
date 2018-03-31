@@ -1,13 +1,4 @@
-<h1>Election</h1>
-<h2>{{ date }}</h2>
+<a href="{% url 'api:demo_matches' %}">matches</a> <br />
+<a href="{% url 'api:demo_election' %}">election</a> <br />
+<a href="{% url 'api:demo_queue' %}">queue</a> <br />
 
-<h1>Campaigns</h1>
-<form action="{% url 'api:demo_vote' %}" method="post">
-    {% for campaign in campaigns %}
-        <input type="radio" name="id" value="{{ campaign.id }}">
-        <b>{{ campaign.name }}</b>
-        <i>{{ campaign.job }}</i>
-        <p>{{ campaign.pitch }}</p>
-    {% endfor %}
-    <input type="submit">
-</form>

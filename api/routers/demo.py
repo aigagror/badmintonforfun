@@ -79,10 +79,7 @@ def edit_match(request, match_id):
 @restrictRouter(allowed=["GET", "POST"])
 def matches(request):
     response = get_all_matches()
-    content = response.content.decode()
-
-    context = json.loads(content)
-    print(context)
+    context = response_to_dict(response)
     return render(request, 'api_matches.html', context)
 
 @csrf_exempt
