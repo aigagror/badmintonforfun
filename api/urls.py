@@ -63,7 +63,7 @@ urlpatterns = [
     re_path(r'settings/interested/add/?$', settings_router.settingsInterestedCreateRouter, name='add_interested'),
     re_path(r'settings/schedule/?$', settings_router.settingsSchedulesRouter, name='schedule'),
     re_path(r'settings/courts/?$', settings_router.settingsCourtRouter, name='court_settings'),
-    re_path(r'settings/queue/?$', settings_router.settingsQueueRouter, name='queue_settings'),
+    re_path(r'settings/queues/?$', settings_router.settingsQueueRouter, name='queue_settings'),
 
     # Gets the queues
     re_path(r'queue/?$', queue_router.get_queues, name='queues'),

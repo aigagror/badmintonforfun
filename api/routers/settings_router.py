@@ -71,12 +71,11 @@ def settingsBoardMemberRouter(request):
         return boardmembers_config()
     elif request.method == "POST":
         # Can only change their jobs
-        dict_post = dict(request.POST.items())
-        print(str(dict_post))
-        if not validate_keys(["boardmembers"], dict_post):
+        json_post_data = json.loads(request.body)
+        if not validate_keys(["boardmembers"], json_post_data):
             HttpResponse(json.dumps({'message': 'Missing parameters member_id or job'}),
                          content_type='application/json', status=400)
-        return boardmembers_config_edit(dict_post)
+        return boardmembers_config_edit(json_post_data)
 
 
 @csrf_exempt
@@ -110,19 +109,20 @@ def settingsAllMembersRouter(request):
     elif request.method == "POST":
         # Promote/demote members (Interested, Member, Boardmember)
         # Going to Boardmember, the default 'job'='OFFICER'
-        dict_post = dict(request.POST.items())
-        if not validate_keys(["members"], dict_post):
+        json_post_data = json.loads(request.body)
+        if not validate_keys(["members"], json_post_data):
             HttpResponse(json.dumps({'message': 'Missing parameters members'}),
                          content_type='application/json', status=400)
-        return update_all_club_members_status(dict_post)
+        return update_all_club_members_status(json_post_data)
     elif request.method == "DELETE":
         # Here, the dictionary should ONLY contain the information for members that should be deleted
         # Remove people from the db completely
-        dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        if not validate_keys(["members"], dict_delete):
+        # dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+        json_delete_data = json.loads(request.body)
+        if not validate_keys(["members"], json_delete_data):
             HttpResponse(json.dumps({'message': 'Missing parameter members'}),
                          content_type='application/json', status=400)
-        return remove_member(dict_delete)
+        return delete_multiple_club_members(json_delete_data)
 
 
 @csrf_exempt
@@ -146,12 +146,13 @@ def settingsInterestedCreateRouter(request):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
 
-    dict_post = dict(request.POST.items())
     if request.method == "POST":
-        p_first_name = dict_post.get('first_name', '')
-        p_last_name = dict_post.get('last_name', '')
-        p_formerBoardMember= dict_post.get('formerBoardMember', False)
-        p_email = dict_post.get('email', None)
+        # dict_post = dict(request.POST.items())
+        json_post_data = json.loads(request.body)
+        p_first_name = json_post_data.get('first_name', '')
+        p_last_name = json_post_data.get('last_name', '')
+        p_formerBoardMember= json_post_data.get('formerBoardMember', False)
+        p_email = json_post_data.get('email', None)
         if p_email is None:
             return HttpResponse(json.dumps({"message": "Missing required param email"}), status=400, content_type='application/json')
         interested = Interested(p_first_name, p_last_name,
@@ -182,16 +183,16 @@ def settingsSchedulesRouter(request):
     if not is_board_member(session_id):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
-    dict_post = dict(request.POST.items())
     if request.method == "GET":
         return schedule_to_dict()
     elif request.method == "POST":
         # INSERT or UPDATE
-        dict_post = dict(request.POST.items())
-        if not validate_keys(["schedule"], dict_post):
+        # dict_post = dict(request.POST.items())
+        json_post_data = json.loads(request.body)
+        if not validate_keys(["schedule"], json_post_data):
             HttpResponse(json.dumps({'message': 'Missing parameter schedule'}),
                          content_type='application/json', status=400)
-        return addto_edit_schedule(dict_post)
+        return addto_edit_schedule(json_post_data)
     elif request.method == "DELETE":
         # The provided dictionary should ONLY contain information on the entries that are
         # intended to be deleted.
@@ -203,7 +204,7 @@ def settingsSchedulesRouter(request):
 
 
 @csrf_exempt
-@restrictRouter(allowed=["GET", "POST"])
+@restrictRouter(allowed=["GET", "POST", "DELETE"])
 def settingsCourtRouter(request):
     """
     Allows board members to get the info on all courts and add/edit courts.
@@ -229,15 +230,23 @@ def settingsCourtRouter(request):
         return get_all_courts_formmated()
     elif request.method == "POST":
         # Used to add new courts OR change the queue types for the courts
-        dict_post = dict(request.POST.items())
-        if not validate_keys(['courts'], dict_post):
+        # dict_post = dict(request.POST.items())
+        json_post_data = json.loads(request.body)
+        if not validate_keys('courts', json_post_data):
             HttpResponse(json.dumps({'message': 'Missing parameter courts'}),
                          content_type='application/json', status=400)
-        return addto_edit_courts_formatted(dict_post)
+        return addto_edit_courts_formatted(json_post_data)
+    elif request.method == "DELETE":
+        # The input dictionary should hold information ONLY for the courts to be deleted
+        json_delete_data = json.loads(request.body)
+        if not validate_keys('courts', json_delete_data):
+            HttpResponse(json.dumps({'message': 'Missing parameter courts'}),
+                         content_type='application/json', status=400)
+        return delete_courts_formatted(json_delete_data)
 
 
 @csrf_exempt
-@restrictRouter(allowed=["GET", "POST"])
+@restrictRouter(allowed=["GET", "POST", "DELETE"])
 def settingsQueueRouter(request):
     """
     Allows boardmembers to get all the current queues in db or add more queue types
@@ -263,12 +272,19 @@ def settingsQueueRouter(request):
         return get_all_queues_formatted()
     elif request.method == "POST":
         # Used to add more queue types to the db
-        dict_post = dict(request.POST.items())
-        if not validate_keys('queues', dict_post):
+        # dict_post = dict(request.POST.items()) <- For some reason, can't read POST dictionary from PostMan like this
+        json_post_data = json.loads(request.body)
+        if not validate_keys('queues', json_post_data):
             HttpResponse(json.dumps({'message': 'Missing parameter queues'}),
                          content_type='application/json', status=400)
-        return add_queues_formatted(dict_post)
-
+        return add_queues_formatted(json_post_data)
+    elif request.method == "DELETE":
+        # The input dictionary should hold information ONLY for the queues to be deleted
+        json_delete_data = json.loads(request.body)
+        if not validate_keys('queues', json_delete_data):
+            HttpResponse(json.dumps({'message': 'Missing parameter queues'}),
+                         content_type='application/json', status=400)
+        return delete_queues_formatted(json_delete_data)
 
 class Interested(object):
     first_name = ''

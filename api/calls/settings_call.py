@@ -113,13 +113,48 @@ def edit_boardmember_job(id, new_job):
     """
     with connection.cursor() as cursor:
         query = '''
-        UPDATE api_member
+        UPDATE api_boardmember
         SET job=%s
         WHERE member_ptr_id=%s;
         '''
         cursor.execute(query, [new_job, id])
         return HttpResponse(json.dumps({"message": "Successfully editted boardmember job."}),
                             content_type="application/json")
+
+
+def delete_from_interested(id):
+    with connection.cursor() as cursor:
+        query = '''
+        DELETE FROM api_interested
+        WHERE id=%s
+        '''
+        cursor.execute(query, [id])
+    return HttpResponse(json.dumps({"message": "Successfully deleted from interested."}),
+                        content_type="application/json")
+
+
+
+def delete_from_member(id):
+    with connection.cursor() as cursor:
+        query = '''
+        DELETE FROM api_member
+        WHERE interested_ptr_id=%s
+        '''
+        cursor.execute(query, [id])
+    return HttpResponse(json.dumps({"message": "Successfully deleted from member."}),
+                        content_type="application/json")
+
+
+
+def delete_from_boardmember(id):
+    with connection.cursor() as cursor:
+        query = '''
+        DELETE FROM api_boardmember
+        WHERE member_ptr_id=%s
+        '''
+        cursor.execute(query, [id])
+    return HttpResponse(json.dumps({"message": "Successfully deleted from boardmember."}),
+                        content_type="application/json")
 
 
 def get_interested():
@@ -188,7 +223,7 @@ def remove_member(member_id):
 
         query = '''
                 DELETE FROM api_interested
-                WHERE email=%s;
+                WHERE id=%s;
                 '''
         cursor.execute(query, [member_id])
 
@@ -429,6 +464,16 @@ def edit_court_queue(court_id, new_queue_id):
                                 content_type="application/json")
 
 
+def delete_court(court_id):
+    with connection.cursor() as cursor:
+        query = '''
+        DELETE FROM api_court
+        WHERE id=%s
+        '''
+        cursor.execute(query, [court_id])
+    return HttpResponse(json.dumps({"message": "Successfully deleted the specified court."}),
+                        content_type="application/json")
+
 def get_all_queues():
     # with connection.cursor() as cursor:
     #     query = '''
@@ -457,6 +502,17 @@ def add_queue(queue_type):
                                 content_type="application/json")
 
 
+def delete_queue(queue_type):
+    with connection.cursor() as cursor:
+        query = '''
+        DELETE FROM api_queue
+        WHERE type=%s
+        '''
+        cursor.execute(query, [queue_type])
+    return HttpResponse(json.dumps({"message": "Successfully deleted queue."}),
+                        content_type="application/json")
+
+
 # The functions below are used to package information for the frontend to use
 
 def member_config(member_id):
@@ -468,7 +524,7 @@ def member_config(member_id):
 
     members = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id = %s", [member_id])
     if len(list(members)) == 0:
-        return HttpResponse(json.dumps({"status": "down", "message": "This person is not a member."}), content_type="application/json")
+        return HttpResponse(json.dumps({"message": "This person is not a member."}), content_type="application/json")
 
     member = members[0]
     # data = serializeModel(member)
@@ -525,6 +581,7 @@ def boardmembers_config_edit(dict_post):
     for boardmember in boardmembers:
         member_id = boardmember['member_id']
         new_job = boardmember['job']
+        print(new_job)
         edit_boardmember_job(member_id, new_job)
     return HttpResponse(json.dumps({"message": "Successfully updated boardmember jobs."}),
                         content_type="application/json")
@@ -594,15 +651,15 @@ def update_all_club_members_status(dict_post):
                 promote_to_board_member(member_id, "OFFICER")
         elif new_status == "Member":
             if curr_status == "Boardmember":
-                BoardMember.objects.raw("DELETE FROM api_boardmember WHERE member_ptr_id=%s", [member_id])
+                delete_from_boardmember(member_id)
             elif curr_status == "Interested":
                 promote_to_member(member_id)
         elif new_status == "Interested":
             if curr_status == "Boardmember":
-                BoardMember.objects.raw("DELETE FROM api_boardmember WHERE member_ptr_id=%s", [member_id])
-                Member.objects.raw("DELETE FROM api_member WHERE interested_ptr_id=%s", [member_id])
+                delete_from_boardmember(member_id)
+                delete_from_member(member_id)
             elif curr_status == "Member":
-                Member.objects.raw("DELETE FROM api_member WHERE interested_ptr_id=%s", [member_id])
+                delete_from_member(member_id)
 
     return HttpResponse(json.dumps({"message": "Successfully updated club member statuses."}),
                         content_type="application/json")
@@ -614,6 +671,7 @@ def delete_multiple_club_members(dict_delete):
     :param dict_delete:
     :return:
     """
+    print(dict_delete)
     members = dict_delete['members']
     for member in members:
         member_id = member['member_id']
@@ -636,15 +694,16 @@ def schedule_to_dict():
     :return:
     """
     schedule = get_schedule()
-    if not schedule:
+    num_entries = len(list(schedule))
+    if num_entries == 0:
         return HttpResponse(json.dumps({"message": "There is nothing in the schedule."}),
                             content_type="application/json")
     ret_list = []
-    for entry in schedule:
-        entry = serializeModel(entry)
+    for i in range(num_entries):
+        entry = serializeModel(schedule[i])
         entry_dict = {
-            'date': entry.date,
-            'number_of_courts': entry.number_of_courts
+            'date': entry['date'],
+            'number_of_courts': entry['number_of_courts']
         }
         ret_list.append(entry_dict)
 
@@ -696,7 +755,7 @@ def get_all_courts_formmated():
     :return:
     """
     courts = get_all_courts()
-    if not courts == 0:
+    if not courts:
         return HttpResponse(json.dumps({"message": "There are no courts stored in the database."}),
                             content_type="application/json")
     ret_list = []
@@ -725,6 +784,21 @@ def addto_edit_courts_formatted(dict_post):
             else:
                 add_court(court_id, queue_id)
     return HttpResponse(json.dumps({"message": "Successfully updated courts."}),
+                        content_type="application/json")
+
+
+def delete_courts_formatted(dict_delete):
+    """
+    DELETE
+    :param dict_delete:
+    :return:
+    """
+    courts = dict_delete['courts']
+    for c in courts:
+        if validate_keys(['court_id'], c):
+            court_id = c['court_id']
+            delete_court(court_id)
+    return HttpResponse(json.dumps({"message": "Successfully deleted specified courts."}),
                         content_type="application/json")
 
 
@@ -759,4 +833,18 @@ def add_queues_formatted(dict_post):
             queue_type = q['queue_type']
             add_queue(queue_type)
     return HttpResponse(json.dumps({"message": "Successfully added queue type."}),
+                        content_type="application/json")
+
+def delete_queues_formatted(dict_delete):
+    """
+    DELETE
+    :param dict_delete:
+    :return:
+    """
+    queues = dict_delete['queues']
+    for q in queues:
+        if validate_keys(['queue_id', 'queue_type'], q):
+            queue_type = q['queue_type']
+            delete_queue(queue_type)
+    return HttpResponse(json.dumps({"message": "Successfully deleted queue type."}),
                         content_type="application/json")
