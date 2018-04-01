@@ -19,6 +19,7 @@ def get_party(party_id):
 
     return http_response(context)
 
+
 def create_party(queue_id, member_ids):
 
     parties_with_max_id = Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT MAX(id) FROM api_party)")
@@ -38,10 +39,12 @@ def create_party(queue_id, member_ids):
 
     return response
 
+
 def delete_party(party_id):
     return run_connection("DELETE FROM api_party WHERE id = %s", party_id)
 
-def edit_party(party_id, queue_id, add_members, remove_members):
+
+def edit_party(party_id, queue_id=None, add_members=None, remove_members=None):
     if queue_id is not None:
         response = run_connection("UPDATE api_party SET queue_id = %s WHERE id = %s", queue_id, party_id)
         if response.status_code != 200:
@@ -60,3 +63,4 @@ def edit_party(party_id, queue_id, add_members, remove_members):
                 return response
 
     return http_response({},message="OK")
+

@@ -127,18 +127,18 @@ class SettingsTest(TestCase):
 
     def test_queue(self):
         # Get all the queues. Should get nothing
-        response = self.client.get(reverse('api:queue'), {})
-        self.assertEqual(response.json()['status'], 'down')
+        response = self.client.get(reverse('api:queues'), {})
+        self.assertEqual(response.json()['status'], 'up')
         self.assertEqual(response.json()['message'], 'There are no queues.')
         self.assertEqual(response.status_code, 200)
 
         # Add a CASUAL queue
-        response = self.client.post(reverse('api:queue'), {'queue_type': 'CASUAL'})
+        response = self.client.post(reverse('api:create_queue'), {'queue_type': 'CASUAL'})
         self.assertEqual(response.json()['status'], 'up')
         self.assertEqual(response.status_code, 200)
 
         # Get all queues. Should have CASUAL as type now
-        response = self.client.get(reverse('api:queue'), {})
+        response = self.client.get(reverse('api:queues'), {})
         self.assertEqual(response.json()['status'], 'up')
         self.assertEqual(response.json()['queues'][0].__getitem__('type'), 'CASUAL')
         self.assertEqual(response.status_code, 200)

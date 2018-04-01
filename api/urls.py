@@ -69,13 +69,16 @@ urlpatterns = [
 
     # Gets the queues with all the parties on them
     re_path(r'queue/?$', queue_router.get_queues, name='queues'),
+
+    #Create a queue
+    re_path(r'queue/create/?', queue_router.create_queue, name='create_queue'),
     # Creates a party
     re_path(r'queue/party/create/?$', api.routers.party_router.create_party, name='create_party'),
     # Edits/deletes a party
     re_path(r'queue/party/edit/?$', api.routers.party_router.edit_party, name='edit_party'),
     # Gets the next part on the queue
-    re_path(r'queue/party/next?$', queue_router.next_on_queue, name='queue_next_party'),
-
+    re_path(r'queue/party/next/?$', queue_router.next_on_queue, name='queue_next_party'),
 
 ]
+
 
