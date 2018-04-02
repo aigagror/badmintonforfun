@@ -1,4 +1,4 @@
-from api.calls.queue_call import get_next_on_queue, create_queue as call_create_queue, get_queues as call_get_queues
+from api.calls.queue_call import get_parties_by_playtime, create_queue as call_create_queue, get_queues as call_get_queues
 from api.routers.router import restrictRouter, validate_keys
 from ..cursor_api import http_response
 from ..models import QUEUE_TYPE
@@ -34,7 +34,7 @@ def next_on_queue(request):
         if queue_type is None or queue_type not in QUEUES:
             return http_response({}, message='Please specify a queue type (CASUAL, RANKED, KOTH)', code=400)
 
-        return get_next_on_queue(queue_type)
+        return get_parties_by_playtime(queue_type)
 
 
 @restrictRouter(allowed=["POST"])
