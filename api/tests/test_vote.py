@@ -4,29 +4,59 @@ from django.test import TestCase
 from django.urls import reverse
 
 from api import cursor_api
-from api.tests.utils import create_election
+from .utils import *
+from api.models import *
 
 
-class VotesTest(TestCase):
-    test_date = datetime.date(2018, 3, 24)
+class VotesTest(CustomTestCase):
+    def create_election_helper(self):
+        election = Election(date=datetime.date.today())
+        election.save()
 
-    def test_create_election(self):
-        date = self.test_date
-        response = self.client.post(reverse('api:create_election'), {'startDate': cursor_api.serializeDate(date)})
-        self.assertEqual(response.status_code, 200)
+        campaigner1 = Member(first_name='Eddie', last_name='Huang', dateJoined=datetime.date.today(), email='ezhuang2@illinois.edu')
+        campaigner2 = Member(first_name='Bhuvan', last_name='Venkatesh', dateJoined=datetime.date.today(), email='bhuvan2@illinois.edu')
+        campaigner3 = Member(first_name='Grace', last_name='Shen', dateJoined=datetime.date.today(), email='gshen2@illinois.edu')
+        campaigner4 = Member(first_name='Daniel', last_name='Rong', dateJoined=datetime.date.today(), email='drong4@illinois.edu')
+
+        campaigner1.save()
+        campaigner2.save()
+        campaigner3.save()
+        campaigner4.save()
+
+        campaign1 = Campaign(job='President', campaigner=campaigner1, election=election, pitch='I am Eddie')
+        campaign2 = Campaign(job='President', campaigner=campaigner2, election=election, pitch='I am Bhuvan')
+        campaign3 = Campaign(job='President', campaigner=campaigner3, election=election, pitch='I am Grace')
+        campaign4 = Campaign(job='President', campaigner=campaigner4, election=election, pitch='I am Dan')
+
+        campaign1.save()
+        campaign2.save()
+        campaign3.save()
+        campaign4.save()
+
+        return election
+
+
+
 
     def test_cast_votes(self):
-        election, campaign, voter = create_election()
+        election = self.create_election_helper()
 
-        response = self.client.post(reverse('api:vote'), {'voter': voter.id, 'campaign': campaign.id})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['message'], 'Vote successfully cast')
+        campaigns = Campaign.objects.filter(election=election)
+
+        voter = Member(first_name='Some', last_name='Voter', dateJoined=datetime.date.today(), email='voter@illinois.edu')
+        voter.save()
+
+        response = self.client.post(reverse('api:cast_vote'), {'voter': voter.id, 'campaign': campaigns[0].id})
+        self.assertGoodResponse(response)
 
     def test_get_all_votes(self):
-        response = self.client.get(reverse('api:all_votes'))
-        self.assertEqual(len(response.json()), 0)
+        response = self.client.get(reverse('api:get_all_votes'))
+        json = response.json()
+        self.assertEqual(json['message'], 'No current election available')
 
         self.test_cast_votes()
 
-        response = self.client.get(reverse('api:all_votes'))
-        self.assertEqual(len(response.json()), 1)
+        response = self.client.get(reverse('api:get_all_votes'))
+        json = response.json()
+        votes = json['all_votes']
+        self.assertEqual(len(votes), 1)

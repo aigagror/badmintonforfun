@@ -44,38 +44,6 @@ def get_votes_from_member(id):
         results = dictfetchall(cursor)
     return HttpResponse(json.dumps(results), content_type='application/json')
 
-def cast_vote(voter_id, campaign_id):
-    """
-    Inserts/updates a vote
-    :param voter_id:
-    :param election_date:
-    :param votee_email:
-    :return:
-    """
-
-    campaign = Campaign.objects.get(pk=campaign_id)
-    if campaign == None:
-        HttpResponse(json.dumps({"message": "Unknown campaign"}), content_type='application/json', status=400)
-
-    # Check if vote exists
-    with connection.cursor() as cursor:
-        # Get max id
-        query = """
-                    SELECT MAX(id) 
-                    FROM api_vote;
-                    """
-        cursor.execute(query)
-        result = cursor.fetchone()
-        new_id = result[0] + 1 if result[0] is not None else 0
-
-        # Insert
-        query = """
-                    INSERT INTO api_vote(id, voter_id, campaign_id) VALUES(%s, %s, %s)
-                    """
-        cursor.execute(query, [new_id, voter_id, campaign.id])
-    return HttpResponse(json.dumps({"message": "Vote successfully cast"}), content_type='application/json')
-
-
 
 
 def get_campaign(id, email, job):

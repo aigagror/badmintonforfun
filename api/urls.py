@@ -46,9 +46,10 @@ urlpatterns = [
     re_path(r'members/top_players?$', match_router.top_players, name='top_players'),
 
     # Gets all votes
-    re_path(r'election/all_votes/?$', votes_router.all_votes, name='all_votes'),
+    path('election/vote/get/<int:voter_id>/', votes_router.get_votes_from_member, name='get_votes_from_member'),
+    re_path(r'election/all_votes/?$', votes_router.all_votes, name='get_all_votes'),
     # Create/edit/delete votes
-    re_path(r'election/vote/?$', votes_router.vote, name='vote'),
+    re_path(r'election/vote/?$', votes_router.cast_vote, name='cast_vote'),
     # Creates an election
     re_path(r'election/create/?$', election_router.electionCreateRouter, name='create_election'),
     # Gets current election and all of its campaigns
