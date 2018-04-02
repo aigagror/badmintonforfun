@@ -8,6 +8,7 @@ from api.calls.election_call import delete_campaign
 from api.calls.home_call import get_schedule
 from api.calls.settings_call import *
 from api.routers.router import restrictRouter, validate_keys
+from api.cursor_api import *
 
 @csrf_exempt
 @restrictRouter(allowed=["GET", "POST"])
@@ -143,21 +144,20 @@ def settingsInterestedCreateRouter(request):
     # session_id = request.session.get('session_id', None)
     session_id = 8  # ezhuang2@illinois.edu
     if not is_board_member(session_id):
-        return HttpResponse(json.dumps({"message": "You are not a board member."}),
-                            content_type="application/json")
+        return http_response({}, message="You are not a board member.")
 
-    if request.method == "POST":
-        # dict_post = dict(request.POST.items())
-        json_post_data = json.loads(request.body)
-        p_first_name = json_post_data.get('first_name', '')
-        p_last_name = json_post_data.get('last_name', '')
-        p_formerBoardMember= json_post_data.get('formerBoardMember', False)
-        p_email = json_post_data.get('email', None)
-        if p_email is None:
-            return HttpResponse(json.dumps({"message": "Missing required param email"}), status=400, content_type='application/json')
-        interested = Interested(p_first_name, p_last_name,
-                                p_formerBoardMember, p_email)
-        return add_interested(interested)
+    # dict_post = dict(request.POST.items())
+    json_post_data = json.loads(request.body)
+    p_first_name = json_post_data.get('first_name', '')
+    p_last_name = json_post_data.get('last_name', '')
+    p_formerBoardMember = json_post_data.get('formerBoardMember', False)
+    p_email = json_post_data.get('email', None)
+    if p_email is None:
+        return HttpResponse(json.dumps({"message": "Missing required param email"}), status=400,
+                            content_type='application/json')
+    interested = Interested(p_first_name, p_last_name,
+                            p_formerBoardMember, p_email)
+    return add_interested(interested)
 
 
 @csrf_exempt
