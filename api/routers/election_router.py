@@ -4,15 +4,41 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from api.calls.election_call import current_election, edit_election, delete_election, start_election
-from api.cursor_api import deserializeDate
+from api.cursor_api import *
 from api.routers.router import restrictRouter
+from api.models import *
 
 @csrf_exempt
-@restrictRouter(allowed=["GET", "POST", "DELETE"])
-def electionRouter(request):
+@restrictRouter(allowed=["GET"])
+def get_election(request):
     """
     GET -- Gets the current election
         Required Keys: None
+
+    :param request:
+    :return:
+    """
+    elections = Election.objects.raw("SELECT * FROM api_election AS election\
+        WHERE endDate IS NULL OR endDate >= date('now')\
+        ORDER BY election.date DESC LIMIT 1;")
+    if len(list(elections)) == 0:
+        return http_response({}, message="No current election available")
+
+    current_election = elections[0]
+
+    campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [current_election.id])
+
+    context = {
+        'election': serializeModel(current_election),
+        'campaigns': serializeSetOfModels(campaigns)
+    }
+    return http_response(context)
+
+
+@csrf_exempt
+@restrictRouter(allowed=["POST", "DELETE"])
+def edit_election(request):
+    """
     POST -- Edits an election
         Required Keys: id
         Optional Keys: startDate, endDate
@@ -21,9 +47,7 @@ def electionRouter(request):
     :param request:
     :return:
     """
-    if request.method == "GET":
-        return current_election()
-    elif request.method == "POST":
+    if request.method == "POST":
         dict_post = dict(request.POST.items())
         idKey = "id"
         startKey = "startDate"
@@ -37,7 +61,16 @@ def electionRouter(request):
         endDate = dict_post.get(endKey, None)
         endDate = deserializeDate(endDate) if endDate != None else None
 
-        return edit_election(id, startDate, endDate)
+        if startDate is not None:
+            response = run_connection("UPDATE api_election SET date = %s", startDate)
+            if response.status_code != 200:
+                return response
+        if endDate is not None:
+            response = run_connection("UPDATE api_election SET endDate = %s", endDate)
+            if response.status_code != 200:
+                return response
+        return response
+
     elif request.method == "DELETE":
         idKey = "id"
         dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
