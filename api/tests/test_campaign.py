@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from api import cursor_api
+from api.models import Member
 
 
 class CampaignTest(TestCase):
@@ -18,8 +19,11 @@ class CampaignTest(TestCase):
         self.test_create_election()
         position = 'OFFICER'
         pitch = 'Hello I am a test case'
-        email_id= 'donghao2@illinois.edu'
-        response = self.client.post(reverse('api:create_campaign'), {'id': 1, 'job': position, 'pitch': pitch, 'email': email_id})
+        email_id = 'donghao2@illinois.edu'
+        member = Member(first_name='DongHao', last_name='Something', email=email_id, dateJoined=datetime.date.today())
+        member.save()
+
+        response = self.client.post(reverse('api:create_campaign'), {'job': position, 'pitch': pitch, 'email': email_id})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['message'], 'OK')
 
