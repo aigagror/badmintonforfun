@@ -1,18 +1,9 @@
-import datetime
-from api.models import *
+from django.test import TestCase
 
-
-def create_election():
-    voter = Member(first_name='Michelle', last_name='Obama', email='michelle@usa.com',
-                   dateJoined=datetime.date.today())
-    voter.save()
-    campaigner = Member(first_name='Barack', last_name='Obama', email='obama@usa.com',
-                        dateJoined=datetime.date.today())
-    campaigner.save()
-    election = Election(date=datetime.date.today())
-    election.save()
-    campaign = Campaign(job='PRESIDENT', campaigner=campaigner, election=election)
-    campaign.save()
-    return election, campaign, voter
+class CustomTestCase(TestCase):
+    def assertGoodResponse(self, response):
+        self.assertEqual(response.status_code, 200)
+        json = response.json()
+        self.assertEqual(json['message'], 'OK')
 
 

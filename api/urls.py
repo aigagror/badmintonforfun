@@ -54,8 +54,9 @@ urlpatterns = [
     # Gets current election and all of its campaigns
     re_path(r'election/?$', election_router.electionRouter, name='election'),
 
-    # Creates a campaign
-    re_path(r'campaign/create/?$', campaign_router.campaignCreateRouter, name='create_campaign'),
+    re_path(r'campaign/create/?$', campaign_router.create_campaign, name='create_campaign'),
+    path('campaign/get/<int:campaigner_id>/', campaign_router.get_campaign_from_campaigner, name='get_campaign_from_campaigner'),
+    re_path(r'campaign/get_all/?$', campaign_router.get_all_campaigns, name='get_all_campaigns'),
     # Edits campaign
     re_path(r'campaign/?$', campaign_router.campaignRouter, name='campaign'),
 

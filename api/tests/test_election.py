@@ -4,7 +4,6 @@ from django.test import TestCase
 from django.urls import reverse
 
 from api import cursor_api
-from api.tests.utils import create_election
 
 
 class ElectionTest(TestCase):

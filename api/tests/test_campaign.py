@@ -4,44 +4,82 @@ from django.test import TestCase
 from django.urls import reverse
 
 from api import cursor_api
-from api.models import Member
+from api.models import *
+from .utils import *
 
 
-class CampaignTest(TestCase):
-    test_date = datetime.date(2018, 3, 24)
+class CampaignTest(CustomTestCase):
+    election = None
 
-    def test_create_election(self):
-        date = self.test_date
-        response = self.client.post(reverse('api:create_election'), {'startDate': cursor_api.serializeDate(date)})
-        self.assertEqual(response.status_code, 200)
+    def create_election(self):
+        """
+        Helper function to create an election
+        :return:
+        """
+        election = Election(date=datetime.date.today())
+        election.save()
+        self.election = election
+
+    def test_get_all_campaigns(self):
+        response = self.client.get(reverse('api:get_all_campaigns'))
+        self.assertEqual(response.json()['message'], 'No campaigns currently')
+
+        # Some campaigns
+        self.create_election()
+        campaigner1 = Member(first_name="Eddie", last_name="Huang", email="ezhuang2@illinois.edu", dateJoined=datetime.date.today())
+        campaigner1.save()
+        campaigner2 = Member(first_name="Daniel", last_name="Rong", email="drong2@illinois.edu", dateJoined=datetime.date.today())
+        campaigner2.save()
+
+        campaign1 = Campaign(job="President", campaigner=campaigner1, pitch="Make Badminton Great Again", election=self.election)
+        campaign1.save()
+        campaign2 = Campaign(job="President", campaigner=campaigner2, pitch="Hello Campaign", election=self.election)
+        campaign2.save()
+
+        response = self.client.get(reverse('api:get_all_campaigns'))
+        self.assertGoodResponse(response)
+
+        json = response.json()
+        self.assertTrue('campaigns' in json)
+        self.assertEqual(len(json['campaigns']), 2)
+
+
+    def test_get_campaign_from_campaigner(self):
+        # No campaign
+        non_campaigner = Member(first_name="Eddie", last_name="Huang", email="ezhuang2@illinois.edu", dateJoined=datetime.date.today())
+        non_campaigner.save()
+
+        response = self.client.get(reverse('api:get_campaign_from_campaigner', args=(non_campaigner.id,)))
+        self.assertEqual(response.json()['message'], 'Member is not campaigning')
+
+        # Existing campaign
+        self.create_election()
+        campaigner = non_campaigner
+        campaign = Campaign(job="President", campaigner=campaigner, pitch="Make Badminton Great Again", election=self.election)
+        campaign.save()
+
+        response = self.client.get(reverse('api:get_campaign_from_campaigner', args=(campaigner.id,)))
+        self.assertGoodResponse(response)
+
+        json = response.json()
+        campaigns = json['campaigns']
+        self.assertEqual(campaigns['pitch'], 'Make Badminton Great Again')
+        self.assertEqual(campaigns['campaigner'], campaigner.id)
+        self.assertEqual(campaigns['job'], 'President')
+
 
     def test_create_campaign(self):
-        self.test_create_election()
-        position = 'OFFICER'
-        pitch = 'Hello I am a test case'
-        email_id = 'donghao2@illinois.edu'
-        member = Member(first_name='DongHao', last_name='Something', email=email_id, dateJoined=datetime.date.today())
-        member.save()
+        self.create_election()
 
-        response = self.client.post(reverse('api:create_campaign'), {'job': position, 'pitch': pitch, 'email': email_id})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['message'], 'OK')
+        campaigner = Member(first_name="Eddie", last_name="Huang", email="ezhuang2@illinois.edu", dateJoined=datetime.date.today())
+        campaigner.save()
 
-    def test_edit_campaign(self):
-        self.test_create_election()
-        position = 'PRESIDENT'
-        pitch = 'Hello I am a modification to the PRESIDENT pitch'
-        email_id='ezhuang2@illinois.edu'
-        response = self.client.post(reverse('api:campaign'), {'id': 1, 'job': position, 'pitch': pitch, 'email': email_id})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['message'], 'OK')
+        response = self.client.post(reverse('api:create_campaign'), {'job': 'President', 'campaigner_id': campaigner.id, 'pitch': 'Make Badminton Great Again'})
+        self.assertGoodResponse(response)
 
-    def test_delete_campaign(self):
-        self.test_create_election()
-        position = 'PRESIDENT'
-        email_id='donghao2@illinois.edu'
-        response = self.client.post(reverse('api:create_campaign'), {'id': 1, 'job': position, 'pitch': "Hi",
-                                                                     'email': email_id})
-        self.assertEqual(response.status_code, 200)
-        response = self.client.delete(reverse('api:campaign'), {'id': 1, 'job': position, 'email': email_id})
-        self.assertEqual(response.status_code, 200)
+        all_campaigns = Campaign.objects.all()
+        campaign = all_campaigns[0]
+        self.assertEqual(campaign.campaigner_id, campaigner.id)
+        self.assertEqual(campaign.job, 'President')
+        self.assertEqual(campaign.election_id, self.election.id)
+
