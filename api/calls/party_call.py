@@ -1,4 +1,4 @@
-from api.calls.queue_call import get_next_on_queue, get_queues as call_get_queues
+from api.calls.queue_call import get_parties_by_playtime, get_queues as call_get_queues
 from api.routers.router import restrictRouter, validate_keys, run_connection
 from api.models import Party, Member
 from api.cursor_api import *
