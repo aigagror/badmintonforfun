@@ -40,8 +40,7 @@ def create_party(queue_id, member_ids):
     return response
 
 
-def delete_party(party_id):
-    return run_connection("DELETE FROM api_party WHERE id = %s", party_id)
+
 
 
 def edit_party(party_id, queue_id=None, add_members=None, remove_members=None):

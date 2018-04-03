@@ -18,7 +18,7 @@ from django.urls import re_path, path
 import api.routers.party_router
 from api.routers import demo, router, votes_router, \
     settings_router, match_router, election_router, \
-    campaign_router, announcement_router, queue_router
+    campaign_router, announcement_router, queue_router, party_router
 
 app_name = 'api'
 urlpatterns = [
@@ -74,9 +74,11 @@ urlpatterns = [
     #Create a queue
     re_path(r'queue/create/?', queue_router.create_queue, name='create_queue'),
     # Creates a party
-    re_path(r'queue/party/create/?$', api.routers.party_router.create_party, name='create_party'),
+    re_path(r'queue/party/create/?$', party_router.create_party, name='create_party'),
     # Edits/deletes a party
-    re_path(r'queue/party/edit/?$', api.routers.party_router.edit_party, name='edit_party'),
+    re_path(r'queue/party/remove_member/?$', party_router.remove_member, name='party_remove_member'),
+    re_path(r'queue/party/add_member/?$', party_router.add_member, name='party_add_member'),
+    re_path(r'queue/party/delete/?$', party_router.delete_party, name='delete_party'),
     # Gets the next part on the queue
     re_path(r'queue/party/next/?$', queue_router.next_on_queue, name='queue_next_party'),
     re_path(r'queue/party/dequeue/?$', queue_router.dequeue_next_party_to_court, name='dequeue_next_party_to_court'),
