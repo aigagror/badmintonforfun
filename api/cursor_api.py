@@ -98,7 +98,7 @@ def run_connection(execute, *args):
             return http_response({})
 
 
-def http_response(dict, message=None, status=None, code=200):
+def http_response(dict=None, message=None, status=None, code=200):
     """
     Helper function for all of those annoying HttpResponses with the json dumps and content_type.
     Makes sure that 'message' and 'status' are keys in this dictionary
@@ -113,4 +113,4 @@ def http_response(dict, message=None, status=None, code=200):
     if 'status' not in dict:
         dict['status'] = status if status is not None else "up"
 
-    return HttpResponse(json.dumps(dict), content_type='application/json', status=code)
+    return HttpResponse(json.dumps(dict if dict is not None else {}), content_type='application/json', status=code)

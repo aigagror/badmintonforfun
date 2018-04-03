@@ -50,6 +50,26 @@ class QueueTest(CustomTestCase):
     def test_dequeue_party(self):
         self.create_example_data()
         response = self.client.post(reverse('api:dequeue_next_party_to_court'), {'type': 'CASUAL'})
+        self.assertGoodResponse(response)
+
+        # There should now only be one party on CASUAL queue(bhuvan)
+        # There should be a match with just Eddie on it on some court
+
+        queue = Queue.objects.get(type='CASUAL')
+
+        parties = Party.objects.filter(queue=queue)
+
+        self.assertEqual(len(list(parties)), 1)
+
+        matches = Match.objects.raw("SELECT * FROM api_match WHERE court_id NOT NULL")
+        self.assertEqual(len(list(matches)), 1)
+
+        expected_new_match = matches[0]
+
+        playedins = PlayedIn.objects.filter(match=expected_new_match)
+        self.assertEqual(len(list(playedins)), 1)
+
+
 
 
 

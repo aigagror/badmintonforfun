@@ -70,8 +70,6 @@ urlpatterns = [
     re_path(r'settings/courts/?$', settings_router.settingsCourtRouter, name='court_settings'),
     re_path(r'settings/queues/?$', settings_router.settingsQueueRouter, name='queue_settings'),
 
-    # Gets the queues with all the parties on them
-    re_path(r'queue/?$', queue_router.get_queues, name='get_queues'),
 
     #Create a queue
     re_path(r'queue/create/?', queue_router.create_queue, name='create_queue'),
@@ -82,6 +80,9 @@ urlpatterns = [
     # Gets the next part on the queue
     re_path(r'queue/party/next/?$', queue_router.next_on_queue, name='queue_next_party'),
     re_path(r'queue/party/dequeue/?$', queue_router.dequeue_next_party_to_court, name='dequeue_next_party_to_court'),
+
+    # Gets the queues with all the parties on them
+    re_path(r'queue/?$', queue_router.get_queues, name='get_queues'),
 
 ]
 

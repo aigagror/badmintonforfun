@@ -1,8 +1,11 @@
+from django.views.decorators.csrf import csrf_exempt
+
 from api.calls.queue_call import get_parties_by_playtime, create_queue as call_create_queue, get_queues as call_get_queues
 from api.routers.router import restrictRouter, validate_keys
 from ..cursor_api import *
 from ..models import QUEUE_TYPE
 from ..models import *
+import json
 
 QUEUES = ("CASUAL", "RANKED", "KOTH")
 
@@ -29,13 +32,12 @@ def next_on_queue(request):
     :param request:
     :return:
     """
+    queue_type = request.GET.get('type', None)
+    if queue_type is None or queue_type not in QUEUES:
+        return http_response({}, message='Please specify a queue type (CASUAL, RANKED, KOTH)', code=400)
 
-    if request.method == "GET":
-        queue_type = request.GET.get('type', None)
-        if queue_type is None or queue_type not in QUEUES:
-            return http_response({}, message='Please specify a queue type (CASUAL, RANKED, KOTH)', code=400)
+    return get_parties_by_playtime(queue_type)
 
-        return get_parties_by_playtime(queue_type)
 
 @restrictRouter(allowed=["POST"])
 def dequeue_next_party_to_court(request):
@@ -50,8 +52,8 @@ def dequeue_next_party_to_court(request):
         return http_response({}, message='Please specify a queue type (CASUAL, RANKED, KOTH)', code=400)
 
     response = get_parties_by_playtime(queue_type)
-    json = response.json()
-    parties = json['parties']
+    my_json = json.loads(response.content.decode())
+    parties = my_json['parties']
     if len(parties) == 0:
         return http_response({}, message='No parties on this queue', code=400)
 
@@ -80,7 +82,7 @@ def dequeue_next_party_to_court(request):
             members = Member.objects.raw("SELECT * FROM api_member WHERE party_id = %s", [party_id])
 
             # Remove party from queue
-            response = run_connection("DELETE FROM api_party WHERE party = %s", party_id)
+            response = run_connection("DELETE FROM api_party WHERE id = %s", party_id)
             if response.status_code != 200:
                 # Error
                 return response
@@ -92,7 +94,7 @@ def dequeue_next_party_to_court(request):
 
             now = datetime.datetime.now()
 
-            response = run_connection("INSERT INTO api_match(id, startDateTime, court_id) VALUES (%s, %s, %s)", id_of_new_match, serializeDateTime(now), court.id)
+            response = run_connection("INSERT INTO api_match(id, startDateTime, court_id, scoreA, scoreB) VALUES (%s, %s, %s, 0, 0)", id_of_new_match, serializeDateTime(now), court.id)
             if response.status_code != 200:
                 # Error
                 return response
@@ -101,12 +103,17 @@ def dequeue_next_party_to_court(request):
             num_members = len(list(members))
             for i in range(num_members):
                 team = "A" if i % 2 == 0 else "B"
-                member = num_members[i]
+                member = members[i]
                 response = run_connection("INSERT INTO api_playedin(team, match_id, member_id) VALUES (%s, %s, %s)", team, id_of_new_match, member.id)
                 if response.status_code != 200:
                     # Error
                     return response
-    return response
+
+            break
+    if found_available_court:
+        return response
+    else:
+        http_response(message="No available courts", code=400)
 
 
 @restrictRouter(allowed=["POST"])

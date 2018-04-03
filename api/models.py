@@ -107,8 +107,8 @@ class Vote(models.Model):
 
 class Match(models.Model):
     startDateTime = models.DateTimeField('date time started')
-    scoreA = models.IntegerField()
-    scoreB = models.IntegerField()
+    scoreA = models.IntegerField(default=0, blank=True)
+    scoreB = models.IntegerField(default=0, blank=True)
     court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True, blank=True)
     tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True)
 
