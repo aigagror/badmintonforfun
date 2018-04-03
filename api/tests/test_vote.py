@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from api import cursor_api
-from .utils import *
+from .custom_test_case import *
 from api.models import *
 
 

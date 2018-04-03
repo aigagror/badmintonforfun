@@ -88,8 +88,8 @@ def run_connection(execute, *args):
     with connection.cursor() as cursor:
         try:
             cursor.execute(execute, [arg for arg in args])
-        except IntegrityError:
-            raise
+        except IntegrityError as e:
+            print(e)
             return http_response({}, message='Integrity Error!', code=400, status="down")
         except DatabaseError as e:
             print(e)

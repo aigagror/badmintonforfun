@@ -48,7 +48,7 @@ def get_parties_by_playtime(queue_type):
 
         query_members_playtime = '''SELECT party_members.member_id, SUM(play_time) AS member_play_time FROM
                                     (SELECT api_playedin.member_id, api_match.id AS match_id,
-                                    (julianday(api_match.endDateTime)-julianday(api_match.startDateTime))*86400.0
+                                    (julianday(api_match.endDateTime)-julianday(api_match.startDateTime))*8640.0
                                     AS play_time
                                     FROM api_match, api_playedin
                                     WHERE api_playedin.member_id IN

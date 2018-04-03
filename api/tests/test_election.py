@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from api import cursor_api
 from api.models import *
-from .utils import *
+from .custom_test_case import *
 
 
 class ElectionTest(CustomTestCase):
