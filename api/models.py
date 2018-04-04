@@ -49,6 +49,15 @@ class Tournament(models.Model):
     date = models.DateField('date of tournament', unique=True)
     endDate = models.DateField('end date of tournament', unique=True, null=True, blank=True)
 
+class BracketNode(models.Model):
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    level = models.IntegerField()
+    sibling_index = models.IntegerField()
+    match = models.ForeignKey('Match', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        unique_together = (('tournament', 'level', 'sibling_index'),)
+
 class Interested(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
@@ -110,7 +119,6 @@ class Match(models.Model):
     scoreA = models.IntegerField(default=0, blank=True)
     scoreB = models.IntegerField(default=0, blank=True)
     court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True, blank=True)
-    tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, blank=True)
 
     endDateTime = models.DateTimeField('date time ended', null=True, blank=True)
 
@@ -146,7 +154,7 @@ class PlayedIn(models.Model):
 
 
 class Announcement(models.Model):
-    date = models.DateTimeField('date of announcement', unique=True)
+    date = models.DateField('date of announcement')
     title = models.CharField(max_length=64)
     entry = models.CharField(max_length=500)
 
@@ -159,3 +167,4 @@ class Schedule(models.Model):
 
     def __str__(self):
         return '{}'.format(self.date)
+

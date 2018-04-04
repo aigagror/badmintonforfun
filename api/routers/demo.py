@@ -1,7 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 
-from api.calls.announcement_call import *
 from api.routers.router import *
 from django.shortcuts import render
 from api.calls.election_call import *

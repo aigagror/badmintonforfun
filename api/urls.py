@@ -18,7 +18,7 @@ from django.urls import re_path, path
 import api.routers.party_router
 from api.routers import demo, router, votes_router, \
     settings_router, match_router, election_router, \
-    campaign_router, announcement_router, queue_router, party_router
+    campaign_router, announcement_router, queue_router, party_router, tournament_router
 
 app_name = 'api'
 urlpatterns = [
@@ -38,9 +38,11 @@ urlpatterns = [
     path('demo/queue/party/<int:party_id>/', demo.edit_party, name='demo_edit_party'),
 
     # Gets the 3 latest announcements | Edits an announcement
-    re_path(r'announcements/?$', announcement_router.announcements, name='announcement'),
+    re_path(r'announcements/get/?$', announcement_router.get_announcements, name='get_announcements'),
     # Creates an announcement
     re_path(r'announcements/create/?$', announcement_router.create_announcement, name='create_announcement'),
+    re_path(r'announcements/edit/?$', announcement_router.edit_announcement, name='edit_announcement'),
+    re_path(r'announcements/delete/?$', announcement_router.delete_announcement, name='delete_announcement'),
 
     # Gets the top players
     re_path(r'members/top_players?$', match_router.top_players, name='top_players'),
@@ -88,8 +90,17 @@ urlpatterns = [
     re_path(r'match/edit/?$', match_router.edit_match, name='edit_match'),
     re_path(r'match/finish/?$', match_router.finish_match, name='finish_match'),
     re_path(r'match/create/?$', match_router.create_match, name='create_match'),
+    re_path(r'match/delete/?$', match_router.delete_match, name='delete_match'),
+    re_path(r'match/get/?$', match_router.get_match, name='get_match'),
+
     # Get party info that the member is a part of, if they are in a party
-    re_path(r'party/member/?$', match_router.finish_match, name='get_party_for_member'),
+    re_path(r'party/member/?$', party_router.member_party, name='get_party_for_member'),
+
+    re_path(r'tournament/?$', tournament_router.get_tournament, name='get_tournament'),
+    re_path(r'tournament/create/?$', tournament_router.create_tournament, name='create_tournament'),
+    re_path(r'tournament/bracket_node/?$', tournament_router.get_bracket_node, name='get_tournament_bracket_node'),
+    re_path(r'tournament/add/match?$', tournament_router.add_match, name='add_match_to_tournament'),
+
 ]
 
 

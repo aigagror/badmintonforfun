@@ -35,20 +35,18 @@ def create_match(score_a, score_b, a_players, b_players):
         SELECT MAX(id)
         FROM api_match
         """
-        cursor.execute(query)
-        result = cursor.fetchone()
-        if result is not None:
+        result = cursor.execute(query)
+        if not result:
             newID = result[0] + 1
         else:
             newID = 0
 
 
     query = """
-    INSERT INTO api_match(id, startDate, scoreA, scoreB) VALUES (%s, %s, %s, %s)
+    INSERT INTO api_match(id, startDateTime, scoreA, scoreB) VALUES (%s, %s, %s, %s)
     """
     today = datetime.datetime.now()
     response = run_connection(query, newID, serializeDateTime(today), score_a, score_b)
-
     for p in a_players:
         query = """
         INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
@@ -63,6 +61,42 @@ def create_match(score_a, score_b, a_players, b_players):
 
     return response
 
+def find_current_match_by_member(id):
+    """
+        Finds the match the member with given id is in
+        returns match id
+    :param id:
+    :return:
+    """
+    with connection.cursor() as cursor:
+        query = '''SELECT api_match.id AS match_id FROM api_match, api_playedin
+        WHERE api_playedin.member_id=%s AND api_match.id=api_playedin.match_id AND api_match.endDateTime IS NULL
+        '''
+
+        cursor.execute(query, [id])
+        result = dictfetchone(cursor)
+        if result:
+            return http_response({"match_id": result["match_id"]})
+        else:
+            return http_response({}, message="Couldn't find a current match for this member. Are you sure this member is in a match?",
+                                 code=400)
+
+
+def finish_match(id, scoreA, scoreB):
+    """
+        Ends the match, updates the scores, removes court id
+    :param id:
+    :param scoreA:
+    :param scoreB:
+    :return:
+    """
+
+    query = '''
+    UPDATE api_match SET scoreA=%s, scoreB=%s, court_id=NULL, endDateTime=datetime(now) WHERE api_match.id=%s
+    '''
+
+    response = run_connection(query, scoreA, scoreB, id)
+    return response
 
 def _top_players():
     with connection.cursor() as cursor:
