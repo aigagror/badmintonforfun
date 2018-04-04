@@ -35,7 +35,7 @@ class AnnouncementTest(CustomTestCase):
         announcement = Announcement.objects.get(title='Hello', entry='World')
 
     def test_edit_announcement(self):
-
+        self.create_example_data()
         announcements = Announcement.objects.all()
         announcement = announcements[0]
 
