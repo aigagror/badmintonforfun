@@ -43,7 +43,6 @@ class PartyTest(CustomTestCase):
         self.assertGoodResponse(response)
 
         grace = Member.objects.get(first_name='Grace')
-        jared = Member.objects.get(first_name='Jared')
         self.assertIsNotNone(grace.party)
 
 
