@@ -108,6 +108,7 @@ def http_response(dict=None, message=None, status=None, code=200):
     :param code:
     :return:
     """
+    dict = {} if dict is None else dict
     if 'message' not in dict:
         dict['message'] = message if message is not None else "OK"
     if 'status' not in dict:

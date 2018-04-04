@@ -88,6 +88,7 @@ urlpatterns = [
 
     re_path(r'match/edit/?$', match_router.edit_match, name='edit_match'),
     re_path(r'match/finish/?$', match_router.finish_match, name='finish_match'),
+    re_path(r'match/create/?$', match_router.create_match, name='create_match'),
 
     # Get party info that the member is a part of, if they are in a party
     # path('party/member/<int:member_id>/', party_router.member_party, name='get_party_for_member'),

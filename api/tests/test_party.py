@@ -8,6 +8,45 @@ from api.models import *
 from .custom_test_case import *
 
 class PartyTest(CustomTestCase):
+
+    def test_create_bad_party(self):
+        self.create_example_data()
+
+        # Casual queue
+        queue = Queue.objects.get(type='CASUAL')
+
+        # Eddie is already in a party
+        eddie = Member.objects.get(first_name='Eddie')
+
+        parties = Party.objects.all()
+
+        number_of_parties_before = len(list(parties))
+
+        response = self.client.post(reverse('api:create_party'), {'queue_id': queue.id, 'member_id': eddie.id})
+        self.assertBadResponse(response)
+
+        parties = Party.objects.all()
+        number_of_parties_after = len(list(parties))
+
+        self.assertEqual(number_of_parties_after, number_of_parties_before)
+
+
+    def test_create_party(self):
+        self.create_example_data()
+
+        queue = Queue.objects.get(type="CASUAL")
+
+        grace = Member.objects.get(first_name='Grace')
+        self.assertIsNone(grace.party)
+
+        response = self.client.post(reverse('api:create_party'), {'queue_id': queue.id, 'member_id': grace.id})
+        self.assertGoodResponse(response)
+
+        grace = Member.objects.get(first_name='Grace')
+        self.assertIsNotNone(grace.party)
+
+
+
     def test_get_party(self):
         self.create_example_data()
         eddie = Member.objects.get(first_name='Eddie')
@@ -45,6 +84,18 @@ class PartyTest(CustomTestCase):
 
         guys_in_first_party = Member.objects.filter(party_id=first_party.id)
         self.assertEqual(len(list(guys_in_first_party)), 2)
+
+    def test_add_bad_member_to_party(self):
+        self.create_example_data()
+
+        # Eddie is already in a party
+        eddie = Member.objects.get(first_name='Eddie')
+
+        parties = Party.objects.all()
+        for party in parties:
+            response = self.client.post(reverse('api:party_add_member'),
+                                        {'party_id': party.id, 'member_id': eddie.id})
+            self.assertBadResponse(response)
 
     def test_remove_member_from_party(self):
         self.create_example_data()

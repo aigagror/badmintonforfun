@@ -29,3 +29,17 @@ def edit_match(request):
 @restrictRouter(allowed=["POST"])
 def finish_match(request):
     return None
+
+@restrictRouter(allowed=["POST"])
+def create_match(request):
+    """
+    POST -- create a match
+        Required Keys: score_A, score_B, a_players (list), b_players (list)
+    :param request:
+    :return:
+    """
+
+    dict_post = dict(request.POST.items())
+    # write something to make sure a_players and b_players are lists
+    validate_keys(["score_A", "score_B", "a_players", "b_players"])
+    return create_match(dict_post["score_A"], dict_post["score_B"], dict_post["a_players"], dict_post["b_players"])
