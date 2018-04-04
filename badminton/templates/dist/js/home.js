@@ -1927,7 +1927,7 @@ const React = __webpack_require__(1);
 const axios_1 = __webpack_require__(10);
 const ProfileView_1 = __webpack_require__(33);
 const stat_urls = "/mock/stats.json";
-const announce_url = "/mock/announcements.json";
+const announce_url = "/api/announcements/get/";
 class GameView extends React.Component {
     render() {
         return (React.createElement("tr", { className: "row-2" },
@@ -1960,10 +1960,20 @@ class AnnounceView extends React.Component {
     componentDidMount() {
         axios_1.default.get(announce_url)
             .then((res) => {
-            this.setState({
-                title: res.data.title,
-                body: res.data.body,
-            });
+            const announcements = res.data.announcements;
+            if (announcements.length === 0) {
+                this.setState({
+                    title: "No Announcements!",
+                    body: "More to come...",
+                });
+            }
+            else {
+                const announce = announcements[0];
+                this.setState({
+                    title: res.data.title,
+                    body: res.data.body,
+                });
+            }
         })
             .catch((res) => {
         });

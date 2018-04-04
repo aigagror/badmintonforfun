@@ -5,7 +5,7 @@ import { ProfileView } from './ProfileView'
 import { Select } from '../common/Select'
 
 const stat_urls = "/mock/stats.json"
-const announce_url = "/mock/announcements.json"
+const announce_url = "/api/announcements/get/"
 
 class GameView extends React.Component<any, any> {
 	render() {
@@ -49,10 +49,19 @@ class AnnounceView extends React.Component<any, any> {
 	componentDidMount() {
 		axios.get(announce_url)
 			.then((res) => {
-				this.setState({
-					title: res.data.title,
-					body: res.data.body,
-				})
+				const announcements = res.data.announcements;
+				if (announcements.length === 0) {
+					this.setState({
+						title: "No Announcements!",
+						body: "More to come...",
+					})
+				} else {
+					const announce = announcements[0];
+					this.setState({
+						title: res.data.title,
+						body: res.data.body,
+					})
+				}
 			})
 			.catch((res) => {
 
