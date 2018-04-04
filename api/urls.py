@@ -86,6 +86,8 @@ urlpatterns = [
     # Gets the queues with all the parties on them
     re_path(r'queue/?$', queue_router.get_queues, name='get_queues'),
 
+    re_path(r'match/edit/?$', match_router.edit_match, name='edit_match'),
+    re_path(r'match/finish/?$', match_router.finish_match, name='finish_match')
 ]
 
 

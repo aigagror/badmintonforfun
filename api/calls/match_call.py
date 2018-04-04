@@ -4,35 +4,13 @@ from django.http import HttpResponse
 from ..models import *
 import json
 
-def edit_match(id, score_a, score_b, a_players, b_players):
+def edit_match(id, score_a, score_b):
     query = """
     UPDATE api_match SET scoreA = %s, scoreB = %s WHERE id = %s
     """
     response = run_connection(query, score_a, score_b, id)
 
-    playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s", [id])
-    for p in playedins:
-        query = """
-                    DELETE FROM api_playedin 
-                    WHERE id = %s
-                    """
-        response = run_connection(query, p.pk)
-
-    for p in a_players:
-        query = """
-        INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
-        """
-        response = run_connection(query, p, "A", id)
-
-    for p in b_players:
-        query = """
-           INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
-           """
-        response = run_connection(query, p, "B", id)
-
     return response
-
-
 
 
 def delete_match(id):
@@ -49,6 +27,7 @@ def delete_match(id):
     """
     response = run_connection(query, id)
     return response
+
 
 def create_match(score_a, score_b, a_players, b_players):
     with connection.cursor() as cursor:
