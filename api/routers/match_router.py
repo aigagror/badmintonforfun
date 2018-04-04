@@ -1,7 +1,8 @@
-from api.calls.match_call import get_top_players, create_match as get_create_match, edit_match as get_edit_match
+from api.calls.match_call import get_top_players, create_match as get_create_match, edit_match as get_edit_match, delete_match as get_delete_match
 from api.routers.router import restrictRouter
 from .router import validate_keys
-
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 @restrictRouter(allowed=["GET"])
 def top_players(request):
@@ -30,8 +31,6 @@ def edit_match(request):
 def finish_match(request):
     return None
 
-import json
-from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 @restrictRouter(allowed=["POST"])
 def create_match(request):
@@ -48,3 +47,21 @@ def create_match(request):
     # write something to make sure a_players and b_players are lists
     validate_keys(["score_A", "score_B", "a_players", "b_players"], dict_post)
     return get_create_match(dict_post["score_A"], dict_post["score_B"], dict_post["a_players"], dict_post["b_players"])
+
+@csrf_exempt
+@restrictRouter(allowed=["DELETE"])
+def delete_match(request):
+    """
+        DELETE -- delete a match
+            PLEASE PASS IN AS RAW DATA.
+            Required keys: id
+    :param request:
+    :return:
+    """
+
+    # django doesn't have anything that handles delete so...
+    dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+    if not validate_keys(["id"], dict_delete):
+        return HttpResponse(json.dumps({'message': 'Missing parameters'}),
+                    content_type='application/json', status=400)
+    return get_delete_match(dict_delete["id"])
