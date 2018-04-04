@@ -3,7 +3,6 @@ from api.models import *
 
 
 _id_key = "id"
-_datetime_key = "datetime"
 _title_key = "title"
 _entry_key = "entry"
 
@@ -32,7 +31,7 @@ def get_announcements(request):
         validate_keys([_id_key], dict_post)
         return edit_announcement(dict_post[_id_key], dict_post[_title_key], dict_post[_entry_key])
 
-@restrictRouter(incomplete=["POST"])
+@restrictRouter(allowed=["POST"])
 def create_announcement(request):
     """
     POST - Creates an announcement
@@ -41,7 +40,7 @@ def create_announcement(request):
     :return:
     """
     dict_post = dict(request.POST.items())
-    if not validate_keys([_datetime_key, _title_key, _entry_key], dict_post):
+    if not validate_keys([_title_key, _entry_key], dict_post):
         return http_response(message='Missing parameters')
     title = dict_post[_title_key]
     entry = dict_post[_entry_key]
@@ -57,7 +56,7 @@ def edit_announcement(request):
         :return:
         """
     dict_post = dict(request.POST.items())
-    if not validate_keys([_id_key, _datetime_key, _title_key, _entry_key], dict_post):
+    if not validate_keys([_id_key, _date_key, _title_key, _entry_key], dict_post):
         return http_response(message='Missing parameters')
     id = dict_post[_id_key]
     title = dict_post[_title_key]
