@@ -88,6 +88,14 @@ class CustomTestCase(TestCase):
         members[2].party = party
         members[2].save()
 
+        # Create a tournament
+        tournament = Tournament(date=datetime.date.today())
+        tournament.save()
+
+        # Create a full tree of height 3
+        for level in range(4):
+            for sibling_index in range(2**level):
+                bracket_node = BracketNode(tournament=tournament, level=level, sibling_index=sibling_index)
 
 
 

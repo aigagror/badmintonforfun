@@ -53,7 +53,7 @@ class BracketNode(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     level = models.IntegerField()
     sibling_index = models.IntegerField()
-    match = models.ForeignKey('Match', on_delete=models.CASCADE)
+    match = models.ForeignKey('Match', on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         unique_together = (('tournament', 'level', 'sibling_index'),)
