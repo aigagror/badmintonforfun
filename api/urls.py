@@ -38,9 +38,11 @@ urlpatterns = [
     path('demo/queue/party/<int:party_id>/', demo.edit_party, name='demo_edit_party'),
 
     # Gets the 3 latest announcements | Edits an announcement
-    re_path(r'announcements/?$', announcement_router.announcements, name='announcement'),
+    re_path(r'announcements/get/?$', announcement_router.get_announcements, name='get_announcements'),
     # Creates an announcement
     re_path(r'announcements/create/?$', announcement_router.create_announcement, name='create_announcement'),
+    re_path(r'announcements/edit/?$', announcement_router.edit_announcement, name='edit_announcement'),
+    re_path(r'announcements/delete/?$', announcement_router.delete_announcement, name='delete_announcement'),
 
     # Gets the top players
     re_path(r'members/top_players?$', match_router.top_players, name='top_players'),
