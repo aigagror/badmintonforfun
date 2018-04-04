@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Slider } from '../common/Slider'
 import { ProfileView } from './ProfileView'
 import { Select } from '../common/Select'
+import { isBoardMember } from '../common/LocalResourceResolver'
+import { EditableTextarea } from '../common/EditableTextarea';
 
 const stat_urls = "/mock/stats.json"
 const announce_url = "/api/announcements/get/"
@@ -36,6 +38,52 @@ class StatView extends React.Component<any, any> {
 	}
 }
 
+class AnnounceCreator extends React.Component<any, any> {
+	constructor(props: any) {
+		super(props);
+
+		this.state = {
+			showCreator: false,
+			announcementText: "",
+		}
+
+		this.sendAnnouncement = this.sendAnnouncement.bind(this);
+	}
+
+	sendAnnouncement() {
+		this.props.refresh();
+		this.setState({
+			showCreator: false
+		});
+	}
+
+	render() {
+		if (!isBoardMember()) {
+			return null;
+		}
+
+		if (this.state.showCreator) {
+			return <div>
+				<textarea onChange={(ev: any) => 
+					this.setState({announcementText: ev.target.value})}
+					value={this.state.announcementText}>
+
+				</textarea>
+				<button onClick={this.sendAnnouncement}>
+					Submit
+				</button>
+				<button onClick={() => this.setState({showCreator: false})}>
+					Close
+				</button>
+			</div>
+		} else {
+			return <button onClick={() => this.setState({showCreator: true})}>
+						Add an announcement
+					</button>
+		}
+	}
+}
+
 class AnnounceView extends React.Component<any, any> {
 
 	constructor(props: any) {
@@ -43,10 +91,13 @@ class AnnounceView extends React.Component<any, any> {
 		this.state = {
 			title: null,
 			body: null,
+			showCreateAnnouncement: false,
 		}
+
+		this.performRequest = this.performRequest.bind(this);
 	}
 
-	componentDidMount() {
+	performRequest() {
 		axios.get(announce_url)
 			.then((res) => {
 				const announcements = res.data.announcements;
@@ -68,6 +119,10 @@ class AnnounceView extends React.Component<any, any> {
 			})
 	}
 
+	componentDidMount() {
+		this.performRequest();
+	}
+
 	render() {
 		if (this.state.title === null) {
 			return <p>Loading Announcement</p>
@@ -76,7 +131,10 @@ class AnnounceView extends React.Component<any, any> {
 			<div className="announcement">
 			<h2>Most Recent Announcment</h2>
 			<h3>{this.state.title}</h3>
-			<p>{this.state.body}</p>
+			<EditableTextarea initValue={this.state.body} />
+
+			<AnnounceCreator refresh={this.performRequest}/>
+			
 			</div>
 			);
 	}

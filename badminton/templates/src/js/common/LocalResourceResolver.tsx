@@ -6,6 +6,8 @@
  */
 
 import {MailView} from '../components/MailView';
+declare var require: Function;
+var Cookies: any = require("universal-cookie");
 
 /**
  * Mappings from imported classes to random strings.
@@ -38,4 +40,11 @@ export function getResource<T>(instance: T, arg: string): string {
 export function setResource<T>(instance: T, arg: string, value: string): void {
 	const key = _generateKey(instance, arg);
 	localStorage.setItem(key, value);
+}
+
+const cookies = new Cookies();
+
+export function isBoardMember(): boolean {
+	cookies.set('isBoardMember', 'true');
+	return true;
 }

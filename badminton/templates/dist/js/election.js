@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 39);
+/******/ 	return __webpack_require__(__webpack_require__.s = 45);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1963,7 +1963,13 @@ exports.Select = Select;
 
 
 /***/ }),
-/* 30 */
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2043,15 +2049,15 @@ exports.Popup = Popup;
 
 
 /***/ }),
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
 /* 37 */,
 /* 38 */,
-/* 39 */
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2059,22 +2065,22 @@ exports.Popup = Popup;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const ReactDOM = __webpack_require__(9);
-const ElectionView_1 = __webpack_require__(40);
+const ElectionView_1 = __webpack_require__(46);
 ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
 
 
 /***/ }),
-/* 40 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
-const Popup_1 = __webpack_require__(30);
+const Popup_1 = __webpack_require__(36);
 const axios_1 = __webpack_require__(10);
-const RegisterElection_1 = __webpack_require__(41);
-const RadioButton_1 = __webpack_require__(42);
+const RegisterElection_1 = __webpack_require__(47);
+const RadioButton_1 = __webpack_require__(48);
 const election_url = '/api/election/get/';
 const campaign_url = '/api/campaign/';
 const election_create_url = '/api/election/create/';
@@ -2353,7 +2359,7 @@ exports.ElectionView = ElectionView;
 
 
 /***/ }),
-/* 41 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2361,7 +2367,7 @@ exports.ElectionView = ElectionView;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const Select_1 = __webpack_require__(29);
-const Popup_1 = __webpack_require__(30);
+const Popup_1 = __webpack_require__(36);
 const axios_1 = __webpack_require__(10);
 const campaignCreate = '/api/campaign/create';
 class RegisterElectionView extends React.Component {
@@ -2438,7 +2444,7 @@ exports.RegisterElectionView = RegisterElectionView;
 
 
 /***/ }),
-/* 42 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

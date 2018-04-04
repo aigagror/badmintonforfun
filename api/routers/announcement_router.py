@@ -28,7 +28,7 @@ def get_announcements(request):
 def create_announcement(request):
     """
     POST - Creates an announcement
-        Required Keys: datetime, title, entry
+        Required Keys: title, entry
     :param request:
     :return:
     """
@@ -44,7 +44,7 @@ def create_announcement(request):
 def edit_announcement(request):
     """
         POST - Creates an announcement
-            Required Keys: datetime, title, entry
+            Required Keys: title, entry, id
         :param request:
         :return:
         """

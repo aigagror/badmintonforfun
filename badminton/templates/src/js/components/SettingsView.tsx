@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Slider } from '../common/Slider';
 import { Popup } from '../common/Popup';
 import { Select, Option } from '../common/Select';
+import { isBoardMember } from '../common/LocalResourceResolver';
 
 enum LoadingState {
     Loading,
@@ -10,7 +11,7 @@ enum LoadingState {
 }
 
 const reg_url = '/api/settings/member/';
-const member_url = '/mock/board_settings.json';
+const member_url = '/api/settings/members/all/';
 
 class OptionSetting extends React.Component<any, any> {
 
@@ -157,14 +158,14 @@ class BoardSettings extends React.Component<any, any> {
 	componentDidMount() {
 		axios.get(member_url)
 			.then((res) => {
+				console.log(res);
 				this.setState({
 					data: res.data,
 					memberTypes: res.data.memberTypes.map((role: string) => new Option(role, role)),
-					courtTypes: res.data.courtTypes.map((role: string) => new Option(role, role))
 				});
 			})
 			.catch((res) => {
-
+				console.log(res);
 			})
 	}
 
@@ -191,14 +192,14 @@ class BoardSettings extends React.Component<any, any> {
 			this.state.data.members.map((member: any, idx: number) => {
 				return <div key={idx} className="row">
 				<div className="col-5 col-es-12">
-				<h4>{member.name}</h4> 
+				<h4>{member.first_name} {member.last_name}</h4> 
 				</div>
 				<div className="col-4 col-es-12">
 				<Select 
 					options={this.state.memberTypes}
 					defaultValue={member.type}
 					onChange={(i: any) => {console.log(i)}}
-					name={member.id} />
+					name={member.member_id} />
 				</div>
 				<div className="col-3 col-es-12">
 				<button>Delete</button>
@@ -206,7 +207,12 @@ class BoardSettings extends React.Component<any, any> {
 				</div>
 			})
 		}
-		<h3>Courts</h3>
+		
+		</div>
+	}
+}
+/*
+<h3>Courts</h3>
 		{
 			this.state.data.courts.map((court: any, idx: number) => {
 				return <div key={idx} className="row">
@@ -226,9 +232,7 @@ class BoardSettings extends React.Component<any, any> {
 				</div>
 			})
 		}
-		</div>
-	}
-}
+		*/
 
 export class SettingsView extends React.Component<any, any> {
 
@@ -245,17 +249,31 @@ export class SettingsView extends React.Component<any, any> {
 	}
 
 	performRequest() {
-		axios.get(reg_url)
-		.then((res) => {
-			this.setState({
-				loading: false,
-				regular_settings: <StandardSettings data={res.data}/>,
-				board_settings: null
+		if (isBoardMember()) {
+			axios.get(reg_url)
+			.then((res) => {
+				this.setState({
+					loading: false,
+					regular_settings: <StandardSettings data={res.data}/>,
+				})
 			})
-		})
-		.catch((res) => {
-
-		})
+			.catch((res) => {
+				console.log(res);
+			})
+		}
+		else {
+			axios.get(reg_url)
+			.then((res) => {
+				this.setState({
+					loading: false,
+					regular_settings: <StandardSettings data={res.data}/>,
+					board_settings: null
+				})
+			})
+			.catch((res) => {
+				console.log(res);
+			})
+		}
 	}
 
 	componentDidMount() {
@@ -272,12 +290,10 @@ export class SettingsView extends React.Component<any, any> {
 
 	render() {
 		return <div className="election-view">
-	    	<h2>Toggle Board View</h2>
 	    	{ this.state.regular_settings !== null &&
 	    		this.state.regular_settings }
 
-	    	{ this.state.board_settings !== null &&
-	    		this.state.board_settings }
+	    	<BoardSettings />
 	    </div>
 	}
 }

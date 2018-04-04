@@ -635,7 +635,7 @@ def get_all_club_members():
         }
         ret_list.append(boardmember_dict)
 
-    context = {'members': ret_list}
+    context = {'members': ret_list, 'memberTypes': ["Member", "BoardMember"]}
 
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
 
