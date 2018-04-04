@@ -43,5 +43,6 @@ class AnnouncementTest(CustomTestCase):
         self.assertGoodResponse(response)
 
         announcement = Announcement.objects.get(title='Hello', entry='World')
+        Announcement.objects.exists()
 
 
