@@ -38,3 +38,10 @@ class MatchTest(CustomTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(matches - 1, len(list(Match.objects.all())))
         self.assertEqual(playedin - 4, len(list(PlayedIn.objects.all())))
+
+    def find_match_by_member(self):
+        self.test_create_match()
+        CustomTestCase.create_example_data(CustomTestCase)
+        response = self.client.get(reverse('api:get_match'), {"id": 1})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["match_id"], 0)

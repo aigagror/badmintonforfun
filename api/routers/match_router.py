@@ -1,6 +1,7 @@
 from api.calls.match_call import get_top_players, create_match as get_create_match, edit_match as get_edit_match, delete_match as get_delete_match
+from api.calls.match_call import find_current_match_by_member
 from api.routers.router import restrictRouter
-from .router import validate_keys
+from .router import validate_keys, http_response
 import json
 from django.views.decorators.csrf import csrf_exempt
 
@@ -65,3 +66,19 @@ def delete_match(request):
         return HttpResponse(json.dumps({'message': 'Missing parameters'}),
                     content_type='application/json', status=400)
     return get_delete_match(dict_delete["id"])
+
+@restrictRouter(allowed=["GET"])
+def get_match(request):
+    """
+        GET -- The current match id of the match the member is playing
+            Needs parameter id=member id
+            ex: api/match/get/?id=1
+    :param request:
+    :return:
+    """
+
+    member_id = request.GET.get('id', None)
+    if member_id is None:
+        return http_response({}, message="Please pass in a member id", code=400)
+
+    return find_current_match_by_member(member_id)
