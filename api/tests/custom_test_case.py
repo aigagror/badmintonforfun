@@ -39,6 +39,10 @@ class CustomTestCase(TestCase):
         # Eddie has played many matches, an hour in total
         matches = []
         now = datetime.datetime.now(tz=api.datetime_extension.utc)
+        matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-80),
+                             endDateTime=now + datetime.timedelta(minutes=-70), scoreA=21, scoreB=19))
+        matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-70),
+                             endDateTime=now + datetime.timedelta(minutes=-60), scoreA=21, scoreB=19))
         matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-60),
                              endDateTime=now + datetime.timedelta(minutes=-50), scoreA=21, scoreB=19))
         matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-50),
@@ -88,7 +92,7 @@ class CustomTestCase(TestCase):
         members[2].party = party
         members[2].save()
 
-        # Create a tournament
+        # Create a tournament bracket with all of the children having a match
         tournament = Tournament(date=datetime.date.today())
         tournament.save()
 
@@ -96,6 +100,15 @@ class CustomTestCase(TestCase):
         for level in range(4):
             for sibling_index in range(2**level):
                 bracket_node = BracketNode(tournament=tournament, level=level, sibling_index=sibling_index)
+                bracket_node.save()
+
+        for index in range(2**3):
+            bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=index)
+            match = matches[index]
+            bracket_node.match = match
+
+
+
 
 
 
