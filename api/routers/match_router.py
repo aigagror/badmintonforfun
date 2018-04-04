@@ -1,4 +1,4 @@
-from api.calls.match_call import get_top_players
+from api.calls.match_call import get_top_players, create_match as get_create_match, edit_match as get_edit_match
 from api.routers.router import restrictRouter
 from .router import validate_keys
 
@@ -24,22 +24,27 @@ def edit_match(request):
 
     dict_post = dict(request.POST.items())
     validate_keys(["score_A", "score_B", "id"],dict_post)
-    return edit_match(dict_post["id"], dict_post["score_A"], dict_post["score_B"])
+    return get_edit_match(dict_post["id"], dict_post["score_A"], dict_post["score_B"])
 
 @restrictRouter(allowed=["POST"])
 def finish_match(request):
     return None
 
+import json
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
 @restrictRouter(allowed=["POST"])
 def create_match(request):
     """
     POST -- create a match
+        PLEASE PASS IN AS RAW DATA.
+        All sorts of things get real angry if you don't
         Required Keys: score_A, score_B, a_players (list), b_players (list)
     :param request:
     :return:
     """
 
-    dict_post = dict(request.POST.items())
+    dict_post = json.loads(request.body.decode('utf8').replace("'", '"'))
     # write something to make sure a_players and b_players are lists
-    validate_keys(["score_A", "score_B", "a_players", "b_players"])
-    return create_match(dict_post["score_A"], dict_post["score_B"], dict_post["a_players"], dict_post["b_players"])
+    validate_keys(["score_A", "score_B", "a_players", "b_players"], dict_post)
+    return get_create_match(dict_post["score_A"], dict_post["score_B"], dict_post["a_players"], dict_post["b_players"])
