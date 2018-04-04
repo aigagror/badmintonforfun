@@ -2075,7 +2075,7 @@ const Popup_1 = __webpack_require__(30);
 const axios_1 = __webpack_require__(10);
 const RegisterElection_1 = __webpack_require__(41);
 const RadioButton_1 = __webpack_require__(42);
-const election_url = '/api/election/';
+const election_url = '/api/election/get/';
 const campaign_url = '/api/campaign/';
 const election_create_url = '/api/election/create/';
 var LoadingState;
@@ -2215,7 +2215,7 @@ class ElectionUp extends React.Component {
                     React.createElement("div", { className: "row row-offset-2" },
                         React.createElement("button", { type: "submit" }, "Submit Votes"))),
                 this.state.popup !== null && this.state.popup),
-            React.createElement(RegisterElection_1.RegisterElectionView, { roles: this.props.roles })));
+            React.createElement(RegisterElection_1.RegisterElectionView, { roles: this.props.order })));
     }
 }
 function dateNow() {
@@ -2276,12 +2276,14 @@ class CampaignResponse {
 }
 const convertResponseToHierarchy = (res) => {
     const ret = {};
-    for (var i of res.order) {
+    const order = res.campaigns.map((e) => e.job);
+    for (var i of order) {
         ret[i] = [];
     }
     for (var campaigner of res.campaigns) {
         ret[campaigner.job].push(campaigner);
     }
+    ret.order = order;
     return ret;
 };
 class ElectionView extends React.Component {
@@ -2302,7 +2304,7 @@ class ElectionView extends React.Component {
             var pack;
             if (status === "up") {
                 const hierarchy = convertResponseToHierarchy(res.data);
-                const pack = React.createElement(ElectionUp, { order: res.data.order, id: res.data.id, campaigns: hierarchy, roles: res.data.order, refresh: this.performRequest });
+                const pack = React.createElement(ElectionUp, { order: hierarchy.order, id: res.data.id, campaigns: hierarchy, roles: hierarchy.order, refresh: this.performRequest });
                 _this_ref.setState({
                     election_data: pack,
                     election: LoadingState.Loaded,
@@ -2325,6 +2327,7 @@ class ElectionView extends React.Component {
             }
         })
             .catch(res => {
+            console.log(res);
             this.setState({
                 error: res,
             });
@@ -2376,7 +2379,8 @@ class RegisterElectionView extends React.Component {
     }
     componentDidUpdate() {
         if (this.openDiv) {
-            this.openDiv.addEventListener('animationend', () => this.openDiv.scrollIntoView({ behavior: "smooth" }));
+            //this.openDiv.addEventListener('animationend', () => 
+            //	this.openDiv.scrollIntoView({behavior:"smooth"}));
         }
     }
     change() {

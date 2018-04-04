@@ -147,3 +147,15 @@ $select-height: 80;
   right: 5px;
   border-radius: 2px;
 }
+
+@keyframes loader-birdie-float {
+  0%   {transform: translateY(0)}
+  25%  {transform: translateY(-25px)}
+  75%  {transform: translateY(25px)}
+  100% {transform: translateY(0)}
+}
+
+.loader-birdie {
+  animation: loader-birdie-float 5s linear infinite;
+}
+

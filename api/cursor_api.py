@@ -68,6 +68,18 @@ def serializeModel(model):
 
     return _serializeDict(model_to_dict(model))
 
+def toJson(json):
+    ret = dict()
+    for key, val in ret.items():
+        if isinstance(val, list):
+            ret[key] = json.dumps([toJson(i) for i in val])
+        elif isinstance(val, datetime.date):
+            ret[key] = serializeDate(val)
+        elif isinstance(val, dict):
+            ret[key] = toJson(val)
+        else:
+            ret[key] = val
+    return json.dumps(ret)
 
 def serializeSetOfModels(models):
     ret = []

@@ -2127,41 +2127,81 @@ var LoadingState;
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
     LoadingState[LoadingState["Loaded"] = 1] = "Loaded";
 })(LoadingState || (LoadingState = {}));
-const reg_url = '/api/settings';
+const reg_url = '/api/settings/member/';
 const member_url = '/mock/board_settings.json';
 class OptionSetting extends React.Component {
     render() {
         const options = this.props.data.options.map((option, idx) => new Select_1.Option(option.value, option.name));
-        return React.createElement(Select_1.Select, { name: this.props.data.name, defaultValue: this.props.data.value, onChange: (a) => { }, options: options });
+        return React.createElement(Select_1.Select, { name: this.props.data.name, defaultValue: this.props.data.value, onChange: this.props.change, options: options });
     }
 }
 class BoolSetting extends React.Component {
     render() {
-        return React.createElement(Slider_1.Slider, { change: () => { }, checked: this.props.data.value });
+        return React.createElement(Slider_1.Slider, { change: (e) => this.props.change(e.target.value === "on" ? true : false), checked: this.props.data.value });
     }
 }
 class TextSetting extends React.Component {
     render() {
-        return React.createElement("input", { type: "text", name: this.props.data.name, defaultValue: this.props.data.value });
+        return React.createElement("input", { type: "text", name: this.props.data.name, onChange: (e) => this.props.change(e.target.value), defaultValue: this.props.data.value });
+    }
+}
+class LongTextSetting extends React.Component {
+    render() {
+        return React.createElement("textarea", { name: this.props.data.name, onChange: (e) => this.props.change(e.target.value), defaultValue: this.props.data.value });
     }
 }
 class StandardSettings extends React.Component {
     constructor(props) {
         super(props);
         this.decideComponent = this.decideComponent.bind(this);
+        const params = {};
+        for (let setting of this.props.data) {
+            params[setting.name] = setting.value;
+        }
         this.state = {
             popup: null,
+            settings: params
         };
+        this.previousTimeout = null;
+        this.repost = this.repost.bind(this);
+    }
+    repost() {
+        if (this.previousTimeout !== null) {
+            clearInterval(this.previousTimeout);
+            this.previousTimeout = null;
+        }
+        let data = new FormData();
+        for (let key of Object.keys(this.state.settings)) {
+            data.append(key, this.state.settings[key]);
+        }
+        axios_1.default.post(reg_url, data)
+            .then((res) => {
+            console.log(res);
+            this.setState({
+                popup: React.createElement(Popup_1.Popup, { title: "Saved", message: "Your data has been saved", callback: () => this.setState({ popup: null }) })
+            });
+        })
+            .catch((res) => {
+            console.log(res);
+        });
     }
     decideComponent(setting, key) {
+        const updateFunctor = (val) => {
+            const swap = Object.assign({}, this.state.settings);
+            swap[setting.name] = val;
+            this.setState({ settings: swap });
+        };
         if (setting.type === "bool") {
-            return React.createElement(BoolSetting, { data: setting, key: key });
+            return React.createElement(BoolSetting, { data: setting, key: key, change: updateFunctor });
         }
         else if (setting.type === "option") {
-            return React.createElement(OptionSetting, { data: setting, key: key });
+            return React.createElement(OptionSetting, { data: setting, key: key, change: updateFunctor });
         }
         else if (setting.type === "text") {
-            return React.createElement(TextSetting, { data: setting, key: key });
+            return React.createElement(TextSetting, { data: setting, key: key, change: updateFunctor });
+        }
+        else if (setting.type === "long_text") {
+            return React.createElement(LongTextSetting, { data: setting, key: key, change: updateFunctor });
         }
     }
     render() {
@@ -2173,9 +2213,7 @@ class StandardSettings extends React.Component {
                             React.createElement("h2", null, setting.display_name)),
                         React.createElement("div", { className: "col-6 col-es-12" }, this.decideComponent(setting, idx)));
                 }),
-                React.createElement("button", { onClick: () => this.setState({
-                        popup: React.createElement(Popup_1.Popup, { title: "Saved", message: "Your data has been saved", callback: () => this.setState({ popup: null }) })
-                    }) }, "Save")),
+                React.createElement("button", { onClick: this.repost }, "Save")),
             this.state.popup && this.state.popup);
     }
 }
@@ -2250,7 +2288,7 @@ class SettingsView extends React.Component {
             .then((res) => {
             this.setState({
                 loading: false,
-                regular_settings: React.createElement(StandardSettings, { data: res.data.regular }),
+                regular_settings: React.createElement(StandardSettings, { data: res.data }),
                 board_settings: null
             });
         })

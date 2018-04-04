@@ -9,7 +9,7 @@ enum LoadingState {
     Loaded,
 }
 
-const reg_url = '/api/settings';
+const reg_url = '/api/settings/member/';
 const member_url = '/mock/board_settings.json';
 
 class OptionSetting extends React.Component<any, any> {
@@ -20,7 +20,7 @@ class OptionSetting extends React.Component<any, any> {
 		return <Select 
 		name={this.props.data.name} 
 		defaultValue={this.props.data.value}
-		onChange={(a: any) => {}}
+		onChange={this.props.change}
 		options={options} />
 	}
 }
@@ -28,36 +28,92 @@ class OptionSetting extends React.Component<any, any> {
 class BoolSetting extends React.Component<any, any> {
 
 	render() {
-		return <Slider change={() => {}} checked={this.props.data.value} />
+		return <Slider 
+			change={(e: any) => this.props.change(e.target.value === "on" ? true: false)} 
+			checked={this.props.data.value} />
 	}
 }
 
 class TextSetting extends React.Component<any, any> {
 
 	render() {
-		return <input type="text" name={this.props.data.name} defaultValue={this.props.data.value} />
+		return <input 
+			type="text" 
+			name={this.props.data.name} 
+			onChange={(e: any) => this.props.change(e.target.value)}
+			defaultValue={this.props.data.value} />
+	}
+}
+
+class LongTextSetting extends React.Component<any, any> {
+
+	render() {
+		return <textarea name={this.props.data.name} 
+			onChange={(e: any) => this.props.change(e.target.value)} 
+			defaultValue={this.props.data.value} />
 	}
 }
 
 class StandardSettings extends React.Component<any, any> {
 
+	private previousTimeout: any;
+
 	constructor(props: any) {
 		super(props);
 
 		this.decideComponent = this.decideComponent.bind(this);
+		const params: any = {
+		};
+		for (let setting of this.props.data) {
+			params[setting.name] = setting.value
+		}
 
 		this.state = {
 			popup: null,
+			settings: params
 		}
+		this.previousTimeout = null;
+		this.repost = this.repost.bind(this);
+	}
+
+	repost() {
+		if (this.previousTimeout !== null) {
+			clearInterval(this.previousTimeout);
+			this.previousTimeout = null;
+		}
+		let data = new FormData();
+		for (let key of Object.keys( this.state.settings )) {
+			data.append(key, this.state.settings[key]);
+		}
+
+		axios.post(reg_url, data)
+			.then((res: any) => {
+				console.log(res);
+				this.setState({
+					popup: <Popup title="Saved" message="Your data has been saved" callback={() => 
+						this.setState({popup:null})} />
+				})
+			})
+			.catch((res: any) => {
+				console.log(res);
+			})
 	}
 
 	decideComponent(setting: any, key: any) {
+		const updateFunctor = (val: any) => {
+			const swap = Object.assign({}, this.state.settings);
+			swap[setting.name] = val;
+			this.setState({settings: swap});
+		}
 		if (setting.type === "bool") {
-			return <BoolSetting data={setting} key={key}/>
+			return <BoolSetting data={setting} key={key} 
+				change={updateFunctor}/>
 		} else if (setting.type === "option") {
-			return <OptionSetting data={setting} key={key}/>
+			return <OptionSetting data={setting} key={key} change={updateFunctor}/>
 		} else if (setting.type === "text") {
-			return <TextSetting data={setting} key={key} />
+			return <TextSetting data={setting} key={key} change={updateFunctor} />
+		} else if (setting.type === "long_text") {
+			return <LongTextSetting data={setting} key={key} change={updateFunctor} />
 		}
 	}
 
@@ -80,10 +136,7 @@ class StandardSettings extends React.Component<any, any> {
 				</div>
 			})
 		}
-		<button onClick={() => this.setState({
-			popup: <Popup title="Saved" message="Your data has been saved" callback={() => 
-				this.setState({popup:null})} />
-		})}>Save</button>
+		<button onClick={this.repost}>Save</button>
 		</div>
 		{ this.state.popup && this.state.popup }
 		</>
@@ -196,7 +249,7 @@ export class SettingsView extends React.Component<any, any> {
 		.then((res) => {
 			this.setState({
 				loading: false,
-				regular_settings: <StandardSettings data={res.data.regular}/>,
+				regular_settings: <StandardSettings data={res.data}/>,
 				board_settings: null
 			})
 		})

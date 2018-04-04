@@ -10,6 +10,6 @@ export class Queue extends React.Component<any, any> {
 	}
 
 	render() {
-		return <p>Hello Queue!</p>;
+		return <img src="./birdie.svg" />;
 	}
 }

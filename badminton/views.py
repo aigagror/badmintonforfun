@@ -10,6 +10,7 @@ from django.http import Http404
 from django.http import HttpResponse
 from .mod_config import JS_PATH, CSS_PATH, TEMPLATE_PATH, MOCK_PATH, STATIC_PATH
 import os.path
+from badminton_server.settings import DEBUG
 
 
 def _file_or_error(file_name, ret_type=str):
@@ -42,9 +43,9 @@ def js_server(request, js_file):
         :param request: HttpRequest Standard django request object
         :param data: str JS to serve
     """
-
     file_name = os.path.join(JS_PATH, js_file)
     content = _file_or_error(file_name)
+
     return HttpResponse(content, content_type="text/js")
 
 

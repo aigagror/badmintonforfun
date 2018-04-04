@@ -6,7 +6,7 @@ import { RegisterElectionView } from "./RegisterElection";
 import { RadioButton } from '../common/RadioButton';
 import { Select, Option } from "../common/Select";
 
-const election_url = '/api/election/';
+const election_url = '/api/election/get/';
 const campaign_url = '/api/campaign/';
 const election_create_url = '/api/election/create/';
 
@@ -201,7 +201,7 @@ class ElectionUp extends React.Component<any, any> {
 		</form>
 		{ this.state.popup !== null && this.state.popup }
 		</div>
-		<RegisterElectionView roles={this.props.roles}/>
+		<RegisterElectionView roles={this.props.order}/>
 		</>);
 	}
 }
@@ -293,13 +293,15 @@ class CampaignResponse {
 
 const convertResponseToHierarchy = (res: CampaignResponse): any => {
 	const ret: any = {};
-	for (var i of res.order) {
+	const order = res.campaigns.map((e: any) => e.job);
+	for (var i of order) {
 		ret[i] = [];
 	}
 
 	for (var campaigner of res.campaigns) {
 		ret[campaigner.job].push(campaigner);
 	}
+	ret.order = order;
 	return ret;
 }
 
@@ -326,10 +328,10 @@ export class ElectionView extends React.Component<{}, any> {
 				var pack;
 				if (status === "up") {
 					const hierarchy = convertResponseToHierarchy(res.data);
-					const pack = <ElectionUp order={res.data.order} 
+					const pack = <ElectionUp order={hierarchy.order} 
 						id={res.data.id}
 						campaigns={hierarchy} 
-						roles={res.data.order} 
+						roles={hierarchy.order} 
 						refresh={this.performRequest}/>;
 
 					_this_ref.setState({
@@ -352,6 +354,7 @@ export class ElectionView extends React.Component<{}, any> {
 				}
 			})
 			.catch(res => {
+				console.log(res);
 				this.setState({
 					error: res,
 				});

@@ -99,7 +99,7 @@ class Queue extends React.Component {
         this.state = {};
     }
     render() {
-        return React.createElement("p", null, "Hello Queue!");
+        return React.createElement("img", { src: "./birdie.svg" });
     }
 }
 exports.Queue = Queue;

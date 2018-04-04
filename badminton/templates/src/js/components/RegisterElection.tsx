@@ -26,8 +26,8 @@ export class RegisterElectionView extends React.Component<any, any> {
 
 	componentDidUpdate() {
 		if (this.openDiv) {
-			this.openDiv.addEventListener('animationend', () => 
-				this.openDiv.scrollIntoView({behavior:"smooth"}));
+			//this.openDiv.addEventListener('animationend', () => 
+			//	this.openDiv.scrollIntoView({behavior:"smooth"}));
 		}
 	}
 

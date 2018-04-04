@@ -528,10 +528,20 @@ def member_config(member_id):
 
     member = members[0]
     # data = serializeModel(member)
-    data = {
-        'private': member.private,
-        'bio': member.bio
-    }
+    data = [
+        {
+            "type": "bool",
+            "name": 'private',
+            "display_name": "Show ranking",
+            "value": member.private
+        },
+        {
+            "type": "long_text",
+            "name": 'bio',
+            "display_name": "Member Bio",
+            "value": member.bio
+        }
+    ]
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
