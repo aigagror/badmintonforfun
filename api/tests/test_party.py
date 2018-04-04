@@ -11,20 +11,20 @@ class PartyTest(CustomTestCase):
     def test_get_party(self):
         self.create_example_data()
         eddie = Member.objects.get(first_name='Eddie')
-        response = self.client.get(reverse('api:get_party_for_member', args=(eddie.id, )))
+        response = self.client.get(reverse('api:get_party_for_member'), {'member_id': eddie.id})
         self.assertGoodResponse(response)
 
         json = response.json()
-        self.assertTrue('party' in json)
+        self.assertTrue('party_id' in json)
 
     def test_get_no_party(self):
         some_guy = Member(first_name='some', last_name='guy', dateJoined=datetime.date.today(), email='someguy@gmail.com')
         some_guy.save()
 
-        response = self.client.get(reverse('api:get_party_for_member', args=(some_guy.id, )))
+        response = self.client.get(reverse('api:get_party_for_member'), {'member_id': some_guy.id})
 
         json = response.json()
-        self.assertTrue('party' not in json)
+        self.assertTrue('party_id' not in json)
 
     def test_add_member_to_party(self):
         self.create_example_data()
