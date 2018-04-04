@@ -32,6 +32,16 @@ class AnnouncementTest(CustomTestCase):
 
         self.assertEqual(number_of_announcements_after, number_of_announcements_before + 1)
 
-        Announcement.objects.exists()
+        announcement = Announcement.objects.get(title='Hello', entry='World')
+
+    def test_edit_announcement(self):
+
+        announcements = Announcement.objects.all()
+        announcement = announcements[0]
+
+        response = self.client.post(reverse('api:edit_announcement'), {'id': announcement.id, 'title': 'Hello', 'entry': 'World'})
+        self.assertGoodResponse(response)
+
+        announcement = Announcement.objects.get(title='Hello', entry='World')
 
 
