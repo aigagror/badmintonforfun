@@ -16,14 +16,27 @@ def create_party(request):
     """
 
     post_dict = dict(request.POST.items())
-    if not validate_keys(['queue_id', 'member_ids'], post_dict):
+    if not validate_keys(['queue_id', 'member_id'], post_dict):
         return http_response({}, message="Keys not found", code=400)
 
     queue_id = int(post_dict['queue_id'])
-    member_ids = post_dict['member_ids']
-    member_ids = [int(i) for i in member_ids.split(',')]
+    member_id = int(post_dict['member_id'])
 
-    response = call_create_party(queue_id, member_ids)
+    parties_with_max_id = Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT MAX(id) FROM api_party)")
+    if len(list(parties_with_max_id)) == 0:
+        new_id = 0
+    else:
+        party_with_max_id = parties_with_max_id[0]
+        new_id = party_with_max_id.id + 1
+
+    response = run_connection("INSERT INTO api_party(id, queue_id) VALUES (%s, %s)", new_id, queue_id)
+    if response.status_code != 200:
+        return response
+
+    response = run_connection("UPDATE api_member SET party_id = %s WHERE interested_ptr_id = %s", new_id, member_id)
+    if response.status_code != 200:
+        return response
+
     return response
 
 @csrf_exempt

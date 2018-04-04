@@ -29,6 +29,8 @@ class CustomTestCase(TestCase):
                               email="drong4@illinois.edu"))
         members.append(Member(first_name="Grace", last_name="Shen", dateJoined=datetime.date.today(),
                               email="gshen3@illinois.edu"))
+        members.append(Member(first_name="Jared", last_name="Franzone", dateJoined=datetime.date.today(),
+                              email="jfranz2@illinois.edu"))
 
         for member in members:
             member.save()

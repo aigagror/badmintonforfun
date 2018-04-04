@@ -8,6 +8,23 @@ from api.models import *
 from .custom_test_case import *
 
 class PartyTest(CustomTestCase):
+    def test_create_party(self):
+        self.create_example_data()
+
+        queue = Queue.objects.get(type="CASUAL")
+
+        grace = Member.objects.get(first_name='Grace')
+        self.assertIsNone(grace.party)
+
+        response = self.client.post(reverse('api:create_party'), {'queue_id': queue.id, 'member_id': grace.id})
+        self.assertGoodResponse(response)
+
+        grace = Member.objects.get(first_name='Grace')
+        jared = Member.objects.get(first_name='Jared')
+        self.assertIsNotNone(grace.party)
+
+
+
     def test_get_party(self):
         self.create_example_data()
         eddie = Member.objects.get(first_name='Eddie')
