@@ -18,7 +18,7 @@ from django.urls import re_path, path
 import api.routers.party_router
 from api.routers import demo, router, votes_router, \
     settings_router, match_router, election_router, \
-    campaign_router, announcement_router, queue_router, party_router
+    campaign_router, announcement_router, queue_router, party_router, tournament_router
 
 app_name = 'api'
 urlpatterns = [
@@ -91,10 +91,15 @@ urlpatterns = [
     re_path(r'match/edit/?$', match_router.edit_match, name='edit_match'),
     re_path(r'match/finish/?$', match_router.finish_match, name='finish_match'),
     re_path(r'match/create/?$', match_router.create_match, name='create_match'),
+    re_path(r'match/delete/?$', match_router.delete_match, name='delete_match'),
 
     # Get party info that the member is a part of, if they are in a party
-    # path('party/member/<int:member_id>/', party_router.member_party, name='get_party_for_member'),
     re_path(r'party/member/?$', party_router.member_party, name='get_party_for_member'),
+
+    re_path(r'tournament/?$', tournament_router.get_tournament, name='get_tournament'),
+    re_path(r'tournament/create/?$', tournament_router.create_tournament, name='create_tournament'),
+    re_path(r'tournament/bracket_node/?$', tournament_router.get_bracket_node, name='get_tournament_bracket_node'),
+    re_path(r'tournament/add/match?$', tournament_router.add_match, name='add_match_to_tournament'),
 
 ]
 
