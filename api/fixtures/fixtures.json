@@ -1,5 +1,47 @@
 [
 {
+    "model": "api.queue",
+    "pk": 1,
+    "fields": {
+        "type": "CASUAL"
+    }
+},
+{
+    "model": "api.queue",
+    "pk": 2,
+    "fields": {
+        "type": "RANKED"
+    }
+},
+{
+    "model": "api.queue",
+    "pk": 3,
+    "fields": {
+        "type": "KOTH"
+    }
+},
+{
+    "model": "api.party",
+    "pk": 0,
+    "fields": {
+        "queue": 1
+    }
+},
+{
+    "model": "api.party",
+    "pk": 1,
+    "fields": {
+        "queue": 2
+    }
+},
+{
+    "model": "api.party",
+    "pk": 2,
+    "fields": {
+        "queue": 2
+    }
+},
+{
     "model": "api.interested",
     "pk": 0,
     "fields": {
@@ -347,7 +389,7 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "party": null,
+        "party": 0,
         "bio": ""
     }
 },
@@ -358,7 +400,7 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "party": null,
+        "party": 1,
         "bio": ""
     }
 },
@@ -369,7 +411,7 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "party": null,
+        "party": 1,
         "bio": ""
     }
 },
@@ -402,7 +444,7 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "party": null,
+        "party": 2,
         "bio": ""
     }
 },
@@ -490,7 +532,7 @@
         "level": 0,
         "private": false,
         "dateJoined": "2018-03-19",
-        "party": null,
+        "party": 1,
         "bio": ""
     }
 },
@@ -708,70 +750,20 @@
 },
 {
     "model": "api.election",
-    "pk": 0,
+    "pk": 1,
     "fields": {
-        "date": "2018-03-25",
+        "date": "2018-03-27",
         "endDate": null
     }
 },
 {
     "model": "api.campaign",
-    "pk": 1,
+    "pk": 8,
     "fields": {
         "job": "PRESIDENT",
-        "pitch": "Make Badminton Great Again",
-        "election": 0,
+        "pitch": "asdf",
+        "election": 1,
         "campaigner": 8
-    }
-},
-{
-    "model": "api.campaign",
-    "pk": 2,
-    "fields": {
-        "job": "PRESIDENT",
-        "pitch": "Hi I'm Eddie",
-        "election": 0,
-        "campaigner": 8
-    }
-},
-{
-    "model": "api.campaign",
-    "pk": 3,
-    "fields": {
-        "job": "PRESIDENT",
-        "pitch": "Change We can Believe In",
-        "election": 0,
-        "campaigner": 20
-    }
-},
-{
-    "model": "api.campaign",
-    "pk": 4,
-    "fields": {
-        "job": "OFFICER",
-        "pitch": "Our founders got it right when they wrote in the Declaration of Independence that our rights come from nature and nature's God, not from government.",
-        "election": 0,
-        "campaigner": 21
-    }
-},
-{
-    "model": "api.campaign",
-    "pk": 5,
-    "fields": {
-        "job": "TREASURER",
-        "pitch": "The current treasurer Rosa Gumataotao Rios, the sixth Latina ever to hold the job, advises top Treasury and finance officials and directly oversees the U.S. Mint and the Bureau of Engraving and Printing.",
-        "election": 0,
-        "campaigner": 23
-    }
-},
-{
-    "model": "api.campaign",
-    "pk": 6,
-    "fields": {
-        "job": "PRESIDENT",
-        "pitch": "We're going to build a net, and we're going to make Purdue pay for it",
-        "election": 0,
-        "campaigner": 4
     }
 },
 {
@@ -782,7 +774,6 @@
         "scoreA": 16,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -794,7 +785,6 @@
         "scoreA": 19,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -806,7 +796,6 @@
         "scoreA": 5,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -818,7 +807,6 @@
         "scoreA": 21,
         "scoreB": 16,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -830,7 +818,6 @@
         "scoreA": 16,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -842,8 +829,7 @@
         "scoreA": 21,
         "scoreB": 19,
         "court": null,
-        "tournament": null,
-        "endDateTime": null
+        "endDateTime": "2018-03-19T17:20:20Z"
     }
 },
 {
@@ -854,7 +840,6 @@
         "scoreA": 11,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -866,8 +851,7 @@
         "scoreA": 21,
         "scoreB": 15,
         "court": null,
-        "tournament": null,
-        "endDateTime": null
+        "endDateTime": "2018-03-19T17:10:10Z"
     }
 },
 {
@@ -878,7 +862,6 @@
         "scoreA": 11,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -890,7 +873,6 @@
         "scoreA": 14,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -902,7 +884,6 @@
         "scoreA": 10,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -914,7 +895,6 @@
         "scoreA": 14,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -926,8 +906,7 @@
         "scoreA": 21,
         "scoreB": 10,
         "court": null,
-        "tournament": null,
-        "endDateTime": null
+        "endDateTime": "2018-03-19T17:26:03Z"
     }
 },
 {
@@ -938,7 +917,6 @@
         "scoreA": 26,
         "scoreB": 24,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -950,7 +928,6 @@
         "scoreA": 21,
         "scoreB": 10,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -962,7 +939,6 @@
         "scoreA": 19,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -974,7 +950,6 @@
         "scoreA": 21,
         "scoreB": 15,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -986,7 +961,6 @@
         "scoreA": 10,
         "scoreB": 21,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -998,8 +972,7 @@
         "scoreA": 21,
         "scoreB": 8,
         "court": null,
-        "tournament": null,
-        "endDateTime": null
+        "endDateTime": "2018-03-19T17:10:15Z"
     }
 },
 {
@@ -1010,7 +983,6 @@
         "scoreA": 21,
         "scoreB": 12,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -1022,7 +994,6 @@
         "scoreA": 12,
         "scoreB": 23,
         "court": null,
-        "tournament": null,
         "endDateTime": null
     }
 },
@@ -1552,6 +1523,22 @@
     "fields": {
         "app_label": "sessions",
         "model": "session"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "pk": 22,
+    "fields": {
+        "app_label": "api",
+        "model": "bracketnode"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "tgs1q9pq6oq49moxndmxy8qi9j5g3ujm",
+    "fields": {
+        "session_data": "MTQ0Mzc2YzU0NWQ0YjkyOGJjM2ZiNjhlYTBmOTAzYTUyNWQzNmQ3ODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2NTc3MGUxZThiNDI5ODY1YWU0YTk1MDJlZmQ2N2RlZGJlNmNkODI4In0=",
+        "expire_date": "2018-04-14T19:28:11.778Z"
     }
 },
 {
@@ -2130,11 +2117,38 @@
     }
 },
 {
+    "model": "auth.permission",
+    "pk": 64,
+    "fields": {
+        "name": "Can add bracket node",
+        "content_type": 22,
+        "codename": "add_bracketnode"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 65,
+    "fields": {
+        "name": "Can change bracket node",
+        "content_type": 22,
+        "codename": "change_bracketnode"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 66,
+    "fields": {
+        "name": "Can delete bracket node",
+        "content_type": 22,
+        "codename": "delete_bracketnode"
+    }
+},
+{
     "model": "auth.user",
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$100000$SxK31RO91zFG$yecGMlpcQkWMVPSYIF3lr9gDXkIAK//TlEkqeSByI3o=",
-        "last_login": "2018-03-26T16:32:08.474Z",
+        "last_login": "2018-03-31T19:28:11.770Z",
         "is_superuser": true,
         "username": "admin",
         "first_name": "",
@@ -2145,6 +2159,45 @@
         "date_joined": "2018-03-26T16:31:31.337Z",
         "groups": [],
         "user_permissions": []
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+        "action_time": "2018-03-31T19:28:20.418Z",
+        "user": 1,
+        "content_type": 9,
+        "object_id": "1",
+        "object_repr": "CASUAL",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+        "action_time": "2018-03-31T19:29:07.531Z",
+        "user": 1,
+        "content_type": 9,
+        "object_id": "2",
+        "object_repr": "RANKED",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+        "action_time": "2018-03-31T19:29:13.086Z",
+        "user": 1,
+        "content_type": 9,
+        "object_id": "3",
+        "object_repr": "KOTH",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
     }
 }
 ]
