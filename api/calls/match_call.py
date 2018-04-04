@@ -61,6 +61,26 @@ def create_match(score_a, score_b, a_players, b_players):
 
     return response
 
+def find_current_match_by_member(id):
+    """
+        Finds the match the member with given id is in
+        returns match id
+    :param id:
+    :return:
+    """
+    with connection.cursor() as cursor:
+        query = '''SELECT api_match.id AS match_id FROM api_match, api_playedin
+        WHERE api_playedin.member_id=%s AND api_match.id=api_playedin.match_id AND api_match.endDateTime IS NULL
+        '''
+
+        cursor.execute(query, [id])
+        result = dictfetchone(cursor)
+        print(result)
+        if result:
+            return http_response({"match_id": result["match_id"]})
+        else:
+            return http_response({}, message="Couldn't find a current match for this member. Are you sure this member is in a match?",
+                                 code=400)
 
 def _top_players():
     with connection.cursor() as cursor:

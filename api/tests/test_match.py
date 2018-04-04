@@ -22,7 +22,7 @@ class MatchTest(CustomTestCase):
 
     def test_edit_match(self):
         self.test_create_match()
-        CustomTestCase.create_example_data(CustomTestCase)
+        self.create_example_data()
         m = Match.objects.get(id=0)
         self.assertEqual(str(m), "A['Eddie Huang', 'Bhuvan Venkatesh']-B['Daniel Rong', 'Grace Shen']:21-23")
         response = self.client.post(reverse('api:edit_match'), {"id": 0, "score_A": 19, "score_B": 21})
@@ -31,10 +31,17 @@ class MatchTest(CustomTestCase):
 
     def test_delete_match(self):
         self.test_create_match()
-        CustomTestCase.create_example_data(CustomTestCase)
+        self.create_example_data()
         matches = len(list(Match.objects.all()))
         playedin = len(list(PlayedIn.objects.all()))
         response = self.client.delete(reverse('api:delete_match'), {"id": 0})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(matches - 1, len(list(Match.objects.all())))
         self.assertEqual(playedin - 4, len(list(PlayedIn.objects.all())))
+
+    def find_match_by_member(self):
+        self.test_create_match()
+        CustomTestCase.create_example_data(CustomTestCase)
+        response = self.client.get(reverse('api:get_match'), {"id": 1})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["match_id"], 0)
