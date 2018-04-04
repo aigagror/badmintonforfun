@@ -14,7 +14,7 @@ class TournamentTest(CustomTestCase):
         self.assertBadResponse(response)
 
         json = response.json()
-        self.assertEqual(json['message'], 'No tournament going on')
+        self.assertEqual(json['message'], 'No tournaments exist')
 
         self.create_example_data()
 
