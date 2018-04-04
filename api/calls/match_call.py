@@ -35,20 +35,18 @@ def create_match(score_a, score_b, a_players, b_players):
         SELECT MAX(id)
         FROM api_match
         """
-        cursor.execute(query)
-        result = cursor.fetchone()
-        if result is not None:
+        result = cursor.execute(query)
+        if not result:
             newID = result[0] + 1
         else:
             newID = 0
 
 
     query = """
-    INSERT INTO api_match(id, startDate, scoreA, scoreB) VALUES (%s, %s, %s, %s)
+    INSERT INTO api_match(id, startDateTime, scoreA, scoreB) VALUES (%s, %s, %s, %s)
     """
     today = datetime.datetime.now()
     response = run_connection(query, newID, serializeDateTime(today), score_a, score_b)
-
     for p in a_players:
         query = """
         INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
