@@ -1,6 +1,7 @@
 from django.test import TestCase
 from api.models import *
 import datetime
+import api.datetime_extension
 
 class CustomTestCase(TestCase):
     def assertGoodResponse(self, response):
@@ -37,7 +38,7 @@ class CustomTestCase(TestCase):
 
         # Eddie has played many matches, an hour in total
         matches = []
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(tz=api.datetime_extension.utc)
         matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-60),
                              endDateTime=now + datetime.timedelta(minutes=-50), scoreA=21, scoreB=19))
         matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-50),
