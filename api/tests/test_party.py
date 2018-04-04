@@ -55,16 +55,26 @@ class PartyTest(CustomTestCase):
 
         number_of_parties_before_removal = len(list(parties))
 
-        first_party = parties[0]
-        second_party = parties[1]
+        first_party = parties[0] # This party only has one member (Eddie). Removing Eddie from the party should remove the party
+        second_party = parties[1] # This party has two members(Bhuvan and Dan). Removing Bhuvan should just leave Dan in the party
 
         eddie = Member.objects.get(email='ezhuang2@illinois.edu')
+        bhuvan = Member.objects.get(email='bhuvan2@illinois.edu')
 
         response = self.client.post(reverse('api:party_remove_member'), {'party_id': first_party.id, 'member_id': eddie.id})
         self.assertGoodResponse(response)
 
         parties = Party.objects.all()
         self.assertEqual(len(list(parties)), number_of_parties_before_removal - 1)
+
+        response = self.client.post(reverse('api:party_remove_member'), {'party_id': second_party.id, 'member_id': bhuvan.id})
+        self.assertGoodResponse(response)
+        parties = Party.objects.all()
+        self.assertEqual(len(list(parties)), number_of_parties_before_removal - 1)
+
+        members_of_second_party = Member.objects.filter(party=second_party)
+        self.assertEqual(len(list(members_of_second_party)), 1)
+        self.assertEqual(members_of_second_party[0].first_name, 'Dan')
 
 
 
