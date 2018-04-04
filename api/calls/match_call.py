@@ -75,12 +75,28 @@ def find_current_match_by_member(id):
 
         cursor.execute(query, [id])
         result = dictfetchone(cursor)
-        print(result)
         if result:
             return http_response({"match_id": result["match_id"]})
         else:
             return http_response({}, message="Couldn't find a current match for this member. Are you sure this member is in a match?",
                                  code=400)
+
+
+def finish_match(id, scoreA, scoreB):
+    """
+        Ends the match, updates the scores, removes court id
+    :param id:
+    :param scoreA:
+    :param scoreB:
+    :return:
+    """
+
+    query = '''
+    UPDATE api_match SET scoreA=%s, scoreB=%s, court_id=NULL, endDateTime=datetime(now) WHERE api_match.id=%s
+    '''
+
+    response = run_connection(query, scoreA, scoreB, id)
+    return response
 
 def _top_players():
     with connection.cursor() as cursor:
