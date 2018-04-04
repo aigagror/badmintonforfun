@@ -50,11 +50,15 @@ class CustomTestCase(TestCase):
                              endDateTime=now + datetime.timedelta(minutes=-0), scoreA=21, scoreB=19))
         for match in matches:
             match.save()
-            playedin = PlayedIn(member=members[0],match=match)
+            playedin = PlayedIn(member=members[0],match=match, team="A")
             playedin.save()
 
         # Bhuvan has played one match (10 minutes)
-        playedin = PlayedIn(member=members[1], match=matches[0])
+        playedin = PlayedIn(member=members[1], match=matches[0], team="A")
+        playedin.save()
+
+        # Dan has played one match (10 minutes)
+        playedin = PlayedIn(member=members[2], match=matches[0], team="B")
         playedin.save()
 
 
@@ -73,11 +77,13 @@ class CustomTestCase(TestCase):
         members[0].party = party
         members[0].save()
 
-        # Bhuvan is on the casual queue as a party of 1 (Bhuvan has priorty)
+        # Bhuvan and Dan are on the casual queue as a party of 2 (Bhuvan and Dan have priority)
         party = Party(queue=queue)
         party.save()
         members[1].party = party
         members[1].save()
+        members[2].party = party
+        members[2].save()
 
 
 

@@ -52,8 +52,8 @@ class QueueTest(CustomTestCase):
         response = self.client.post(reverse('api:dequeue_next_party_to_court'), {'type': 'CASUAL'})
         self.assertGoodResponse(response)
 
-        # There should now only be one party on CASUAL queue(bhuvan)
-        # There should be a match with just Eddie on it on some court
+        # There should now only be one party on CASUAL queue (Eddie)
+        # There should be a match with Bhuvan and Dan on some court
 
         queue = Queue.objects.get(type='CASUAL')
 
@@ -67,7 +67,7 @@ class QueueTest(CustomTestCase):
         expected_new_match = matches[0]
 
         playedins = PlayedIn.objects.filter(match=expected_new_match)
-        self.assertEqual(len(list(playedins)), 1)
+        self.assertEqual(len(list(playedins)), 2)
 
 
 

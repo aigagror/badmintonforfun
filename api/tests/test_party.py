@@ -46,7 +46,25 @@ class PartyTest(CustomTestCase):
         guys_in_first_party = Member.objects.filter(party_id=first_party.id)
         self.assertEqual(len(list(guys_in_first_party)), 2)
 
+    def test_remove_member_from_party(self):
+        self.create_example_data()
 
+        parties = Party.objects.all()
+
+        self.assertGreaterEqual(len(list(parties)), 2)
+
+        number_of_parties_before_removal = len(list(parties))
+
+        first_party = parties[0]
+        second_party = parties[1]
+
+        eddie = Member.objects.get(email='ezhuang2@illinois.edu')
+
+        response = self.client.post(reverse('api:party_remove_member'), {'party_id': first_party.id, 'member_id': eddie.id})
+        self.assertGoodResponse(response)
+
+        parties = Party.objects.all()
+        self.assertEqual(len(list(parties)), number_of_parties_before_removal - 1)
 
 
 
