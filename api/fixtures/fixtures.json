@@ -768,6 +768,17 @@
 },
 {
     "model": "api.match",
+    "pk": 0,
+    "fields": {
+        "startDateTime": "2018-04-03T20:19:57Z",
+        "scoreA": 21,
+        "scoreB": 23,
+        "court": null,
+        "endDateTime": null
+    }
+},
+{
+    "model": "api.match",
     "pk": 1,
     "fields": {
         "startDateTime": "2018-03-19T16:47:37Z",
@@ -1355,6 +1366,42 @@
         "member": 25,
         "team": "A",
         "match": 20
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 40,
+    "fields": {
+        "member": 6,
+        "team": "A",
+        "match": 0
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 41,
+    "fields": {
+        "member": 2,
+        "team": "A",
+        "match": 0
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 42,
+    "fields": {
+        "member": 4,
+        "team": "B",
+        "match": 0
+    }
+},
+{
+    "model": "api.playedin",
+    "pk": 43,
+    "fields": {
+        "member": 5,
+        "team": "B",
+        "match": 0
     }
 },
 {
