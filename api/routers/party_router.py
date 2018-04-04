@@ -23,6 +23,12 @@ def create_party(request):
     queue_id = int(post_dict['queue_id'])
     member_id = int(post_dict['member_id'])
 
+    # Check if member_id is already in a party
+    rawquery = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND party_id NOT NULL", [member_id])
+    member_is_in_party = len(list(rawquery)) > 0
+    if member_is_in_party:
+        return http_response(message="Member is already in a party", code=400)
+
     parties_with_max_id = Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT MAX(id) FROM api_party)")
     if len(list(parties_with_max_id)) == 0:
         new_id = 0
@@ -59,6 +65,11 @@ def add_member(request):
 
     party_id = int(post_dict['party_id'])
     member_id = int(post_dict['member_id'])
+
+    rawquery = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND party_id NOT NULL", [member_id])
+    member_is_in_party = len(list(rawquery)) > 0
+    if member_is_in_party:
+        return http_response(message="Member is already in a party", code=400)
 
     members = Member.objects.raw(
         "SELECT * FROM api_member WHERE party_id NOT NULL AND party_id = %s AND interested_ptr_id = %s",

@@ -125,7 +125,7 @@ class PartyTest(CustomTestCase):
 
         members_of_second_party = Member.objects.filter(party=second_party)
         self.assertEqual(len(list(members_of_second_party)), 1)
-        self.assertEqual(members_of_second_party[0].first_name, 'Dan')
+        self.assertEqual(members_of_second_party[0].first_name, 'Daniel')
 
 
 

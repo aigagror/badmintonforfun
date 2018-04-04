@@ -85,10 +85,10 @@ def party_remove_member(party_id, member_id):
     # Remove the party_id from this member
     response = run_connection("UPDATE api_member SET party_id = NULL WHERE interested_ptr_id = %s", member_id)
     # Remove the party from the database if the removed member was the last member on the party
-    members_in_same_party = Member.objects.raw("SELECT * FROM api_member WHERE party_id NOT NULL AND party_id=%s", [party_id])
+    members_in_same_party = Member.objects.raw("SELECT * FROM api_member WHERE party_id NOT NULL AND party_id = %s", [party_id])
     if len(list(members_in_same_party)) == 0:
         # Nobody else is in this party
         # response = run_connection("DELETE FROM api_party WHERE id=%s", [party_id])
         Party.objects.get(id=party_id).delete()
-        return http_response(message="Removed member from party and deleted the party.")
+        return http_response(message="OK")
     return response
