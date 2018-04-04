@@ -87,7 +87,10 @@ urlpatterns = [
     re_path(r'queue/?$', queue_router.get_queues, name='get_queues'),
 
     re_path(r'match/edit/?$', match_router.edit_match, name='edit_match'),
-    re_path(r'match/finish/?$', match_router.finish_match, name='finish_match')
+    re_path(r'match/finish/?$', match_router.finish_match, name='finish_match'),
+
+    # Get party info that the member is a part of, if they are in a party
+    re_path(r'party/member/?$', match_router.finish_match, name='get_party_for_member'),
 ]
 
 
