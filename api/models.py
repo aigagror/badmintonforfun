@@ -154,7 +154,7 @@ class PlayedIn(models.Model):
 
 
 class Announcement(models.Model):
-    date = models.DateTimeField('date of announcement')
+    date = models.DateField('date of announcement')
     title = models.CharField(max_length=64)
     entry = models.CharField(max_length=500)
 

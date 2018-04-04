@@ -69,11 +69,11 @@ def find_current_match_by_member(id):
     :return:
     """
     with connection.cursor() as cursor:
-        query = '''SELECT api_match.id AS match_idFROM api_match, api_playedin
+        query = '''SELECT api_match.id AS match_id FROM api_match, api_playedin
         WHERE api_playedin.member_id=%s AND api_match.id=api_playedin.match_id AND api_match.endDateTime IS NULL
         '''
 
-        cursor.execute(query, id)
+        cursor.execute(query, [id])
         result = dictfetchone(cursor)
         print(result)
         if result:
