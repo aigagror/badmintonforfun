@@ -29,3 +29,7 @@ def edit_match(request):
 @restrictRouter(allowed=["POST"])
 def finish_match(request):
     return None
+
+@restrictRouter(allowed=["POST"])
+def create_match(request):
+    return None
