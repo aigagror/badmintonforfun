@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 45);
+/******/ 	return __webpack_require__(__webpack_require__.s = 86);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1837,7 +1837,18 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 29 */
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1963,13 +1974,14 @@ exports.Select = Select;
 
 
 /***/ }),
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2049,15 +2061,44 @@ exports.Popup = Popup;
 
 
 /***/ }),
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */,
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2065,22 +2106,22 @@ exports.Popup = Popup;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const ReactDOM = __webpack_require__(9);
-const ElectionView_1 = __webpack_require__(46);
+const ElectionView_1 = __webpack_require__(87);
 ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
 
 
 /***/ }),
-/* 46 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
-const Popup_1 = __webpack_require__(36);
+const Popup_1 = __webpack_require__(48);
 const axios_1 = __webpack_require__(10);
-const RegisterElection_1 = __webpack_require__(47);
-const RadioButton_1 = __webpack_require__(48);
+const RegisterElection_1 = __webpack_require__(88);
+const RadioButton_1 = __webpack_require__(89);
 const election_url = '/api/election/get/';
 const campaign_url = '/api/campaign/';
 const election_create_url = '/api/election/create/';
@@ -2359,15 +2400,15 @@ exports.ElectionView = ElectionView;
 
 
 /***/ }),
-/* 47 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
-const Select_1 = __webpack_require__(29);
-const Popup_1 = __webpack_require__(36);
+const Select_1 = __webpack_require__(40);
+const Popup_1 = __webpack_require__(48);
 const axios_1 = __webpack_require__(10);
 const campaignCreate = '/api/campaign/create';
 class RegisterElectionView extends React.Component {
@@ -2444,7 +2485,7 @@ exports.RegisterElectionView = RegisterElectionView;
 
 
 /***/ }),
-/* 48 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

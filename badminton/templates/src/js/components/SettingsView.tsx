@@ -144,23 +144,22 @@ class StandardSettings extends React.Component<any, any> {
 	}
 }
 
-class BoardSettings extends React.Component<any, any> {
+class MemberSettings extends React.Component<any, any> {
 
 	constructor(props: any) {
 		super(props);
 		this.deleteMember = this.deleteMember.bind(this);
-		this.deleteCourt = this.deleteCourt.bind(this);
+		this.performRequest = this.performRequest.bind(this);
 		this.state = {
-			data: null,
+			members: null,
 		}
 	}
 
-	componentDidMount() {
+	performRequest() {
 		axios.get(member_url)
 			.then((res) => {
-				console.log(res);
 				this.setState({
-					data: res.data,
+					members: res.data.members,
 					memberTypes: res.data.memberTypes.map((role: string) => new Option(role, role)),
 				});
 			})
@@ -169,27 +168,50 @@ class BoardSettings extends React.Component<any, any> {
 			})
 	}
 
-	deleteMember() {
-
+	componentDidMount() {
+		this.performRequest();
 	}
 
-	deleteCourt() {
+	deleteMember(idx: number) {
+		return () => {
+			const toDelete = this.state.data.members[idx];
+			axios.delete(member_url, { 
+				data: { members: [toDelete] } 
+			})
+			.then((res: any) => {
+				console.log(res);
+				this.performRequest();
+			})
+			.catch((res: any) => {
+				console.log(res);
+			})
+		}
+	}
 
+	alterMember(idx: number, toRole: any) {
+		const toEdit = this.state.data.members[idx];
+		toEdit.status = toRole
+		axios.post(member_url, { 
+			members: [toEdit]
+		})
+		.then((res: any) => {
+			console.log(res);
+			this.performRequest();
+		})
+		.catch((res: any) => {
+			console.log(res);
+		})
 	}
 
 	render() {
-		if (this.state.data === null) {
-			return <div>
-			<h3>Board Member only Views</h3>
-			<p>Loading</p>
-			</div>
+		if (this.state.members === null) {
+			return <p>Loading</p>
 		}
 
-		return <div className="grid">
-		<h2>Board Member Options</h2>
+		return <>
 		<h3>Members</h3>
 		{
-			this.state.data.members.map((member: any, idx: number) => {
+			this.state.members.map((member: any, idx: number) => {
 				return <div key={idx} className="row">
 				<div className="col-5 col-es-12">
 				<h4>{member.first_name} {member.last_name}</h4> 
@@ -198,19 +220,30 @@ class BoardSettings extends React.Component<any, any> {
 				<Select 
 					options={this.state.memberTypes}
 					defaultValue={member.type}
-					onChange={(i: any) => {console.log(i)}}
+					onChange={(role: any) => {this.alterMember(idx, role)}}
 					name={member.member_id} />
 				</div>
 				<div className="col-3 col-es-12">
-				<button>Delete</button>
+				<button onClick={this.deleteMember(idx)}>Delete</button>
 				</div>
 				</div>
 			})
 		}
-		
+		</>
+	}
+}
+
+class BoardSettings extends React.Component<any, any> {
+
+	render() {
+		return <div className="grid">
+		<h2>Board Member Options</h2>
+		<MemberSettings />
 		</div>
 	}
 }
+
+
 /*
 <h3>Courts</h3>
 		{

@@ -1062,7 +1062,8 @@ select {
   padding-left: 10px;
   font-size: 16px;
   padding-top: 8px;
-  padding-bottom: 8px; }
+  padding-bottom: 8px;
+  box-shadow: 10px 10px 5px grey; }
   select:focus {
     outline: none;
     color: inherit; }
@@ -1078,7 +1079,8 @@ input[type="text"] {
   padding-left: 10px;
   font-size: 16px;
   padding-top: 8px;
-  padding-bottom: 8px; }
+  padding-bottom: 8px;
+  box-shadow: 10px 10px 5px grey; }
 
 textarea {
   border: none;
@@ -1089,6 +1091,7 @@ textarea {
   font-size: 16px;
   padding-top: 8px;
   padding-bottom: 8px;
+  box-shadow: 10px 10px 5px grey;
   resize: none;
   overflow: auto;
   height: 320px;
@@ -1103,6 +1106,7 @@ button {
   font-size: 16px;
   padding-top: 8px;
   padding-bottom: 8px;
+  box-shadow: 10px 10px 5px grey;
   transition: all .2s ease-in; }
   button:hover {
     background-color: rgba(0, 0, 0, 0.55); }

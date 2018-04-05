@@ -6,8 +6,18 @@ import { Select } from '../common/Select'
 import { isBoardMember } from '../common/LocalResourceResolver'
 import { EditableTextarea } from '../common/EditableTextarea';
 
+declare var require: Function;
+
+const DjangoCSRFToken: any = require('django-react-csrftoken').default;
+
+console.log(DjangoCSRFToken);
+
 const stat_urls = "/mock/stats.json"
-const announce_url = "/api/announcements/get/"
+const announce_url = "/api/announcements/get/";
+const announce_create_url = "/api/announcements/create/";
+
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 class GameView extends React.Component<any, any> {
 	render() {
@@ -41,20 +51,33 @@ class StatView extends React.Component<any, any> {
 class AnnounceCreator extends React.Component<any, any> {
 	constructor(props: any) {
 		super(props);
-
-		this.state = {
-			showCreator: false,
-			announcementText: "",
-		}
+		this.initState = this.initState.bind(this);
+		this.state = this.initState();
 
 		this.sendAnnouncement = this.sendAnnouncement.bind(this);
 	}
 
-	sendAnnouncement() {
-		this.props.refresh();
-		this.setState({
-			showCreator: false
-		});
+	initState() {
+		return JSON.parse(JSON.stringify({
+			showCreator: false,
+			announcementText: "",
+			titleText: "",
+		}))
+	}
+
+	sendAnnouncement(ev: any) {
+		var params = new FormData();
+		params.append('title', this.state.titleText);
+		params.append('entry', this.state.titleText);
+		axios.post(announce_create_url, params)
+		.then((res: any) => {
+			this.setState(this.initState());
+			this.props.refresh();
+		})
+		.catch((res: any) => {
+			console.log(res);
+		})
+		ev.preventDefault()
 	}
 
 	render() {
@@ -63,18 +86,28 @@ class AnnounceCreator extends React.Component<any, any> {
 		}
 
 		if (this.state.showCreator) {
-			return <div>
-				<textarea onChange={(ev: any) => 
+			return <div className="row-offset-1">
+
+				<form onSubmit={this.sendAnnouncement}>
+
+				<input placeholder="Title" type="text" onChange={(ev: any) => {
+					this.setState({titleText:ev.target.value})
+				}} value={this.state.titleText} />
+
+				<textarea placeholder="Body" className="row-offset-1" onChange={(ev: any) => 
 					this.setState({announcementText: ev.target.value})}
 					value={this.state.announcementText}>
 
 				</textarea>
-				<button onClick={this.sendAnnouncement}>
+				<div className="row">
+				<button type="submit" className="">
 					Submit
 				</button>
-				<button onClick={() => this.setState({showCreator: false})}>
+				<button onClick={() => this.setState({showCreator: false})} className="">
 					Close
 				</button>
+				</div>
+				</form>
 			</div>
 		} else {
 			return <button onClick={() => this.setState({showCreator: true})}>
@@ -89,9 +122,7 @@ class AnnounceView extends React.Component<any, any> {
 	constructor(props: any) {
 		super(props);
 		this.state = {
-			title: null,
-			body: null,
-			showCreateAnnouncement: false,
+			announcements: null,
 		}
 
 		this.performRequest = this.performRequest.bind(this);
@@ -102,20 +133,23 @@ class AnnounceView extends React.Component<any, any> {
 			.then((res) => {
 				const announcements = res.data.announcements;
 				if (announcements.length === 0) {
-					this.setState({
+					const fake = [{
 						title: "No Announcements!",
 						body: "More to come...",
+					}]
+					this.setState({
+						announcements: fake,
 					})
 				} else {
 					const announce = announcements[0];
+					console.log(announce);
 					this.setState({
-						title: res.data.title,
-						body: res.data.body,
+						announcements: announcements,
 					})
 				}
 			})
 			.catch((res) => {
-
+				console.log(res);
 			})
 	}
 
@@ -124,14 +158,20 @@ class AnnounceView extends React.Component<any, any> {
 	}
 
 	render() {
-		if (this.state.title === null) {
+		if (this.state.announcements === null) {
 			return <p>Loading Announcement</p>
 		}
 		return (
 			<div className="announcement">
-			<h2>Most Recent Announcment</h2>
-			<h3>{this.state.title}</h3>
-			<EditableTextarea initValue={this.state.body} />
+			<h2>Recent Announcements</h2>
+			{
+				this.state.announcements.map((announce: any, idx: number) => {
+					return <div key={idx}>
+						<h3>{announce.title}</h3>
+						<EditableTextarea initValue={announce.entry} />
+					</div>
+				})
+			}
 
 			<AnnounceCreator refresh={this.performRequest}/>
 			

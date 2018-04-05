@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from .mod_config import JS_PATH, CSS_PATH, TEMPLATE_PATH, MOCK_PATH, STATIC_PATH
 import os.path
 from badminton_server.settings import DEBUG
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 
 def _file_or_error(file_name, ret_type=str):
@@ -93,7 +94,7 @@ def static_server(request, static_file):
 
     return HttpResponse(content, content_type=content_type)
 
-
+@ensure_csrf_cookie
 def template_server(request, template=None):
     """
         This function takes the template string and renders

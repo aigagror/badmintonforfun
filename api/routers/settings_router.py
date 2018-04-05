@@ -110,7 +110,7 @@ def settingsAllMembersRouter(request):
     elif request.method == "POST":
         # Promote/demote members (Interested, Member, Boardmember)
         # Going to Boardmember, the default 'job'='OFFICER'
-        json_post_data = json.loads(request.body)
+        json_post_data = json.loads(request.body.decode('utf8').replace("'", '"'))
         if not validate_keys(["members"], json_post_data):
             HttpResponse(json.dumps({'message': 'Missing parameters members'}),
                          content_type='application/json', status=400)
@@ -119,7 +119,7 @@ def settingsAllMembersRouter(request):
         # Here, the dictionary should ONLY contain the information for members that should be deleted
         # Remove people from the db completely
         # dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        json_delete_data = json.loads(request.body)
+        json_delete_data = json.loads(request.body.decode('utf8').replace("'", '"'))
         if not validate_keys(["members"], json_delete_data):
             HttpResponse(json.dumps({'message': 'Missing parameter members'}),
                          content_type='application/json', status=400)

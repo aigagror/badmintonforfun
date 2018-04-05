@@ -1,6 +1,6 @@
 from api.routers.router import *
 from api.models import *
-
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 _id_key = "id"
 _title_key = "title"
@@ -32,7 +32,9 @@ def create_announcement(request):
     :param request:
     :return:
     """
+    print(request)
     dict_post = dict(request.POST.items())
+    print(dict_post)
     if not validate_keys([_title_key, _entry_key], dict_post):
         return http_response(message='Missing parameters')
     title = dict_post[_title_key]
