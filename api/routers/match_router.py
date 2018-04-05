@@ -15,6 +15,7 @@ def top_players(request):
     """
     return get_top_players()
 
+
 @restrictRouter(allowed=["POST"])
 def edit_match(request):
     """
@@ -28,6 +29,7 @@ def edit_match(request):
     validate_keys(["score_A", "score_B", "id"], dict_post)
     return get_edit_match(dict_post["id"], dict_post["score_A"], dict_post["score_B"])
 
+
 @restrictRouter(allowed=["POST"])
 def finish_match(request):
     """
@@ -39,6 +41,7 @@ def finish_match(request):
     dict_post = dict(request.POST.items())
     validate_keys(["score_A", "score_B", "id"], dict_post)
     return get_finish_match(dict_post["id"], dict_post["score_A"], dict_post["score_B"])
+
 
 @csrf_exempt
 @restrictRouter(allowed=["POST"])
