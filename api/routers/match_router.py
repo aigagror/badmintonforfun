@@ -5,6 +5,7 @@ from .router import validate_keys, http_response
 import json
 from django.views.decorators.csrf import csrf_exempt
 
+
 @restrictRouter(allowed=["GET"])
 def top_players(request):
     """
@@ -60,6 +61,7 @@ def create_match(request):
     validate_keys(["score_A", "score_B", "a_players", "b_players"], dict_post)
     return get_create_match(dict_post["score_A"], dict_post["score_B"], dict_post["a_players"], dict_post["b_players"])
 
+
 @csrf_exempt
 @restrictRouter(allowed=["DELETE"])
 def delete_match(request):
@@ -74,9 +76,10 @@ def delete_match(request):
     # django doesn't have anything that handles delete so...
     dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
     if not validate_keys(["id"], dict_delete):
-        return HttpResponse(json.dumps({'message': 'Missing parameters'}),
+        return http_response(json.dumps({'message': 'Missing parameters'}),
                     content_type='application/json', status=400)
     return get_delete_match(dict_delete["id"])
+
 
 @restrictRouter(allowed=["GET"])
 def get_match(request):

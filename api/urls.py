@@ -102,6 +102,8 @@ urlpatterns = [
     re_path(r'tournament/bracket_node/?$', tournament_router.get_bracket_node, name='get_tournament_bracket_node'),
     re_path(r'tournament/add/match?$', tournament_router.add_match, name='add_match_to_tournament'),
 
+    re_path(r'sign_in/?$', router.sign_in, name='sign_in')
+
 ]
 
 
