@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 148);
+/******/ 	return __webpack_require__(__webpack_require__.s = 59);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1837,12 +1837,353 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(1);
+class Option {
+    constructor(val, displ) {
+        this.value = val;
+        this.display = displ;
+    }
+}
+exports.Option = Option;
+const selectFadeOutClassName = 'select-check-fade-out';
+class SelectArea extends React.Component {
+    render() {
+        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: this.props.onChange }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
+        }));
+    }
+}
+class Select extends React.Component {
+    constructor(props) {
+        super(props);
+        this.change = this.change.bind(this);
+        this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
+        this._decideInitialStatus = this._decideInitialStatus.bind(this);
+        const status = this._decideInitialStatus();
+        this.state = {
+            status: status,
+        };
+    }
+    _decideInitialStatus() {
+        if (this.props.defaultValue) {
+            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            if (!value) {
+                return "";
+            }
+            else {
+                return value.display;
+            }
+        }
+        else {
+            return this.props.options[0].display;
+        }
+    }
+    componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+        const defaultHeight = 30;
+        this.scrollDiv.style.height = defaultHeight + "px";
+        this.interval = setInterval(() => {
+            const movableArea = this.innerDiv.scrollTop /
+                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            this.scrollDiv.style.top = "" + offset + "px";
+        }, 20);
+        const divMove = (e) => {
+            const boundingRect = this.selectDiv.getBoundingClientRect();
+            const fuzz = .2;
+            const height = boundingRect.bottom - boundingRect.top;
+            const bottom = boundingRect.bottom - fuzz * height;
+            const top = boundingRect.top + fuzz * height;
+            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            const percentage = (adjusted - top) / (bottom - top);
+            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        };
+        function mouseUp() {
+            window.removeEventListener('mousemove', divMove, true);
+        }
+        function mouseDown() {
+            window.addEventListener('mousemove', divMove, true);
+        }
+        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
+        window.addEventListener('mouseup', mouseUp, false);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+        clearInterval(this.interval);
+    }
+    /**
+     * Uncheck the input if clicked outside
+     * Best to leave the typing generic because typescript does _not_
+     * like non-generics with dom.
+     */
+    handleClickOutside(event) {
+        if (this.inputDiv && !this.wrapper.contains(event.target)) {
+            this.inputDiv.checked = false;
+        }
+    }
+    lazyAnimationAdder(event) {
+        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
+            this.selectDiv.classList.add(selectFadeOutClassName);
+        }
+    }
+    change(event) {
+        const target = event.target;
+        if (this.props.onChange) {
+            this.props.onChange(target.value);
+        }
+        // Cool trick to get the label for the input
+        const elem = document.querySelector('label[for="' + target.id + '"]');
+        this.setState({
+            status: elem.innerHTML,
+        });
+        this.inputDiv.checked = false;
+    }
+    render() {
+        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
+                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("b", { className: 'select-arrow' })),
+            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
+                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, onChange: this.change }),
+                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
+    }
+}
+exports.Select = Select;
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * This class serves as a resource resolver for classes.
+ * This manages local storage so none of the classes conflict
+ * The classes only need to make sure that their resources are unique
+ * in of themselves.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+var Cookies = __webpack_require__(31);
+/**
+ * Mappings from imported classes to random strings.
+ */
+const obfuscationMappings = {
+    'MailView': 'ysjiUtKPV7',
+};
+/**
+ * Generates key pattern from an instance and an arg
+ * arg being the requested key
+ */
+function _generateKey(instance, arg) {
+    const name = instance.constructor.name;
+    const obf = obfuscationMappings[name];
+    return name + obf;
+}
+/**
+ * Returns a string given the class and the key <arg>
+ */
+function getResource(instance, arg) {
+    const key = _generateKey(instance, arg);
+    return localStorage.getItem(key);
+    ;
+}
+exports.getResource = getResource;
+/**
+ * Sets the requested key <arg> of class <instance> to <value>
+ */
+function setResource(instance, arg, value) {
+    const key = _generateKey(instance, arg);
+    localStorage.setItem(key, value);
+}
+exports.setResource = setResource;
+const cookies = new Cookies();
+function isBoardMember() {
+    cookies.set('isBoardMember', 'true');
+    return true;
+}
+exports.isBoardMember = isBoardMember;
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Cookies = __webpack_require__(32);
+
+var _Cookies2 = _interopRequireDefault(_Cookies);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _Cookies2.default;
+module.exports = exports['default'];
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cookie = __webpack_require__(33);
+
+var _cookie2 = _interopRequireDefault(_cookie);
+
+var _objectAssign = __webpack_require__(34);
+
+var _objectAssign2 = _interopRequireDefault(_objectAssign);
+
+var _utils = __webpack_require__(35);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Cookies = function () {
+  function Cookies(cookies, hooks) {
+    _classCallCheck(this, Cookies);
+
+    this.cookies = parseCookies(cookies);
+    this.hooks = hooks;
+    this.HAS_DOCUMENT_COOKIE = (0, _utils.hasDocumentCookie)();
+  }
+
+  _createClass(Cookies, [{
+    key: '_updateBrowserValues',
+    value: function _updateBrowserValues() {
+      if (!this.HAS_DOCUMENT_COOKIE) {
+        return;
+      }
+
+      this.cookies = _cookie2.default.parse(document.cookie);
+    }
+  }, {
+    key: 'get',
+    value: function get(name) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      this._updateBrowserValues();
+      return readCookie(this.cookies[name], options);
+    }
+  }, {
+    key: 'getAll',
+    value: function getAll() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      this._updateBrowserValues();
+      var result = {};
+
+      for (var name in this.cookies) {
+        result[name] = readCookie(this.cookies[name], options);
+      }
+
+      return result;
+    }
+  }, {
+    key: 'set',
+    value: function set(name, value, options) {
+      if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+        value = JSON.stringify(value);
+      }
+
+      if (this.hooks && this.hooks.onSet) {
+        this.hooks.onSet(name, value, options);
+      }
+
+      this.cookies[name] = value;
+
+      if (this.HAS_DOCUMENT_COOKIE) {
+        document.cookie = _cookie2.default.serialize(name, value, options);
+      }
+    }
+  }, {
+    key: 'remove',
+    value: function remove(name, options) {
+      var finalOptions = options = (0, _objectAssign2.default)({}, options, {
+        expires: new Date(1970, 1, 1, 0, 0, 1),
+        maxAge: 0
+      });
+
+      if (this.hooks && this.hooks.onRemove) {
+        this.hooks.onRemove(name, finalOptions);
+      }
+
+      delete this.cookies[name];
+
+      if (this.HAS_DOCUMENT_COOKIE) {
+        document.cookie = _cookie2.default.serialize(name, '', finalOptions);
+      }
+    }
+  }]);
+
+  return Cookies;
+}();
+
+exports.default = Cookies;
+
+
+function parseCookies(cookies) {
+  if (typeof cookies === 'string') {
+    return _cookie2.default.parse(cookies);
+  } else if ((typeof cookies === 'undefined' ? 'undefined' : _typeof(cookies)) === 'object' && cookies !== null) {
+    return cookies;
+  } else {
+    return {};
+  }
+}
+
+function isParsingCookie(value, doNotParse) {
+  if (typeof doNotParse === 'undefined') {
+    // We guess if the cookie start with { or [, it has been serialized
+    doNotParse = !value || value[0] !== '{' && value[0] !== '[' && value[0] !== '"';
+  }
+
+  return !doNotParse;
+}
+
+function readCookie(value) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (isParsingCookie(value, options.doNotParse)) {
+    try {
+      return JSON.parse(value);
+    } catch (e) {
+      // At least we tried
+    }
+  }
+
+  return value;
+}
+module.exports = exports['default'];
+
+/***/ }),
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2044,358 +2385,7 @@ function tryDecode(str, decode) {
 
 
 /***/ }),
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(1);
-class Option {
-    constructor(val, displ) {
-        this.value = val;
-        this.display = displ;
-    }
-}
-exports.Option = Option;
-const selectFadeOutClassName = 'select-check-fade-out';
-class SelectArea extends React.Component {
-    render() {
-        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
-            return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: this.props.onChange }),
-                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
-        }));
-    }
-}
-class Select extends React.Component {
-    constructor(props) {
-        super(props);
-        this.change = this.change.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
-        this._decideInitialStatus = this._decideInitialStatus.bind(this);
-        const status = this._decideInitialStatus();
-        this.state = {
-            status: status,
-        };
-    }
-    _decideInitialStatus() {
-        if (this.props.defaultValue) {
-            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
-            if (!value) {
-                return "";
-            }
-            else {
-                return value.display;
-            }
-        }
-        else {
-            return this.props.options[0].display;
-        }
-    }
-    componentDidMount() {
-        document.addEventListener('mousedown', this.handleClickOutside);
-        const defaultHeight = 30;
-        this.scrollDiv.style.height = defaultHeight + "px";
-        this.interval = setInterval(() => {
-            const movableArea = this.innerDiv.scrollTop /
-                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
-            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
-            this.scrollDiv.style.top = "" + offset + "px";
-        }, 20);
-        const divMove = (e) => {
-            const boundingRect = this.selectDiv.getBoundingClientRect();
-            const fuzz = .2;
-            const height = boundingRect.bottom - boundingRect.top;
-            const bottom = boundingRect.bottom - fuzz * height;
-            const top = boundingRect.top + fuzz * height;
-            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
-            const percentage = (adjusted - top) / (bottom - top);
-            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
-        };
-        function mouseUp() {
-            window.removeEventListener('mousemove', divMove, true);
-        }
-        function mouseDown() {
-            window.addEventListener('mousemove', divMove, true);
-        }
-        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
-        window.addEventListener('mouseup', mouseUp, false);
-    }
-    componentWillUnmount() {
-        document.removeEventListener('mousedown', this.handleClickOutside);
-        clearInterval(this.interval);
-    }
-    /**
-     * Uncheck the input if clicked outside
-     * Best to leave the typing generic because typescript does _not_
-     * like non-generics with dom.
-     */
-    handleClickOutside(event) {
-        if (this.inputDiv && !this.wrapper.contains(event.target)) {
-            this.inputDiv.checked = false;
-        }
-    }
-    lazyAnimationAdder(event) {
-        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
-            this.selectDiv.classList.add(selectFadeOutClassName);
-        }
-    }
-    change(event) {
-        const target = event.target;
-        if (this.props.onChange) {
-            this.props.onChange(target.value);
-        }
-        // Cool trick to get the label for the input
-        const elem = document.querySelector('label[for="' + target.id + '"]');
-        this.setState({
-            status: elem.innerHTML,
-        });
-        this.inputDiv.checked = false;
-    }
-    render() {
-        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
-            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
-            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
-                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
-                React.createElement("b", { className: 'select-arrow' })),
-            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
-                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
-                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, onChange: this.change }),
-                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
-    }
-}
-exports.Select = Select;
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * This class serves as a resource resolver for classes.
- * This manages local storage so none of the classes conflict
- * The classes only need to make sure that their resources are unique
- * in of themselves.
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-var Cookies = __webpack_require__(42);
-/**
- * Mappings from imported classes to random strings.
- */
-const obfuscationMappings = {
-    'MailView': 'ysjiUtKPV7',
-};
-/**
- * Generates key pattern from an instance and an arg
- * arg being the requested key
- */
-function _generateKey(instance, arg) {
-    const name = instance.constructor.name;
-    const obf = obfuscationMappings[name];
-    return name + obf;
-}
-/**
- * Returns a string given the class and the key <arg>
- */
-function getResource(instance, arg) {
-    const key = _generateKey(instance, arg);
-    return localStorage.getItem(key);
-    ;
-}
-exports.getResource = getResource;
-/**
- * Sets the requested key <arg> of class <instance> to <value>
- */
-function setResource(instance, arg, value) {
-    const key = _generateKey(instance, arg);
-    localStorage.setItem(key, value);
-}
-exports.setResource = setResource;
-const cookies = new Cookies();
-function isBoardMember() {
-    cookies.set('isBoardMember', 'true');
-    return true;
-}
-exports.isBoardMember = isBoardMember;
-
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _Cookies = __webpack_require__(43);
-
-var _Cookies2 = _interopRequireDefault(_Cookies);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _Cookies2.default;
-module.exports = exports['default'];
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _cookie = __webpack_require__(34);
-
-var _cookie2 = _interopRequireDefault(_cookie);
-
-var _objectAssign = __webpack_require__(44);
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _utils = __webpack_require__(45);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Cookies = function () {
-  function Cookies(cookies, hooks) {
-    _classCallCheck(this, Cookies);
-
-    this.cookies = parseCookies(cookies);
-    this.hooks = hooks;
-    this.HAS_DOCUMENT_COOKIE = (0, _utils.hasDocumentCookie)();
-  }
-
-  _createClass(Cookies, [{
-    key: '_updateBrowserValues',
-    value: function _updateBrowserValues() {
-      if (!this.HAS_DOCUMENT_COOKIE) {
-        return;
-      }
-
-      this.cookies = _cookie2.default.parse(document.cookie);
-    }
-  }, {
-    key: 'get',
-    value: function get(name) {
-      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-      this._updateBrowserValues();
-      return readCookie(this.cookies[name], options);
-    }
-  }, {
-    key: 'getAll',
-    value: function getAll() {
-      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-      this._updateBrowserValues();
-      var result = {};
-
-      for (var name in this.cookies) {
-        result[name] = readCookie(this.cookies[name], options);
-      }
-
-      return result;
-    }
-  }, {
-    key: 'set',
-    value: function set(name, value, options) {
-      if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
-        value = JSON.stringify(value);
-      }
-
-      if (this.hooks && this.hooks.onSet) {
-        this.hooks.onSet(name, value, options);
-      }
-
-      this.cookies[name] = value;
-
-      if (this.HAS_DOCUMENT_COOKIE) {
-        document.cookie = _cookie2.default.serialize(name, value, options);
-      }
-    }
-  }, {
-    key: 'remove',
-    value: function remove(name, options) {
-      var finalOptions = options = (0, _objectAssign2.default)({}, options, {
-        expires: new Date(1970, 1, 1, 0, 0, 1),
-        maxAge: 0
-      });
-
-      if (this.hooks && this.hooks.onRemove) {
-        this.hooks.onRemove(name, finalOptions);
-      }
-
-      delete this.cookies[name];
-
-      if (this.HAS_DOCUMENT_COOKIE) {
-        document.cookie = _cookie2.default.serialize(name, '', finalOptions);
-      }
-    }
-  }]);
-
-  return Cookies;
-}();
-
-exports.default = Cookies;
-
-
-function parseCookies(cookies) {
-  if (typeof cookies === 'string') {
-    return _cookie2.default.parse(cookies);
-  } else if ((typeof cookies === 'undefined' ? 'undefined' : _typeof(cookies)) === 'object' && cookies !== null) {
-    return cookies;
-  } else {
-    return {};
-  }
-}
-
-function isParsingCookie(value, doNotParse) {
-  if (typeof doNotParse === 'undefined') {
-    // We guess if the cookie start with { or [, it has been serialized
-    doNotParse = !value || value[0] !== '{' && value[0] !== '[' && value[0] !== '"';
-  }
-
-  return !doNotParse;
-}
-
-function readCookie(value) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-  if (isParsingCookie(value, options.doNotParse)) {
-    try {
-      return JSON.parse(value);
-    } catch (e) {
-      // At least we tried
-    }
-  }
-
-  return value;
-}
-module.exports = exports['default'];
-
-/***/ }),
-/* 44 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2492,7 +2482,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 45 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2522,9 +2512,7 @@ function cleanCookies() {
 }
 
 /***/ }),
-/* 46 */,
-/* 47 */,
-/* 48 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2604,26 +2592,10 @@ exports.Popup = Popup;
 
 
 /***/ }),
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2657,86 +2629,25 @@ exports.Slider = Slider;
 
 
 /***/ }),
-/* 69 */,
-/* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */,
-/* 74 */,
-/* 75 */,
-/* 76 */,
-/* 77 */,
-/* 78 */,
-/* 79 */,
-/* 80 */,
-/* 81 */,
-/* 82 */,
-/* 83 */,
-/* 84 */,
-/* 85 */,
-/* 86 */,
-/* 87 */,
-/* 88 */,
-/* 89 */,
-/* 90 */,
-/* 91 */,
-/* 92 */,
-/* 93 */,
-/* 94 */,
-/* 95 */,
-/* 96 */,
-/* 97 */,
-/* 98 */,
-/* 99 */,
-/* 100 */,
-/* 101 */,
-/* 102 */,
-/* 103 */,
-/* 104 */,
-/* 105 */,
-/* 106 */,
-/* 107 */,
-/* 108 */,
-/* 109 */,
-/* 110 */,
-/* 111 */,
-/* 112 */,
-/* 113 */,
-/* 114 */,
-/* 115 */,
-/* 116 */,
-/* 117 */,
-/* 118 */,
-/* 119 */,
-/* 120 */,
-/* 121 */,
-/* 122 */,
-/* 123 */,
-/* 124 */,
-/* 125 */,
-/* 126 */,
-/* 127 */,
-/* 128 */,
-/* 129 */,
-/* 130 */,
-/* 131 */,
-/* 132 */,
-/* 133 */,
-/* 134 */,
-/* 135 */,
-/* 136 */,
-/* 137 */,
-/* 138 */,
-/* 139 */,
-/* 140 */,
-/* 141 */,
-/* 142 */,
-/* 143 */,
-/* 144 */,
-/* 145 */,
-/* 146 */,
-/* 147 */,
-/* 148 */
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2744,12 +2655,12 @@ exports.Slider = Slider;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const ReactDOM = __webpack_require__(9);
-const SettingsView_1 = __webpack_require__(149);
+const SettingsView_1 = __webpack_require__(60);
 ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document.querySelector("settings-view"));
 
 
 /***/ }),
-/* 149 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2757,10 +2668,10 @@ ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const axios_1 = __webpack_require__(10);
-const Slider_1 = __webpack_require__(68);
-const Popup_1 = __webpack_require__(48);
-const Select_1 = __webpack_require__(40);
-const LocalResourceResolver_1 = __webpack_require__(41);
+const Slider_1 = __webpack_require__(40);
+const Popup_1 = __webpack_require__(36);
+const Select_1 = __webpack_require__(29);
+const LocalResourceResolver_1 = __webpack_require__(30);
 var LoadingState;
 (function (LoadingState) {
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
@@ -2768,6 +2679,7 @@ var LoadingState;
 })(LoadingState || (LoadingState = {}));
 const reg_url = '/api/settings/member/';
 const member_url = '/api/settings/members/all/';
+const courts_url = '/api/settings/courts/';
 class OptionSetting extends React.Component {
     render() {
         const options = this.props.data.options.map((option, idx) => new Select_1.Option(option.value, option.name));
@@ -2776,7 +2688,9 @@ class OptionSetting extends React.Component {
 }
 class BoolSetting extends React.Component {
     render() {
-        return React.createElement(Slider_1.Slider, { change: (e) => this.props.change(e.target.value === "on" ? true : false), checked: this.props.data.value });
+        return React.createElement(Slider_1.Slider, { change: (e) => {
+                this.props.change(e.target.checked ? 1 : 0);
+            }, checked: this.props.data.value });
     }
 }
 class TextSetting extends React.Component {
@@ -2809,6 +2723,7 @@ class StandardSettings extends React.Component {
             clearInterval(this.previousTimeout);
             this.previousTimeout = null;
         }
+        console.log(this.state.settings);
         let data = new FormData();
         for (let key of Object.keys(this.state.settings)) {
             data.append(key, this.state.settings[key]);
@@ -2828,6 +2743,7 @@ class StandardSettings extends React.Component {
         const updateFunctor = (val) => {
             const swap = Object.assign({}, this.state.settings);
             swap[setting.name] = val;
+            console.log(swap);
             this.setState({ settings: swap });
         };
         if (setting.type === "bool") {
@@ -2882,7 +2798,7 @@ class MemberSettings extends React.Component {
     }
     deleteMember(idx) {
         return () => {
-            const toDelete = this.state.data.members[idx];
+            const toDelete = this.state.members[idx];
             axios_1.default.delete(member_url, {
                 data: { members: [toDelete] }
             })
@@ -2896,7 +2812,7 @@ class MemberSettings extends React.Component {
         };
     }
     alterMember(idx, toRole) {
-        const toEdit = this.state.data.members[idx];
+        const toEdit = this.state.members[idx];
         toEdit.status = toRole;
         axios_1.default.post(member_url, {
             members: [toEdit]
@@ -2929,35 +2845,42 @@ class MemberSettings extends React.Component {
             }));
     }
 }
+class CourtSettings extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            courts: null,
+        };
+    }
+    render() {
+        if (this.state.courts === null) {
+            return null;
+        }
+        return React.createElement("h3", null, "Courts");
+        {
+            this.state.courts.map((court, idx) => {
+                return React.createElement("div", { key: idx, className: "row" },
+                    React.createElement("div", { className: "col-5 col-es-12" },
+                        React.createElement("h4", null, court.name)),
+                    React.createElement("div", { className: "col-4 col-es-12" },
+                        React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: court.type, onChange: (i) => { console.log(i); }, name: "courts" + idx })),
+                    React.createElement("div", { className: "col-3 col-es-12" },
+                        React.createElement("button", null, "Delete")));
+            });
+        }
+    }
+}
 class BoardSettings extends React.Component {
     render() {
         return React.createElement("div", { className: "grid" },
             React.createElement("h2", null, "Board Member Options"),
-            React.createElement(MemberSettings, null));
+            React.createElement(MemberSettings, null),
+            React.createElement(CourtSettings, null));
     }
 }
 /*
-<h3>Courts</h3>
-        {
-            this.state.data.courts.map((court: any, idx: number) => {
-                return <div key={idx} className="row">
-                <div className="col-5 col-es-12">
-                <h4>{court.name}</h4>
-                </div>
-                <div className="col-4 col-es-12">
-                <Select
-                    options={this.state.courtTypes}
-                    defaultValue={court.type}
-                    onChange={(i: any) => {console.log(i)}}
-                    name={"courts" + idx} />
-                </div>
-                <div className="col-3 col-es-12">
-                <button>Delete</button>
-                </div>
-                </div>
-            })
-        }
-        */
+
+*/
 class SettingsView extends React.Component {
     constructor(props) {
         super(props);

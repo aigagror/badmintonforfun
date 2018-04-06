@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from ..models import *
 import json
 
+
 def edit_match(id, score_a, score_b):
     query = """
     UPDATE api_match SET scoreA = %s, scoreB = %s WHERE id = %s
@@ -61,6 +62,7 @@ def create_match(score_a, score_b, a_players, b_players):
 
     return response
 
+
 def find_current_match_by_member(id):
     """
         Finds the match the member with given id is in
@@ -92,11 +94,12 @@ def finish_match(id, scoreA, scoreB):
     """
 
     query = '''
-    UPDATE api_match SET scoreA=%s, scoreB=%s, court_id=NULL, endDateTime=datetime(now) WHERE api_match.id=%s
+    UPDATE api_match SET scoreA=%s, scoreB=%s, court_id=NULL, endDateTime=datetime('now') WHERE api_match.id=%s
     '''
 
     response = run_connection(query, scoreA, scoreB, id)
     return response
+
 
 def _top_players():
     with connection.cursor() as cursor:

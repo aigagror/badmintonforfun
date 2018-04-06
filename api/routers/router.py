@@ -1,6 +1,7 @@
 # Create your views here.
 
 from api.calls.match_call import *
+from api.calls.oauth_handling import *
 
 def restrictRouter(allowed=list(), incomplete=list()):
     def _restrictRouter(func):
@@ -16,6 +17,10 @@ def restrictRouter(allowed=list(), incomplete=list()):
     return _restrictRouter
 
 
+@restrictRouter(allowed=["POST"])
+def sign_in(request):
+    code = dict(request.POST.items())
+    return logged_in(code)
 def validate_keys(keys, validate_dict):
     for key in keys:
         if key not in validate_dict:

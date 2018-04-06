@@ -8,13 +8,10 @@ import { EditableTextarea } from '../common/EditableTextarea';
 
 declare var require: Function;
 
-const DjangoCSRFToken: any = require('django-react-csrftoken').default;
-
-console.log(DjangoCSRFToken);
-
 const stat_urls = "/mock/stats.json"
 const announce_url = "/api/announcements/get/";
 const announce_create_url = "/api/announcements/create/";
+const announce_edit_url = "/api/announcements/edit/";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -126,6 +123,7 @@ class AnnounceView extends React.Component<any, any> {
 		}
 
 		this.performRequest = this.performRequest.bind(this);
+		this.performUpdate = this.performUpdate.bind(this);
 	}
 
 	performRequest() {
@@ -157,6 +155,25 @@ class AnnounceView extends React.Component<any, any> {
 		this.performRequest();
 	}
 
+	performUpdate(idx: number) {
+		return (text:string) => {
+					const announce = this.state.announcements[idx];
+					const data = new FormData();
+					data.append('title', announce.title);
+					data.append('entry', text);
+					data.append('id', announce.id);
+					console.log(text);
+					axios.post(announce_edit_url, data)
+						.then((res: any) => {
+							console.log(res)
+							this.performRequest();
+						})
+						.catch((res: any) => {
+							console.log(res);
+						})
+				}
+	}
+
 	render() {
 		if (this.state.announcements === null) {
 			return <p>Loading Announcement</p>
@@ -168,7 +185,9 @@ class AnnounceView extends React.Component<any, any> {
 				this.state.announcements.map((announce: any, idx: number) => {
 					return <div key={idx}>
 						<h3>{announce.title}</h3>
-						<EditableTextarea initValue={announce.entry} />
+						<EditableTextarea 
+							initValue={announce.entry}
+							onSave={this.performUpdate(idx)} />
 					</div>
 				})
 			}

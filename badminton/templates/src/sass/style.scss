@@ -207,3 +207,21 @@ button {
   animation-duration: 0 !important;
   animation-delay: -99s !important;
 }
+
+.editable-textarea-div {
+  position: relative;
+}
+
+.editable-textarea-frozen {
+  background-color: inherit;
+  box-shadow: none;
+}
+
+.editable-textarea-edit-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 100px;
+  box-shadow: 2px 2px 2px 2px gray;
+}
+

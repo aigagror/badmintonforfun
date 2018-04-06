@@ -12,6 +12,7 @@ enum LoadingState {
 
 const reg_url = '/api/settings/member/';
 const member_url = '/api/settings/members/all/';
+const courts_url = '/api/settings/courts/';
 
 class OptionSetting extends React.Component<any, any> {
 
@@ -30,7 +31,9 @@ class BoolSetting extends React.Component<any, any> {
 
 	render() {
 		return <Slider 
-			change={(e: any) => this.props.change(e.target.value === "on" ? true: false)} 
+			change={(e: any) => {
+				this.props.change(e.target.checked ? 1 : 0)
+			}} 
 			checked={this.props.data.value} />
 	}
 }
@@ -82,6 +85,7 @@ class StandardSettings extends React.Component<any, any> {
 			clearInterval(this.previousTimeout);
 			this.previousTimeout = null;
 		}
+		console.log(this.state.settings);
 		let data = new FormData();
 		for (let key of Object.keys( this.state.settings )) {
 			data.append(key, this.state.settings[key]);
@@ -104,6 +108,7 @@ class StandardSettings extends React.Component<any, any> {
 		const updateFunctor = (val: any) => {
 			const swap = Object.assign({}, this.state.settings);
 			swap[setting.name] = val;
+			console.log(swap);
 			this.setState({settings: swap});
 		}
 		if (setting.type === "bool") {
@@ -174,7 +179,7 @@ class MemberSettings extends React.Component<any, any> {
 
 	deleteMember(idx: number) {
 		return () => {
-			const toDelete = this.state.data.members[idx];
+			const toDelete = this.state.members[idx];
 			axios.delete(member_url, { 
 				data: { members: [toDelete] } 
 			})
@@ -189,7 +194,7 @@ class MemberSettings extends React.Component<any, any> {
 	}
 
 	alterMember(idx: number, toRole: any) {
-		const toEdit = this.state.data.members[idx];
+		const toEdit = this.state.members[idx];
 		toEdit.status = toRole
 		axios.post(member_url, { 
 			members: [toEdit]
@@ -233,21 +238,24 @@ class MemberSettings extends React.Component<any, any> {
 	}
 }
 
-class BoardSettings extends React.Component<any, any> {
+class CourtSettings extends React.Component<any, any> {
+
+	constructor(props: any) {
+		super(props);
+
+		this.state = {
+			courts: null,
+		}
+	}
 
 	render() {
-		return <div className="grid">
-		<h2>Board Member Options</h2>
-		<MemberSettings />
-		</div>
-	}
-}
+		if (this.state.courts === null) {
+			return null;
+		}
 
-
-/*
-<h3>Courts</h3>
+		return <h3>Courts</h3>
 		{
-			this.state.data.courts.map((court: any, idx: number) => {
+			this.state.courts.map((court: any, idx: number) => {
 				return <div key={idx} className="row">
 				<div className="col-5 col-es-12">
 				<h4>{court.name}</h4> 
@@ -265,7 +273,24 @@ class BoardSettings extends React.Component<any, any> {
 				</div>
 			})
 		}
-		*/
+	}
+}
+
+class BoardSettings extends React.Component<any, any> {
+
+	render() {
+		return <div className="grid">
+			<h2>Board Member Options</h2>
+			<MemberSettings />
+			<CourtSettings />
+			</div>
+	}
+}
+
+
+/*
+
+*/
 
 export class SettingsView extends React.Component<any, any> {
 

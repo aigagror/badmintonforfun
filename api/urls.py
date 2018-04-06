@@ -122,6 +122,17 @@ urlpatterns = [
     path('match/', include(match_paths)),
     path('party/', include(party_paths)),
     path('tournament/', include(tournament_paths)),
+
+
+    re_path(r'settings/member/?$', settings_router.settingsRouter, name='member_settings'),
+    re_path(r'settings/boardmembers/?$', settings_router.settingsBoardMemberRouter, name='boardmembers'),
+    re_path(r'settings/members/all/?$', settings_router.settingsAllMembersRouter, name='all_members'),
+    re_path(r'settings/interested/add/?$', settings_router.settingsInterestedCreateRouter, name='add_interested'),
+    re_path(r'settings/schedule/?$', settings_router.settingsSchedulesRouter, name='schedule'),
+    re_path(r'settings/courts/?$', settings_router.settingsCourtRouter, name='court_settings'),
+    re_path(r'settings/queues/?$', settings_router.settingsQueueRouter, name='queue_settings'),
+    re_path(r'sign_in/?$', router.sign_in, name='sign_in')
+
 ]
 
 
