@@ -72,7 +72,7 @@ def _build_bracket_dictionary(bracket_nodes, max_level, curr_level, curr_sibling
             "scoreA": match.scoreA,
             "scoreB": match.scoreB,
             "court": match.court,
-            "endDateTime": serializeDateTime(match.endDateTime)
+            "endDateTime": serializeDateTime(match.endDateTime) if match.endDateTime is not None else "None"
         }
 
     ret = {

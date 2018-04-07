@@ -54,7 +54,6 @@ settings_paths = [
 ]
 
 queue_paths = [
-    re_path(r'create/?', queue_router.create_queue, name='create_queue'),
     # Creates a party
     re_path(r'party/create/?$', party_router.create_party, name='create_party'),
     # Edits/deletes a party
@@ -64,6 +63,9 @@ queue_paths = [
     # Gets the next part on the queue
     re_path(r'party/next/?$', queue_router.next_on_queue, name='queue_next_party'),
     re_path(r'party/dequeue/?$', queue_router.dequeue_next_party_to_court, name='dequeue_next_party_to_court'),
+
+    re_path(r'create/?', queue_router.create_queue, name='create_queue'),
+
     # Gets the queues with all the parties on them
     path('', queue_router.get_queues, name='get_queues'),
 ]
@@ -91,6 +93,8 @@ party_paths = [
 tournament_paths = [
     re_path(r'create/?$', tournament_router.create_tournament, name='create_tournament'),
     re_path(r'bracket_node/?$', tournament_router.get_bracket_node, name='get_tournament_bracket_node'),
+
+    # This api should really only be called on the leaf nodes of the tree
     re_path(r'add/match?$', tournament_router.add_match, name='add_match_to_tournament'),
     re_path(r'^$', tournament_router.get_tournament, name='get_tournament'),
 ]
