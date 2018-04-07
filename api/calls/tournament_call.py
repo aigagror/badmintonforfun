@@ -1,4 +1,4 @@
-from api.cursor_api import http_response
+from api.cursor_api import *
 from api.models import *
 from django.db import connection
 
@@ -68,11 +68,11 @@ def _build_bracket_dictionary(bracket_nodes, max_level, curr_level, curr_sibling
         match_info = {}
     else:
         match_info = {
-            "startDateTime": match.startDateTime,
+            "startDateTime": serializeDateTime(match.startDateTime),
             "scoreA": match.scoreA,
             "scoreB": match.scoreB,
             "court": match.court,
-            "endDateTime": match.endDateTime
+            "endDateTime": serializeDateTime(match.endDateTime)
         }
 
     ret = {

@@ -105,6 +105,7 @@ class CustomTestCase(TestCase):
             bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=index)
             match = matches[index]
             bracket_node.match = match
+            bracket_node.save()
 
         # Create some announcements
         self._create_announcements()
