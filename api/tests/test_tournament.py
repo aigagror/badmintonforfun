@@ -58,7 +58,8 @@ class TournamentTest(CustomTestCase):
 
         json = response.json()
         self.assertTrue('bracket_node' in json)
-        self.assertTrue('match' not in json['bracket_node'])
+        self.assertTrue('match' in json['bracket_node'])
+        self.assertIsNone(json['bracket_node']['match'])
 
     def test_get_bad_bracket_node(self):
         self.create_example_data()
