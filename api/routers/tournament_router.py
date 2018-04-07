@@ -51,4 +51,32 @@ def get_bracket_node(request):
 @csrf_exempt
 @restrictRouter(allowed=["POST"])
 def add_match(request):
-    foo = 0
+    post_dict = dict(request.POST.items())
+    validate_keys(['tournament_id', 'match_id', 'level', 'index'], post_dict)
+
+    tournament_id = int(post_dict['tournament_id'])
+    match_id = int(post_dict['match_id'])
+    level = int(post_dict['level'])
+    index = int(post_dict['index'])
+
+    # Assert tournament exists
+    tournaments = Tournament.objects.raw("SELECT * FROM api_tournament WHERE id = %s", [tournament_id])
+    if len(list(tournaments)) <= 0:
+        return http_response(message='Tournament does not exist', code=400)
+
+    # Assert match exists
+    matches = Tournament.objects.raw("SELECT * FROM api_match WHERE id = %s", [match_id])
+    if len(list(matches)) <= 0:
+        return http_response(message='Match does not exist', code=400)
+
+    match = matches[0]
+
+    # Assert bracket node exists
+    nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE tournament_id = %s AND level = %s AND sibling_index = %s", [tournament_id, level, index])
+    if len(list(nodes)) <= 0:
+        return http_response(message='Tournament has no such bracket node', code=400)
+
+    bracket_node = nodes[0]
+
+    response = run_connection("UPDATE api_bracketnode SET match_id = %s WHERE id = %s", match.id, bracket_node.id)
+    return response
