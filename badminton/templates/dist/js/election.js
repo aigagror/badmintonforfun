@@ -1868,10 +1868,17 @@ class Select extends React.Component {
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
         this._decideInitialStatus = this._decideInitialStatus.bind(this);
+        this._scrollCondition = this._scrollCondition.bind(this);
+        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
         const status = this._decideInitialStatus();
         this.state = {
             status: status,
+            width: document.documentElement.clientWidth,
         };
+        this.scrollDiv = null;
+    }
+    _scrollCondition() {
+        return this.state.width < 500;
     }
     _decideInitialStatus() {
         if (this.props.defaultValue) {
@@ -1887,7 +1894,16 @@ class Select extends React.Component {
             return this.props.options[0].display;
         }
     }
+    documentResizeUpdate() {
+        this.setState({
+            width: document.documentElement.clientWidth
+        });
+    }
     componentDidMount() {
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
         document.addEventListener('mousedown', this.handleClickOutside);
         const defaultHeight = 30;
         this.scrollDiv.style.height = defaultHeight + "px";
@@ -1917,7 +1933,11 @@ class Select extends React.Component {
         window.addEventListener('mouseup', mouseUp, false);
     }
     componentWillUnmount() {
+        if (this._scrollCondition()) {
+            return;
+        }
         document.removeEventListener('mousedown', this.handleClickOutside);
+        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
         clearInterval(this.interval);
     }
     /**
@@ -1926,11 +1946,17 @@ class Select extends React.Component {
      * like non-generics with dom.
      */
     handleClickOutside(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
         if (this.inputDiv && !this.wrapper.contains(event.target)) {
             this.inputDiv.checked = false;
         }
     }
     lazyAnimationAdder(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
         if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
@@ -1940,14 +1966,25 @@ class Select extends React.Component {
         if (this.props.onChange) {
             this.props.onChange(target.value);
         }
-        // Cool trick to get the label for the input
-        const elem = document.querySelector('label[for="' + target.id + '"]');
-        this.setState({
-            status: elem.innerHTML,
-        });
-        this.inputDiv.checked = false;
+        if (this._scrollCondition()) {
+            return;
+        }
+        else {
+            // Cool trick to get the label for the input
+            const elem = document.querySelector('label[for="' + target.id + '"]');
+            this.setState({
+                status: elem.innerHTML,
+            });
+            this.inputDiv.checked = false;
+        }
     }
     render() {
+        if (this._scrollCondition()) {
+            return React.createElement("select", { onChange: this.change }, this.props.options.map((option, idx) => {
+                return React.createElement(React.Fragment, null,
+                    React.createElement("option", { value: option.value }, option.display));
+            }));
+        }
         return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
             React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
             React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
@@ -1969,7 +2006,11 @@ exports.Select = Select;
 /* 33 */,
 /* 34 */,
 /* 35 */,
-/* 36 */
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2049,10 +2090,6 @@ exports.Popup = Popup;
 
 
 /***/ }),
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
 /* 41 */,
 /* 42 */,
 /* 43 */,
@@ -2075,15 +2112,28 @@ ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
-const Popup_1 = __webpack_require__(36);
+const Popup_1 = __webpack_require__(40);
 const axios_1 = __webpack_require__(10);
 const RegisterElection_1 = __webpack_require__(47);
 const RadioButton_1 = __webpack_require__(48);
 const election_url = '/api/election/get/';
+const election_edit_url = '/api/election/edit/';
 const campaign_url = '/api/campaign/';
 const election_create_url = '/api/election/create/';
+axios_1.default.interceptors.request.use(request => {
+    console.log(request);
+    return request;
+});
 var LoadingState;
 (function (LoadingState) {
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
@@ -2199,15 +2249,19 @@ class ElectionUp extends React.Component {
         });
     }
     deleteElection() {
-        axios_1.default.delete(election_url, {
-            headers: { 'Content-Type': 'text/plain' },
-            data: JSON.stringify({ id: this.props.id, }),
-        })
-            .then((res) => {
-            this.props.refresh();
-        })
-            .catch((res) => {
-            console.log(res);
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log({ id: this.props.election_id });
+                yield axios_1.default({
+                    method: 'DELETE',
+                    url: election_edit_url,
+                    data: { id: this.props.election_id }
+                });
+                this.props.refresh();
+            }
+            catch (err) {
+                console.log(err.request.data);
+            }
         });
     }
     render() {
@@ -2303,40 +2357,42 @@ class ElectionView extends React.Component {
         this.componentDidMount = this.componentDidMount.bind(this);
     }
     performRequest() {
-        const _this_ref = this;
-        axios_1.default.get(election_url)
-            .then(res => {
-            const status = res.data.status;
-            var pack;
-            if (status === "up") {
-                const hierarchy = convertResponseToHierarchy(res.data);
-                const pack = React.createElement(ElectionUp, { order: hierarchy.order, id: res.data.id, campaigns: hierarchy, roles: hierarchy.order, refresh: this.performRequest });
-                _this_ref.setState({
-                    election_data: pack,
-                    election: LoadingState.Loaded,
-                    up: status
+        return __awaiter(this, void 0, void 0, function* () {
+            const _this_ref = this;
+            try {
+                const res = yield axios_1.default.get(election_url);
+                const status = res.data.status;
+                var pack;
+                if (status === "up") {
+                    const hierarchy = convertResponseToHierarchy(res.data);
+                    const pack = React.createElement(ElectionUp, { order: hierarchy.order, id: res.data.id, campaigns: hierarchy, roles: hierarchy.order, refresh: this.performRequest });
+                    this.setState({
+                        election_data: pack,
+                        election: LoadingState.Loaded,
+                        up: status
+                    });
+                }
+                else if (status === "down") {
+                    this.setState({
+                        election_data: React.createElement(ElectionDown, { message: res.data.message || "Not Up", refresh: this.performRequest }),
+                        election: LoadingState.Loaded,
+                        up: status
+                    });
+                }
+                else {
+                    this.setState({
+                        election_data: React.createElement(ElectionResults, { results: res.data.election_data }),
+                        election: LoadingState.Loaded,
+                        up: status
+                    });
+                }
+            }
+            catch (res) {
+                console.log(res);
+                this.setState({
+                    error: res,
                 });
             }
-            else if (status === "down") {
-                _this_ref.setState({
-                    election_data: React.createElement(ElectionDown, { message: res.data.message || "Not Up", refresh: this.performRequest }),
-                    election: LoadingState.Loaded,
-                    up: status
-                });
-            }
-            else {
-                _this_ref.setState({
-                    election_data: React.createElement(ElectionResults, { results: res.data.election_data }),
-                    election: LoadingState.Loaded,
-                    up: status
-                });
-            }
-        })
-            .catch(res => {
-            console.log(res);
-            this.setState({
-                error: res,
-            });
         });
     }
     componentDidMount() {
@@ -2367,7 +2423,7 @@ exports.ElectionView = ElectionView;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const Select_1 = __webpack_require__(29);
-const Popup_1 = __webpack_require__(36);
+const Popup_1 = __webpack_require__(40);
 const axios_1 = __webpack_require__(10);
 const campaignCreate = '/api/campaign/create';
 class RegisterElectionView extends React.Component {

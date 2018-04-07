@@ -53,18 +53,6 @@ tbody > tr:nth-child(odd) {
   background: #CCC;
 }
 
-@mixin box-input {
-  border: none;
-  width: 100%;
-  border-radius: 4px;
-  background-color: #f1f1f1;
-  padding-left: 10px;
-  font-size: 16px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  box-shadow: 10px 10px 5px grey;
-}
-
 .login-button {
   background-color: rgba(0, 0, 0, .35);
 }
@@ -208,6 +196,10 @@ button {
   animation-delay: -99s !important;
 }
 
+.editable-textarea {
+  height: 1px;
+}
+
 .editable-textarea-div {
   position: relative;
 }
@@ -215,13 +207,15 @@ button {
 .editable-textarea-frozen {
   background-color: inherit;
   box-shadow: none;
+  height: auto;
 }
 
 .editable-textarea-edit-button {
   position: absolute;
   top: 5px;
   right: 5px;
-  width: 100px;
+  display: inline-block;
+  width: auto;
   box-shadow: 2px 2px 2px 2px gray;
 }
 

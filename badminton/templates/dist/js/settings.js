@@ -1868,10 +1868,17 @@ class Select extends React.Component {
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
         this._decideInitialStatus = this._decideInitialStatus.bind(this);
+        this._scrollCondition = this._scrollCondition.bind(this);
+        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
         const status = this._decideInitialStatus();
         this.state = {
             status: status,
+            width: document.documentElement.clientWidth,
         };
+        this.scrollDiv = null;
+    }
+    _scrollCondition() {
+        return this.state.width < 500;
     }
     _decideInitialStatus() {
         if (this.props.defaultValue) {
@@ -1887,7 +1894,16 @@ class Select extends React.Component {
             return this.props.options[0].display;
         }
     }
+    documentResizeUpdate() {
+        this.setState({
+            width: document.documentElement.clientWidth
+        });
+    }
     componentDidMount() {
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
         document.addEventListener('mousedown', this.handleClickOutside);
         const defaultHeight = 30;
         this.scrollDiv.style.height = defaultHeight + "px";
@@ -1917,7 +1933,11 @@ class Select extends React.Component {
         window.addEventListener('mouseup', mouseUp, false);
     }
     componentWillUnmount() {
+        if (this._scrollCondition()) {
+            return;
+        }
         document.removeEventListener('mousedown', this.handleClickOutside);
+        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
         clearInterval(this.interval);
     }
     /**
@@ -1926,11 +1946,17 @@ class Select extends React.Component {
      * like non-generics with dom.
      */
     handleClickOutside(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
         if (this.inputDiv && !this.wrapper.contains(event.target)) {
             this.inputDiv.checked = false;
         }
     }
     lazyAnimationAdder(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
         if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
@@ -1940,14 +1966,25 @@ class Select extends React.Component {
         if (this.props.onChange) {
             this.props.onChange(target.value);
         }
-        // Cool trick to get the label for the input
-        const elem = document.querySelector('label[for="' + target.id + '"]');
-        this.setState({
-            status: elem.innerHTML,
-        });
-        this.inputDiv.checked = false;
+        if (this._scrollCondition()) {
+            return;
+        }
+        else {
+            // Cool trick to get the label for the input
+            const elem = document.querySelector('label[for="' + target.id + '"]');
+            this.setState({
+                status: elem.innerHTML,
+            });
+            this.inputDiv.checked = false;
+        }
     }
     render() {
+        if (this._scrollCondition()) {
+            return React.createElement("select", { onChange: this.change }, this.props.options.map((option, idx) => {
+                return React.createElement(React.Fragment, null,
+                    React.createElement("option", { value: option.value }, option.display));
+            }));
+        }
         return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
             React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
             React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
@@ -2512,90 +2549,10 @@ function cleanCookies() {
 }
 
 /***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * Contains a popup view that need only to be rendered
- * To work. Appears in the middle of the screen and darkens
- * The body.
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(1);
-const popupDisabledClass = "popup-disabled";
-const popupScreenFadeClass = 'popup-screen-fade';
-const popupFadeClass = 'popup-fade';
-class PopupProps {
-}
-exports.PopupProps = PopupProps;
-class PopupState {
-}
-class Popup extends React.Component {
-    constructor(props) {
-        super(props);
-        this.close = this.close.bind(this);
-    }
-    componentDidMount() {
-        /* Programatically create a div to overlay everything and animate it in
-            Also force the body not to scroll */
-        this.screenDiv = document.createElement('div');
-        this.screenDiv.className = 'popup-screen';
-        const body = document.querySelector('body');
-        body.appendChild(this.screenDiv);
-        body.classList.add(popupDisabledClass);
-    }
-    componentWillUnmount() {
-        /* Remove the programatic div and let the body scroll */
-        const body = document.querySelector('body');
-        body.removeChild(this.screenDiv);
-        body.classList.remove(popupDisabledClass);
-    }
-    close() {
-        /* Animate everything in */
-        this.wrapperDiv.classList.add(popupFadeClass);
-        this.screenDiv.classList.add(popupScreenFadeClass);
-        /* Cool so we can seperate concerns */
-        const refCounter = { count: 0 };
-        const callback = () => {
-            if (refCounter.count == 1) {
-                this.props.callback();
-            }
-            else {
-                refCounter.count += 1;
-            }
-        };
-        /*
-         * Since there are two animations going on we want to wait
-         * for both of them to end. So we use a reference counter
-         * in the form of a bound object.
-         */
-        this.wrapperDiv.addEventListener('animationend', callback);
-        this.screenDiv.addEventListener('animationend', callback);
-    }
-    render() {
-        return (React.createElement("div", { className: "popup-div", ref: (input) => this.wrapperDiv = input },
-            React.createElement("div", { className: "grid row" },
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-11 popup-title-div" },
-                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-offset-1 col-11" },
-                        React.createElement("p", { className: "popup-message" }, this.props.message))),
-                React.createElement("div", { className: "row-offset-10" },
-                    React.createElement("div", { className: "col-offset-es-9 col-es-5 row-offset-es-9 col-offset-9 row-offset-11" },
-                        React.createElement("button", { className: "popup-button row-2", onClick: this.close }, "\u2714"))))));
-    }
-}
-exports.Popup = Popup;
-
-
-/***/ }),
+/* 36 */,
 /* 37 */,
 /* 38 */,
-/* 39 */,
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2629,6 +2586,7 @@ exports.Slider = Slider;
 
 
 /***/ }),
+/* 40 */,
 /* 41 */,
 /* 42 */,
 /* 43 */,
@@ -2665,11 +2623,18 @@ ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const axios_1 = __webpack_require__(10);
-const Slider_1 = __webpack_require__(40);
-const Popup_1 = __webpack_require__(36);
+const Slider_1 = __webpack_require__(39);
 const Select_1 = __webpack_require__(29);
 const LocalResourceResolver_1 = __webpack_require__(30);
 var LoadingState;
@@ -2720,31 +2685,29 @@ class StandardSettings extends React.Component {
     }
     repost() {
         if (this.previousTimeout !== null) {
-            clearInterval(this.previousTimeout);
+            clearTimeout(this.previousTimeout);
             this.previousTimeout = null;
         }
-        console.log(this.state.settings);
-        let data = new FormData();
-        for (let key of Object.keys(this.state.settings)) {
-            data.append(key, this.state.settings[key]);
-        }
-        axios_1.default.post(reg_url, data)
-            .then((res) => {
-            console.log(res);
-            this.setState({
-                popup: React.createElement(Popup_1.Popup, { title: "Saved", message: "Your data has been saved", callback: () => this.setState({ popup: null }) })
-            });
-        })
-            .catch((res) => {
-            console.log(res);
-        });
+        this.previousTimeout = setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+            let data = new FormData();
+            for (let key of Object.keys(this.state.settings)) {
+                data.append(key, this.state.settings[key]);
+            }
+            try {
+                let res = yield axios_1.default.post(reg_url, data);
+                console.log(res);
+            }
+            catch (res) {
+                console.log(res);
+            }
+        }), 1000);
     }
     decideComponent(setting, key) {
         const updateFunctor = (val) => {
             const swap = Object.assign({}, this.state.settings);
             swap[setting.name] = val;
-            console.log(swap);
             this.setState({ settings: swap });
+            this.repost();
         };
         if (setting.type === "bool") {
             return React.createElement(BoolSetting, { data: setting, key: key, change: updateFunctor });
@@ -2761,14 +2724,12 @@ class StandardSettings extends React.Component {
     }
     render() {
         return React.createElement(React.Fragment, null,
-            React.createElement("div", { className: "grid" },
-                this.props.data.map((setting, idx) => {
-                    return React.createElement("div", { className: "row", key: idx },
-                        React.createElement("div", { className: "col-6 col-es-12" },
-                            React.createElement("h2", null, setting.display_name)),
-                        React.createElement("div", { className: "col-6 col-es-12" }, this.decideComponent(setting, idx)));
-                }),
-                React.createElement("button", { onClick: this.repost }, "Save")),
+            React.createElement("div", { className: "grid" }, this.props.data.map((setting, idx) => {
+                return React.createElement("div", { className: "row", key: idx },
+                    React.createElement("div", { className: "col-6 col-es-12" },
+                        React.createElement("h2", null, setting.display_name)),
+                    React.createElement("div", { className: "col-6 col-es-12" }, this.decideComponent(setting, idx)));
+            })),
             this.state.popup && this.state.popup);
     }
 }
@@ -2848,16 +2809,30 @@ class MemberSettings extends React.Component {
 class CourtSettings extends React.Component {
     constructor(props) {
         super(props);
+        this.courts_url = '/api/settings/courts';
         this.state = {
             courts: null,
         };
+    }
+    componentDidMount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const res = yield axios_1.default.get(this.courts_url);
+                this.setState({
+                    courts: res.data.courts,
+                });
+            }
+            catch (ex) {
+                console.log(ex);
+            }
+        });
     }
     render() {
         if (this.state.courts === null) {
             return null;
         }
-        return React.createElement("h3", null, "Courts");
-        {
+        return React.createElement("div", null,
+            React.createElement("h3", null, "Courts"),
             this.state.courts.map((court, idx) => {
                 return React.createElement("div", { key: idx, className: "row" },
                     React.createElement("div", { className: "col-5 col-es-12" },
@@ -2866,8 +2841,8 @@ class CourtSettings extends React.Component {
                         React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: court.type, onChange: (i) => { console.log(i); }, name: "courts" + idx })),
                     React.createElement("div", { className: "col-3 col-es-12" },
                         React.createElement("button", null, "Delete")));
-            });
-        }
+            }),
+            React.createElement("button", null, "Add a court"));
     }
 }
 class BoardSettings extends React.Component {

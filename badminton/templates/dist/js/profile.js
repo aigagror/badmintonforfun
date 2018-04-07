@@ -1846,8 +1846,7 @@ module.exports = function spread(callback) {
 /* 35 */,
 /* 36 */,
 /* 37 */,
-/* 38 */,
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1901,6 +1900,7 @@ exports.ProfileView = ProfileView;
 
 
 /***/ }),
+/* 39 */,
 /* 40 */,
 /* 41 */,
 /* 42 */,
@@ -1921,7 +1921,7 @@ exports.ProfileView = ProfileView;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const ReactDOM = __webpack_require__(9);
-const ProfileView_1 = __webpack_require__(39);
+const ProfileView_1 = __webpack_require__(38);
 ReactDOM.render(React.createElement(ProfileView_1.ProfileView, { member_id: member_id }), document.querySelector("profile-view"));
 
 

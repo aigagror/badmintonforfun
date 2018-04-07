@@ -1868,10 +1868,17 @@ class Select extends React.Component {
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
         this._decideInitialStatus = this._decideInitialStatus.bind(this);
+        this._scrollCondition = this._scrollCondition.bind(this);
+        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
         const status = this._decideInitialStatus();
         this.state = {
             status: status,
+            width: document.documentElement.clientWidth,
         };
+        this.scrollDiv = null;
+    }
+    _scrollCondition() {
+        return this.state.width < 500;
     }
     _decideInitialStatus() {
         if (this.props.defaultValue) {
@@ -1887,7 +1894,16 @@ class Select extends React.Component {
             return this.props.options[0].display;
         }
     }
+    documentResizeUpdate() {
+        this.setState({
+            width: document.documentElement.clientWidth
+        });
+    }
     componentDidMount() {
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
         document.addEventListener('mousedown', this.handleClickOutside);
         const defaultHeight = 30;
         this.scrollDiv.style.height = defaultHeight + "px";
@@ -1917,7 +1933,11 @@ class Select extends React.Component {
         window.addEventListener('mouseup', mouseUp, false);
     }
     componentWillUnmount() {
+        if (this._scrollCondition()) {
+            return;
+        }
         document.removeEventListener('mousedown', this.handleClickOutside);
+        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
         clearInterval(this.interval);
     }
     /**
@@ -1926,11 +1946,17 @@ class Select extends React.Component {
      * like non-generics with dom.
      */
     handleClickOutside(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
         if (this.inputDiv && !this.wrapper.contains(event.target)) {
             this.inputDiv.checked = false;
         }
     }
     lazyAnimationAdder(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
         if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
@@ -1940,14 +1966,25 @@ class Select extends React.Component {
         if (this.props.onChange) {
             this.props.onChange(target.value);
         }
-        // Cool trick to get the label for the input
-        const elem = document.querySelector('label[for="' + target.id + '"]');
-        this.setState({
-            status: elem.innerHTML,
-        });
-        this.inputDiv.checked = false;
+        if (this._scrollCondition()) {
+            return;
+        }
+        else {
+            // Cool trick to get the label for the input
+            const elem = document.querySelector('label[for="' + target.id + '"]');
+            this.setState({
+                status: elem.innerHTML,
+            });
+            this.inputDiv.checked = false;
+        }
     }
     render() {
+        if (this._scrollCondition()) {
+            return React.createElement("select", { onChange: this.change }, this.props.options.map((option, idx) => {
+                return React.createElement(React.Fragment, null,
+                    React.createElement("option", { value: option.value }, option.display));
+            }));
+        }
         return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
             React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
             React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },

@@ -3,6 +3,8 @@ import * as React from 'react';
 
 export class EditableTextarea extends React.Component<any, any> {
 
+	private textarea: any;
+
 	constructor(props: any) {
 		super(props);
 
@@ -23,22 +25,32 @@ export class EditableTextarea extends React.Component<any, any> {
 
 	render() {
 		return <div className="editable-textarea-div">
-		<textarea className={this.state.readonly ? 
-				"editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : "")}
+		<textarea className={
+			"editable-textarea " + (this.state.readonly ? 
+				"editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : ""))}
 			value={this.state.textValue} 
-			onChange={(ev: any) => this.setState({textValue: ev.target.value})}
+			onChange={(ev: any) => {
+				const target = ev.target;
+				target.style.height = target.scrollHeight+'px';
+				this.setState({textValue: target.value}) ;
+			}}
+			ref={(ta: any) => this.textarea = ta}
 			readOnly={this.state.readonly}>
 		</textarea>
 		{
 			this.state.readonly ?
-			<button onClick={() => this.setState({readonly:false})} 
+			<button onClick={() => {
+				this.textarea.style.height = '1px';
+				this.textarea.style.height = this.textarea.scrollHeight+'px';
+				this.setState({readonly:false})} 
+			}
 				className="editable-textarea-edit-button">
-				Edit
+				✎
 			</button> :
 			<>
 			<button onClick={this.saveEdits} 
 				className="editable-textarea-edit-button">
-				Save
+				💾 
 			</button>
 			</>
 		}

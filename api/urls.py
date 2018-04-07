@@ -95,24 +95,23 @@ tournament_paths = [
     re_path(r'^$', tournament_router.get_tournament, name='get_tournament'),
 ]
 
+"""
+re_path(r'demo/?$', demo.index, name='demo_index'),
+re_path(r'demo/matches/?$', demo.matches, name='demo_matches'),
+re_path(r'demo/matches/create/?$', demo.create_match, name='demo_matches_create'),
+re_path(r'demo/matches/delete/?$', demo.delete_match, name='demo_matches_delete'),
+path('demo/matches/<int:match_id>/edit/', demo.edit_match, name='demo_matches_edit'),
+re_path(r'demo/players/top/?$', demo.top_players, name='demo_top_players'),
+
+re_path(r'demo/election/?$', demo.index, name='demo_election'),
+re_path(r'demo/election/vote/?$', demo.vote, name='demo_vote'),
+
+re_path(r'demo/queue/?$', demo.queue, name='demo_queue'),
+path('demo/queue/party/<int:party_id>/', demo.edit_party, name='demo_edit_party'),
+"""
 
 app_name = 'api'
 urlpatterns = [
-
-    # Front-end demonstrations of backend functions
-    re_path(r'demo/?$', demo.index, name='demo_index'),
-    re_path(r'demo/matches/?$', demo.matches, name='demo_matches'),
-    re_path(r'demo/matches/create/?$', demo.create_match, name='demo_matches_create'),
-    re_path(r'demo/matches/delete/?$', demo.delete_match, name='demo_matches_delete'),
-    path('demo/matches/<int:match_id>/edit/', demo.edit_match, name='demo_matches_edit'),
-    re_path(r'demo/players/top/?$', demo.top_players, name='demo_top_players'),
-
-    re_path(r'demo/election/?$', demo.index, name='demo_election'),
-    re_path(r'demo/election/vote/?$', demo.vote, name='demo_vote'),
-
-    re_path(r'demo/queue/?$', demo.queue, name='demo_queue'),
-    path('demo/queue/party/<int:party_id>/', demo.edit_party, name='demo_edit_party'),
-
     path('announcements/', include(announcements_paths)),
     path('members/', include(members_paths)),
     path('election/', include(election_paths)),
@@ -122,15 +121,6 @@ urlpatterns = [
     path('match/', include(match_paths)),
     path('party/', include(party_paths)),
     path('tournament/', include(tournament_paths)),
-
-
-    re_path(r'settings/member/?$', settings_router.settingsRouter, name='member_settings'),
-    re_path(r'settings/boardmembers/?$', settings_router.settingsBoardMemberRouter, name='boardmembers'),
-    re_path(r'settings/members/all/?$', settings_router.settingsAllMembersRouter, name='all_members'),
-    re_path(r'settings/interested/add/?$', settings_router.settingsInterestedCreateRouter, name='add_interested'),
-    re_path(r'settings/schedule/?$', settings_router.settingsSchedulesRouter, name='schedule'),
-    re_path(r'settings/courts/?$', settings_router.settingsCourtRouter, name='court_settings'),
-    re_path(r'settings/queues/?$', settings_router.settingsQueueRouter, name='queue_settings'),
     re_path(r'sign_in/?$', router.sign_in, name='sign_in')
 
 ]

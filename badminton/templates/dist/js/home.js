@@ -2389,8 +2389,7 @@ function cleanCookies() {
 /***/ }),
 /* 36 */,
 /* 37 */,
-/* 38 */,
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2444,6 +2443,7 @@ exports.ProfileView = ProfileView;
 
 
 /***/ }),
+/* 39 */,
 /* 40 */,
 /* 41 */,
 /* 42 */,
@@ -2474,7 +2474,7 @@ ReactDOM.render(React.createElement(HomeView_1.HomeView, null), document.querySe
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const axios_1 = __webpack_require__(10);
-const ProfileView_1 = __webpack_require__(39);
+const ProfileView_1 = __webpack_require__(38);
 const LocalResourceResolver_1 = __webpack_require__(30);
 const EditableTextarea_1 = __webpack_require__(51);
 const stat_urls = "/mock/stats.json";
@@ -2685,12 +2685,20 @@ class EditableTextarea extends React.Component {
     }
     render() {
         return React.createElement("div", { className: "editable-textarea-div" },
-            React.createElement("textarea", { className: this.state.readonly ?
-                    "editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : ""), value: this.state.textValue, onChange: (ev) => this.setState({ textValue: ev.target.value }), readOnly: this.state.readonly }),
+            React.createElement("textarea", { className: "editable-textarea " + (this.state.readonly ?
+                    "editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : "")), value: this.state.textValue, onChange: (ev) => {
+                    const target = ev.target;
+                    target.style.height = target.scrollHeight + 'px';
+                    this.setState({ textValue: target.value });
+                }, ref: (ta) => this.textarea = ta, readOnly: this.state.readonly }),
             this.state.readonly ?
-                React.createElement("button", { onClick: () => this.setState({ readonly: false }), className: "editable-textarea-edit-button" }, "Edit") :
+                React.createElement("button", { onClick: () => {
+                        this.textarea.style.height = '1px';
+                        this.textarea.style.height = this.textarea.scrollHeight + 'px';
+                        this.setState({ readonly: false });
+                    }, className: "editable-textarea-edit-button" }, "\u270E") :
                 React.createElement(React.Fragment, null,
-                    React.createElement("button", { onClick: this.saveEdits, className: "editable-textarea-edit-button" }, "Save")));
+                    React.createElement("button", { onClick: this.saveEdits, className: "editable-textarea-edit-button" }, "\uD83D\uDCBE")));
     }
 }
 exports.EditableTextarea = EditableTextarea;

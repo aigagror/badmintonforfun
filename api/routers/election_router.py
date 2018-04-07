@@ -74,6 +74,7 @@ def edit_election(request):
     elif request.method == "DELETE":
         idKey = "id"
         dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+        print(dict_delete)
         if idKey not in dict_delete:
             return HttpResponse(json.dumps({"message": "Missing required param {}".format(idKey)}, status=400))
         return delete_election(dict_delete[idKey])

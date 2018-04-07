@@ -1847,8 +1847,7 @@ module.exports = function spread(callback) {
 /* 36 */,
 /* 37 */,
 /* 38 */,
-/* 39 */,
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1882,6 +1881,7 @@ exports.Slider = Slider;
 
 
 /***/ }),
+/* 40 */,
 /* 41 */,
 /* 42 */,
 /* 43 */,
@@ -1923,7 +1923,7 @@ ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.q
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(1);
 const axios_1 = __webpack_require__(10);
-const Slider_1 = __webpack_require__(40);
+const Slider_1 = __webpack_require__(39);
 const ranking_url = '/mock/ranking.json';
 const ranking_not_up = '/mock/ranking_not_up.json';
 class RanksTable extends React.Component {

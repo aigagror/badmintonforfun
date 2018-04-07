@@ -18,7 +18,8 @@ export interface SelectProps {
 }
 
 interface SelectState {
-    status: string
+    status: string,
+    width: number
 }
 
 const selectFadeOutClassName = 'select-check-fade-out';
@@ -66,13 +67,21 @@ export class Select extends React.Component<SelectProps, SelectState> {
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
         this._decideInitialStatus = this._decideInitialStatus.bind(this);
+        this._scrollCondition = this._scrollCondition.bind(this);
+        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
         const status = this._decideInitialStatus();
         this.state = {
             status: status,
+            width: document.documentElement.clientWidth,
         }
+        this.scrollDiv = null;
     }
 
-    _decideInitialStatus() {
+    _scrollCondition(): boolean {
+        return this.state.width < 500;
+    }
+
+    _decideInitialStatus(): string {
         if (this.props.defaultValue) {
             const value = this.props.options.find((option: Option) =>
                 option.value === this.props.defaultValue);
@@ -86,7 +95,19 @@ export class Select extends React.Component<SelectProps, SelectState> {
         }
     }
 
+    documentResizeUpdate() {
+        this.setState({
+            width: document.documentElement.clientWidth
+        })
+    }
+
     componentDidMount() {
+        if (this._scrollCondition()) {
+            return;
+        }
+
+        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
+
         document.addEventListener('mousedown', this.handleClickOutside);
         const defaultHeight = 30;
         this.scrollDiv.style.height = defaultHeight+"px";
@@ -122,7 +143,12 @@ export class Select extends React.Component<SelectProps, SelectState> {
     }
 
     componentWillUnmount() {
+        if (this._scrollCondition()) {
+            return;
+        }
+
         document.removeEventListener('mousedown', this.handleClickOutside);
+        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
         clearInterval(this.interval);
     }
 
@@ -132,40 +158,64 @@ export class Select extends React.Component<SelectProps, SelectState> {
      * like non-generics with dom.
      */
     handleClickOutside(event: any) {
+        if (this._scrollCondition()) {
+            return;
+        }
+
         if (this.inputDiv && !this.wrapper.contains(event.target)) {
             this.inputDiv.checked = false;
         }
     }
 
     lazyAnimationAdder(event: any) {
+        if (this._scrollCondition()) {
+            return;
+        }
+
         if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
     }
 
-	change(event: React.FormEvent<HTMLInputElement>) {
+	change(event: any) {
         const target = event.target as HTMLInputElement;
 		if (this.props.onChange) {
 			this.props.onChange(target.value);
 		}
 
-        // Cool trick to get the label for the input
-        const elem = document.querySelector('label[for="' + target.id + '"]');
-        this.setState({
-            status: elem.innerHTML,
-        });
-		this.inputDiv.checked = false;
+        if (this._scrollCondition()) {
+            return;
+        } else {
+            // Cool trick to get the label for the input
+            const elem = document.querySelector('label[for="' + target.id + '"]');
+            this.setState({
+                status: elem.innerHTML,
+            });
+            this.inputDiv.checked = false;
+        }
 	}
 
 	render() {
+        if (this._scrollCondition()) {
+            return <select onChange={this.change}>
+                {
+                    this.props.options.map((option: Option, idx: number) => {
+                        return <>
+                        <option value={option.value}>{option.display}</option>
+                        </>
+                    })
+                }
+            </select>
+        }
+
 		return <div className="select-wrapper-div" ref={(input) => this.wrapper = input}>
 
 		<input className='select-hidden select-check-toggle' 
-    	id={this.props.name+"-toggle"} 
-    	name={this.props.name}
-        onChange={this.lazyAnimationAdder}
-    	type='checkbox'
-    	ref={(input) => this.inputDiv = input}/>
+        	id={this.props.name+"-toggle"} 
+        	name={this.props.name}
+            onChange={this.lazyAnimationAdder}
+        	type='checkbox'
+        	ref={(input) => this.inputDiv = input}/>
 
         <label className='select-label select-toggle' htmlFor={this.props.name+"-toggle"} >
         	<span ref={(input) => this.titleSpan = input} className="select-title-text">{this.state.status}</span>

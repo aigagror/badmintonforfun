@@ -7,8 +7,13 @@ import { RadioButton } from '../common/RadioButton';
 import { Select, Option } from "../common/Select";
 
 const election_url = '/api/election/get/';
+const election_edit_url = '/api/election/edit/';
 const campaign_url = '/api/campaign/';
 const election_create_url = '/api/election/create/';
+axios.interceptors.request.use(request => {
+  console.log(request)
+  return request
+})
 
 enum LoadingState {
     Loading,
@@ -167,17 +172,18 @@ class ElectionUp extends React.Component<any, any> {
 		});
 	}
 
-	deleteElection() {
-		axios.delete(election_url, {
-		  headers: { 'Content-Type': 'text/plain' },
-		  data: JSON.stringify({id: this.props.id,}),
-		})
-		.then((res: any) => {
+	async deleteElection() {
+		try {
+			console.log({id: this.props.election_id});
+			await axios({
+		        method: 'DELETE',
+		        url: election_edit_url,
+		        data: {id: this.props.election_id}
+		    });
 			this.props.refresh();
-		})
-		.catch((res: any) => {
-			console.log(res);
-		})
+		} catch (err) {
+			console.log(err.request.data);
+		}
 
 	}
 
@@ -319,46 +325,46 @@ export class ElectionView extends React.Component<{}, any> {
 	    this.componentDidMount = this.componentDidMount.bind(this);
 	}
 
-	performRequest() {
+	async performRequest() {
 		const _this_ref = this;
 
-		axios.get(election_url)
-			.then(res => {
-				const status = res.data.status;
-				var pack;
-				if (status === "up") {
-					const hierarchy = convertResponseToHierarchy(res.data);
-					const pack = <ElectionUp order={hierarchy.order} 
-						id={res.data.id}
-						campaigns={hierarchy} 
-						roles={hierarchy.order} 
-						refresh={this.performRequest}/>;
+		try {
+			const res = await axios.get(election_url);
 
-					_this_ref.setState({
-						election_data: pack,
-						election: LoadingState.Loaded,
-						up: status
-					})
-				} else if (status === "down") {
-					_this_ref.setState({
-						election_data: <ElectionDown message={res.data.message || "Not Up"} refresh={this.performRequest}/>,
-						election: LoadingState.Loaded,
-						up: status
-					})
-				} else {
-					_this_ref.setState({
-						election_data: <ElectionResults results={res.data.election_data} />,
-						election: LoadingState.Loaded,
-						up: status
-					})
-				}
-			})
-			.catch(res => {
-				console.log(res);
+			const status = res.data.status;
+			var pack;
+			if (status === "up") {
+				const hierarchy = convertResponseToHierarchy(res.data);
+				const pack = <ElectionUp order={hierarchy.order} 
+					id={res.data.id}
+					campaigns={hierarchy} 
+					roles={hierarchy.order} 
+					refresh={this.performRequest}/>;
+
 				this.setState({
-					error: res,
-				});
+					election_data: pack,
+					election: LoadingState.Loaded,
+					up: status
+				})
+			} else if (status === "down") {
+				this.setState({
+					election_data: <ElectionDown message={res.data.message || "Not Up"} refresh={this.performRequest}/>,
+					election: LoadingState.Loaded,
+					up: status
+				})
+			} else {
+				this.setState({
+					election_data: <ElectionResults results={res.data.election_data} />,
+					election: LoadingState.Loaded,
+					up: status
+				})
+			}
+		} catch (res) {
+			console.log(res);
+			this.setState({
+				error: res,
 			});
+		}
 	}
 
 
