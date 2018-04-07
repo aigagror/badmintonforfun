@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.urls import re_path, path, include
 
-import api.routers.party_router
 from api.routers import demo, router, votes_router, \
     settings_router, match_router, election_router, \
     campaign_router, announcement_router, queue_router, party_router, tournament_router
@@ -89,7 +88,7 @@ party_paths = [
 ]
 
 tournament_paths = [
-    re_path(r'create/?$', tournament_router.create_tournament, name='create_tournament'),
+    re_path(r'create/?$', tournament_router.create_tournament_router, name='create_tournament'),
     re_path(r'bracket_node/?$', tournament_router.get_bracket_node, name='get_tournament_bracket_node'),
     re_path(r'add/match?$', tournament_router.add_match, name='add_match_to_tournament'),
     re_path(r'^$', tournament_router.get_tournament, name='get_tournament'),

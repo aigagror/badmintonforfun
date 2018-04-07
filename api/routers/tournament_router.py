@@ -2,7 +2,7 @@ import json
 
 from django.views.decorators.csrf import csrf_exempt
 
-from api.calls.tournament_call import get_most_recent_tournament
+from api.calls.tournament_call import *
 from api.routers.router import restrictRouter, validate_keys
 from api.models import *
 from api.cursor_api import *
@@ -14,7 +14,7 @@ def get_tournament(request):
 
 @csrf_exempt
 @restrictRouter(allowed=["POST"])
-def create_tournament(request):
+def create_tournament_router(request):
     """
     POST function to create a new tournament entry.
     Expect the input dictionary to be
@@ -24,11 +24,12 @@ def create_tournament(request):
     :param request:
     :return:
     """
-    json_post_data = json.loads(request.body.decode('utf8').replace("'", '"'))
-    if not validate_keys(["num_leaf_matches"], json_post_data):
+    # json_post_data = json.loads(request.body.decode('utf8').replace("'", '"'))
+    post_dict = dict(request.POST.items())
+    if not validate_keys(["num_leaf_matches"], post_dict):
         HttpResponse(json.dumps({'message': 'Missing parameters members'}),
                      content_type='application/json', status=400)
-    return create_tournament(json_post_data)
+    return create_tournament(post_dict)
 
 
 @csrf_exempt

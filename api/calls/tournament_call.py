@@ -104,7 +104,7 @@ def _get_bracket_node(bracket_nodes, level, sibling_index):
 def create_tournament(dict_post):
     today = datetime.date.today()
     date = serializeDate(today)
-    num_leaf_matches = dict_post.get("num_leaf_matches", 0)
+    num_leaf_matches = int(dict_post["num_leaf_matches"])
 
     # Find the id of the most recent tournament (also is the max id)
     max_id = _most_recent_tournament_id()
@@ -154,8 +154,11 @@ def _most_recent_tournament_id():
     Returns the id of the most recent tournament (also should be the max id in the table)
     :return:
     """
-    rawquery = Tournament.objects.raw("SELECT MAX(id) FROM api_tournament")
-    max_id = rawquery[0].id
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT MAX(id) AS max_id FROM api_tournament")
+        row = cursor.fetchone()
+
+    max_id = row[0] if row[0] else 0
     return max_id
 
 
