@@ -49,8 +49,8 @@ class MatchTest(CustomTestCase):
     def test_finish_match(self):
         self.test_create_match()
         self.create_example_data()
-        response = self.client.post(reverse('api:finish_match'), {"id": 0, "score_A": 23, "score_B": 21})
+        response = self.client.post(reverse('api:finish_match'), {"id": 0})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(str(Match.objects.get(id=0)), "A['Eddie Huang', 'Bhuvan Venkatesh']-B['Daniel Rong', 'Grace Shen']:23-21")
+        self.assertEqual(str(Match.objects.get(id=0)), "A['Eddie Huang', 'Bhuvan Venkatesh']-B['Daniel Rong', 'Grace Shen']:21-23")
         self.assertEqual(list(Match.objects.filter(id=0).values('court_id'))[0]['court_id'], None)
 
