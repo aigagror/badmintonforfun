@@ -1,5 +1,6 @@
-from api.cursor_api import http_response
+from api.cursor_api import http_response, run_connection
 from api.models import *
+import datetime
 
 def get_most_recent_tournament():
     """
@@ -91,3 +92,78 @@ def _get_bracket_node(bracket_nodes, level, sibling_index):
             return node
 
     return None
+
+
+def create_tournament(dict_post):
+    today = datetime.date.today()
+    date = serializeDate(today)
+    num_leaf_matches = dict_post.get("num_leaf_matches", 0)
+
+    # Find the id of the most recent tournament (also is the max id)
+    max_id = _most_recent_tournament_id()
+
+    # Add tournament
+    new_tournament_id = max_id + 1  # We need this for creating the bracket nodes
+    _add_tournament(new_tournament_id, date)
+
+    # Add empty bracket nodes associated with this new tournament
+    # Determine max level
+    max_level = _get_max_level(num_leaf_matches)
+    # Add bracket nodes
+    _add_bracket_nodes(new_tournament_id, max_level, num_leaf_matches)
+
+    return http_response({}, message="OK")
+
+
+def _add_bracket_nodes(tournament_id, max_level, num_leaf_matches):
+    # Bracket nodes for the perfect tree of with the max level of max_level-1
+    for level in range(max_level):  # Iterate "max_level"-1 times
+        for sibling_index in range(2**max_level):
+            _add_bracket_node(tournament_id, level, sibling_index)
+
+    # Add the remaining bracket nodes on the last level
+    num_remaining_nodes = (2**max_level) - (2 * (2**max_level - num_leaf_matches))
+    for sibling_index in range(num_remaining_nodes):
+        _add_bracket_node(tournament_id, max_level, sibling_index)
+
+
+def _add_bracket_node(tournament_id, level, sibling_index):
+    query = '''
+        INSERT INTO api_bracketnode (tournament_id, level, sibling_index)
+        VALUES (%s, %s, %s);
+        '''
+    return run_connection(query, tournament_id, level, sibling_index)
+
+
+def _get_max_level(num_leaf_matches):
+    max_level = 0
+    while 2 ** max_level < num_leaf_matches:
+        max_level += 1
+    return max_level
+
+
+def _most_recent_tournament_id():
+    """
+    Returns the id of the most recent tournament (also should be the max id in the table)
+    :return:
+    """
+    rawquery = Tournament.objects.raw("SELECT MAX(id) FROM api_tournament")
+    max_id = rawquery[0].id
+    return max_id
+
+
+def _add_tournament(new_tournament_id, date):
+    query = '''
+    INSERT INTO api_tournament (id, date)
+    VALUES (%s, %s);
+    '''
+    return run_connection(query, new_tournament_id, date)
+
+
+def _finish_tournament(tournament_id, endDate):
+    query = '''
+    UPDATE api_tournament (endDate)
+    VALUES (%s)
+    WHERE id=%s;
+    '''
+    return run_connection(query, endDate, tournament_id)

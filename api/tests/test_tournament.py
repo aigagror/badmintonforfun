@@ -27,7 +27,7 @@ class TournamentTest(CustomTestCase):
 
     def test_create_tournament(self):
         today = datetime.date.today()
-        response = self.client.post(reverse('api:create_tournament'), {'date': serializeDate(today), 'num_matches': 3})
+        response = self.client.post(reverse('api:create_tournament'), {'num_leaf_matches': 3})
         self.assertGoodResponse(response)
 
         tournament = Tournament.objects.get(date=today)

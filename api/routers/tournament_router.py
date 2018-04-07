@@ -15,7 +15,21 @@ def get_tournament(request):
 @csrf_exempt
 @restrictRouter(allowed=["POST"])
 def create_tournament(request):
-    foo = 0
+    """
+    POST function to create a new tournament entry.
+    Expect the input dictionary to be
+    {
+        "num_leaf_matches": _
+    }
+    :param request:
+    :return:
+    """
+    json_post_data = json.loads(request.body.decode('utf8').replace("'", '"'))
+    if not validate_keys(["num_leaf_matches"], json_post_data):
+        HttpResponse(json.dumps({'message': 'Missing parameters members'}),
+                     content_type='application/json', status=400)
+    return create_tournament(json_post_data)
+
 
 @csrf_exempt
 @restrictRouter(allowed=["GET"])
