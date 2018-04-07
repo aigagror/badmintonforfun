@@ -104,7 +104,16 @@ def _get_bracket_node(bracket_nodes, level, sibling_index):
 def create_tournament(dict_post):
     today = datetime.date.today()
     date = serializeDate(today)
-    num_leaf_matches = int(dict_post["num_leaf_matches"])
+    num_players = int(dict_post["num_players"])
+    tournament_type = dict_post["tournament_type"]
+    if tournament_type == "Doubles":
+        assert num_players % 4 == 0
+    elif tournament_type == "Singles":
+        assert num_players % 2 == 0
+    else:
+        return http_response(message="Invalid tournament type", code=400)
+
+    num_leaf_matches = int(num_players/2) if tournament_type == "Singles" else int(num_players/4)
 
     # Find the id of the most recent tournament (also is the max id)
     max_id = _most_recent_tournament_id()
