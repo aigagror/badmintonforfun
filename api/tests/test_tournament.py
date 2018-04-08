@@ -106,4 +106,47 @@ class TournamentTest(CustomTestCase):
         self.assertGoodResponse(response)
 
         bracket_node = BracketNode.objects.get(tournament=tournament, level=2, sibling_index=0)
+
+        self.assertIsNotNone(bracket_node.match)
+
+    def test_finish_tournament_match(self):
+        """
+        If a match that is finished is associated with a tournament. There should be a check to see if we can add a new match up the bracket.
+        For example consider the case where there is a tournament bracket shaped as a perfect tree of height 1
+        with the left and right child having ongoing matches. If the left child's match was finished first, nothing should happen.
+        However, when the right child's match finishes, the tournament should automatically have added a match to the root node
+        where the members involved are those who have won the matches from that of the left and right childs' matches respectively
+        :return:
+        """
+
+        self.create_example_data()
+
+        today = datetime.date.today()
+        tournament = Tournament.objects.get(date=today)
+
+        bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=0)
+        self.assertIsNotNone(bracket_node.match)
+        matchA = bracket_node.match
+
+        matchA.scoreA = 21
+        matchA.scoreB = 19
+
+        bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=1)
+        self.assertIsNotNone(bracket_node.match)
+        matchB = bracket_node.match
+
+        matchB.scoreA = 21
+        matchB.scoreB = 19
+
+        matchA.save()
+        matchB.save()
+
+        response = self.client.post(reverse('api:finish_match'), {'id': matchA.id})
+
+        bracket_node = BracketNode.objects.get(tournament=tournament, level=2, sibling_index=0)
+        self.assertIsNone(bracket_node.match)
+
+        response = self.client.post(reverse('api:finish_match'), {'id': matchB.id})
+
+        bracket_node = BracketNode.objects.get(tournament=tournament, level=2, sibling_index=0)
         self.assertIsNotNone(bracket_node.match)

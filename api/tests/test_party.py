@@ -12,9 +12,6 @@ class PartyTest(CustomTestCase):
     def test_create_bad_party(self):
         self.create_example_data()
 
-        # Casual queue
-        queue = Queue.objects.get(type='CASUAL')
-
         # Eddie is already in a party
         eddie = Member.objects.get(first_name='Eddie')
 
@@ -22,7 +19,7 @@ class PartyTest(CustomTestCase):
 
         number_of_parties_before = len(list(parties))
 
-        response = self.client.post(reverse('api:create_party'), {'queue_id': queue.id, 'member_id': eddie.id})
+        response = self.client.post(reverse('api:create_party'), {'queue_type': 'CASUAL', 'member_id': eddie.id})
         self.assertBadResponse(response)
 
         parties = Party.objects.all()
@@ -34,12 +31,11 @@ class PartyTest(CustomTestCase):
     def test_create_party(self):
         self.create_example_data()
 
-        queue = Queue.objects.get(type="CASUAL")
-
         grace = Member.objects.get(first_name='Grace')
         self.assertIsNone(grace.party)
 
-        response = self.client.post(reverse('api:create_party'), {'queue_id': queue.id, 'member_id': grace.id})
+        foo = reverse('api:create_party')
+        response = self.client.post(reverse('api:create_party'), {'queue_type': "CASUAL", 'member_id': grace.id})
         self.assertGoodResponse(response)
 
         grace = Member.objects.get(first_name='Grace')

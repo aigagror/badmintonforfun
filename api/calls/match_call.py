@@ -84,7 +84,20 @@ def find_current_match_by_member(id):
                                  code=400)
 
 
-def finish_match(id, scoreA, scoreB):
+def _get_winners(match):
+    if match.scoreA > match.scoreB:
+        playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s AND team = 'A'", [match.id])
+    else:
+        playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s AND team = 'B'", [match.id])
+
+    winners = []
+    for playedin in playedins:
+        member = playedin.member
+        winners.append(member)
+
+    return winners
+
+def finish_match(id):
     """
         Ends the match, updates the scores, removes court id
     :param id:
@@ -93,12 +106,65 @@ def finish_match(id, scoreA, scoreB):
     :return:
     """
 
-    query = '''
-    UPDATE api_match SET scoreA=%s, scoreB=%s, court_id=NULL, endDateTime=datetime('now') WHERE api_match.id=%s
-    '''
+    # Check that the scores are valid
+    matches = Match.objects.raw("SELECT * FROM api_match WHERE id = %s", [id])
+    if len(list(matches)) <= 0:
+        return http_response(message='No such match', code=400)
 
-    response = run_connection(query, scoreA, scoreB, id)
-    return response
+    match = matches[0]
+    if abs(match.scoreA - match.scoreB) >= 2 and (match.scoreB >= 21 or match.scoreA >= 21):
+        query = '''
+            UPDATE api_match SET court_id=NULL, endDateTime=datetime('now') WHERE api_match.id=%s
+            '''
+
+        response = run_connection(query, id)
+
+        # Check if this match belongs to a tournament. If so, we may need to update the tournament too
+        tournaments = Tournament.objects.raw("SELECT * FROM api_tournament WHERE endDate IS NULL")
+        if len(list(tournaments)) > 0:
+            tournament = tournaments[0]
+            bracket_nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE tournament_id = %s AND match_id IS NOT NULL AND match_id = %s", [tournament.id, match.id])
+            if len(list(bracket_nodes)) > 0:
+                bracket_node = bracket_nodes[0]
+                level = bracket_node.level
+                if level > 0:
+                    index = bracket_node.sibling_index
+                    index_of_sibling = index + 1 if index % 2 == 0 else index - 1
+
+                    # See if sibling exists
+                    bracket_nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE tournament_id = %s AND level = %s AND sibling_index = %s", [tournament.id, level, index_of_sibling])
+                    if len(list(bracket_nodes)) > 0:
+                        bracket_node_sibling = bracket_nodes[0]
+
+                        sibling_match = bracket_node_sibling.match
+                        if sibling_match is not None and sibling_match.endDateTime is not None:
+                            # We must add a match to the parent node!
+                            parent_index = index // 2
+                            bracket_nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE tournament_id = %s AND level = %s AND sibling_index = %s", [tournament.id, level - 1, parent_index])
+                            parent_node = bracket_nodes[0]
+                            if parent_node.match is None:
+                                new_match = Match(startDateTime=datetime.datetime.now(), scoreA=0, scoreB=0)
+                                new_match.save()
+
+                                winners_of_match = _get_winners(match)
+                                winners_of_sibling_match = _get_winners(sibling_match)
+
+                                for winner in winners_of_match:
+                                    response = run_connection("INSERT INTO api_playedin(team, match_id, member_id) VALUES(%s, %s, %s)", "A", new_match.id, winner.id)
+                                    if response.status_code != 200:
+                                        return response
+
+                                for winner in winners_of_sibling_match:
+                                    response = run_connection("INSERT INTO api_playedin(team, match_id, member_id) VALUES(%s, %s, %s)", "B", new_match.id, winner.id)
+                                    if response.status_code != 200:
+                                        return response
+
+                                response = run_connection("UPDATE api_bracketnode SET match_id = %s WHERE id = %s", new_match.id, parent_node.id)
+
+
+        return response
+    else:
+        return http_response(message='Violating win by 2 rule or at least one player having at least 21 points', code=400)
 
 
 def _top_players():

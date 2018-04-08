@@ -17,10 +17,17 @@ def create_party(request):
     """
 
     post_dict = dict(request.POST.items())
-    if not validate_keys(['queue_id', 'member_id'], post_dict):
+    if not validate_keys(['queue_type', 'member_id'], post_dict):
         return http_response({}, message="Keys not found", code=400)
 
-    queue_id = int(post_dict['queue_id'])
+    queue_type = post_dict['queue_type']
+    queues = Queue.objects.raw("SELECT * FROM api_queue WHERE type = %s", [queue_type])
+    if len(list(queues)) <= 0:
+        return http_response(message='Queue does not exist', code=400)
+
+    queue = queues[0]
+
+    queue_id = queue.id
     member_id = int(post_dict['member_id'])
 
     # Check if member_id is already in a party
