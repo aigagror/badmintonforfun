@@ -12,6 +12,7 @@ from .mod_config import JS_PATH, CSS_PATH, TEMPLATE_PATH, MOCK_PATH, STATIC_PATH
 import os.path
 from badminton_server.settings import DEBUG
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.contrib.auth.decorators import login_required
 
 
 def _file_or_error(file_name, ret_type=str):
@@ -34,7 +35,6 @@ def _file_or_error(file_name, ret_type=str):
 
     except FileNotFoundError:
         raise Http404("File does not exist")
-
 
 def js_server(request, js_file):
     """
@@ -94,8 +94,18 @@ def static_server(request, static_file):
 
     return HttpResponse(content, content_type=content_type)
 
-@ensure_csrf_cookie
-def template_server(request, template=None):
+public_templates = ['index.html', 'interested.html']
+
+def _get_template_name(template):
+    if template is None:
+        template = "index.html"
+
+    # Don't need the .html
+    if not template.endswith('.html'):
+        template += '.html'
+    return template
+
+def _bypass_template_server(request, template):
     """
         This function takes the template string and renders
         and serves the template that has the same name.
@@ -111,18 +121,9 @@ def template_server(request, template=None):
         :param data: str Template to render
     """
 
-    # Handle the empty slash case
-    if template is None:
-        template = "index.html"
-
-    # Don't need the .html
-    if not template.endswith('.html'):
-        template += '.html'
-
     # Forward all query params to the template
     # Flatten lists because django gives you query params
     # in lists regardless
-
     context = dict()
     if request.GET:
         context = dict(request.GET)
@@ -134,6 +135,17 @@ def template_server(request, template=None):
     except:
         raise Http404("Page not found")
 
+@login_required
+def _login_template_server(request, template):
+    return _bypass_template_server(request, template)
+
+@ensure_csrf_cookie
+def template_server(request, template=None):
+    template = _get_template_name(template)
+    if template in public_templates:
+        return _bypass_template_server(request, template)
+    else:
+        return _login_template_server(request, template)
 
 def mock_api(request, data):
     """

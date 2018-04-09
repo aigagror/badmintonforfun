@@ -11,10 +11,7 @@ const failureGoogle = (response: any) => {
 }
 
 ReactDOM.render(
-    <GoogleAuthButton 
-      onSuccess={responseGoogle}
-      onFailure={failureGoogle}
-     />,
+    <button className="interaction-style" onClick={()=>{window.location.href = "/sign_in"}}>Sign In</button>,
     document.querySelector("member-button")
 );
 

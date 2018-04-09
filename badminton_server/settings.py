@@ -143,13 +143,13 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '613791656516-s7k2pbsbosa0c83o8omr0m1p1gp9q8vh.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'Hc8xak_rGLvCMZNaEv_E-8nX'
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/done/'
+
 SOCIAL_AUTH_STRATEGY = 'social_django.strategy.DjangoStrategy'
 SOCIAL_AUTH_STORAGE = 'social_django.models.DjangoStorage'
 # SOCIAL_AUTH_STORAGE = 'app.models.CustomDjangoStorage'
 LOGIN_URL = 'sign_in'
-LOGOUT_URL = 'logout'
+LOGOUT_URL = 'disconnect'
+LOGOUT_REDIRECT_URL = 'logout_redirect'
 LOGIN_REDIRECT_URL = 'flow_redirect'
 SOCIAL_AUTH_GOOGLE_OAUTH2_IGNORE_DEFAULT_SCOPE = True
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.email']

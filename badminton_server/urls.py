@@ -23,9 +23,9 @@ from django.contrib.auth.decorators import login_required
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    re_path(r'^login/$', core_views.sign_in, name='login'),
+    re_path(r'^login/?$', core_views.sign_in, name='sign_in'),
     # TODO
-    re_path(r'^logout/$', auth_views.logout, name='logout'),
+    re_path(r'^logout/?$', core_views.logout, name='logout_redirect'),
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
     path('flow_redirect/', core_views.done, name="flow_redirect"),
     path('', include('badminton.urls')),

@@ -1902,7 +1902,7 @@
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(214)("./" + name);
+                __webpack_require__(212)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -5218,11 +5218,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(211)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(209)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(213)();
+  module.exports = __webpack_require__(211)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
@@ -19302,9 +19302,7 @@ if (process.env.NODE_ENV !== 'production') {
 /* 205 */,
 /* 206 */,
 /* 207 */,
-/* 208 */,
-/* 209 */,
-/* 210 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19350,7 +19348,7 @@ exports.EditableTextarea = EditableTextarea;
 
 
 /***/ }),
-/* 211 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19369,7 +19367,7 @@ var warning = __webpack_require__(49);
 var assign = __webpack_require__(35);
 
 var ReactPropTypesSecret = __webpack_require__(50);
-var checkPropTypes = __webpack_require__(212);
+var checkPropTypes = __webpack_require__(210);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -19900,7 +19898,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 212 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19967,7 +19965,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 213 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20032,7 +20030,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 214 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -20297,10 +20295,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 214;
+webpackContext.id = 212;
 
 /***/ }),
-/* 215 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20319,7 +20317,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 216 */
+/* 214 */
 /***/ (function(module, exports) {
 
 var g;
@@ -20346,7 +20344,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 217 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20363,6 +20361,8 @@ exports.objectToFormData = objectToFormData;
 
 
 /***/ }),
+/* 216 */,
+/* 217 */,
 /* 218 */,
 /* 219 */,
 /* 220 */,
@@ -20392,9 +20392,7 @@ exports.objectToFormData = objectToFormData;
 /* 244 */,
 /* 245 */,
 /* 246 */,
-/* 247 */,
-/* 248 */,
-/* 249 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20474,6 +20472,8 @@ exports.Popup = Popup;
 
 
 /***/ }),
+/* 248 */,
+/* 249 */,
 /* 250 */,
 /* 251 */,
 /* 252 */,
@@ -20552,14 +20552,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
-const Popup_1 = __webpack_require__(249);
+const Popup_1 = __webpack_require__(247);
 const axios_1 = __webpack_require__(12);
 const RegisterElection_1 = __webpack_require__(302);
 const RadioButton_1 = __webpack_require__(303);
 const LocalResourceResolver_1 = __webpack_require__(37);
-const EditableTextarea_1 = __webpack_require__(210);
+const EditableTextarea_1 = __webpack_require__(208);
 const react_datepicker_1 = __webpack_require__(304);
-const Utils_1 = __webpack_require__(217);
+const Utils_1 = __webpack_require__(215);
 const moment = __webpack_require__(0);
 const election_url = '/api/election/get/';
 const election_edit_url = '/api/election/edit/';
@@ -20916,7 +20916,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const Select_1 = __webpack_require__(57);
-const Popup_1 = __webpack_require__(249);
+const Popup_1 = __webpack_require__(247);
 const axios_1 = __webpack_require__(12);
 const LocalResourceResolver_1 = __webpack_require__(37);
 const campaignCreate = '/api/campaign/create';
@@ -24569,7 +24569,7 @@ var invariant = __webpack_require__(38);
 var warning = __webpack_require__(49);
 var assign = __webpack_require__(35);
 
-var ReactPropTypesSecret = __webpack_require__(215);
+var ReactPropTypesSecret = __webpack_require__(213);
 var checkPropTypes = __webpack_require__(309);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
@@ -25117,7 +25117,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(38);
   var warning = __webpack_require__(49);
-  var ReactPropTypesSecret = __webpack_require__(215);
+  var ReactPropTypesSecret = __webpack_require__(213);
   var loggedTypeFailures = {};
 }
 
@@ -25183,7 +25183,7 @@ module.exports = checkPropTypes;
 
 var emptyFunction = __webpack_require__(45);
 var invariant = __webpack_require__(38);
-var ReactPropTypesSecret = __webpack_require__(215);
+var ReactPropTypesSecret = __webpack_require__(213);
 
 module.exports = function() {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -28074,7 +28074,7 @@ Popper.Defaults = Defaults;
 
 /* harmony default export */ __webpack_exports__["a"] = (Popper);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(216)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(214)))
 
 /***/ }),
 /* 314 */
