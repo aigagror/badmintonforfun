@@ -20833,15 +20833,16 @@ class EditableTextarea extends React.Component {
                     target.style.height = target.scrollHeight + 'px';
                     this.setState({ textValue: target.value });
                 }, ref: (ta) => this.textarea = ta, readOnly: this.state.readonly }),
-            React.createElement(React.Fragment, null,
-                this.props.onDelete && React.createElement("button", { className: "editable-textarea-delete-button interaction-style", onClick: this.props.onDelete }, "X"),
-                this.state.readonly ?
-                    React.createElement("button", { onClick: () => {
-                            this.textarea.style.height = '1px';
-                            this.textarea.style.height = this.textarea.scrollHeight + 'px';
-                            this.setState({ readonly: false });
-                        }, className: "editable-textarea-edit-button interaction-style" }, "\u270E") :
-                    React.createElement("button", { onClick: this.saveEdits, className: "editable-textarea-edit-button interaction-style" }, "\uD83D\uDCBE")));
+            !this.props.editableOverride &&
+                React.createElement(React.Fragment, null,
+                    this.props.onDelete && React.createElement("button", { className: "editable-textarea-delete-button interaction-style", onClick: this.props.onDelete }, "X"),
+                    this.state.readonly ?
+                        React.createElement("button", { onClick: () => {
+                                this.textarea.style.height = '1px';
+                                this.textarea.style.height = this.textarea.scrollHeight + 'px';
+                                this.setState({ readonly: false });
+                            }, className: "editable-textarea-edit-button interaction-style" }, "\u270E") :
+                        React.createElement("button", { onClick: this.saveEdits, className: "editable-textarea-edit-button interaction-style" }, "\uD83D\uDCBE")));
     }
 }
 exports.EditableTextarea = EditableTextarea;
@@ -26212,6 +26213,9 @@ class AnnounceCreator extends React.Component {
         super(props);
         this.initState = this.initState.bind(this);
         this.state = this.initState();
+        this.state = {
+            boardMember: LocalResourceResolver_1.isBoardMember(),
+        };
         this.sendAnnouncement = this.sendAnnouncement.bind(this);
     }
     initState() {
@@ -26237,7 +26241,7 @@ class AnnounceCreator extends React.Component {
         ev.preventDefault();
     }
     render() {
-        if (!LocalResourceResolver_1.isBoardMember()) {
+        if (!this.state.boardMember) {
             return null;
         }
         if (this.state.showCreator) {
@@ -26268,6 +26272,7 @@ class AnnounceView extends React.Component {
         super(props);
         this.state = {
             announcements: null,
+            boardMember: LocalResourceResolver_1.isBoardMember(),
         };
         this.performRequest = this.performRequest.bind(this);
         this.performUpdate = this.performUpdate.bind(this);
@@ -26337,7 +26342,7 @@ class AnnounceView extends React.Component {
             this.state.announcements.map((announce, idx) => {
                 return React.createElement("div", { key: idx },
                     React.createElement("h3", null, announce.title),
-                    React.createElement(EditableTextarea_1.EditableTextarea, { initValue: announce.entry, onSave: this.performUpdate(idx), onDelete: this.deleteAnnouncement(announce.id) }));
+                    React.createElement(EditableTextarea_1.EditableTextarea, { initValue: announce.entry, onSave: this.performUpdate(idx), onDelete: this.deleteAnnouncement(announce.id), editableOverride: !this.state.boardMember }));
             }),
             React.createElement(AnnounceCreator, { refresh: this.performRequest })));
     }

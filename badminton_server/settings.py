@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
     'badminton',
 ]
 
@@ -65,6 +66,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',  # <--
+                'social_django.context_processors.login_redirect', # <--
             ],
         },
     },
@@ -131,3 +134,22 @@ MEDIA_ROOT = u'/home/aigagror/badmintonforfun/media'
 MEDIA_URL = '/media/'
 STATIC_ROOT = u'/home/aigagror/badmintonforfun/static'
 STATIC_URL = '/static/'
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '613791656516-s7k2pbsbosa0c83o8omr0m1p1gp9q8vh.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'Hc8xak_rGLvCMZNaEv_E-8nX'
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/done/'
+SOCIAL_AUTH_STRATEGY = 'social_django.strategy.DjangoStrategy'
+SOCIAL_AUTH_STORAGE = 'social_django.models.DjangoStorage'
+# SOCIAL_AUTH_STORAGE = 'app.models.CustomDjangoStorage'
+LOGIN_URL = 'sign_in'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'flow_redirect'
+SOCIAL_AUTH_GOOGLE_OAUTH2_IGNORE_DEFAULT_SCOPE = True
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.email']

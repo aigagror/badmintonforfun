@@ -69,6 +69,10 @@ class AnnounceCreator extends React.Component<any, any> {
 		this.initState = this.initState.bind(this);
 		this.state = this.initState();
 
+		this.state = {
+			boardMember: isBoardMember(),
+		}
+
 		this.sendAnnouncement = this.sendAnnouncement.bind(this);
 	}
 
@@ -97,7 +101,7 @@ class AnnounceCreator extends React.Component<any, any> {
 	}
 
 	render() {
-		if (!isBoardMember()) {
+		if (!this.state.boardMember) {
 			return null;
 		}
 
@@ -155,6 +159,7 @@ class AnnounceView extends React.Component<any, any> {
 		super(props);
 		this.state = {
 			announcements: null,
+			boardMember: isBoardMember(),
 		}
 
 		this.performRequest = this.performRequest.bind(this);
@@ -230,7 +235,8 @@ class AnnounceView extends React.Component<any, any> {
 						<EditableTextarea 
 							initValue={announce.entry}
 							onSave={this.performUpdate(idx)}
-							onDelete={this.deleteAnnouncement(announce.id)} />
+							onDelete={this.deleteAnnouncement(announce.id)}
+							editableOverride={!this.state.boardMember} />
 					</div>
 				})
 			}

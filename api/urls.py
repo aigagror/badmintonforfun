@@ -116,6 +116,10 @@ re_path(r'demo/election/vote/?$', demo.vote, name='demo_vote'),
 re_path(r'demo/queue/?$', demo.queue, name='demo_queue'),
 path('demo/queue/party/<int:party_id>/', demo.edit_party, name='demo_edit_party'),
 """
+import api.views as views
+
+from django.conf.urls import url, include
+from django.contrib import admin
 
 app_name = 'api'
 urlpatterns = [
@@ -128,8 +132,4 @@ urlpatterns = [
     path('match/', include(match_paths)),
     path('party/', include(party_paths)),
     path('tournament/', include(tournament_paths)),
-    re_path(r'sign_in/?$', router.sign_in, name='sign_in')
-
 ]
-
-

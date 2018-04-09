@@ -15,9 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.urls import re_path, path, include
+from django.contrib.auth import views as auth_views
+from api import views as core_views
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
+    re_path(r'^login/$', core_views.sign_in, name='login'),
+    # TODO
+    re_path(r'^logout/$', auth_views.logout, name='logout'),
+    re_path(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
+    path('flow_redirect/', core_views.done, name="flow_redirect"),
     path('', include('badminton.urls')),
 ]
