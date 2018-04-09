@@ -115,11 +115,8 @@ def create_tournament(dict_post):
 
     num_leaf_matches = int(num_players/2) if tournament_type == "Singles" else int(num_players/4)
 
-    # Find the id of the most recent tournament (also is the max id)
-    max_id = _most_recent_tournament_id()
-
     # Add tournament
-    new_tournament_id = max_id + 1  # We need this for creating the bracket nodes
+    new_tournament_id = _get_next_tournament_id()  # We need this for creating the bracket nodes
     _add_tournament(new_tournament_id, date)
 
     # Add empty bracket nodes associated with this new tournament
@@ -158,16 +155,16 @@ def _get_max_level(num_leaf_matches):
     return max_level
 
 
-def _most_recent_tournament_id():
+def _get_next_tournament_id():
     """
-    Returns the id of the most recent tournament (also should be the max id in the table)
+    Returns the id of the most recent tournament + 1
     :return:
     """
     with connection.cursor() as cursor:
         cursor.execute("SELECT MAX(id) AS max_id FROM api_tournament")
         row = cursor.fetchone()
 
-    max_id = row[0] if row[0] else 0
+    max_id = row[0] + 1 if row[0] else 0
     return max_id
 
 
@@ -179,10 +176,13 @@ def _add_tournament(new_tournament_id, date):
     return run_connection(query, new_tournament_id, date)
 
 
-def _finish_tournament(tournament_id, endDate):
+def finish_tournament(dict_post):
+    tournament_id = int(dict_post["tournament_id"])
+    today = datetime.date.today()
+    endDate = serializeDate(today)
     query = '''
-    UPDATE api_tournament (endDate)
-    VALUES (%s)
+    UPDATE api_tournament
+    SET endDate=%s
     WHERE id=%s;
     '''
     return run_connection(query, endDate, tournament_id)

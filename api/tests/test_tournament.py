@@ -27,11 +27,23 @@ class TournamentTest(CustomTestCase):
 
     def test_create_tournament(self):
         today = datetime.date.today()
-        response = self.client.post(reverse('api:create_tournament'), {'num_players': 4, 'tournament_type': 'Singles'})
+        response = self.client.post(reverse('api:create_tournament'), {'num_players': 4, 'tournament_type': 'Doubles'})
         self.assertGoodResponse(response)
 
         tournament = Tournament.objects.get(date=today)
         self.assertEqual(tournament.date, today)
+
+    def test_finish_tournament(self):
+        today = datetime.date.today()
+        response = self.client.post(reverse('api:create_tournament'), {'num_players': 4, 'tournament_type': 'Doubles'})
+        self.assertGoodResponse(response)
+        tournament = Tournament.objects.get(id=0)
+        self.assertEqual(tournament.endDate, None)
+
+        response = self.client.post(reverse("api:finish_tournament"), {"tournament_id": 0})
+        self.assertGoodResponse(response)
+        tournament = Tournament.objects.get(id=0)
+        self.assertEqual(tournament.endDate, today)
 
     def test_get_match_in_bracket_node(self):
         self.create_example_data()
@@ -94,6 +106,7 @@ class TournamentTest(CustomTestCase):
         self.assertGoodResponse(response)
 
         bracket_node = BracketNode.objects.get(tournament=tournament, level=2, sibling_index=0)
+
         self.assertIsNotNone(bracket_node.match)
 
     def test_finish_tournament_match(self):
@@ -137,6 +150,3 @@ class TournamentTest(CustomTestCase):
 
         bracket_node = BracketNode.objects.get(tournament=tournament, level=2, sibling_index=0)
         self.assertIsNotNone(bracket_node.match)
-
-
-
