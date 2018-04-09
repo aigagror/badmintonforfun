@@ -1,4 +1,6 @@
 @import "./variable";
+@import "../../node_modules/react-big-calendar/lib/css/react-big-calendar";
+@import '../../node_modules/react-datepicker/dist/react-datepicker.css';
 
 html {
   // You'd be surprised that we need this
@@ -57,39 +59,40 @@ tbody > tr:nth-child(odd) {
   background-color: rgba(0, 0, 0, .35);
 }
 
-select {
+.interaction-style {
   @include box-input;
-
-  &:focus {
-    outline: none;
-    color: inherit;
-  }
-
-  &:active {
-    outline: none;
-    color: inherit;
-  }
 }
 
+button.interaction-style {
+    transition: all .2s ease-in;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.55);
+    }
+}
+
+select.interaction-style {
+    &:focus {
+      outline: none;
+      color: inherit;
+    }
+
+    &:active {
+      outline: none;
+      color: inherit;
+    }
+  }
+
+textarea.interaction-style {
+  resize: none;
+    overflow:auto;
+    height: 100%;
+    font-family: #{$font}
+}
+
+/*
 input[type="text"] {
   @include box-input;
-}
-
-textarea {
-  @include box-input;
-  resize:none;
-  overflow:auto;
-  height: 320px;
-  font-family: #{$font}
-}
-
-button {
-  @include box-input;
-  transition: all .2s ease-in;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.55);
-  }
-}
+} */
 
 // Home page stuff
 
@@ -151,7 +154,7 @@ button {
 }
 
 .register-div {
-  @include height-auto-mixin;
+  overflow: visible;
   animation-name: height-auto-open;
   animation-duration: .4s;
 }
@@ -219,3 +222,17 @@ button {
   box-shadow: 2px 2px 2px 2px gray;
 }
 
+.editable-textarea-delete-button {
+  position: absolute;
+  top: 5px;
+  right: 50px;
+  display: inline-block;
+  width: auto;
+  box-shadow: 2px 2px 2px 2px gray;
+}
+
+.rbc-month-row { 
+  overflow: visible;
+  padding-top: 5px;
+  padding-bottom: 20px;
+}

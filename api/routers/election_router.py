@@ -7,6 +7,8 @@ from api.calls.election_call import current_election, edit_election, delete_elec
 from api.cursor_api import *
 from api.routers.router import restrictRouter
 from api.models import *
+import datetime
+
 
 @csrf_exempt
 @restrictRouter(allowed=["GET"])
@@ -19,10 +21,10 @@ def get_election(request):
     :return:
     """
     elections = Election.objects.raw("SELECT * FROM api_election AS election\
-        WHERE endDate IS NULL OR endDate >= date('now')\
-        ORDER BY election.date DESC LIMIT 1;")
+        WHERE election.endDate IS NULL OR election.endDate >= %s\
+        ORDER BY election.date DESC LIMIT 1", [datetime.datetime.now().strftime("%Y%m%d")])
     if len(list(elections)) == 0:
-        return http_response({}, message="No current election available")
+        return HttpResponse(json.dumps({"message":"No current election available", "status": "down"}), content_type="application/json")
 
     current_election = elections[0]
 
@@ -30,7 +32,8 @@ def get_election(request):
 
     context = {
         'election': serializeModel(current_election),
-        'campaigns': serializeSetOfModels(campaigns)
+        'campaigns': serializeSetOfModels(campaigns),
+        "order": list(map(lambda x: x[0], JOBS))
     }
     return http_response(context)
 
@@ -60,13 +63,14 @@ def edit_election(request):
 
         endDate = dict_post.get(endKey, None)
         endDate = deserializeDate(endDate) if endDate != None else None
-
+        print(startDate)
+        print(endDate)
         if startDate is not None:
-            response = run_connection("UPDATE api_election SET date = %s", startDate)
+            response = run_connection("UPDATE api_election SET date = %s WHERE id = %s", startDate.strftime('%Y-%m-%d'), id)
             if response.status_code != 200:
                 return response
         if endDate is not None:
-            response = run_connection("UPDATE api_election SET endDate = %s", endDate)
+            response = run_connection("UPDATE api_election SET endDate = %s WHERE id = %s", endDate.strftime('%Y-%m-%d'), id)
             if response.status_code != 200:
                 return response
         return response

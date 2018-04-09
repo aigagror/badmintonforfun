@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { GoogleAuthButton } from './components/GoogleAuthButton';
-import { Button } from "./components/Button";
 
 const responseGoogle = (response: any) => {
   console.log(response);
@@ -20,6 +19,6 @@ ReactDOM.render(
 );
 
 ReactDOM.render(
-    <Button text="Interested" href="./interested.html"/>,
+    <button className="interaction-style" onClick={()=>{window.location.href = "./interested.html"}}>Interested</button>,
     document.querySelector("interested-button")
 );

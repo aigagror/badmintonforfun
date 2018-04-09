@@ -42,6 +42,7 @@ class TextSetting extends React.Component<any, any> {
 
 	render() {
 		return <input 
+			className="interaction-style"
 			type="text" 
 			name={this.props.data.name} 
 			onChange={(e: any) => this.props.change(e.target.value)}
@@ -52,7 +53,7 @@ class TextSetting extends React.Component<any, any> {
 class LongTextSetting extends React.Component<any, any> {
 
 	render() {
-		return <textarea name={this.props.data.name} 
+		return <textarea className="interaction-style" name={this.props.data.name} 
 			onChange={(e: any) => this.props.change(e.target.value)} 
 			defaultValue={this.props.data.value} />
 	}
@@ -225,7 +226,11 @@ class MemberSettings extends React.Component<any, any> {
 					name={member.member_id} />
 				</div>
 				<div className="col-3 col-es-12">
-				<button onClick={this.deleteMember(idx)}>Delete</button>
+				<button 
+					onClick={this.deleteMember(idx)} 
+					className="interaction-style">
+					Delete
+				</button>
 				</div>
 				</div>
 			})

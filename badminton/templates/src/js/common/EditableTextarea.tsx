@@ -26,7 +26,7 @@ export class EditableTextarea extends React.Component<any, any> {
 	render() {
 		return <div className="editable-textarea-div">
 		<textarea className={
-			"editable-textarea " + (this.state.readonly ? 
+			"editable-textarea interaction-style " + (this.state.readonly ? 
 				"editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : ""))}
 			value={this.state.textValue} 
 			onChange={(ev: any) => {
@@ -38,20 +38,26 @@ export class EditableTextarea extends React.Component<any, any> {
 			readOnly={this.state.readonly}>
 		</textarea>
 		{
-			this.state.readonly ?
+			<>
+			{ this.props.onDelete && <button 
+				className="editable-textarea-delete-button interaction-style"
+				onClick={this.props.onDelete}>
+			X
+			</button>
+		}
+			{this.state.readonly ?
 			<button onClick={() => {
 				this.textarea.style.height = '1px';
 				this.textarea.style.height = this.textarea.scrollHeight+'px';
 				this.setState({readonly:false})} 
 			}
-				className="editable-textarea-edit-button">
+				className="editable-textarea-edit-button interaction-style">
 				✎
 			</button> :
-			<>
 			<button onClick={this.saveEdits} 
-				className="editable-textarea-edit-button">
+				className="editable-textarea-edit-button interaction-style">
 				💾 
-			</button>
+			</button>}
 			</>
 		}
 		</div>

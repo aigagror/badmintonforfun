@@ -197,7 +197,7 @@ export class Select extends React.Component<SelectProps, SelectState> {
 
 	render() {
         if (this._scrollCondition()) {
-            return <select onChange={this.change}>
+            return <select className="interaction-style" onChange={this.change}>
                 {
                     this.props.options.map((option: Option, idx: number) => {
                         return <>

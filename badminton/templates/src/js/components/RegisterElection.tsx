@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Select, Option} from '../common/Select';
 import {Popup} from '../common/Popup';
 import axios from 'axios';
+import {getMemberId} from '../common/LocalResourceResolver';
 
 const campaignCreate = '/api/campaign/create';
 
@@ -48,39 +49,38 @@ export class RegisterElectionView extends React.Component<any, any> {
 		this.openDiv.addEventListener('animationend', this._animationListener);
 	}
 
-	submit() {
-		const email = 'ezhuang2@illinois.edu';
+	async submit() {
 		let data = new FormData();
 		data.append('pitch', this.state.pitchValue);
 		data.append('job', this.campaignType);
-		data.append('email', email);
-		axios.post(campaignCreate, data)
-			.then((res: any) => {
-				this.setState({
-					popup: <Popup title="Campaign Submitted" 
-						message="Election Campaign has been submitted"
-						callback={()=>window.location.reload(true)} />
-				});
-			})
-			.catch((res: any) => {
-				console.log(res);
-			})
+		data.append('campaigner_id', ""+getMemberId());
+		try {
+			let res = await axios.post(campaignCreate, data);
+			this.setState({
+				popup: <Popup title="Campaign Submitted" 
+					message="Election Campaign has been submitted"
+					callback={()=>window.location.reload(true)} />
+			});
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	render() {
 		if (!this.state.clicked) {
 			return <div>
-				<button onClick={this.change}>
+				<button className="row-offset-2 interaction-style" onClick={this.change}>
 					Want to run? Click here!
 				</button>
 			</div>
 		} else {
 			const options = this.props.roles.map((role: string, idx: number) => new Option(role, role));
-			return <>
+			return <div>
 			<div className="row-offset-2 register-div" ref={(input) => this.openDiv = input}>
 
 			<h3>Register Election</h3>
 			<textarea 
+				className="interaction-style"
 				placeholder="Your pitch goes here..."
 				value={this.state.pitchValue}
 				onChange={(ev)=>this.setState({pitchValue:ev.target.value})}>
@@ -93,14 +93,16 @@ export class RegisterElectionView extends React.Component<any, any> {
 			options={options} />
 			</div>
 			<div className="row-offset-1">
-			<button onClick={this.close}>Close</button>
+			<div className="col-6">
+			<button className="interaction-style" onClick={this.close}>Close</button>
 			</div>
-			<div className="row-offset-1">
-			<button onClick={this.submit}>Submit</button>
+			<div className="col-6">
+			<button className="interaction-style" onClick={this.submit}>Submit</button>
+			</div>
 			</div>
 			</div>
 			{ this.state.popup && this.state.popup }
-			</>
+			</div>
 		}
 	}
 }

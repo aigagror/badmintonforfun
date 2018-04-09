@@ -5,15 +5,21 @@ import axios from 'axios';
 import { RegisterElectionView } from "./RegisterElection";
 import { RadioButton } from '../common/RadioButton';
 import { Select, Option } from "../common/Select";
+import { xsrfCookieName, xsrfHeaderName } from '../common/LocalResourceResolver';
+import { EditableTextarea } from '../common/EditableTextarea';
+import DatePicker from 'react-datepicker';
+import {objectToFormData} from '../common/Utils';
+declare var require: Function;
+const moment = require('moment');
 
 const election_url = '/api/election/get/';
 const election_edit_url = '/api/election/edit/';
 const campaign_url = '/api/campaign/';
 const election_create_url = '/api/election/create/';
-axios.interceptors.request.use(request => {
-  console.log(request)
-  return request
-})
+const cast_vote_url = '/api/election/vote/';
+
+axios.defaults.xsrfCookieName = xsrfCookieName();
+axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 enum LoadingState {
     Loading,
@@ -27,7 +33,6 @@ function capitalize(str: string): string {
 class ElectionCandidate extends React.Component<any, any> {
 	person: any;
 	role: string;
-	previousTimeout: any;
 	constructor(props: any) {
 		super(props);
 		this.deleteCandidate = this.deleteCandidate.bind(this);
@@ -35,20 +40,19 @@ class ElectionCandidate extends React.Component<any, any> {
 		this.state = {
 			pitch: this.props.person.pitch,
 		}
-		this.previousTimeout = null;
 	}
 
-	deleteCandidate(event: any) {
+	async deleteCandidate(event: any) {
 		axios.delete(campaign_url, {
 		  headers: { 'Content-Type': 'text/plain' },
 		  data: JSON.stringify({
-		  	id: this.props.person.election,
+		  	id: this.props.person.id,
 		  	job: this.props.person.job,
 		  	email: this.props.person.campaigner,
 		  }),
 		})
 		.then((res: any) => {
-			window.location.reload(true);
+			this.props.refresh()
 		})
 		.catch((res: any) => {
 			console.log(res);
@@ -57,32 +61,19 @@ class ElectionCandidate extends React.Component<any, any> {
 		event.preventDefault();
 	}
 
-	updateCandidate(event: any) {
-		if (this.previousTimeout != null) {
-			 clearTimeout(this.previousTimeout);
-			 this.previousTimeout = null;
+	async updateCandidate(event: any) {
+		const data: any = {
+			id: this.props.person.election,
+			job: this.props.person.job,
+			pitch: this.state.pitch,
+			email: this.props.person.campaigner,
 		}
-
-		this.setState({
-			pitch: event.target.value,
-		})
-
-		const makeRequest = () => {
-			let data = new FormData();
-			data.append('id', this.props.person.election);
-			data.append('job', this.props.person.job);
-			data.append('pitch', this.state.pitch);
-			data.append('email', this.props.person.campaigner);
-			axios.post(campaign_url, data)
-				.then((res: any) => {
-					this.previousTimeout = null;
-				})
-				.catch((res: any) => {
-					this.previousTimeout = null;
-					console.log(res);
-				})
+		try {
+			let res = await axios.post(campaign_url, objectToFormData(data));
+			console.log(res);
+		} catch(err) {
+			console.log(err);
 		}
-		this.previousTimeout = setTimeout(makeRequest, 1000);
 	}
 
 	render() {
@@ -90,21 +81,34 @@ class ElectionCandidate extends React.Component<any, any> {
 			<div className="row">
 			<div className="col-1 row-2">
 			<RadioButton name={this.props.role} id={""+this.props.person.id}
-				value={this.props.person.id} defaultChecked={this.props.person.name} />
+				value={this.props.person.id} defaultChecked={this.props.person.name} 
+				onChange={async (ev:any) => {
+					if (!ev.target.checked) return;
+
+					let data = new FormData();
+					data.append('voter', "8");
+					data.append('campaign', ev.target.value);
+					try {
+						let res = await axios.post(cast_vote_url, data);
+						console.log(res);
+					} catch (err) {
+						console.log(err);
+					}
+				}
+				} />
 			</div>
 
 			<div className="col-8 row-2 election-label-div">
 			<label htmlFor={""+this.props.person.id} className="election-label">{this.props.person.name}</label>
 			</div>
 
-			<div className="col-2 row-2">
-			<button onClick={this.deleteCandidate}>X</button>
-			</div>
 			</div>
 
 			<div className="row col-offset-1 col-12">
-			<textarea value={this.state.pitch} onChange={this.updateCandidate}>
-			</textarea>
+			<EditableTextarea 
+				initValue={this.state.pitch} 
+				onSave={this.updateCandidate} 
+				onDelete={this.deleteCandidate} />
 			</div>
 			</div>
 			);
@@ -137,7 +141,77 @@ class ElectionRole extends React.Component<any, any> {
 	}
 }
 
-type ElectionData = ElectionUp | ElectionDown;
+class ElectionUpBoardEditable extends React.Component<any, any> {
+	constructor(props: any) {
+		super(props);
+
+		let end = this.props.endDate === null ? moment() : moment(this.props.endDate);
+		this.state = {
+			startDate: moment(this.props.startDate),
+			endDate: end,
+		}
+		this.deleteElection = this.deleteElection.bind(this);
+	}
+	async deleteElection() {
+		try {
+			let res = await axios({
+		        method: 'DELETE',
+		        url: election_edit_url,
+		        data: {id: this.props.id}
+		    });
+			window.location.reload(true);
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	updateElection (attr: string) {
+		return async (date: any) => {
+			const setter: any = Object.assign({}, this.state);
+			setter[attr] = date;
+			this.setState(setter);
+			const dateFormat = "YYYY-MM-DD";
+			try {
+				let res = await axios.post(election_edit_url,
+			        objectToFormData({
+			        	id: this.props.id, 
+			        	startDate: setter.startDate.format(dateFormat),
+			        	endDate: setter.endDate.format(dateFormat),
+			        })
+			    );
+				window.location.reload(true);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}
+
+	render() {
+		return <div className="row">
+				<h4>Members Only!</h4>
+				<div className="col-4">
+				<h5>Start Date</h5>
+				<DatePicker
+			        selected={this.state.startDate}
+			        onChange={this.updateElection('startDate')}
+			        className="interaction-style"
+			    />
+				</div>
+				<div className="col-4">
+				<h5>End Date</h5>
+				<DatePicker
+			        selected={this.state.endDate}
+			        onChange={this.updateElection('endDate')}
+			        className="interaction-style"
+			    />
+				</div>
+				<div className="col-4">
+					<h5>Warning: Deletes all Votes</h5>
+					<button className="interaction-style" onClick={this.deleteElection}>Delete Election</button>
+				</div>
+			</div>
+	}
+}
 
 class ElectionUp extends React.Component<any, any> {
 
@@ -148,13 +222,12 @@ class ElectionUp extends React.Component<any, any> {
 			let elem = this.props.order[key];
 			campaigns.push([elem, this.props.campaigns[elem]]);
 		}
+
 		this.state = {
 			popup: null,
 			campaigns: campaigns,
 		}
 		this.submitVotes = this.submitVotes.bind(this);
-
-		this.deleteElection = this.deleteElection.bind(this);
 	}
 
 	submitVotes(event: any) {
@@ -172,25 +245,16 @@ class ElectionUp extends React.Component<any, any> {
 		});
 	}
 
-	async deleteElection() {
-		try {
-			console.log({id: this.props.election_id});
-			await axios({
-		        method: 'DELETE',
-		        url: election_edit_url,
-		        data: {id: this.props.election_id}
-		    });
-			this.props.refresh();
-		} catch (err) {
-			console.log(err.request.data);
-		}
-
-	}
-
 	render() {
 		return (<>
-		<div className="grid">
-		<button onClick={this.deleteElection}>Delete Election</button>
+		<div className="grid row-offset-1">
+
+		<ElectionUpBoardEditable 
+			refresh={this.props.refresh}
+			id={this.props.id}
+			startDate={this.props.startDate}
+			endDate={this.props.endDate} />
+
 		<form onSubmit={this.submitVotes}>
 		{
 			this.state.campaigns.map((campaign: any, idx: number) => { 
@@ -202,7 +266,7 @@ class ElectionUp extends React.Component<any, any> {
 			})
 		}
 		<div className="row row-offset-2">
-		<button type="submit">Submit Votes</button>
+		<button className="interaction-style" type="submit">Submit Votes</button>
 		</div>
 		</form>
 		{ this.state.popup !== null && this.state.popup }
@@ -246,7 +310,7 @@ class ElectionDown extends React.Component<any, any> {
 
 	render() {
 		return (<>
-			<p>{this.props.message}</p> <button onClick={this.createElection}>Create</button>
+			<p>{this.props.message}</p> <button className="interaction-style"  onClick={this.createElection}>Create</button>
 			</>);
 	}
 }
@@ -299,7 +363,7 @@ class CampaignResponse {
 
 const convertResponseToHierarchy = (res: CampaignResponse): any => {
 	const ret: any = {};
-	const order = res.campaigns.map((e: any) => e.job);
+	const order = res.order;
 	for (var i of order) {
 		ret[i] = [];
 	}
@@ -326,8 +390,6 @@ export class ElectionView extends React.Component<{}, any> {
 	}
 
 	async performRequest() {
-		const _this_ref = this;
-
 		try {
 			const res = await axios.get(election_url);
 
@@ -335,8 +397,10 @@ export class ElectionView extends React.Component<{}, any> {
 			var pack;
 			if (status === "up") {
 				const hierarchy = convertResponseToHierarchy(res.data);
-				const pack = <ElectionUp order={hierarchy.order} 
-					id={res.data.id}
+				const pack = <ElectionUp order={res.data.order} 
+					id={res.data.election.id}
+					startDate={res.data.election.date}
+					endDate={res.data.election.endDate}
 					campaigns={hierarchy} 
 					roles={hierarchy.order} 
 					refresh={this.performRequest}/>;

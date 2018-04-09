@@ -3,18 +3,21 @@ import axios from 'axios';
 import { Slider } from '../common/Slider'
 import { ProfileView } from './ProfileView'
 import { Select } from '../common/Select'
-import { isBoardMember } from '../common/LocalResourceResolver'
+import { isBoardMember, xsrfCookieName, xsrfHeaderName } from '../common/LocalResourceResolver'
 import { EditableTextarea } from '../common/EditableTextarea';
 
 declare var require: Function;
+const moment = require('moment');
+const BigCalendar = require('react-big-calendar');
+BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
 const stat_urls = "/mock/stats.json"
 const announce_url = "/api/announcements/get/";
 const announce_create_url = "/api/announcements/create/";
 const announce_edit_url = "/api/announcements/edit/";
 
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
+axios.defaults.xsrfCookieName = xsrfCookieName();
+axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 class GameView extends React.Component<any, any> {
 	render() {
@@ -91,23 +94,23 @@ class AnnounceCreator extends React.Component<any, any> {
 					this.setState({titleText:ev.target.value})
 				}} value={this.state.titleText} />
 
-				<textarea placeholder="Body" className="row-offset-1" onChange={(ev: any) => 
+				<textarea placeholder="Body" className="row-offset-1 interaction-style" onChange={(ev: any) => 
 					this.setState({announcementText: ev.target.value})}
 					value={this.state.announcementText}>
 
 				</textarea>
 				<div className="row">
-				<button type="submit" className="">
+				<button type="submit" className="interaction-style">
 					Submit
 				</button>
-				<button onClick={() => this.setState({showCreator: false})} className="">
+				<button onClick={() => this.setState({showCreator: false})} className="interaction-style">
 					Close
 				</button>
 				</div>
 				</form>
 			</div>
 		} else {
-			return <button onClick={() => this.setState({showCreator: true})}>
+			return <button onClick={() => this.setState({showCreator: true})} className="interaction-style">
 						Add an announcement
 					</button>
 		}
@@ -156,21 +159,18 @@ class AnnounceView extends React.Component<any, any> {
 	}
 
 	performUpdate(idx: number) {
-		return (text:string) => {
+		return async (text:string) => {
 					const announce = this.state.announcements[idx];
 					const data = new FormData();
 					data.append('title', announce.title);
 					data.append('entry', text);
 					data.append('id', announce.id);
-					console.log(text);
-					axios.post(announce_edit_url, data)
-						.then((res: any) => {
-							console.log(res)
-							this.performRequest();
-						})
-						.catch((res: any) => {
-							console.log(res);
-						})
+					try {
+						await axios.post(announce_edit_url, data);
+						this.performRequest();
+					} catch (res) {
+						console.log(res);
+					}
 				}
 	}
 
@@ -233,6 +233,20 @@ export class HomeView extends React.Component<{}, any> {
 
 		return (<div className="home-view">
 			<AnnounceView stats={this.state.stats} />
+			<div className="row-offset-2">
+			<BigCalendar
+		      events={[{
+				    id: 1,
+				    title: 'Long Event',
+				    start: new Date(2018, 4, 7),
+				    end: new Date(2018, 4, 10),
+				}]}
+		      views={["month"]}
+			  step={60}
+			  showMultiDayTimes
+			  defaultDate={new Date(2018, 4, 1)}
+		    />
+		    </div>
 			<div className="row-offset-2">
 	    	<StatView stats={this.state.stats} />
 	    	</div>
