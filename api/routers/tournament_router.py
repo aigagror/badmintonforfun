@@ -27,11 +27,27 @@ def create_tournament_router(request):
     """
     # json_post_data = json.loads(request.body.decode('utf8').replace("'", '"'))
     post_dict = dict(request.POST.items())
-    if not validate_keys(["num_player", "tournament_type"], post_dict):
+    if not validate_keys(["num_players", "tournament_type"], post_dict):
         HttpResponse(json.dumps({'message': 'Missing parameters num_players or tournament_type'}),
                      content_type='application/json', status=400)
     return create_tournament(post_dict)
 
+@csrf_exempt
+@restrictRouter(allowed=["POST"])
+def finish_tournament_router(request):
+    """
+    Finish a tournament.
+    Expect the dictionary to be
+    {
+        "tournament_id": _
+    }
+    :param request:
+    :return:
+    """
+    post_dict = dict(request.POST.items())
+    if not validate_keys(["tournament_id"], post_dict):
+        http_response(message="Missing parameter tournament_id", code=400)
+    return finish_tournament(post_dict)
 
 @csrf_exempt
 @restrictRouter(allowed=["GET"])
