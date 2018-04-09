@@ -30,6 +30,7 @@ def campaignRouter(request):
     elif request.method == "DELETE":
         # django doesn't have anything that handles delete so...
         dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
+        print(dict_delete)
         if not validate_keys(["id", "job", "email"], dict_delete):
             HttpResponse(json.dumps({'message': 'Missing parameters'}),
                          content_type='application/json', status=400)

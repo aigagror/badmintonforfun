@@ -20,6 +20,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist/'),
         filename: 'js/[name].js'
     },
+    stats: "minimal",
     devtool: "source-map",
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json", ".scss", ".sass", ".css"]

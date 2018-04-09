@@ -48,3 +48,15 @@ export function isBoardMember(): boolean {
 	cookies.set('isBoardMember', 'true');
 	return true;
 }
+
+export function getMemberId(): number {
+	return 8;
+}
+
+export function xsrfCookieName(): string {
+	return "csrftoken";
+}
+
+export function xsrfHeaderName(): string {
+	return "X-CSRFToken";
+}

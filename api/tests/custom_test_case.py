@@ -103,8 +103,11 @@ class CustomTestCase(TestCase):
 
         for index in range(2**3):
             bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=index)
-            match = matches[index]
+            # Create an empty match
+            match = Match(startDateTime=now, scoreA=0, scoreB=0)
+            match.save()
             bracket_node.match = match
+            bracket_node.save()
 
         # Create some announcements
         self._create_announcements()

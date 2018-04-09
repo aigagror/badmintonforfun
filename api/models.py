@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from .cursor_api import serializeDate
+import base64
 
 # Create your models here.
 

@@ -89,7 +89,7 @@ export class Popup extends React.Component<PopupProps, PopupState> {
 				</div>
 				<div className="row-offset-10">
 				<div className="col-offset-es-9 col-es-5 row-offset-es-9 col-offset-9 row-offset-11">
-					<button className="popup-button row-2" onClick={this.close}>✔</button>
+					<button className="popup-button interaction-style row-2" onClick={this.close}>✔</button>
 				</div>
 				</div>
 				</div>

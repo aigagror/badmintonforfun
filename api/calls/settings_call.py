@@ -73,9 +73,10 @@ def edit_member_info(id, attribute, new_value):
         SET ''' + attribute + '''=%s
         WHERE interested_ptr_id=%s;
         '''
+        print(query, id)
         try:
             cursor.execute(query, [new_value, id])
-        except ProgrammingError:
+        except ProgrammingError as e:
             return HttpResponse(json.dumps({"message": "The attribute specified does not exist."}),
                                 content_type="application/json")
         else:

@@ -3,18 +3,23 @@ import axios from 'axios';
 import { Slider } from '../common/Slider'
 import { ProfileView } from './ProfileView'
 import { Select } from '../common/Select'
-import { isBoardMember } from '../common/LocalResourceResolver'
+import { isBoardMember, xsrfCookieName, xsrfHeaderName, getMemberId } from '../common/LocalResourceResolver'
 import { EditableTextarea } from '../common/EditableTextarea';
+import { objectToFormData } from '../common/Utils';
 
 declare var require: Function;
+const moment = require('moment');
+const BigCalendar = require('react-big-calendar');
+BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
 const stat_urls = "/mock/stats.json"
 const announce_url = "/api/announcements/get/";
 const announce_create_url = "/api/announcements/create/";
 const announce_edit_url = "/api/announcements/edit/";
+const announce_delete_url = "/api/announcements/delete/";
 
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
+axios.defaults.xsrfCookieName = xsrfCookieName();
+axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 class GameView extends React.Component<any, any> {
 	render() {
@@ -63,10 +68,11 @@ class AnnounceCreator extends React.Component<any, any> {
 	}
 
 	sendAnnouncement(ev: any) {
-		var params = new FormData();
-		params.append('title', this.state.titleText);
-		params.append('entry', this.state.titleText);
-		axios.post(announce_create_url, params)
+		const params = {
+			title: this.state.titleText,
+			entry: this.state.annoucementText,
+		}
+		axios.post(announce_create_url, objectToFormData(params))
 		.then((res: any) => {
 			this.setState(this.initState());
 			this.props.refresh();
@@ -84,30 +90,46 @@ class AnnounceCreator extends React.Component<any, any> {
 
 		if (this.state.showCreator) {
 			return <div className="row-offset-1">
-
+				<h4>Send Anouncement</h4>
 				<form onSubmit={this.sendAnnouncement}>
 
-				<input placeholder="Title" type="text" onChange={(ev: any) => {
-					this.setState({titleText:ev.target.value})
-				}} value={this.state.titleText} />
+				<div className="row">
+				<div className="col-8">
+				<input className="interaction-style" 
+					placeholder="Title" 
+					type="text" 
+					onChange={(ev: any) => {
+						this.setState({titleText:ev.target.value})
+					}} 
+					value={this.state.titleText} />
+				</div>
+				</div>
 
-				<textarea placeholder="Body" className="row-offset-1" onChange={(ev: any) => 
+				<div className="row">
+				<div className="col-12">
+				<textarea placeholder="Body" className="row-offset-1 interaction-style" onChange={(ev: any) => 
 					this.setState({announcementText: ev.target.value})}
 					value={this.state.announcementText}>
-
 				</textarea>
-				<div className="row">
-				<button type="submit" className="">
+				</div>
+				</div>
+
+				<div className="row row-offset-1">
+				<div className="col-6">
+				<button type="submit" className="interaction-style">
 					Submit
 				</button>
-				<button onClick={() => this.setState({showCreator: false})} className="">
+				</div>
+				<div className="col-6">
+				<button onClick={() => this.setState({showCreator: false})} className="interaction-style">
 					Close
 				</button>
+				</div>
 				</div>
 				</form>
 			</div>
 		} else {
-			return <button onClick={() => this.setState({showCreator: true})}>
+			return <button onClick={() => this.setState({showCreator: true})} className="interaction-style">
 						Add an announcement
 					</button>
 		}
@@ -124,31 +146,29 @@ class AnnounceView extends React.Component<any, any> {
 
 		this.performRequest = this.performRequest.bind(this);
 		this.performUpdate = this.performUpdate.bind(this);
+		this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
 	}
 
-	performRequest() {
-		axios.get(announce_url)
-			.then((res) => {
-				const announcements = res.data.announcements;
-				if (announcements.length === 0) {
-					const fake = [{
-						title: "No Announcements!",
-						body: "More to come...",
-					}]
-					this.setState({
-						announcements: fake,
-					})
-				} else {
-					const announce = announcements[0];
-					console.log(announce);
-					this.setState({
-						announcements: announcements,
-					})
-				}
-			})
-			.catch((res) => {
-				console.log(res);
-			})
+	async performRequest() {
+		try {
+			const res = await axios.get(announce_url);
+			const announcements = res.data.announcements;
+			if (announcements.length === 0) {
+				const fake = [{
+					title: "No Announcements!",
+					body: "More to come...",
+				}]
+				this.setState({
+					announcements: fake,
+				})
+			} else {
+				this.setState({
+					announcements: announcements,
+				})
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	componentDidMount() {
@@ -156,22 +176,31 @@ class AnnounceView extends React.Component<any, any> {
 	}
 
 	performUpdate(idx: number) {
-		return (text:string) => {
+		return async (text:string) => {
 					const announce = this.state.announcements[idx];
 					const data = new FormData();
 					data.append('title', announce.title);
 					data.append('entry', text);
 					data.append('id', announce.id);
-					console.log(text);
-					axios.post(announce_edit_url, data)
-						.then((res: any) => {
-							console.log(res)
-							this.performRequest();
-						})
-						.catch((res: any) => {
-							console.log(res);
-						})
+					try {
+						await axios.post(announce_edit_url, data);
+						this.performRequest();
+					} catch (res) {
+						console.log(res);
+					}
 				}
+	}
+
+	deleteAnnouncement(idx: number) {
+		return async () => {
+			try {
+				await axios.post(announce_delete_url,
+			         objectToFormData({id: idx}));
+			    this.performRequest();
+			} catch (err) {
+				console.log(err);
+			}
+		}
 	}
 
 	render() {
@@ -187,7 +216,8 @@ class AnnounceView extends React.Component<any, any> {
 						<h3>{announce.title}</h3>
 						<EditableTextarea 
 							initValue={announce.entry}
-							onSave={this.performUpdate(idx)} />
+							onSave={this.performUpdate(idx)}
+							onDelete={this.deleteAnnouncement(announce.id)} />
 					</div>
 				})
 			}
@@ -234,11 +264,25 @@ export class HomeView extends React.Component<{}, any> {
 		return (<div className="home-view">
 			<AnnounceView stats={this.state.stats} />
 			<div className="row-offset-2">
+			<BigCalendar
+		      events={[{
+				    id: 1,
+				    title: 'Long Event',
+				    start: new Date(2018, 4, 7),
+				    end: new Date(2018, 4, 10),
+				}]}
+		      views={["month"]}
+			  step={60}
+			  showMultiDayTimes
+			  defaultDate={new Date(2018, 4, 1)}
+		    />
+		    </div>
+			<div className="row-offset-2">
 	    	<StatView stats={this.state.stats} />
 	    	</div>
 	    	<div className="row-offset-2">
 	    	<h2>Profile</h2>
-	    	<ProfileView member_id={1} />
+	    	<ProfileView member_id={getMemberId()} />
 	    	</div>
 	    	</div>);
 	}

@@ -60,39 +60,46 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 57);
+/******/ 	return __webpack_require__(__webpack_require__.s = 490);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 1:
+/***/ 2:
 /***/ (function(module, exports) {
 
 module.exports = React;
 
 /***/ }),
 
-/***/ 57:
+/***/ 4:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+
+/***/ 490:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(1);
-const ReactDOM = __webpack_require__(9);
-const Queue_1 = __webpack_require__(58);
+const React = __webpack_require__(2);
+const ReactDOM = __webpack_require__(4);
+const Queue_1 = __webpack_require__(491);
 ReactDOM.render(React.createElement(Queue_1.Queue, null), document.querySelector("queue-view"));
 
 
 /***/ }),
 
-/***/ 58:
+/***/ 491:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(1);
+const React = __webpack_require__(2);
 class Queue extends React.Component {
     constructor(props) {
         super(props);
@@ -104,13 +111,6 @@ class Queue extends React.Component {
 }
 exports.Queue = Queue;
 
-
-/***/ }),
-
-/***/ 9:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
 
 /***/ })
 

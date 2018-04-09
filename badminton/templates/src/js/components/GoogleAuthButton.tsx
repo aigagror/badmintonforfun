@@ -16,7 +16,7 @@ export class GoogleAuthButton extends React.Component<GoogleAuthProps, {}> {
 			      onSuccess={this.props.onSuccess}
 			      onFailure={this.props.onFailure}
 			      disabled={false}
-			      className="login-button"
+			      className="login-button interaction-style"
 			    />
 	}
 }

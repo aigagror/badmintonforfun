@@ -75,6 +75,7 @@ WSGI_APPLICATION = 'badminton_server.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+# docker run --name mysql -v ./mysql_data:/var/lib/mysql -p -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 -d mysql:tag
 
 DATABASES = {
     'default': {

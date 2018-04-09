@@ -42,6 +42,7 @@ class TextSetting extends React.Component<any, any> {
 
 	render() {
 		return <input 
+			className="interaction-style"
 			type="text" 
 			name={this.props.data.name} 
 			onChange={(e: any) => this.props.change(e.target.value)}
@@ -52,7 +53,7 @@ class TextSetting extends React.Component<any, any> {
 class LongTextSetting extends React.Component<any, any> {
 
 	render() {
-		return <textarea name={this.props.data.name} 
+		return <textarea className="interaction-style" name={this.props.data.name} 
 			onChange={(e: any) => this.props.change(e.target.value)} 
 			defaultValue={this.props.data.value} />
 	}
@@ -82,34 +83,31 @@ class StandardSettings extends React.Component<any, any> {
 
 	repost() {
 		if (this.previousTimeout !== null) {
-			clearInterval(this.previousTimeout);
+			clearTimeout(this.previousTimeout);
 			this.previousTimeout = null;
 		}
-		console.log(this.state.settings);
-		let data = new FormData();
-		for (let key of Object.keys( this.state.settings )) {
-			data.append(key, this.state.settings[key]);
-		}
+		this.previousTimeout = setTimeout(async () => {
+			let data = new FormData();
+			for (let key of Object.keys( this.state.settings )) {
+				data.append(key, this.state.settings[key]);
+			}
+			try {
+				let res = await axios.post(reg_url, data);
+				console.log(res);
+			} catch(res) {
+				console.log(res);
+			}
 
-		axios.post(reg_url, data)
-			.then((res: any) => {
-				console.log(res);
-				this.setState({
-					popup: <Popup title="Saved" message="Your data has been saved" callback={() => 
-						this.setState({popup:null})} />
-				})
-			})
-			.catch((res: any) => {
-				console.log(res);
-			})
+		}, 1000)
+
 	}
 
 	decideComponent(setting: any, key: any) {
 		const updateFunctor = (val: any) => {
 			const swap = Object.assign({}, this.state.settings);
 			swap[setting.name] = val;
-			console.log(swap);
 			this.setState({settings: swap});
+			this.repost();
 		}
 		if (setting.type === "bool") {
 			return <BoolSetting data={setting} key={key} 
@@ -142,7 +140,6 @@ class StandardSettings extends React.Component<any, any> {
 				</div>
 			})
 		}
-		<button onClick={this.repost}>Save</button>
 		</div>
 		{ this.state.popup && this.state.popup }
 		</>
@@ -229,7 +226,11 @@ class MemberSettings extends React.Component<any, any> {
 					name={member.member_id} />
 				</div>
 				<div className="col-3 col-es-12">
-				<button onClick={this.deleteMember(idx)}>Delete</button>
+				<button 
+					onClick={this.deleteMember(idx)} 
+					className="interaction-style">
+					Delete
+				</button>
 				</div>
 				</div>
 			})
@@ -240,6 +241,8 @@ class MemberSettings extends React.Component<any, any> {
 
 class CourtSettings extends React.Component<any, any> {
 
+	private courts_url: string = '/api/settings/courts';
+
 	constructor(props: any) {
 		super(props);
 
@@ -248,12 +251,24 @@ class CourtSettings extends React.Component<any, any> {
 		}
 	}
 
+	async componentDidMount() {
+		try {
+			const res = await axios.get(this.courts_url);
+			this.setState({
+				courts: res.data.courts,
+			})
+		} catch (ex) {
+			console.log(ex);
+		}
+	}
+
 	render() {
 		if (this.state.courts === null) {
 			return null;
 		}
 
-		return <h3>Courts</h3>
+		return <div>
+		<h3>Courts</h3>
 		{
 			this.state.courts.map((court: any, idx: number) => {
 				return <div key={idx} className="row">
@@ -273,6 +288,8 @@ class CourtSettings extends React.Component<any, any> {
 				</div>
 			})
 		}
+		<button>Add a court</button>
+		</div>
 	}
 }
 
