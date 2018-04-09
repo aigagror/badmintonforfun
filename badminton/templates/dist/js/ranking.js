@@ -1004,7 +1004,7 @@ module.exports = (
 
 /***/ }),
 
-/***/ 248:
+/***/ 249:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1585,7 +1585,7 @@ ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.q
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
-const Slider_1 = __webpack_require__(248);
+const Slider_1 = __webpack_require__(249);
 const ranking_url = '/mock/ranking.json';
 const ranking_not_up = '/mock/ranking_not_up.json';
 class RanksTable extends React.Component {

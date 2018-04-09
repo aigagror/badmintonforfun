@@ -1004,7 +1004,7 @@ module.exports = (
 
 /***/ }),
 
-/***/ 248:
+/***/ 249:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2160,7 +2160,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
-const Slider_1 = __webpack_require__(248);
+const Slider_1 = __webpack_require__(249);
 const Select_1 = __webpack_require__(57);
 const LocalResourceResolver_1 = __webpack_require__(42);
 var LoadingState;

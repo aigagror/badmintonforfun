@@ -5,7 +5,7 @@ import axios from 'axios';
 import { RegisterElectionView } from "./RegisterElection";
 import { RadioButton } from '../common/RadioButton';
 import { Select, Option } from "../common/Select";
-import { xsrfCookieName, xsrfHeaderName } from '../common/LocalResourceResolver';
+import { xsrfCookieName, xsrfHeaderName, getMemberId } from '../common/LocalResourceResolver';
 import { EditableTextarea } from '../common/EditableTextarea';
 import DatePicker from 'react-datepicker';
 import {objectToFormData} from '../common/Utils';
@@ -17,6 +17,7 @@ const election_edit_url = '/api/election/edit/';
 const campaign_url = '/api/campaign/';
 const election_create_url = '/api/election/create/';
 const cast_vote_url = '/api/election/vote/';
+const my_vote_url = '/api/election/vote/get/'
 
 axios.defaults.xsrfCookieName = xsrfCookieName();
 axios.defaults.xsrfHeaderName = xsrfHeaderName();
@@ -80,8 +81,8 @@ class ElectionCandidate extends React.Component<any, any> {
 		return (<div>
 			<div className="row">
 			<div className="col-1 row-2">
-			<RadioButton name={this.props.role} id={""+this.props.person.id}
-				value={this.props.person.id} defaultChecked={this.props.person.name} 
+			<RadioButton name={this.props.role} id={this.props.person.id}
+				value={this.props.person.id} defaultChecked={this.props.voted.includes(this.props.person.id)} 
 				onChange={async (ev:any) => {
 					if (!ev.target.checked) return;
 
@@ -129,11 +130,14 @@ class ElectionRole extends React.Component<any, any> {
 			</div>
 			{
 				this.props.candidates.map((key: any, idx: any) => {
+					console.log(key);
+					console.log(this.props.voted);
 					return <ElectionCandidate 
 						person={key} 
 						role={this.props.role} 
 						key={idx}
-						refresh={this.props.refresh} />
+						refresh={this.props.refresh}
+						voted={this.props.voted} />
 				})
 			}
 			</div>
@@ -149,6 +153,7 @@ class ElectionUpBoardEditable extends React.Component<any, any> {
 		this.state = {
 			startDate: moment(this.props.startDate),
 			endDate: end,
+			voted: this.props.voted,
 		}
 		this.deleteElection = this.deleteElection.bind(this);
 	}
@@ -262,7 +267,8 @@ class ElectionUp extends React.Component<any, any> {
 					role={campaign[0]} 
 					candidates={campaign[1]} 
 					key={idx} 
-					refresh={this.props.refresh}/>
+					refresh={this.props.refresh}
+					voted={this.props.voted}/>
 			})
 		}
 		<div className="row row-offset-2">
@@ -397,12 +403,17 @@ export class ElectionView extends React.Component<{}, any> {
 			var pack;
 			if (status === "up") {
 				const hierarchy = convertResponseToHierarchy(res.data);
+				const res2 = await axios.get(my_vote_url + getMemberId());
+				const selected = res2.data.votes.filter((e: any) => e.id !== getMemberId())
+									.map((e: any) => e.campaign);
+
 				const pack = <ElectionUp order={res.data.order} 
 					id={res.data.election.id}
 					startDate={res.data.election.date}
 					endDate={res.data.election.endDate}
 					campaigns={hierarchy} 
-					roles={hierarchy.order} 
+					roles={hierarchy.order}
+					voted={selected}
 					refresh={this.performRequest}/>;
 
 				this.setState({
@@ -412,7 +423,8 @@ export class ElectionView extends React.Component<{}, any> {
 				})
 			} else if (status === "down") {
 				this.setState({
-					election_data: <ElectionDown message={res.data.message || "Not Up"} refresh={this.performRequest}/>,
+					election_data: <ElectionDown message={res.data.message || "Not Up"} 
+						refresh={this.performRequest}/>,
 					election: LoadingState.Loaded,
 					up: status
 				})

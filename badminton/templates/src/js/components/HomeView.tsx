@@ -5,6 +5,7 @@ import { ProfileView } from './ProfileView'
 import { Select } from '../common/Select'
 import { isBoardMember, xsrfCookieName, xsrfHeaderName } from '../common/LocalResourceResolver'
 import { EditableTextarea } from '../common/EditableTextarea';
+import { objectToFormData } from '../common/Utils';
 
 declare var require: Function;
 const moment = require('moment');
@@ -15,6 +16,7 @@ const stat_urls = "/mock/stats.json"
 const announce_url = "/api/announcements/get/";
 const announce_create_url = "/api/announcements/create/";
 const announce_edit_url = "/api/announcements/edit/";
+const announce_delete_url = "/api/announcements/delete/";
 
 axios.defaults.xsrfCookieName = xsrfCookieName();
 axios.defaults.xsrfHeaderName = xsrfHeaderName();
@@ -66,10 +68,11 @@ class AnnounceCreator extends React.Component<any, any> {
 	}
 
 	sendAnnouncement(ev: any) {
-		var params = new FormData();
-		params.append('title', this.state.titleText);
-		params.append('entry', this.state.titleText);
-		axios.post(announce_create_url, params)
+		const params = {
+			title: this.state.titleText,
+			entry: this.state.annoucementText,
+		}
+		axios.post(announce_create_url, objectToFormData(params))
 		.then((res: any) => {
 			this.setState(this.initState());
 			this.props.refresh();
@@ -127,31 +130,29 @@ class AnnounceView extends React.Component<any, any> {
 
 		this.performRequest = this.performRequest.bind(this);
 		this.performUpdate = this.performUpdate.bind(this);
+		this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
 	}
 
-	performRequest() {
-		axios.get(announce_url)
-			.then((res) => {
-				const announcements = res.data.announcements;
-				if (announcements.length === 0) {
-					const fake = [{
-						title: "No Announcements!",
-						body: "More to come...",
-					}]
-					this.setState({
-						announcements: fake,
-					})
-				} else {
-					const announce = announcements[0];
-					console.log(announce);
-					this.setState({
-						announcements: announcements,
-					})
-				}
-			})
-			.catch((res) => {
-				console.log(res);
-			})
+	async performRequest() {
+		try {
+			const res = await axios.get(announce_url);
+			const announcements = res.data.announcements;
+			if (announcements.length === 0) {
+				const fake = [{
+					title: "No Announcements!",
+					body: "More to come...",
+				}]
+				this.setState({
+					announcements: fake,
+				})
+			} else {
+				this.setState({
+					announcements: announcements,
+				})
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	componentDidMount() {
@@ -174,6 +175,18 @@ class AnnounceView extends React.Component<any, any> {
 				}
 	}
 
+	deleteAnnouncement(idx: number) {
+		return async () => {
+			try {
+				await axios.post(announce_delete_url,
+			         objectToFormData({id: idx}));
+			    this.performRequest();
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}
+
 	render() {
 		if (this.state.announcements === null) {
 			return <p>Loading Announcement</p>
@@ -187,7 +200,8 @@ class AnnounceView extends React.Component<any, any> {
 						<h3>{announce.title}</h3>
 						<EditableTextarea 
 							initValue={announce.entry}
-							onSave={this.performUpdate(idx)} />
+							onSave={this.performUpdate(idx)}
+							onDelete={this.deleteAnnouncement(announce.id)} />
 					</div>
 				})
 			}

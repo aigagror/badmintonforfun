@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 300);
+/******/ 	return __webpack_require__(__webpack_require__.s = 301);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -19278,11 +19278,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(308)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(309)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(310)();
+  module.exports = __webpack_require__(311)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
@@ -20345,7 +20345,23 @@ module.exports = g;
 
 
 /***/ }),
-/* 217 */,
+/* 217 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function objectToFormData(obj) {
+    const data = new FormData();
+    for (let key of Object.keys(obj)) {
+        data.append(key, obj[key]);
+    }
+    return data;
+}
+exports.objectToFormData = objectToFormData;
+
+
+/***/ }),
 /* 218 */,
 /* 219 */,
 /* 220 */,
@@ -20377,7 +20393,8 @@ module.exports = g;
 /* 246 */,
 /* 247 */,
 /* 248 */,
-/* 249 */
+/* 249 */,
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20457,7 +20474,6 @@ exports.Popup = Popup;
 
 
 /***/ }),
-/* 250 */,
 /* 251 */,
 /* 252 */,
 /* 253 */,
@@ -20507,7 +20523,8 @@ exports.Popup = Popup;
 /* 297 */,
 /* 298 */,
 /* 299 */,
-/* 300 */
+/* 300 */,
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20515,12 +20532,12 @@ exports.Popup = Popup;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const ElectionView_1 = __webpack_require__(301);
+const ElectionView_1 = __webpack_require__(302);
 ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
 
 
 /***/ }),
-/* 301 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20535,20 +20552,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
-const Popup_1 = __webpack_require__(249);
+const Popup_1 = __webpack_require__(250);
 const axios_1 = __webpack_require__(12);
-const RegisterElection_1 = __webpack_require__(302);
-const RadioButton_1 = __webpack_require__(303);
+const RegisterElection_1 = __webpack_require__(303);
+const RadioButton_1 = __webpack_require__(304);
 const LocalResourceResolver_1 = __webpack_require__(42);
 const EditableTextarea_1 = __webpack_require__(210);
-const react_datepicker_1 = __webpack_require__(304);
-const Utils_1 = __webpack_require__(315);
+const react_datepicker_1 = __webpack_require__(305);
+const Utils_1 = __webpack_require__(217);
 const moment = __webpack_require__(0);
 const election_url = '/api/election/get/';
 const election_edit_url = '/api/election/edit/';
 const campaign_url = '/api/campaign/';
 const election_create_url = '/api/election/create/';
 const cast_vote_url = '/api/election/vote/';
+const my_vote_url = '/api/election/vote/get/';
 axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
 axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
 var LoadingState;
@@ -20608,7 +20626,7 @@ class ElectionCandidate extends React.Component {
         return (React.createElement("div", null,
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col-1 row-2" },
-                    React.createElement(RadioButton_1.RadioButton, { name: this.props.role, id: "" + this.props.person.id, value: this.props.person.id, defaultChecked: this.props.person.name, onChange: (ev) => __awaiter(this, void 0, void 0, function* () {
+                    React.createElement(RadioButton_1.RadioButton, { name: this.props.role, id: this.props.person.id, value: this.props.person.id, defaultChecked: this.props.voted.includes(this.props.person.id), onChange: (ev) => __awaiter(this, void 0, void 0, function* () {
                             if (!ev.target.checked)
                                 return;
                             let data = new FormData();
@@ -20638,7 +20656,9 @@ class ElectionRole extends React.Component {
                 React.createElement("div", { className: "col-3" },
                     React.createElement("h3", null, this.props.role))),
             this.props.candidates.map((key, idx) => {
-                return React.createElement(ElectionCandidate, { person: key, role: this.props.role, key: idx, refresh: this.props.refresh });
+                console.log(key);
+                console.log(this.props.voted);
+                return React.createElement(ElectionCandidate, { person: key, role: this.props.role, key: idx, refresh: this.props.refresh, voted: this.props.voted });
             })));
     }
 }
@@ -20649,6 +20669,7 @@ class ElectionUpBoardEditable extends React.Component {
         this.state = {
             startDate: moment(this.props.startDate),
             endDate: end,
+            voted: this.props.voted,
         };
         this.deleteElection = this.deleteElection.bind(this);
     }
@@ -20732,7 +20753,7 @@ class ElectionUp extends React.Component {
                 React.createElement(ElectionUpBoardEditable, { refresh: this.props.refresh, id: this.props.id, startDate: this.props.startDate, endDate: this.props.endDate }),
                 React.createElement("form", { onSubmit: this.submitVotes },
                     this.state.campaigns.map((campaign, idx) => {
-                        return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx, refresh: this.props.refresh });
+                        return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx, refresh: this.props.refresh, voted: this.props.voted });
                     }),
                     React.createElement("div", { className: "row row-offset-2" },
                         React.createElement("button", { className: "interaction-style", type: "submit" }, "Submit Votes"))),
@@ -20826,7 +20847,10 @@ class ElectionView extends React.Component {
                 var pack;
                 if (status === "up") {
                     const hierarchy = convertResponseToHierarchy(res.data);
-                    const pack = React.createElement(ElectionUp, { order: res.data.order, id: res.data.election.id, startDate: res.data.election.date, endDate: res.data.election.endDate, campaigns: hierarchy, roles: hierarchy.order, refresh: this.performRequest });
+                    const res2 = yield axios_1.default.get(my_vote_url + LocalResourceResolver_1.getMemberId());
+                    const selected = res2.data.votes.filter((e) => e.id !== LocalResourceResolver_1.getMemberId())
+                        .map((e) => e.campaign);
+                    const pack = React.createElement(ElectionUp, { order: res.data.order, id: res.data.election.id, startDate: res.data.election.date, endDate: res.data.election.endDate, campaigns: hierarchy, roles: hierarchy.order, voted: selected, refresh: this.performRequest });
                     this.setState({
                         election_data: pack,
                         election: LoadingState.Loaded,
@@ -20876,7 +20900,7 @@ exports.ElectionView = ElectionView;
 
 
 /***/ }),
-/* 302 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20892,7 +20916,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const Select_1 = __webpack_require__(57);
-const Popup_1 = __webpack_require__(249);
+const Popup_1 = __webpack_require__(250);
 const axios_1 = __webpack_require__(12);
 const LocalResourceResolver_1 = __webpack_require__(42);
 const campaignCreate = '/api/campaign/create';
@@ -20972,7 +20996,7 @@ exports.RegisterElectionView = RegisterElectionView;
 
 
 /***/ }),
-/* 303 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21028,7 +21052,7 @@ exports.RadioButton = RadioButton;
 
 
 /***/ }),
-/* 304 */
+/* 305 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21039,10 +21063,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_classnames__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_onclickoutside__ = __webpack_require__(305);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_onclickoutside__ = __webpack_require__(306);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_moment__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_popper__ = __webpack_require__(306);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_popper__ = __webpack_require__(307);
 
 
 
@@ -24063,7 +24087,7 @@ DatePicker.propTypes = {
 
 
 /***/ }),
-/* 305 */
+/* 306 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24422,18 +24446,18 @@ function onClickOutsideHOC(WrappedComponent, config) {
 
 
 /***/ }),
-/* 306 */
+/* 307 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Manager__ = __webpack_require__(307);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Manager__ = __webpack_require__(308);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__Manager__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Target__ = __webpack_require__(311);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Target__ = __webpack_require__(312);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_1__Target__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Popper__ = __webpack_require__(312);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Popper__ = __webpack_require__(313);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_2__Popper__["a"]; });
 /* unused harmony reexport placements */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Arrow__ = __webpack_require__(314);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Arrow__ = __webpack_require__(315);
 /* unused harmony reexport Arrow */
 
 
@@ -24441,7 +24465,7 @@ function onClickOutsideHOC(WrappedComponent, config) {
 
 
 /***/ }),
-/* 307 */
+/* 308 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24527,7 +24551,7 @@ Manager.defaultProps = {
 /* harmony default export */ __webpack_exports__["a"] = (Manager);
 
 /***/ }),
-/* 308 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24546,7 +24570,7 @@ var warning = __webpack_require__(49);
 var assign = __webpack_require__(36);
 
 var ReactPropTypesSecret = __webpack_require__(215);
-var checkPropTypes = __webpack_require__(309);
+var checkPropTypes = __webpack_require__(310);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -25077,7 +25101,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 309 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25144,7 +25168,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 310 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25209,7 +25233,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 311 */
+/* 312 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25269,7 +25293,7 @@ Target.propTypes = {
 /* harmony default export */ __webpack_exports__["a"] = (Target);
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25278,7 +25302,7 @@ Target.propTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(193);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_popper_js__ = __webpack_require__(313);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_popper_js__ = __webpack_require__(314);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25526,7 +25550,7 @@ Popper.defaultProps = {
 /* harmony default export */ __webpack_exports__["a"] = (Popper);
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -28053,7 +28077,7 @@ Popper.Defaults = Defaults;
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(216)))
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -28117,23 +28141,6 @@ Arrow.propTypes = {
 };
 
 /* unused harmony default export */ var _unused_webpack_default_export = (Arrow);
-
-/***/ }),
-/* 315 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function objectToFormData(obj) {
-    const data = new FormData();
-    for (let key of Object.keys(obj)) {
-        data.append(key, obj[key]);
-    }
-    return data;
-}
-exports.objectToFormData = objectToFormData;
-
 
 /***/ })
 /******/ ]);
