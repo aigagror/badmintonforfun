@@ -4,6 +4,9 @@ from api.routers.router import restrictRouter
 from .router import validate_keys, http_response
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.db import connection
+from api.cursor_api import dictfetchall, serializeDict
+from django.http import HttpResponse
 
 
 @restrictRouter(allowed=["GET"])
@@ -96,3 +99,39 @@ def get_match(request):
         return http_response({}, message="Please pass in a member id", code=400)
 
     return find_current_match_by_member(member_id)
+
+@restrictRouter(allowed=["GET"])
+def recent_matches(request):
+    """
+            (CASE WHEN 
+                (api_playedin.team = 'A') THEN api_match.scoreA ELSE api_match.scoreB END) AS my_score,
+            (CASE WHEN 
+                (api_playedin.team = 'B') THEN api_match.scoreA ELSE api_match.scoreB END) AS their_score,
+            api_match.party_id,
+            api_match.endDateTime,
+            api_match.startDateTime
+    """
+    member_id = request.GET.get('id', None)
+    if member_id is None:
+        return http_response({}, message="Please pass in a member id", code=400)
+
+    with connection.cursor() as cursor:
+        query = """
+        SELECT 
+            (CASE WHEN 
+                (api_playedin.team = 'A') THEN api_match.scoreA 
+                ELSE api_match.scoreB END) AS my_score,
+            (CASE WHEN 
+                (api_playedin.team = 'B') THEN api_match.scoreA 
+                ELSE api_match.scoreB END) AS their_score,
+            api_match.endDateTime,
+            api_match.startDateTime
+        FROM api_member
+        JOIN api_playedin ON api_member.interested_ptr_id = api_playedin.member_id
+        JOIN api_match ON api_match.id = api_playedin.match_id
+        WHERE api_member.interested_ptr_id = %s
+        """
+
+        cursor.execute(query, [member_id])
+        results = serializeDict(dictfetchall(cursor))
+    return HttpResponse(json.dumps(results), content_type="application/json")

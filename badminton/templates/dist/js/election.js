@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 301);
+/******/ 	return __webpack_require__(__webpack_require__.s = 300);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -6443,8 +6443,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 /***/ }),
 /* 34 */,
-/* 35 */,
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6541,7 +6540,74 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
+/* 36 */,
 /* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * This class serves as a resource resolver for classes.
+ * This manages local storage so none of the classes conflict
+ * The classes only need to make sure that their resources are unique
+ * in of themselves.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+var Cookies = __webpack_require__(41);
+/**
+ * Mappings from imported classes to random strings.
+ */
+const obfuscationMappings = {
+    'MailView': 'ysjiUtKPV7',
+};
+/**
+ * Generates key pattern from an instance and an arg
+ * arg being the requested key
+ */
+function _generateKey(instance, arg) {
+    const name = instance.constructor.name;
+    const obf = obfuscationMappings[name];
+    return name + obf;
+}
+/**
+ * Returns a string given the class and the key <arg>
+ */
+function getResource(instance, arg) {
+    const key = _generateKey(instance, arg);
+    return localStorage.getItem(key);
+    ;
+}
+exports.getResource = getResource;
+/**
+ * Sets the requested key <arg> of class <instance> to <value>
+ */
+function setResource(instance, arg, value) {
+    const key = _generateKey(instance, arg);
+    localStorage.setItem(key, value);
+}
+exports.setResource = setResource;
+const cookies = new Cookies();
+function isBoardMember() {
+    cookies.set('isBoardMember', 'true');
+    return true;
+}
+exports.isBoardMember = isBoardMember;
+function getMemberId() {
+    return 8;
+}
+exports.getMemberId = getMemberId;
+function xsrfCookieName() {
+    return "csrftoken";
+}
+exports.xsrfCookieName = xsrfCookieName;
+function xsrfHeaderName() {
+    return "X-CSRFToken";
+}
+exports.xsrfHeaderName = xsrfHeaderName;
+
+
+/***/ }),
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6601,120 +6667,9 @@ module.exports = invariant;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 38 */,
 /* 39 */,
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- */
-
-function makeEmptyFunction(arg) {
-  return function () {
-    return arg;
-  };
-}
-
-/**
- * This function accepts and discards inputs; it has no side effects. This is
- * primarily useful idiomatically for overridable function endpoints which
- * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
- */
-var emptyFunction = function emptyFunction() {};
-
-emptyFunction.thatReturns = makeEmptyFunction;
-emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-emptyFunction.thatReturnsThis = function () {
-  return this;
-};
-emptyFunction.thatReturnsArgument = function (arg) {
-  return arg;
-};
-
-module.exports = emptyFunction;
-
-/***/ }),
-/* 41 */,
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * This class serves as a resource resolver for classes.
- * This manages local storage so none of the classes conflict
- * The classes only need to make sure that their resources are unique
- * in of themselves.
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-var Cookies = __webpack_require__(45);
-/**
- * Mappings from imported classes to random strings.
- */
-const obfuscationMappings = {
-    'MailView': 'ysjiUtKPV7',
-};
-/**
- * Generates key pattern from an instance and an arg
- * arg being the requested key
- */
-function _generateKey(instance, arg) {
-    const name = instance.constructor.name;
-    const obf = obfuscationMappings[name];
-    return name + obf;
-}
-/**
- * Returns a string given the class and the key <arg>
- */
-function getResource(instance, arg) {
-    const key = _generateKey(instance, arg);
-    return localStorage.getItem(key);
-    ;
-}
-exports.getResource = getResource;
-/**
- * Sets the requested key <arg> of class <instance> to <value>
- */
-function setResource(instance, arg, value) {
-    const key = _generateKey(instance, arg);
-    localStorage.setItem(key, value);
-}
-exports.setResource = setResource;
-const cookies = new Cookies();
-function isBoardMember() {
-    cookies.set('isBoardMember', 'true');
-    return true;
-}
-exports.isBoardMember = isBoardMember;
-function getMemberId() {
-    return 8;
-}
-exports.getMemberId = getMemberId;
-function xsrfCookieName() {
-    return "csrftoken";
-}
-exports.xsrfCookieName = xsrfCookieName;
-function xsrfHeaderName() {
-    return "X-CSRFToken";
-}
-exports.xsrfHeaderName = xsrfHeaderName;
-
-
-/***/ }),
-/* 43 */,
-/* 44 */,
-/* 45 */
+/* 40 */,
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6724,7 +6679,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Cookies = __webpack_require__(46);
+var _Cookies = __webpack_require__(42);
 
 var _Cookies2 = _interopRequireDefault(_Cookies);
 
@@ -6734,7 +6689,7 @@ exports.default = _Cookies2.default;
 module.exports = exports['default'];
 
 /***/ }),
-/* 46 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6748,15 +6703,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _cookie = __webpack_require__(47);
+var _cookie = __webpack_require__(43);
 
 var _cookie2 = _interopRequireDefault(_cookie);
 
-var _objectAssign = __webpack_require__(36);
+var _objectAssign = __webpack_require__(35);
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-var _utils = __webpack_require__(48);
+var _utils = __webpack_require__(44);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6880,7 +6835,7 @@ function readCookie(value) {
 module.exports = exports['default'];
 
 /***/ }),
-/* 47 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7082,7 +7037,7 @@ function tryDecode(str, decode) {
 
 
 /***/ }),
-/* 48 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7112,6 +7067,51 @@ function cleanCookies() {
 }
 
 /***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ */
+
+function makeEmptyFunction(arg) {
+  return function () {
+    return arg;
+  };
+}
+
+/**
+ * This function accepts and discards inputs; it has no side effects. This is
+ * primarily useful idiomatically for overridable function endpoints which
+ * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+ */
+var emptyFunction = function emptyFunction() {};
+
+emptyFunction.thatReturns = makeEmptyFunction;
+emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+emptyFunction.thatReturnsThis = function () {
+  return this;
+};
+emptyFunction.thatReturnsArgument = function (arg) {
+  return arg;
+};
+
+module.exports = emptyFunction;
+
+/***/ }),
+/* 46 */,
+/* 47 */,
+/* 48 */,
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7126,7 +7126,7 @@ function cleanCookies() {
 
 
 
-var emptyFunction = __webpack_require__(40);
+var emptyFunction = __webpack_require__(45);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -19278,11 +19278,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(309)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(308)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(311)();
+  module.exports = __webpack_require__(310)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
@@ -19362,10 +19362,10 @@ exports.EditableTextarea = EditableTextarea;
 
 
 
-var emptyFunction = __webpack_require__(40);
-var invariant = __webpack_require__(37);
+var emptyFunction = __webpack_require__(45);
+var invariant = __webpack_require__(38);
 var warning = __webpack_require__(49);
-var assign = __webpack_require__(36);
+var assign = __webpack_require__(35);
 
 var ReactPropTypesSecret = __webpack_require__(50);
 var checkPropTypes = __webpack_require__(212);
@@ -19913,7 +19913,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(37);
+  var invariant = __webpack_require__(38);
   var warning = __webpack_require__(49);
   var ReactPropTypesSecret = __webpack_require__(50);
   var loggedTypeFailures = {};
@@ -19979,8 +19979,8 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(40);
-var invariant = __webpack_require__(37);
+var emptyFunction = __webpack_require__(45);
+var invariant = __webpack_require__(38);
 var ReactPropTypesSecret = __webpack_require__(50);
 
 module.exports = function() {
@@ -20393,8 +20393,7 @@ exports.objectToFormData = objectToFormData;
 /* 246 */,
 /* 247 */,
 /* 248 */,
-/* 249 */,
-/* 250 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20474,6 +20473,7 @@ exports.Popup = Popup;
 
 
 /***/ }),
+/* 250 */,
 /* 251 */,
 /* 252 */,
 /* 253 */,
@@ -20523,8 +20523,7 @@ exports.Popup = Popup;
 /* 297 */,
 /* 298 */,
 /* 299 */,
-/* 300 */,
-/* 301 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20532,12 +20531,12 @@ exports.Popup = Popup;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const ElectionView_1 = __webpack_require__(302);
+const ElectionView_1 = __webpack_require__(301);
 ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
 
 
 /***/ }),
-/* 302 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20552,13 +20551,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
-const Popup_1 = __webpack_require__(250);
+const Popup_1 = __webpack_require__(249);
 const axios_1 = __webpack_require__(12);
-const RegisterElection_1 = __webpack_require__(303);
-const RadioButton_1 = __webpack_require__(304);
-const LocalResourceResolver_1 = __webpack_require__(42);
+const RegisterElection_1 = __webpack_require__(302);
+const RadioButton_1 = __webpack_require__(303);
+const LocalResourceResolver_1 = __webpack_require__(37);
 const EditableTextarea_1 = __webpack_require__(210);
-const react_datepicker_1 = __webpack_require__(305);
+const react_datepicker_1 = __webpack_require__(304);
 const Utils_1 = __webpack_require__(217);
 const moment = __webpack_require__(0);
 const election_url = '/api/election/get/';
@@ -20900,7 +20899,7 @@ exports.ElectionView = ElectionView;
 
 
 /***/ }),
-/* 303 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20916,9 +20915,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const Select_1 = __webpack_require__(57);
-const Popup_1 = __webpack_require__(250);
+const Popup_1 = __webpack_require__(249);
 const axios_1 = __webpack_require__(12);
-const LocalResourceResolver_1 = __webpack_require__(42);
+const LocalResourceResolver_1 = __webpack_require__(37);
 const campaignCreate = '/api/campaign/create';
 class RegisterElectionView extends React.Component {
     constructor(props) {
@@ -20996,7 +20995,7 @@ exports.RegisterElectionView = RegisterElectionView;
 
 
 /***/ }),
-/* 304 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21052,7 +21051,7 @@ exports.RadioButton = RadioButton;
 
 
 /***/ }),
-/* 305 */
+/* 304 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21063,10 +21062,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_classnames__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_onclickoutside__ = __webpack_require__(306);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_onclickoutside__ = __webpack_require__(305);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_moment__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_popper__ = __webpack_require__(307);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_popper__ = __webpack_require__(306);
 
 
 
@@ -24087,7 +24086,7 @@ DatePicker.propTypes = {
 
 
 /***/ }),
-/* 306 */
+/* 305 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24446,18 +24445,18 @@ function onClickOutsideHOC(WrappedComponent, config) {
 
 
 /***/ }),
-/* 307 */
+/* 306 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Manager__ = __webpack_require__(308);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Manager__ = __webpack_require__(307);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__Manager__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Target__ = __webpack_require__(312);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Target__ = __webpack_require__(311);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_1__Target__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Popper__ = __webpack_require__(313);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Popper__ = __webpack_require__(312);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_2__Popper__["a"]; });
 /* unused harmony reexport placements */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Arrow__ = __webpack_require__(315);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Arrow__ = __webpack_require__(314);
 /* unused harmony reexport Arrow */
 
 
@@ -24465,7 +24464,7 @@ function onClickOutsideHOC(WrappedComponent, config) {
 
 
 /***/ }),
-/* 308 */
+/* 307 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24551,7 +24550,7 @@ Manager.defaultProps = {
 /* harmony default export */ __webpack_exports__["a"] = (Manager);
 
 /***/ }),
-/* 309 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24564,13 +24563,13 @@ Manager.defaultProps = {
 
 
 
-var emptyFunction = __webpack_require__(40);
-var invariant = __webpack_require__(37);
+var emptyFunction = __webpack_require__(45);
+var invariant = __webpack_require__(38);
 var warning = __webpack_require__(49);
-var assign = __webpack_require__(36);
+var assign = __webpack_require__(35);
 
 var ReactPropTypesSecret = __webpack_require__(215);
-var checkPropTypes = __webpack_require__(310);
+var checkPropTypes = __webpack_require__(309);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -25101,7 +25100,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 310 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25115,7 +25114,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(37);
+  var invariant = __webpack_require__(38);
   var warning = __webpack_require__(49);
   var ReactPropTypesSecret = __webpack_require__(215);
   var loggedTypeFailures = {};
@@ -25168,7 +25167,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 311 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25181,8 +25180,8 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(40);
-var invariant = __webpack_require__(37);
+var emptyFunction = __webpack_require__(45);
+var invariant = __webpack_require__(38);
 var ReactPropTypesSecret = __webpack_require__(215);
 
 module.exports = function() {
@@ -25233,7 +25232,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 312 */
+/* 311 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25293,7 +25292,7 @@ Target.propTypes = {
 /* harmony default export */ __webpack_exports__["a"] = (Target);
 
 /***/ }),
-/* 313 */
+/* 312 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25302,7 +25301,7 @@ Target.propTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(193);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_popper_js__ = __webpack_require__(314);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_popper_js__ = __webpack_require__(313);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25550,7 +25549,7 @@ Popper.defaultProps = {
 /* harmony default export */ __webpack_exports__["a"] = (Popper);
 
 /***/ }),
-/* 314 */
+/* 313 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -28077,7 +28076,7 @@ Popper.Defaults = Defaults;
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(216)))
 
 /***/ }),
-/* 315 */
+/* 314 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

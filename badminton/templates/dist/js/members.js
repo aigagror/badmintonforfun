@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 486);
+/******/ 	return __webpack_require__(__webpack_require__.s = 485);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1528,7 +1528,7 @@ module.exports = ReactDOM;
 
 /***/ }),
 
-/***/ 486:
+/***/ 485:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1536,13 +1536,13 @@ module.exports = ReactDOM;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const MemberView_1 = __webpack_require__(487);
+const MemberView_1 = __webpack_require__(486);
 ReactDOM.render(React.createElement(MemberView_1.MemberView, null), document.querySelector("member-view"));
 
 
 /***/ }),
 
-/***/ 487:
+/***/ 486:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

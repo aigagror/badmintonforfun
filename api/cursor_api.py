@@ -50,23 +50,24 @@ def deserializeDateTime(strObj):
 
     return datetime.datetime.strptime(strObj, dateTimeFormatString)
 
-def serializeModel(model):
-
-    def _serializeDict(json):
-        if isinstance(json, list):
-            for i in json:
-                _serializeDict(json[i])
-            return
-
-        for key, val in json.items():
-            if isinstance(val, dict):
-                _serializeDict(val)
-            elif isinstance(val, datetime.date):
-                json[key] = serializeDate(val)
-
+def serializeDict(json):
+    if isinstance(json, list):
+        for i in json:
+            serializeDict(i)
         return json
 
-    return _serializeDict(model_to_dict(model))
+    for key, val in json.items():
+        if isinstance(val, dict):
+            serializeDict(val)
+        elif isinstance(val, datetime.datetime):
+            json[key] = val.isoformat()
+        elif isinstance(val, datetime.date):
+            json[key] = serializeDate(val)
+
+    return json
+
+def serializeModel(model):
+    return serializeDict(model_to_dict(model))
 
 def toJson(json):
     ret = dict()

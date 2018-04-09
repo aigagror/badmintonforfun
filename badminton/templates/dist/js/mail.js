@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 488);
+/******/ 	return __webpack_require__(__webpack_require__.s = 487);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1521,7 +1521,7 @@ module.exports = function spread(callback) {
 
 /***/ }),
 
-/***/ 36:
+/***/ 35:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1619,14 +1619,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 4:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-
-/***/ 42:
+/***/ 37:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1638,7 +1631,7 @@ module.exports = ReactDOM;
  * in of themselves.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var Cookies = __webpack_require__(45);
+var Cookies = __webpack_require__(41);
 /**
  * Mappings from imported classes to random strings.
  */
@@ -1693,7 +1686,14 @@ exports.xsrfHeaderName = xsrfHeaderName;
 
 /***/ }),
 
-/***/ 45:
+/***/ 4:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+
+/***/ 41:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1703,7 +1703,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Cookies = __webpack_require__(46);
+var _Cookies = __webpack_require__(42);
 
 var _Cookies2 = _interopRequireDefault(_Cookies);
 
@@ -1714,7 +1714,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 46:
+/***/ 42:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1728,15 +1728,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _cookie = __webpack_require__(47);
+var _cookie = __webpack_require__(43);
 
 var _cookie2 = _interopRequireDefault(_cookie);
 
-var _objectAssign = __webpack_require__(36);
+var _objectAssign = __webpack_require__(35);
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-var _utils = __webpack_require__(48);
+var _utils = __webpack_require__(44);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1861,7 +1861,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 47:
+/***/ 43:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2064,7 +2064,7 @@ function tryDecode(str, decode) {
 
 /***/ }),
 
-/***/ 48:
+/***/ 44:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2095,7 +2095,7 @@ function cleanCookies() {
 
 /***/ }),
 
-/***/ 488:
+/***/ 487:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2103,13 +2103,13 @@ function cleanCookies() {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const MailView_1 = __webpack_require__(489);
+const MailView_1 = __webpack_require__(488);
 ReactDOM.render(React.createElement(MailView_1.MailView, null), document.querySelector("mail-form"));
 
 
 /***/ }),
 
-/***/ 489:
+/***/ 488:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2117,7 +2117,7 @@ ReactDOM.render(React.createElement(MailView_1.MailView, null), document.querySe
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
-const LocalResourceResolver_1 = __webpack_require__(42);
+const LocalResourceResolver_1 = __webpack_require__(37);
 const Select_1 = __webpack_require__(57);
 const mail_list_url = '/mock/mail_lists.json';
 const mail_data_location = 'mailData';
@@ -2126,6 +2126,8 @@ class MailView extends React.Component {
         super(props);
         this.state = {
             lists: null,
+            bodyText: "",
+            titleText: ""
         };
         this.sendMail = this.sendMail.bind(this);
         this.scoopData = this.scoopData.bind(this);
@@ -2156,20 +2158,21 @@ class MailView extends React.Component {
     scoopData() {
         const data = {
             list: this.mailingList,
-            title: this.titleElem.value,
-            body: this.bodyElem.value
+            title: this.state.titleText,
+            body: this.state.bodyText
         };
         return data;
     }
     setData(data) {
+        this.setState({
+            titleText: data.title,
+            bodyText: data.body
+        });
         this.mailingList.value = data.list;
-        this.titleElem.value = data.title;
-        this.bodyElem.value = data.body;
     }
     sendMail(event) {
         event.preventDefault();
         const data = this.scoopData();
-        console.log(data);
     }
     render() {
         if (this.state.lists === null) {
@@ -2189,13 +2192,13 @@ class MailView extends React.Component {
                     React.createElement(Select_1.Select, { options: selectData, onChange: this.switch, name: "mailState" }))),
             React.createElement("div", { className: "row row-offset-1" },
                 React.createElement("div", { className: "col-8" },
-                    React.createElement("input", { type: "text", placeholder: "Title", ref: (input) => { this.titleElem = input; }, className: "mail-title" }))),
+                    React.createElement("input", { type: "text", placeholder: "Title", value: this.state.titleText, onChange: (ev) => this.setState({ titleText: ev.target.value }), className: "mail-title interaction-style" }))),
             React.createElement("div", { className: "row row-offset-1" },
                 React.createElement("div", { className: "col-12" },
-                    React.createElement("textarea", { placeholder: "Body", ref: (input) => { this.bodyElem = input; }, className: "mail-body" }))),
+                    React.createElement("textarea", { placeholder: "Body", value: this.state.bodyText, onChange: (ev) => this.setState({ bodyText: ev.target.value }), className: "mail-body interaction-style" }))),
             React.createElement("div", { className: "row row-offset-1" },
                 React.createElement("div", { className: "col-4" },
-                    React.createElement("button", { type: "submit", onClick: this.sendMail }, "Submit")))));
+                    React.createElement("button", { type: "submit", onClick: this.sendMail, className: "interaction-style" }, "Submit")))));
     }
 }
 exports.MailView = MailView;

@@ -85,6 +85,7 @@ match_paths = [
     re_path(r'create/?$', match_router.create_match, name='create_match'),
     re_path(r'delete/?$', match_router.delete_match, name='delete_match'),
     re_path(r'get/?$', match_router.get_match, name='get_match'),
+    re_path(r'recent/?$', match_router.recent_matches, name='get_match'),
 ]
 
 party_paths = [

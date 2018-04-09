@@ -9,8 +9,6 @@ const mail_data_location = 'mailData';
 
 export class MailView extends React.Component<any, any> {
 
-	private bodyElem: HTMLTextAreaElement;
-	private titleElem: HTMLInputElement;
 	private mailingList: any;
 
 	constructor(props: any) {
@@ -18,6 +16,8 @@ export class MailView extends React.Component<any, any> {
 
 		this.state = {
 			lists: null,
+			bodyText: "",
+			titleText: ""
 		}
 		this.sendMail = this.sendMail.bind(this);
 		this.scoopData = this.scoopData.bind(this);
@@ -56,23 +56,24 @@ export class MailView extends React.Component<any, any> {
 	scoopData() {
 		const data = {
 			list: this.mailingList,
-			title: this.titleElem.value,
-			body: this.bodyElem.value
+			title: this.state.titleText,
+			body: this.state.bodyText
 		};
 		return data;
 	}
 
 	setData(data: any) {
+		this.setState({
+			titleText: data.title,
+			bodyText: data.body
+		})
 		this.mailingList.value = data.list;
-		this.titleElem.value = data.title;
-		this.bodyElem.value = data.body;
 	}
 
 
 	sendMail(event: any) {
 		event.preventDefault();
 		const data = this.scoopData();
-		console.log(data);
 	}
 
 
@@ -103,23 +104,28 @@ export class MailView extends React.Component<any, any> {
 			<div className="row row-offset-1">
 			<div className="col-8">
 			<input type="text" placeholder="Title" 
-				ref={(input) => { this.titleElem = input; }}
-				className="mail-title"/>
+				value={this.state.titleText}
+				onChange={(ev: any) => this.setState({titleText: ev.target.value})}
+				className="mail-title interaction-style"/>
 			</div>
 			</div>
 
 			<div className="row row-offset-1">
 			<div className="col-12">
 			<textarea placeholder="Body" 
-				ref={(input) => { this.bodyElem = input; }}
-				className="mail-body">
+				value={this.state.bodyText}
+				onChange={(ev: any) => this.setState({bodyText: ev.target.value})}
+				className="mail-body interaction-style">
 			</textarea>
 			</div>
 			</div>
 
 			<div className="row row-offset-1">
 			<div className="col-4">
-			<button type="submit" onClick={this.sendMail}>Submit</button>
+				<button 
+					type="submit" 
+					onClick={this.sendMail} 
+					className="interaction-style">Submit</button>
 			</div>
 			</div>
 			</div>)
