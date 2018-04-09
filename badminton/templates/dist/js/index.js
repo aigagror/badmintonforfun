@@ -85,7 +85,7 @@ const responseGoogle = (response) => {
 };
 const failureGoogle = (response) => {
 };
-ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: () => { window.location.href = "/sign_in"; } }, "Sign In"), document.querySelector("member-button"));
+ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: () => { window.location.href = "/login"; } }, "Sign In"), document.querySelector("member-button"));
 ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: () => { window.location.href = "./interested.html"; } }, "Interested"), document.querySelector("interested-button"));
 
 

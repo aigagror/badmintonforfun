@@ -3,8 +3,9 @@ import * as ReactDOM from 'react-dom';
 import axios from 'axios';
 import {getResource, setResource} from '../common/LocalResourceResolver';
 import {Select} from '../common/Select';
+import {objectToFormData} from '../common/Utils';
 
-const mail_list_url = '/mock/mail_lists.json'
+const mail_list_url = '/api/mail/'
 const mail_data_location = 'mailData';
 
 export class MailView extends React.Component<any, any> {
@@ -55,7 +56,7 @@ export class MailView extends React.Component<any, any> {
 
 	scoopData() {
 		const data = {
-			list: this.mailingList,
+			mailing_list: this.mailingList,
 			title: this.state.titleText,
 			body: this.state.bodyText
 		};
@@ -71,9 +72,16 @@ export class MailView extends React.Component<any, any> {
 	}
 
 
-	sendMail(event: any) {
+	async sendMail(event: any) {
 		event.preventDefault();
 		const data = this.scoopData();
+		console.log("Hello!");
+		try {
+			await axios.post(mail_list_url, objectToFormData(data));
+
+		} catch (err) {
+			console.log(err)
+		}
 	}
 
 

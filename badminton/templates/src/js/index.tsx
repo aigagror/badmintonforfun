@@ -11,7 +11,7 @@ const failureGoogle = (response: any) => {
 }
 
 ReactDOM.render(
-    <button className="interaction-style" onClick={()=>{window.location.href = "/sign_in"}}>Sign In</button>,
+    <button className="interaction-style" onClick={()=>{window.location.href = "/login"}}>Sign In</button>,
     document.querySelector("member-button")
 );
 

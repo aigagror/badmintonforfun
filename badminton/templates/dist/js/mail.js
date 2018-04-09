@@ -652,6 +652,24 @@ module.exports = function settle(resolve, reject, response) {
 
 /***/ }),
 
+/***/ 181:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function objectToFormData(obj) {
+    const data = new FormData();
+    for (let key of Object.keys(obj)) {
+        data.append(key, obj[key]);
+    }
+    return data;
+}
+exports.objectToFormData = objectToFormData;
+
+
+/***/ }),
+
 /***/ 19:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2114,11 +2132,20 @@ ReactDOM.render(React.createElement(MailView_1.MailView, null), document.querySe
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
 const LocalResourceResolver_1 = __webpack_require__(37);
 const Select_1 = __webpack_require__(57);
+const Utils_1 = __webpack_require__(181);
 const mail_list_url = '/mock/mail_lists.json';
 const mail_data_location = 'mailData';
 class MailView extends React.Component {
@@ -2157,7 +2184,7 @@ class MailView extends React.Component {
     }
     scoopData() {
         const data = {
-            list: this.mailingList,
+            mailing_list: this.mailingList,
             title: this.state.titleText,
             body: this.state.bodyText
         };
@@ -2171,8 +2198,17 @@ class MailView extends React.Component {
         this.mailingList.value = data.list;
     }
     sendMail(event) {
-        event.preventDefault();
-        const data = this.scoopData();
+        return __awaiter(this, void 0, void 0, function* () {
+            event.preventDefault();
+            const data = this.scoopData();
+            console.log("Hello!");
+            try {
+                yield axios_1.default.post(mail_list_url, Utils_1.objectToFormData(data));
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
     }
     render() {
         if (this.state.lists === null) {

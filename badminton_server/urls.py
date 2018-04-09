@@ -27,6 +27,7 @@ urlpatterns = [
     # TODO
     re_path(r'^logout/?$', core_views.logout, name='logout_redirect'),
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
+    re_path(r'^test/', core_views.test),  # <--
     path('flow_redirect/', core_views.done, name="flow_redirect"),
     path('', include('badminton.urls')),
 ]

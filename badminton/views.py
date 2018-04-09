@@ -13,6 +13,7 @@ import os.path
 from badminton_server.settings import DEBUG
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
+from api.calls.interested_call import get_member_class
 
 
 def _file_or_error(file_name, ret_type=str):
@@ -94,7 +95,7 @@ def static_server(request, static_file):
 
     return HttpResponse(content, content_type=content_type)
 
-public_templates = ['index.html', 'interested.html']
+public_templates = ['index.html', 'interested.html', 'registered.html']
 
 def _get_template_name(template):
     if template is None:
@@ -137,6 +138,7 @@ def _bypass_template_server(request, template):
 
 @login_required
 def _login_template_server(request, template):
+    print(get_member_class(request.user.email))
     return _bypass_template_server(request, template)
 
 @ensure_csrf_cookie

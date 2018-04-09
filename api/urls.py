@@ -132,4 +132,5 @@ urlpatterns = [
     path('match/', include(match_paths)),
     path('party/', include(party_paths)),
     path('tournament/', include(tournament_paths)),
+    path('mail/', views.mail),
 ]
