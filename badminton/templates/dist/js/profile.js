@@ -832,23 +832,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
 const default_pic_url = "/assets/default_profile.png";
-const bio_url = '/mock/bio.json';
+const bio_url = '/api/members/profile/';
 class ProfileView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            person: null,
+            bio: null,
+            name: null,
         };
     }
     componentDidMount() {
         axios_1.default.get(bio_url, {
             params: {
-                member_id: this.props.member_id
+                id: this.props.member_id
             }
         })
             .then((res) => {
+            console.log(res.data);
             this.setState({
-                person: res.data
+                bio: res.data.bio,
+                name: res.data.first_name + ' ' + res.data.last_name
             });
         })
             .catch((res) => {
@@ -856,11 +859,10 @@ class ProfileView extends React.Component {
         });
     }
     render() {
-        if (this.state.person === null) {
+        if (this.state.bio === null) {
             return null;
         }
-        const person = this.state.person;
-        var url = person.picture;
+        var url = default_pic_url;
         if (url === null) {
             url = default_pic_url;
         }
@@ -869,8 +871,8 @@ class ProfileView extends React.Component {
                 React.createElement("div", { className: "col-6" },
                     React.createElement("img", { className: "profile-picture", src: url, alt: "Profile picture" })),
                 React.createElement("div", { className: "col-6" },
-                    React.createElement("h2", null, person.name),
-                    React.createElement("p", null, person.bio))));
+                    React.createElement("h2", null, this.state.name),
+                    React.createElement("p", null, this.state.bio))));
     }
 }
 exports.ProfileView = ProfileView;

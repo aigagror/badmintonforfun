@@ -21852,23 +21852,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
 const default_pic_url = "/assets/default_profile.png";
-const bio_url = '/mock/bio.json';
+const bio_url = '/api/members/profile/';
 class ProfileView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            person: null,
+            bio: null,
+            name: null,
         };
     }
     componentDidMount() {
         axios_1.default.get(bio_url, {
             params: {
-                member_id: this.props.member_id
+                id: this.props.member_id
             }
         })
             .then((res) => {
+            console.log(res.data);
             this.setState({
-                person: res.data
+                bio: res.data.bio,
+                name: res.data.first_name + ' ' + res.data.last_name
             });
         })
             .catch((res) => {
@@ -21876,11 +21879,10 @@ class ProfileView extends React.Component {
         });
     }
     render() {
-        if (this.state.person === null) {
+        if (this.state.bio === null) {
             return null;
         }
-        const person = this.state.person;
-        var url = person.picture;
+        var url = default_pic_url;
         if (url === null) {
             url = default_pic_url;
         }
@@ -21889,8 +21891,8 @@ class ProfileView extends React.Component {
                 React.createElement("div", { className: "col-6" },
                     React.createElement("img", { className: "profile-picture", src: url, alt: "Profile picture" })),
                 React.createElement("div", { className: "col-6" },
-                    React.createElement("h2", null, person.name),
-                    React.createElement("p", null, person.bio))));
+                    React.createElement("h2", null, this.state.name),
+                    React.createElement("p", null, this.state.bio))));
     }
 }
 exports.ProfileView = ProfileView;
@@ -26232,14 +26234,21 @@ class AnnounceCreator extends React.Component {
         }
         if (this.state.showCreator) {
             return React.createElement("div", { className: "row-offset-1" },
+                React.createElement("h4", null, "Send Anouncement"),
                 React.createElement("form", { onSubmit: this.sendAnnouncement },
-                    React.createElement("input", { placeholder: "Title", type: "text", onChange: (ev) => {
-                            this.setState({ titleText: ev.target.value });
-                        }, value: this.state.titleText }),
-                    React.createElement("textarea", { placeholder: "Body", className: "row-offset-1 interaction-style", onChange: (ev) => this.setState({ announcementText: ev.target.value }), value: this.state.announcementText }),
                     React.createElement("div", { className: "row" },
-                        React.createElement("button", { type: "submit", className: "interaction-style" }, "Submit"),
-                        React.createElement("button", { onClick: () => this.setState({ showCreator: false }), className: "interaction-style" }, "Close"))));
+                        React.createElement("div", { className: "col-8" },
+                            React.createElement("input", { className: "interaction-style", placeholder: "Title", type: "text", onChange: (ev) => {
+                                    this.setState({ titleText: ev.target.value });
+                                }, value: this.state.titleText }))),
+                    React.createElement("div", { className: "row" },
+                        React.createElement("div", { className: "col-12" },
+                            React.createElement("textarea", { placeholder: "Body", className: "row-offset-1 interaction-style", onChange: (ev) => this.setState({ announcementText: ev.target.value }), value: this.state.announcementText }))),
+                    React.createElement("div", { className: "row row-offset-1" },
+                        React.createElement("div", { className: "col-6" },
+                            React.createElement("button", { type: "submit", className: "interaction-style" }, "Submit")),
+                        React.createElement("div", { className: "col-6" },
+                            React.createElement("button", { onClick: () => this.setState({ showCreator: false }), className: "interaction-style" }, "Close")))));
         }
         else {
             return React.createElement("button", { onClick: () => this.setState({ showCreator: true }), className: "interaction-style" }, "Add an announcement");
@@ -26365,7 +26374,7 @@ class HomeView extends React.Component {
                 React.createElement(StatView, { stats: this.state.stats })),
             React.createElement("div", { className: "row-offset-2" },
                 React.createElement("h2", null, "Profile"),
-                React.createElement(ProfileView_1.ProfileView, { member_id: 1 }))));
+                React.createElement(ProfileView_1.ProfileView, { member_id: LocalResourceResolver_1.getMemberId() }))));
     }
 }
 exports.HomeView = HomeView;

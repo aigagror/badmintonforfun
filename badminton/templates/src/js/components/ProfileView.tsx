@@ -3,26 +3,29 @@ import axios from 'axios';
 
 const default_pic_url = "/assets/default_profile.png";
 
-const bio_url = '/mock/bio.json'
+const bio_url = '/api/members/profile/';
 
 export class ProfileView extends React.Component<any, any> {
 
 	constructor(props: any) {
 	    super(props);
 	    this.state = {
-	    	person: null,
+	    	bio: null,
+	    	name: null,
 	    }
 	}
 
 	componentDidMount() {
 		axios.get(bio_url, {
 			params: {
-				member_id: this.props.member_id
+				id: this.props.member_id
 			}
 		})
 		.then((res) => {
+			console.log(res.data);
 			this.setState({
-				person: res.data
+				bio: res.data.bio,
+				name: res.data.first_name + ' ' + res.data.last_name
 			})
 		})
 		.catch((res) => {
@@ -32,11 +35,10 @@ export class ProfileView extends React.Component<any, any> {
 
 
 	render() {
-		if (this.state.person === null) {
+		if (this.state.bio === null) {
 			return null
 		}
-		const person = this.state.person;
-		var url = person.picture;
+		var url = default_pic_url;
 		if (url === null) {
 			url = default_pic_url;
 		}
@@ -46,8 +48,8 @@ export class ProfileView extends React.Component<any, any> {
 				<img className="profile-picture" src={url} alt="Profile picture" />
 				</div>
 				<div className="col-6">
-				<h2>{person.name}</h2>
-				<p>{person.bio}</p>
+				<h2>{this.state.name}</h2>
+				<p>{this.state.bio}</p>
 				</div>
 			</div>
 			</div>;

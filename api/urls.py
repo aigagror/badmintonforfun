@@ -17,7 +17,8 @@ from django.urls import re_path, path, include
 
 from api.routers import demo, router, votes_router, \
     settings_router, match_router, election_router, \
-    campaign_router, announcement_router, queue_router, party_router, tournament_router
+    campaign_router, announcement_router, queue_router, \
+    party_router, tournament_router, member_router
 
 announcements_paths = [
     # Gets the 3 latest announcements | Edits an announcement
@@ -30,6 +31,7 @@ announcements_paths = [
 
 members_paths = [
     re_path(r'top_players?$', match_router.top_players, name='top_players'),
+    re_path(r'profile/?$', member_router.get_profile)
 ]
 
 election_paths = [

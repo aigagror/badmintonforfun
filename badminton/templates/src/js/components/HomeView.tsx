@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Slider } from '../common/Slider'
 import { ProfileView } from './ProfileView'
 import { Select } from '../common/Select'
-import { isBoardMember, xsrfCookieName, xsrfHeaderName } from '../common/LocalResourceResolver'
+import { isBoardMember, xsrfCookieName, xsrfHeaderName, getMemberId } from '../common/LocalResourceResolver'
 import { EditableTextarea } from '../common/EditableTextarea';
 import { objectToFormData } from '../common/Utils';
 
@@ -90,25 +90,41 @@ class AnnounceCreator extends React.Component<any, any> {
 
 		if (this.state.showCreator) {
 			return <div className="row-offset-1">
-
+				<h4>Send Anouncement</h4>
 				<form onSubmit={this.sendAnnouncement}>
 
-				<input placeholder="Title" type="text" onChange={(ev: any) => {
-					this.setState({titleText:ev.target.value})
-				}} value={this.state.titleText} />
+				<div className="row">
+				<div className="col-8">
+				<input className="interaction-style" 
+					placeholder="Title" 
+					type="text" 
+					onChange={(ev: any) => {
+						this.setState({titleText:ev.target.value})
+					}} 
+					value={this.state.titleText} />
+				</div>
+				</div>
 
+				<div className="row">
+				<div className="col-12">
 				<textarea placeholder="Body" className="row-offset-1 interaction-style" onChange={(ev: any) => 
 					this.setState({announcementText: ev.target.value})}
 					value={this.state.announcementText}>
-
 				</textarea>
-				<div className="row">
+				</div>
+				</div>
+
+				<div className="row row-offset-1">
+				<div className="col-6">
 				<button type="submit" className="interaction-style">
 					Submit
 				</button>
+				</div>
+				<div className="col-6">
 				<button onClick={() => this.setState({showCreator: false})} className="interaction-style">
 					Close
 				</button>
+				</div>
 				</div>
 				</form>
 			</div>
@@ -266,7 +282,7 @@ export class HomeView extends React.Component<{}, any> {
 	    	</div>
 	    	<div className="row-offset-2">
 	    	<h2>Profile</h2>
-	    	<ProfileView member_id={1} />
+	    	<ProfileView member_id={getMemberId()} />
 	    	</div>
 	    	</div>);
 	}
