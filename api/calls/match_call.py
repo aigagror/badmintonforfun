@@ -170,14 +170,22 @@ def finish_match(id):
 def _top_players():
     with connection.cursor() as cursor:
         query = """
-        SELECT member.interested_ptr_id AS email, COUNT(CASE WHEN (playedin.team = 'A' AND match.scoreA > match.scoreB) OR
-                                                         (playedin.team = 'B' AND match.scoreB > match.scoreA) THEN 1 ELSE NULL END) AS wins, 
-                                         COUNT(*) AS total_games
-        FROM (api_member AS member
+        SELECT 
+            member.interested_ptr_id AS id, 
+            COUNT(CASE WHEN 
+                (playedin.team = 'A' AND match.scoreA > match.scoreB) OR
+                (playedin.team = 'B' AND match.scoreB > match.scoreA) THEN 1 ELSE NULL END) AS wins, 
+            COUNT(*) AS total_games,
+            api_interested.first_name AS first_name,
+            api_interested.last_name AS last_name
+        FROM ((api_member AS member
           INNER JOIN api_playedin AS playedin ON member.interested_ptr_id = playedin.member_id)
-          INNER JOIN api_match AS match ON match.id = playedin.match_id
+          INNER JOIN api_match AS match ON match.id = playedin.match_id)
+          INNER JOIN api_interested AS api_interested ON member.interested_ptr_id = api_interested.id
+        WHERE member.private = 0
         GROUP BY member.interested_ptr_id
-        ORDER BY wins * 1.0 / total_games DESC, total_games DESC LIMIT 5;
+        ORDER BY wins * 1.0 / total_games DESC, total_games DESC 
+        LIMIT 5;
         """
 
         cursor.execute(query)
@@ -187,11 +195,8 @@ def _top_players():
 
 def get_top_players():
     results = _top_players()
-    for result in results:
-        member = Interested.objects.raw("SELECT * FROM api_interested WHERE email = %s", [result['email']])[0]
-        result["info"] = serializeModel(member)
 
-    return HttpResponse(json.dumps(results), content_type='applications/json')
+    return HttpResponse(json.dumps(results), content_type='application/json')
 
 def _all_matches():
     all_matches = Match.objects.raw("SELECT * FROM api_match")

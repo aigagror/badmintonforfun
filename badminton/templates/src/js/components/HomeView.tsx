@@ -12,7 +12,7 @@ const moment = require('moment');
 const BigCalendar = require('react-big-calendar');
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
-const stat_urls = "/mock/stats.json"
+const stat_urls = "/api/match/recent/"
 const announce_url = "/api/announcements/get/";
 const announce_create_url = "/api/announcements/create/";
 const announce_edit_url = "/api/announcements/edit/";
@@ -24,8 +24,9 @@ axios.defaults.xsrfHeaderName = xsrfHeaderName();
 class GameView extends React.Component<any, any> {
 	render() {
 		return (<tr className="row-2">
-			<td className="col-3 col-es-6">{this.props.my_score}</td>
-			<td className="col-3 col-es-6">{this.props.their_score}</td>
+			<td className="col-3 col-es-6">{this.props.myScore}</td>
+			<td className="col-3 col-es-6">{this.props.theirScore}</td>
+			<td className="col-3 col-es-6">{this.props.playtime}</td>
 			</tr>)
 	}
 }
@@ -33,16 +34,28 @@ class GameView extends React.Component<any, any> {
 class StatView extends React.Component<any, any> {
 
 	render() {
+
 		return (
 		<div>
 		<h2>Most Recent Games</h2>
 		<table className="stats-table">
 			<thead className="row-3">
-			<tr><th className="col-3 col-es-6">Your Score</th><th className="col-3 col-es-6">My Score</th></tr>
+			<tr>
+			<th className="col-3 col-es-6">Your Score</th>
+			<th className="col-3 col-es-6">My Score</th>
+			<th className="col-3 col-es-6">Play Time</th>
+			</tr>
 			</thead>
 			<tbody>
-			{this.props.stats.games.map ((game: any, idx: number) => {
-				return <GameView key={idx} my_score={game.my_score} their_score={game.their_score} />
+			{this.props.stats.map ((game: any, idx: number) => {
+				let playTime = "ongoing";
+				if (game.endDateTime !== null) {
+					const start = (new Date(game.startDateTime)).getTime();
+					const end = (new Date(game.endDateTime)).getTime();
+					const diff = (end - start) / 1000;
+					playTime = Math.floor((diff / 60)) + ":" + (diff % 60);
+				}
+				return <GameView key={idx} myScore={game.my_score} theirScore={game.their_score} playtime={playTime}/>
 			}) }
 			</tbody>
 		</table>
@@ -55,6 +68,10 @@ class AnnounceCreator extends React.Component<any, any> {
 		super(props);
 		this.initState = this.initState.bind(this);
 		this.state = this.initState();
+
+		this.state = {
+			boardMember: isBoardMember(),
+		}
 
 		this.sendAnnouncement = this.sendAnnouncement.bind(this);
 	}
@@ -84,7 +101,7 @@ class AnnounceCreator extends React.Component<any, any> {
 	}
 
 	render() {
-		if (!isBoardMember()) {
+		if (!this.state.boardMember) {
 			return null;
 		}
 
@@ -142,6 +159,7 @@ class AnnounceView extends React.Component<any, any> {
 		super(props);
 		this.state = {
 			announcements: null,
+			boardMember: isBoardMember(),
 		}
 
 		this.performRequest = this.performRequest.bind(this);
@@ -217,7 +235,8 @@ class AnnounceView extends React.Component<any, any> {
 						<EditableTextarea 
 							initValue={announce.entry}
 							onSave={this.performUpdate(idx)}
-							onDelete={this.deleteAnnouncement(announce.id)} />
+							onDelete={this.deleteAnnouncement(announce.id)}
+							editableOverride={!this.state.boardMember} />
 					</div>
 				})
 			}
@@ -244,15 +263,16 @@ export class HomeView extends React.Component<{}, any> {
 	}
 
 	performRequest(url: string) {
-		axios.get(url)
-			.then((res) => {
+		axios.get(url + "?id=" + getMemberId())
+			.then((res: any) => {
+				console.log(res.data);
 				this.setState({
-					stats: res.data.stat_data,
+					stats: res.data,
 					board_member: res.data.board_member
 				});
 			})
-			.catch((res) => {
-
+			.catch((res: any) => {
+				console.log(res);
 			})
 	}
 

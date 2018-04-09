@@ -38,6 +38,7 @@ export class EditableTextarea extends React.Component<any, any> {
 			readOnly={this.state.readonly}>
 		</textarea>
 		{
+			!this.props.editableOverride && 
 			<>
 			{ this.props.onDelete && <button 
 				className="editable-textarea-delete-button interaction-style"
@@ -45,7 +46,8 @@ export class EditableTextarea extends React.Component<any, any> {
 			X
 			</button>
 		}
-			{this.state.readonly ?
+		{
+			this.state.readonly ?
 			<button onClick={() => {
 				this.textarea.style.height = '1px';
 				this.textarea.style.height = this.textarea.scrollHeight+'px';
@@ -57,7 +59,8 @@ export class EditableTextarea extends React.Component<any, any> {
 			<button onClick={this.saveEdits} 
 				className="editable-textarea-edit-button interaction-style">
 				💾 
-			</button>}
+			</button>
+		}
 			</>
 		}
 		</div>

@@ -1,21 +1,28 @@
 import * as React from "react";
 import axios from 'axios';
 import {Slider} from '../common/Slider';
+import { getMemberId } from '../common/LocalResourceResolver'
 
-const ranking_url = '/mock/ranking.json';
-const ranking_not_up = '/mock/ranking_not_up.json';
+const ranking_url = '/api/members/top_players';
 
 class RanksTable extends React.Component<any, any> {
 	render() {
-		return <div>
+		return <table className="stats-table row-offset-1">
+			<thead className="row-3">
+			<tr><th className="col-3 col-es-6">Rank</th>
+				<th className="col-3 col-es-6">Name</th></tr>
+			</thead>
+			<tbody>
 			{
 				this.props.ranks.map((rank: any, idx: number) => {
-					return <div>
-					{rank.name}, {rank.rank}
-					</div>
+					return (<tr key={idx} className={(getMemberId() === rank.id ? "my-rank " : "")+"row-2"}>
+						<td className="col-3 col-es-6">{idx+1}</td>
+						<td className="col-3 col-es-6">{rank.first_name} {rank.last_name}</td>
+						</tr>);
 				})
 			}
-		</div>
+			</tbody>
+		</table>
 	}
 }
 
@@ -23,13 +30,10 @@ export class RankingView extends React.Component<any, any> {
 
 	constructor(props: any) {
 		super(props);
-		this.switch = this.switch.bind(this);
 
 		this.state = {
 			ranks: null,
-			myRank: null,
 			loading: true,
-			regular: true,
 		}
 	}
 
@@ -41,18 +45,12 @@ export class RankingView extends React.Component<any, any> {
 
 		const regular = this.state.regular;
 		var url = ranking_url;
-		if (this.state.regular) {
-			url = ranking_not_up
-			
-		}
 
 		axios.get(url)
 			.then((res) => {
 				this.setState({
-					ranks: res.data.ranking,
-					myRank: res.data.my_rank,
+					ranks: res.data,
 					loading: false,
-					regular: !regular
 				})
 			})
 			.catch((res) => {
@@ -60,23 +58,12 @@ export class RankingView extends React.Component<any, any> {
 			})
 	}
 
-	switch(event: Event) {
-		if (this.state.loading === true) {
-			return;
-		} else {
-			this.performRequest();
-		}
-	}
-
 	render() {
 		if (this.state.loading === true) {
 			return <p>Loading</p>
 		}
 
-		return <div>
-			<Slider change={this.switch} />
-			<RanksTable ranks={this.state.ranks} myRank={this.state.myRanks}/>
-		</div>
+		return <RanksTable ranks={this.state.ranks} myRank={this.state.myRanks}/>
 	}
 
 }

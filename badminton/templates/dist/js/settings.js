@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 492);
+/******/ 	return __webpack_require__(__webpack_require__.s = 491);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1004,41 +1004,6 @@ module.exports = (
 
 /***/ }),
 
-/***/ 249:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class Slider extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onChange = this.onChange.bind(this);
-        // Since checked is optional, use a double !!
-        // To get a boolean value
-        this.selected = !!this.props.checked;
-    }
-    componentDidMount() {
-        if (this.selected) {
-            this.inputElem.checked = true;
-        }
-    }
-    onChange(event) {
-        this.selected = !this.selected;
-        this.props.change(event);
-    }
-    render() {
-        return (React.createElement("label", { className: "switch" },
-            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: (input) => this.inputElem = input }),
-            React.createElement("span", { className: "slider round" })));
-    }
-}
-exports.Slider = Slider;
-
-
-/***/ }),
-
 /***/ 25:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1556,7 +1521,7 @@ module.exports = function spread(callback) {
 
 /***/ }),
 
-/***/ 36:
+/***/ 35:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1654,14 +1619,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 4:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-
-/***/ 42:
+/***/ 37:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1673,7 +1631,7 @@ module.exports = ReactDOM;
  * in of themselves.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var Cookies = __webpack_require__(45);
+var Cookies = __webpack_require__(41);
 /**
  * Mappings from imported classes to random strings.
  */
@@ -1728,7 +1686,14 @@ exports.xsrfHeaderName = xsrfHeaderName;
 
 /***/ }),
 
-/***/ 45:
+/***/ 4:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+
+/***/ 41:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1738,7 +1703,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Cookies = __webpack_require__(46);
+var _Cookies = __webpack_require__(42);
 
 var _Cookies2 = _interopRequireDefault(_Cookies);
 
@@ -1749,7 +1714,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 46:
+/***/ 42:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1763,15 +1728,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _cookie = __webpack_require__(47);
+var _cookie = __webpack_require__(43);
 
 var _cookie2 = _interopRequireDefault(_cookie);
 
-var _objectAssign = __webpack_require__(36);
+var _objectAssign = __webpack_require__(35);
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-var _utils = __webpack_require__(48);
+var _utils = __webpack_require__(44);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1896,7 +1861,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 47:
+/***/ 43:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2099,7 +2064,7 @@ function tryDecode(str, decode) {
 
 /***/ }),
 
-/***/ 48:
+/***/ 44:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2130,7 +2095,7 @@ function cleanCookies() {
 
 /***/ }),
 
-/***/ 492:
+/***/ 491:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2138,13 +2103,13 @@ function cleanCookies() {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const SettingsView_1 = __webpack_require__(493);
+const SettingsView_1 = __webpack_require__(492);
 ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document.querySelector("settings-view"));
 
 
 /***/ }),
 
-/***/ 493:
+/***/ 492:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2160,9 +2125,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
-const Slider_1 = __webpack_require__(249);
+const Slider_1 = __webpack_require__(493);
 const Select_1 = __webpack_require__(57);
-const LocalResourceResolver_1 = __webpack_require__(42);
+const LocalResourceResolver_1 = __webpack_require__(37);
 var LoadingState;
 (function (LoadingState) {
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
@@ -2439,6 +2404,41 @@ class SettingsView extends React.Component {
     }
 }
 exports.SettingsView = SettingsView;
+
+
+/***/ }),
+
+/***/ 493:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+class Slider extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+        // Since checked is optional, use a double !!
+        // To get a boolean value
+        this.selected = !!this.props.checked;
+    }
+    componentDidMount() {
+        if (this.selected) {
+            this.inputElem.checked = true;
+        }
+    }
+    onChange(event) {
+        this.selected = !this.selected;
+        this.props.change(event);
+    }
+    render() {
+        return (React.createElement("label", { className: "switch" },
+            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: (input) => this.inputElem = input }),
+            React.createElement("span", { className: "slider round" })));
+    }
+}
+exports.Slider = Slider;
 
 
 /***/ }),
