@@ -432,7 +432,7 @@ module.exports = __webpack_require__(14);
 var utils = __webpack_require__(1);
 var bind = __webpack_require__(7);
 var Axios = __webpack_require__(16);
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(6);
 
 /**
  * Create an instance of Axios
@@ -517,7 +517,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(6);
 var utils = __webpack_require__(1);
 var InterceptorManager = __webpack_require__(25);
 var dispatchRequest = __webpack_require__(26);
@@ -851,7 +851,8 @@ class ProfileView extends React.Component {
             console.log(res.data);
             this.setState({
                 bio: res.data.bio,
-                name: res.data.first_name + ' ' + res.data.last_name
+                name: res.data.first_name + ' ' + res.data.last_name,
+                url: res.data.picture,
             });
         })
             .catch((res) => {
@@ -862,7 +863,7 @@ class ProfileView extends React.Component {
         if (this.state.bio === null) {
             return null;
         }
-        var url = default_pic_url;
+        var url = this.state.url;
         if (url === null) {
             url = default_pic_url;
         }
@@ -1130,7 +1131,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(1);
 var transformData = __webpack_require__(27);
 var isCancel = __webpack_require__(10);
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(6);
 var isAbsoluteURL = __webpack_require__(28);
 var combineURLs = __webpack_require__(29);
 
@@ -1599,7 +1600,7 @@ ReactDOM.render(React.createElement(ProfileView_1.ProfileView, { member_id: memb
 
 /***/ }),
 
-/***/ 5:
+/***/ 6:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

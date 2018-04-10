@@ -261,7 +261,6 @@ def settingsQueueRouter(request):
     :param request:
     :return:
     """
-    # session_id = request.session.get('session_id', None)
     session_id = id_for_member(request.user.email)
     if not is_board_member(session_id):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),

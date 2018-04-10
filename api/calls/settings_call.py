@@ -537,6 +537,12 @@ def member_config(member_id):
             "name": 'bio',
             "display_name": "Member Bio",
             "value": member.bio
+        },
+        {
+            "type": "file",
+            "name": 'picture',
+            "display_name": "Member Picture",
+            "value": member.picture
         }
     ]
     return HttpResponse(json.dumps(data), content_type="application/json")

@@ -8,10 +8,11 @@ from django.db import connection, IntegrityError, ProgrammingError
 from api.cursor_api import dictfetchall
 import json
 from django.http import HttpResponse
-from api.routers.router import validate_keys, restrictRouter
-
+from api.routers.router import validate_keys, restrictRouter, auth_decorator
+from api.calls.interested_call import get_member_class, id_for_member, MemberClass
 
 @restrictRouter(allowed=["GET"])
+@auth_decorator(MemberClass.MEMBER)
 def get_profile(request):
     """
         input:
@@ -19,14 +20,10 @@ def get_profile(request):
             "id": int # Needs to be a valid member
         }
     """
-    params = request.GET
-    id_key = 'id'
-    if not id_key in params:
-        return HttpResponse('Required param {} type integer not given'.format(id_key), status=400)
-    member_id = params[id_key]
+    member_id = id_for_member(request.user.email)
     with connection.cursor() as cursor:
         query = '''
-        SELECT bio, first_name, last_name
+        SELECT bio, first_name, last_name, picture
         FROM api_member
         JOIN api_interested ON api_member.interested_ptr_id = api_interested.id
         WHERE id=%s
@@ -37,34 +34,4 @@ def get_profile(request):
         if len(res) == 0:
             return HttpResponse('Member id {} not found'.format(member_id), status=400)
         results = res[0]
-    print(results)
-    return HttpResponse(json.dumps(results), status=200, content_type="application/json")
-
-@restrictRouter(allowed=["GET"])
-def get_profile(request):
-    """
-        input:
-        {
-            "id": int # Needs to be a valid member
-        }
-    """
-    params = request.GET
-    id_key = 'id'
-    if not id_key in params:
-        return HttpResponse('Required param {} type integer not given'.format(id_key), status=400)
-    member_id = params[id_key]
-    with connection.cursor() as cursor:
-        query = '''
-        SELECT bio, first_name, last_name
-        FROM api_member
-        JOIN api_interested ON api_member.interested_ptr_id = api_interested.id
-        WHERE id=%s
-        LIMIT 1;
-        '''
-        cursor.execute(query, [member_id])
-        res = dictfetchall(cursor)
-        if len(res) == 0:
-            return HttpResponse('Member id {} not found'.format(member_id), status=400)
-        results = res[0]
-    print(results)
     return HttpResponse(json.dumps(results), status=200, content_type="application/json")

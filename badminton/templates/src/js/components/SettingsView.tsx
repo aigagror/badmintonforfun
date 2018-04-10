@@ -5,6 +5,7 @@ import { Popup } from '../common/Popup';
 import { Select, Option } from '../common/Select';
 import { isBoardMember } from '../common/LocalResourceResolver';
 import {getResource, setResource, xsrfCookieName, xsrfHeaderName, getMemberId} from '../common/LocalResourceResolver';
+import Dropzone from 'react-dropzone';
 
 axios.defaults.xsrfCookieName = xsrfCookieName();
 axios.defaults.xsrfHeaderName = xsrfHeaderName();
@@ -60,6 +61,57 @@ class LongTextSetting extends React.Component<any, any> {
 		return <textarea className="interaction-style" name={this.props.data.name} 
 			onChange={(e: any) => this.props.change(e.target.value)} 
 			defaultValue={this.props.data.value} />
+	}
+}
+
+const maxFileSize = 1024 * 1024 * 128;
+class FileSetting extends React.Component<any, any> {
+
+	constructor(props: any) {
+		super(props);
+
+		this.state = {
+			popup: null
+		}
+		this.decideFile = this.decideFile.bind(this);
+		this.getBase64 = this.getBase64.bind(this);
+	}
+	getBase64(file: File): Promise<string> {
+		return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload = () => resolve(reader.result);
+				reader.onerror = error => reject(error);
+			});
+	}
+
+	async decideFile(files: Array<File>) {
+		const reset = () => this.setState({popup:null});
+		if (files.length !== 1) {
+			this.setState({
+				popup: <Popup title="One file" message="Please only select on file" callback={reset} />
+			});
+			return;
+		}
+		const file = files[0];
+
+		try {
+			const encoded = await this.getBase64(file);
+			this.props.change(encoded);
+		} catch(err) {
+			console.log(err);
+		}
+
+	}
+
+	render() {
+		return <>
+			<Dropzone onDrop={(files: any) => this.decideFile(files) } multiple={false} maxSize={maxFileSize}>
+	            <p>Drop a picture here!</p>
+	        </Dropzone>
+	        { this.state.popup && this.state.popup }
+	        </>
+
 	}
 }
 
@@ -122,6 +174,8 @@ class StandardSettings extends React.Component<any, any> {
 			return <TextSetting data={setting} key={key} change={updateFunctor} />
 		} else if (setting.type === "long_text") {
 			return <LongTextSetting data={setting} key={key} change={updateFunctor} />
+		} else if (setting.type === "file") {
+			return <FileSetting data={setting} key={key} change={updateFunctor} />
 		}
 	}
 
@@ -253,9 +307,10 @@ class CourtSettings extends React.Component<any, any> {
 		this.state = {
 			courts: null,
 		}
+		this.performRequest = this.performRequest.bind(this);
 	}
 
-	async componentDidMount() {
+	async performRequest() {
 		try {
 			const res = await axios.get(this.courts_url);
 			const options = res.data.court_types.map((court: any) => new Option(court.value, court.display))
@@ -267,6 +322,10 @@ class CourtSettings extends React.Component<any, any> {
 		} catch (ex) {
 			console.log(ex);
 		}
+	}
+
+	componentDidMount() {
+		this.performRequest()
 	}
 
 	render() {
@@ -300,12 +359,14 @@ class CourtSettings extends React.Component<any, any> {
 		<Select 
 			options={this.state.courtTypes}
 			defaultValue={this.state.selectedValue}
-			onChange={(i: any) => {this.setState({selectedValue: i})}}
+			onChange={(i: any) => this.setState({selectedValue: i}) }
 			name={"courtsAdd"} />
 		</div>
+
 		<div className="col-6">
 		<button className="interaction-style">Add a court</button>
 		</div>
+
 		</div>
 		</div>
 	}
@@ -385,7 +446,6 @@ export class SettingsView extends React.Component<any, any> {
 		return <div className="election-view">
 	    	{ this.state.regular_settings !== null &&
 	    		this.state.regular_settings }
-
 	    	<BoardSettings />
 	    </div>
 	}

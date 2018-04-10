@@ -80,11 +80,6 @@ module.exports = React;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const responseGoogle = (response) => {
-    console.log(response);
-};
-const failureGoogle = (response) => {
-};
 ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: () => { window.location.href = "/login"; } }, "Sign In"), document.querySelector("member-button"));
 ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: () => { window.location.href = "./interested.html"; } }, "Interested"), document.querySelector("interested-button"));
 

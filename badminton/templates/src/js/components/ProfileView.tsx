@@ -25,7 +25,8 @@ export class ProfileView extends React.Component<any, any> {
 			console.log(res.data);
 			this.setState({
 				bio: res.data.bio,
-				name: res.data.first_name + ' ' + res.data.last_name
+				name: res.data.first_name + ' ' + res.data.last_name,
+				url: res.data.picture,
 			})
 		})
 		.catch((res) => {
@@ -38,7 +39,7 @@ export class ProfileView extends React.Component<any, any> {
 		if (this.state.bio === null) {
 			return null
 		}
-		var url = default_pic_url;
+		var url = this.state.url;
 		if (url === null) {
 			url = default_pic_url;
 		}
