@@ -19,15 +19,13 @@ def restrictRouter(allowed=list(), incomplete=list()):
         return _func
     return _restrictRouter
 
-def auth_decorator(allowed=list()):
+def auth_decorator(allowed=None):
     def _auth_decorator(func):
         def _func(request, *args, **kwargs):
             if not request.user.is_authenticated:
                 return redirect(LOGIN_URL)
             member_class = get_member_class(request.user.email)
-            print(type(member_class))
-            print(allowed[0])
-            if member_class not in allowed:
+            if member_class.isSuperSet(allowed):
                 return HttpResponse('Not allowed', status=403)
             return func(request, *args, **kwargs)
         return _func

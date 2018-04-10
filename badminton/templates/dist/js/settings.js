@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 491);
+/******/ 	return __webpack_require__(__webpack_require__.s = 489);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1619,7 +1619,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 37:
+/***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1666,12 +1666,13 @@ function setResource(instance, arg, value) {
 exports.setResource = setResource;
 const cookies = new Cookies();
 function isBoardMember() {
-    cookies.set('isBoardMember', 'true');
-    return true;
+    const ret = cookies.get('is_board_member');
+    return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    return 8;
+    const ret = cookies.get('member_id');
+    return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
 function xsrfCookieName() {
@@ -2095,7 +2096,7 @@ function cleanCookies() {
 
 /***/ }),
 
-/***/ 491:
+/***/ 489:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2103,13 +2104,13 @@ function cleanCookies() {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const SettingsView_1 = __webpack_require__(492);
+const SettingsView_1 = __webpack_require__(490);
 ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document.querySelector("settings-view"));
 
 
 /***/ }),
 
-/***/ 492:
+/***/ 490:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2125,9 +2126,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
-const Slider_1 = __webpack_require__(493);
+const Slider_1 = __webpack_require__(491);
 const Select_1 = __webpack_require__(57);
-const LocalResourceResolver_1 = __webpack_require__(37);
+const LocalResourceResolver_1 = __webpack_require__(36);
+const LocalResourceResolver_2 = __webpack_require__(36);
+axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_2.xsrfCookieName();
+axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_2.xsrfHeaderName();
 var LoadingState;
 (function (LoadingState) {
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
@@ -2309,8 +2313,11 @@ class CourtSettings extends React.Component {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const res = yield axios_1.default.get(this.courts_url);
+                const options = res.data.court_types.map((court) => new Select_1.Option(court.value, court.display));
                 this.setState({
                     courts: res.data.courts,
+                    courtTypes: options,
+                    selectedValue: options[0].value,
                 });
             }
             catch (ex) {
@@ -2331,9 +2338,13 @@ class CourtSettings extends React.Component {
                     React.createElement("div", { className: "col-4 col-es-12" },
                         React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: court.type, onChange: (i) => { console.log(i); }, name: "courts" + idx })),
                     React.createElement("div", { className: "col-3 col-es-12" },
-                        React.createElement("button", null, "Delete")));
+                        React.createElement("button", { className: "interaction-style" }, "Delete")));
             }),
-            React.createElement("button", null, "Add a court"));
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { className: "col-6" },
+                    React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: this.state.selectedValue, onChange: (i) => { this.setState({ selectedValue: i }); }, name: "courtsAdd" })),
+                React.createElement("div", { className: "col-6" },
+                    React.createElement("button", { className: "interaction-style" }, "Add a court"))));
     }
 }
 class BoardSettings extends React.Component {
@@ -2408,7 +2419,7 @@ exports.SettingsView = SettingsView;
 
 /***/ }),
 
-/***/ 493:
+/***/ 491:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

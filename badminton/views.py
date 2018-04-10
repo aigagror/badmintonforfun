@@ -13,7 +13,7 @@ import os.path
 from badminton_server.settings import DEBUG
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
-from api.calls.interested_call import get_member_class
+from api.calls.interested_call import get_member_class, id_for_member, MemberClass
 
 
 def _file_or_error(file_name, ret_type=str):
@@ -106,7 +106,7 @@ def _get_template_name(template):
         template += '.html'
     return template
 
-def _bypass_template_server(request, template):
+def _bypass_template_server(request, template, ensure_cookie=True):
     """
         This function takes the template string and renders
         and serves the template that has the same name.
@@ -131,21 +131,23 @@ def _bypass_template_server(request, template):
     for key, value in context.items():
         if isinstance(value, list) and len(value) == 1:
             context[key] = value[0]
-    try:
-        return render(request, template, context=context)
-    except:
-        raise Http404("Page not found")
+    response = render(request, template, context=context)
+    if ensure_cookie:
+        email = request.user.email
+        response.set_cookie('member_id', str(id_for_member(email)))
+        is_board = "true" if get_member_class(email) == MemberClass.BOARD_MEMBER else "false"
+        response.set_cookie('is_board_member', is_board)
+    return response
 
 @login_required
 def _login_template_server(request, template):
-    print(get_member_class(request.user.email))
     return _bypass_template_server(request, template)
 
 @ensure_csrf_cookie
 def template_server(request, template=None):
     template = _get_template_name(template)
     if template in public_templates:
-        return _bypass_template_server(request, template)
+        return _bypass_template_server(request, template, ensure_cookie=False)
     else:
         return _login_template_server(request, template)
 

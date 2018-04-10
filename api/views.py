@@ -9,6 +9,8 @@ from django.template import Context, Template
 from django.contrib.auth import logout as auth_logout
 from api.calls.interested_call import get_member_class, MemberClass, add_interested
 from api.routers.router import auth_decorator, restrictRouter, validate_keys
+from django.db import connection
+from api.cursor_api import dictfetchall
 
 def sign_in(request):
     url = Template("{% url 'social:begin' 'google-oauth2' %}")
@@ -23,14 +25,17 @@ def logout(request):
 def done(request):
     email = request.user.email
     member_class = get_member_class(email)
+    print(member_class)
     if member_class == MemberClass.OUTSIDE:
         add_interested(request.user)
+        auth_logout(request)
         return redirect('/registered')
     elif member_class == MemberClass.INTERESTED:
+        auth_logout(request)
         return redirect('/registered')
     return redirect('/home')
 
-@auth_decorator(allowed=[MemberClass.OUTSIDE])
+@auth_decorator(allowed=MemberClass.OUTSIDE)
 def test(request):
     return HttpResponse("Hello!")
 
@@ -65,10 +70,11 @@ def emails_for_key(key):
             """
             cursor.execute(query)
             results = dictfetchall(cursor)
+    print(results)
     emails = list(map(lambda x: x['email'], results))
     return emails
 
-@auth_decorator(allowed=[MemberClass.BOARD_MEMBER])
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["GET", "POST"])
 def mail(request):
     if request.method == "GET":

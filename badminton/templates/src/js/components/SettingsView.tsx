@@ -4,6 +4,10 @@ import { Slider } from '../common/Slider';
 import { Popup } from '../common/Popup';
 import { Select, Option } from '../common/Select';
 import { isBoardMember } from '../common/LocalResourceResolver';
+import {getResource, setResource, xsrfCookieName, xsrfHeaderName, getMemberId} from '../common/LocalResourceResolver';
+
+axios.defaults.xsrfCookieName = xsrfCookieName();
+axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 enum LoadingState {
     Loading,
@@ -254,8 +258,11 @@ class CourtSettings extends React.Component<any, any> {
 	async componentDidMount() {
 		try {
 			const res = await axios.get(this.courts_url);
+			const options = res.data.court_types.map((court: any) => new Option(court.value, court.display))
 			this.setState({
 				courts: res.data.courts,
+				courtTypes: options,
+				selectedValue: options[0].value,
 			})
 		} catch (ex) {
 			console.log(ex);
@@ -283,12 +290,23 @@ class CourtSettings extends React.Component<any, any> {
 					name={"courts" + idx} />
 				</div>
 				<div className="col-3 col-es-12">
-				<button>Delete</button>
+				<button className="interaction-style">Delete</button>
 				</div>
 				</div>
 			})
 		}
-		<button>Add a court</button>
+		<div className="row">
+		<div className="col-6">
+		<Select 
+			options={this.state.courtTypes}
+			defaultValue={this.state.selectedValue}
+			onChange={(i: any) => {this.setState({selectedValue: i})}}
+			name={"courtsAdd"} />
+		</div>
+		<div className="col-6">
+		<button className="interaction-style">Add a court</button>
+		</div>
+		</div>
 		</div>
 	}
 }

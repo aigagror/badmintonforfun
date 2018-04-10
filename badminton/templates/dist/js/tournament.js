@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 496);
+/******/ 	return __webpack_require__(__webpack_require__.s = 494);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1528,7 +1528,7 @@ module.exports = ReactDOM;
 
 /***/ }),
 
-/***/ 496:
+/***/ 494:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1536,13 +1536,13 @@ module.exports = ReactDOM;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const TournamentView_1 = __webpack_require__(497);
+const TournamentView_1 = __webpack_require__(495);
 ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), document.querySelector("tournament-view"));
 
 
 /***/ }),
 
-/***/ 497:
+/***/ 495:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

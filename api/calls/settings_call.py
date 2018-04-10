@@ -387,15 +387,11 @@ def get_all_courts():
     Returns all courts
     :return:
     """
-    # with connection.cursor() as cursor:
-    #     query = '''
-    #         SELECT *
-    #         FROM api_court;
-    #         '''
-    #     cursor.execute(query)
-    #     results = dictfetchall(cursor)
-    # return results
-    return Court.objects.raw("SELECT * FROM api_court")
+    with connection.cursor() as cursor:
+        query = "SELECT * FROM api_court JOIN api_queue ON api_queue.id = api_court.queue_id"
+        cursor.execute(query)
+        results = dictfetchall(cursor)
+    return results
 
 
 def get_court(court_id):
@@ -636,7 +632,7 @@ def get_all_club_members():
         }
         ret_list.append(boardmember_dict)
 
-    context = {'members': ret_list, 'memberTypes': ["Member", "BoardMember"]}
+    context = {'members': ret_list, 'memberTypes': ["Member", "BoardMember", "Interested"]}
 
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
 
@@ -766,17 +762,16 @@ def get_all_courts_formmated():
     :return:
     """
     courts = get_all_courts()
-    if not courts:
-        return HttpResponse(json.dumps({"message": "There are no courts stored in the database."}),
-                            content_type="application/json")
+
     ret_list = []
     for c in courts:
         court_dict = {
-            'court_id': c.id,
-            'queue_id': c.queue_id
+            'court_id': c['id'],
+            'court_type': c['type']
         }
         ret_list.append(court_dict)
     context = {'courts': ret_list}
+    context['court_types'] = list(map(lambda x: {"display":x[1], "value":x[0]}, QUEUE_TYPE))
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
 
 def addto_edit_courts_formatted(dict_post):

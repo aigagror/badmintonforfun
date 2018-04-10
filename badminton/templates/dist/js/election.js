@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 300);
+/******/ 	return __webpack_require__(__webpack_require__.s = 298);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1902,7 +1902,7 @@
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(213)("./" + name);
+                __webpack_require__(214)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -5218,11 +5218,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(210)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(211)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(212)();
+  module.exports = __webpack_require__(213)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
@@ -6540,8 +6540,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 36 */,
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6588,12 +6587,13 @@ function setResource(instance, arg, value) {
 exports.setResource = setResource;
 const cookies = new Cookies();
 function isBoardMember() {
-    cookies.set('isBoardMember', 'true');
-    return true;
+    const ret = cookies.get('is_board_member');
+    return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    return 8;
+    const ret = cookies.get('member_id');
+    return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
 function xsrfCookieName() {
@@ -6607,6 +6607,7 @@ exports.xsrfHeaderName = xsrfHeaderName;
 
 
 /***/ }),
+/* 37 */,
 /* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19273,6 +19274,86 @@ exports.objectToFormData = objectToFormData;
 /* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+/**
+ * Contains a popup view that need only to be rendered
+ * To work. Appears in the middle of the screen and darkens
+ * The body.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+const popupDisabledClass = "popup-disabled";
+const popupScreenFadeClass = 'popup-screen-fade';
+const popupFadeClass = 'popup-fade';
+class PopupProps {
+}
+exports.PopupProps = PopupProps;
+class PopupState {
+}
+class Popup extends React.Component {
+    constructor(props) {
+        super(props);
+        this.close = this.close.bind(this);
+    }
+    componentDidMount() {
+        /* Programatically create a div to overlay everything and animate it in
+            Also force the body not to scroll */
+        this.screenDiv = document.createElement('div');
+        this.screenDiv.className = 'popup-screen';
+        const body = document.querySelector('body');
+        body.appendChild(this.screenDiv);
+        body.classList.add(popupDisabledClass);
+    }
+    componentWillUnmount() {
+        /* Remove the programatic div and let the body scroll */
+        const body = document.querySelector('body');
+        body.removeChild(this.screenDiv);
+        body.classList.remove(popupDisabledClass);
+    }
+    close() {
+        /* Animate everything in */
+        this.wrapperDiv.classList.add(popupFadeClass);
+        this.screenDiv.classList.add(popupScreenFadeClass);
+        /* Cool so we can seperate concerns */
+        const refCounter = { count: 0 };
+        const callback = () => {
+            if (refCounter.count == 1) {
+                this.props.callback();
+            }
+            else {
+                refCounter.count += 1;
+            }
+        };
+        /*
+         * Since there are two animations going on we want to wait
+         * for both of them to end. So we use a reference counter
+         * in the form of a bound object.
+         */
+        this.wrapperDiv.addEventListener('animationend', callback);
+        this.screenDiv.addEventListener('animationend', callback);
+    }
+    render() {
+        return (React.createElement("div", { className: "popup-div", ref: (input) => this.wrapperDiv = input },
+            React.createElement("div", { className: "grid row" },
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-11 popup-title-div" },
+                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-offset-1 col-11" },
+                        React.createElement("p", { className: "popup-message" }, this.props.message))),
+                React.createElement("div", { className: "row-offset-10" },
+                    React.createElement("div", { className: "col-offset-es-9 col-es-5 row-offset-es-9 col-offset-9 row-offset-11" },
+                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
+    }
+}
+exports.Popup = Popup;
+
+
+/***/ }),
+/* 195 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -19295,17 +19376,16 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(308)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(306)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(310)();
+  module.exports = __webpack_require__(308)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 195 */,
 /* 196 */,
 /* 197 */,
 /* 198 */,
@@ -19319,7 +19399,8 @@ if (process.env.NODE_ENV !== 'production') {
 /* 206 */,
 /* 207 */,
 /* 208 */,
-/* 209 */
+/* 209 */,
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19365,7 +19446,7 @@ exports.EditableTextarea = EditableTextarea;
 
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19384,7 +19465,7 @@ var warning = __webpack_require__(49);
 var assign = __webpack_require__(35);
 
 var ReactPropTypesSecret = __webpack_require__(50);
-var checkPropTypes = __webpack_require__(211);
+var checkPropTypes = __webpack_require__(212);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -19915,7 +19996,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19982,7 +20063,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20047,7 +20128,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -20312,10 +20393,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 213;
+webpackContext.id = 214;
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20334,7 +20415,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports) {
 
 var g;
@@ -20361,7 +20442,6 @@ module.exports = g;
 
 
 /***/ }),
-/* 216 */,
 /* 217 */,
 /* 218 */,
 /* 219 */,
@@ -20392,86 +20472,7 @@ module.exports = g;
 /* 244 */,
 /* 245 */,
 /* 246 */,
-/* 247 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * Contains a popup view that need only to be rendered
- * To work. Appears in the middle of the screen and darkens
- * The body.
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const popupDisabledClass = "popup-disabled";
-const popupScreenFadeClass = 'popup-screen-fade';
-const popupFadeClass = 'popup-fade';
-class PopupProps {
-}
-exports.PopupProps = PopupProps;
-class PopupState {
-}
-class Popup extends React.Component {
-    constructor(props) {
-        super(props);
-        this.close = this.close.bind(this);
-    }
-    componentDidMount() {
-        /* Programatically create a div to overlay everything and animate it in
-            Also force the body not to scroll */
-        this.screenDiv = document.createElement('div');
-        this.screenDiv.className = 'popup-screen';
-        const body = document.querySelector('body');
-        body.appendChild(this.screenDiv);
-        body.classList.add(popupDisabledClass);
-    }
-    componentWillUnmount() {
-        /* Remove the programatic div and let the body scroll */
-        const body = document.querySelector('body');
-        body.removeChild(this.screenDiv);
-        body.classList.remove(popupDisabledClass);
-    }
-    close() {
-        /* Animate everything in */
-        this.wrapperDiv.classList.add(popupFadeClass);
-        this.screenDiv.classList.add(popupScreenFadeClass);
-        /* Cool so we can seperate concerns */
-        const refCounter = { count: 0 };
-        const callback = () => {
-            if (refCounter.count == 1) {
-                this.props.callback();
-            }
-            else {
-                refCounter.count += 1;
-            }
-        };
-        /*
-         * Since there are two animations going on we want to wait
-         * for both of them to end. So we use a reference counter
-         * in the form of a bound object.
-         */
-        this.wrapperDiv.addEventListener('animationend', callback);
-        this.screenDiv.addEventListener('animationend', callback);
-    }
-    render() {
-        return (React.createElement("div", { className: "popup-div", ref: (input) => this.wrapperDiv = input },
-            React.createElement("div", { className: "grid row" },
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-11 popup-title-div" },
-                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-offset-1 col-11" },
-                        React.createElement("p", { className: "popup-message" }, this.props.message))),
-                React.createElement("div", { className: "row-offset-10" },
-                    React.createElement("div", { className: "col-offset-es-9 col-es-5 row-offset-es-9 col-offset-9 row-offset-11" },
-                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
-    }
-}
-exports.Popup = Popup;
-
-
-/***/ }),
+/* 247 */,
 /* 248 */,
 /* 249 */,
 /* 250 */,
@@ -20522,9 +20523,7 @@ exports.Popup = Popup;
 /* 295 */,
 /* 296 */,
 /* 297 */,
-/* 298 */,
-/* 299 */,
-/* 300 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20532,12 +20531,12 @@ exports.Popup = Popup;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const ElectionView_1 = __webpack_require__(301);
+const ElectionView_1 = __webpack_require__(299);
 ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
 
 
 /***/ }),
-/* 301 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20552,13 +20551,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
-const Popup_1 = __webpack_require__(247);
+const Popup_1 = __webpack_require__(194);
 const axios_1 = __webpack_require__(12);
-const RegisterElection_1 = __webpack_require__(302);
-const RadioButton_1 = __webpack_require__(303);
-const LocalResourceResolver_1 = __webpack_require__(37);
-const EditableTextarea_1 = __webpack_require__(209);
-const react_datepicker_1 = __webpack_require__(304);
+const RegisterElection_1 = __webpack_require__(300);
+const RadioButton_1 = __webpack_require__(301);
+const LocalResourceResolver_1 = __webpack_require__(36);
+const EditableTextarea_1 = __webpack_require__(210);
+const react_datepicker_1 = __webpack_require__(302);
 const Utils_1 = __webpack_require__(181);
 const moment = __webpack_require__(0);
 const election_url = '/api/election/get/';
@@ -20900,7 +20899,7 @@ exports.ElectionView = ElectionView;
 
 
 /***/ }),
-/* 302 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20916,9 +20915,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const Select_1 = __webpack_require__(57);
-const Popup_1 = __webpack_require__(247);
+const Popup_1 = __webpack_require__(194);
 const axios_1 = __webpack_require__(12);
-const LocalResourceResolver_1 = __webpack_require__(37);
+const LocalResourceResolver_1 = __webpack_require__(36);
 const campaignCreate = '/api/campaign/create';
 class RegisterElectionView extends React.Component {
     constructor(props) {
@@ -20996,7 +20995,7 @@ exports.RegisterElectionView = RegisterElectionView;
 
 
 /***/ }),
-/* 303 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21052,7 +21051,7 @@ exports.RadioButton = RadioButton;
 
 
 /***/ }),
-/* 304 */
+/* 302 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21063,10 +21062,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_classnames__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_onclickoutside__ = __webpack_require__(305);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_onclickoutside__ = __webpack_require__(303);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_moment__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_popper__ = __webpack_require__(306);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_popper__ = __webpack_require__(304);
 
 
 
@@ -24087,7 +24086,7 @@ DatePicker.propTypes = {
 
 
 /***/ }),
-/* 305 */
+/* 303 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24446,18 +24445,18 @@ function onClickOutsideHOC(WrappedComponent, config) {
 
 
 /***/ }),
-/* 306 */
+/* 304 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Manager__ = __webpack_require__(307);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Manager__ = __webpack_require__(305);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__Manager__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Target__ = __webpack_require__(311);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Target__ = __webpack_require__(309);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_1__Target__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Popper__ = __webpack_require__(312);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Popper__ = __webpack_require__(310);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_2__Popper__["a"]; });
 /* unused harmony reexport placements */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Arrow__ = __webpack_require__(314);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Arrow__ = __webpack_require__(312);
 /* unused harmony reexport Arrow */
 
 
@@ -24465,13 +24464,13 @@ function onClickOutsideHOC(WrappedComponent, config) {
 
 
 /***/ }),
-/* 307 */
+/* 305 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(195);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -24551,7 +24550,7 @@ Manager.defaultProps = {
 /* harmony default export */ __webpack_exports__["a"] = (Manager);
 
 /***/ }),
-/* 308 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24569,8 +24568,8 @@ var invariant = __webpack_require__(38);
 var warning = __webpack_require__(49);
 var assign = __webpack_require__(35);
 
-var ReactPropTypesSecret = __webpack_require__(214);
-var checkPropTypes = __webpack_require__(309);
+var ReactPropTypesSecret = __webpack_require__(215);
+var checkPropTypes = __webpack_require__(307);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -25101,7 +25100,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 309 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25117,7 +25116,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(38);
   var warning = __webpack_require__(49);
-  var ReactPropTypesSecret = __webpack_require__(214);
+  var ReactPropTypesSecret = __webpack_require__(215);
   var loggedTypeFailures = {};
 }
 
@@ -25168,7 +25167,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 310 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25183,7 +25182,7 @@ module.exports = checkPropTypes;
 
 var emptyFunction = __webpack_require__(45);
 var invariant = __webpack_require__(38);
-var ReactPropTypesSecret = __webpack_require__(214);
+var ReactPropTypesSecret = __webpack_require__(215);
 
 module.exports = function() {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -25233,13 +25232,13 @@ module.exports = function() {
 
 
 /***/ }),
-/* 311 */
+/* 309 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(195);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -25293,16 +25292,16 @@ Target.propTypes = {
 /* harmony default export */ __webpack_exports__["a"] = (Target);
 
 /***/ }),
-/* 312 */
+/* 310 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export placements */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(195);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_popper_js__ = __webpack_require__(313);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_popper_js__ = __webpack_require__(311);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25550,7 +25549,7 @@ Popper.defaultProps = {
 /* harmony default export */ __webpack_exports__["a"] = (Popper);
 
 /***/ }),
-/* 313 */
+/* 311 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -28074,16 +28073,16 @@ Popper.Defaults = Defaults;
 
 /* harmony default export */ __webpack_exports__["a"] = (Popper);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(215)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(216)))
 
 /***/ }),
-/* 314 */
+/* 312 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(195);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 

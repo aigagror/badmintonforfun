@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 487);
+/******/ 	return __webpack_require__(__webpack_require__.s = 485);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -695,6 +695,87 @@ module.exports = function enhanceError(error, config, code, request, response) {
   error.response = response;
   return error;
 };
+
+
+/***/ }),
+
+/***/ 194:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Contains a popup view that need only to be rendered
+ * To work. Appears in the middle of the screen and darkens
+ * The body.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+const popupDisabledClass = "popup-disabled";
+const popupScreenFadeClass = 'popup-screen-fade';
+const popupFadeClass = 'popup-fade';
+class PopupProps {
+}
+exports.PopupProps = PopupProps;
+class PopupState {
+}
+class Popup extends React.Component {
+    constructor(props) {
+        super(props);
+        this.close = this.close.bind(this);
+    }
+    componentDidMount() {
+        /* Programatically create a div to overlay everything and animate it in
+            Also force the body not to scroll */
+        this.screenDiv = document.createElement('div');
+        this.screenDiv.className = 'popup-screen';
+        const body = document.querySelector('body');
+        body.appendChild(this.screenDiv);
+        body.classList.add(popupDisabledClass);
+    }
+    componentWillUnmount() {
+        /* Remove the programatic div and let the body scroll */
+        const body = document.querySelector('body');
+        body.removeChild(this.screenDiv);
+        body.classList.remove(popupDisabledClass);
+    }
+    close() {
+        /* Animate everything in */
+        this.wrapperDiv.classList.add(popupFadeClass);
+        this.screenDiv.classList.add(popupScreenFadeClass);
+        /* Cool so we can seperate concerns */
+        const refCounter = { count: 0 };
+        const callback = () => {
+            if (refCounter.count == 1) {
+                this.props.callback();
+            }
+            else {
+                refCounter.count += 1;
+            }
+        };
+        /*
+         * Since there are two animations going on we want to wait
+         * for both of them to end. So we use a reference counter
+         * in the form of a bound object.
+         */
+        this.wrapperDiv.addEventListener('animationend', callback);
+        this.screenDiv.addEventListener('animationend', callback);
+    }
+    render() {
+        return (React.createElement("div", { className: "popup-div", ref: (input) => this.wrapperDiv = input },
+            React.createElement("div", { className: "grid row" },
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-11 popup-title-div" },
+                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-offset-1 col-11" },
+                        React.createElement("p", { className: "popup-message" }, this.props.message))),
+                React.createElement("div", { className: "row-offset-10" },
+                    React.createElement("div", { className: "col-offset-es-9 col-es-5 row-offset-es-9 col-offset-9 row-offset-11" },
+                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
+    }
+}
+exports.Popup = Popup;
 
 
 /***/ }),
@@ -1637,7 +1718,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 37:
+/***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1684,12 +1765,13 @@ function setResource(instance, arg, value) {
 exports.setResource = setResource;
 const cookies = new Cookies();
 function isBoardMember() {
-    cookies.set('isBoardMember', 'true');
-    return true;
+    const ret = cookies.get('is_board_member');
+    return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    return 8;
+    const ret = cookies.get('member_id');
+    return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
 function xsrfCookieName() {
@@ -2113,7 +2195,7 @@ function cleanCookies() {
 
 /***/ }),
 
-/***/ 487:
+/***/ 485:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2121,13 +2203,13 @@ function cleanCookies() {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const MailView_1 = __webpack_require__(488);
+const MailView_1 = __webpack_require__(486);
 ReactDOM.render(React.createElement(MailView_1.MailView, null), document.querySelector("mail-form"));
 
 
 /***/ }),
 
-/***/ 488:
+/***/ 486:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2143,10 +2225,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
-const LocalResourceResolver_1 = __webpack_require__(37);
+const LocalResourceResolver_1 = __webpack_require__(36);
 const Select_1 = __webpack_require__(57);
 const Utils_1 = __webpack_require__(181);
-const mail_list_url = '/mock/mail_lists.json';
+const Popup_1 = __webpack_require__(194);
+axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
+axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
+const mail_list_url = '/api/mail/';
 const mail_data_location = 'mailData';
 class MailView extends React.Component {
     constructor(props) {
@@ -2154,37 +2239,45 @@ class MailView extends React.Component {
         this.state = {
             lists: null,
             bodyText: "",
-            titleText: ""
+            titleText: "",
+            mailingList: "",
+            popup: null,
         };
         this.sendMail = this.sendMail.bind(this);
         this.scoopData = this.scoopData.bind(this);
         this.setData = this.setData.bind(this);
         this.switch = this.switch.bind(this);
+        this.resetState = this.resetState.bind(this);
     }
     componentDidMount() {
-        axios_1.default.get(mail_list_url)
-            .then((res) => {
-            this.setState({
-                lists: res.data.lists,
-            });
-            this.mailingList = res.data.lists[0].value;
-            const item = LocalResourceResolver_1.getResource(this, mail_data_location);
-            if (item !== null) {
-                this.setData(JSON.parse(item));
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const res = yield axios_1.default.get(mail_list_url);
+                this.setState({
+                    lists: res.data,
+                    mailingList: res.data[0].value,
+                });
+                const item = LocalResourceResolver_1.getResource(this, mail_data_location);
+                if (item !== null) {
+                    this.setData(JSON.parse(item));
+                }
+                window.setInterval(() => {
+                    LocalResourceResolver_1.setResource(this, mail_data_location, JSON.stringify(this.scoopData()));
+                }, 5000);
             }
-            window.setInterval(() => {
-                LocalResourceResolver_1.setResource(this, mail_data_location, JSON.stringify(this.scoopData()));
-            }, 5000);
-        })
-            .catch((res) => {
+            catch (err) {
+                console.log(err);
+            }
         });
     }
     switch(value) {
-        this.mailingList = value;
+        this.setState({
+            mailingList: value
+        });
     }
     scoopData() {
         const data = {
-            mailing_list: this.mailingList,
+            mailing_list: this.state.mailingList,
             title: this.state.titleText,
             body: this.state.bodyText
         };
@@ -2193,20 +2286,31 @@ class MailView extends React.Component {
     setData(data) {
         this.setState({
             titleText: data.title,
-            bodyText: data.body
+            bodyText: data.body,
+            mailingList: data.list,
         });
-        this.mailingList.value = data.list;
+    }
+    resetState() {
+        this.setState({
+            popup: null
+        });
     }
     sendMail(event) {
         return __awaiter(this, void 0, void 0, function* () {
             event.preventDefault();
             const data = this.scoopData();
-            console.log("Hello!");
             try {
                 yield axios_1.default.post(mail_list_url, Utils_1.objectToFormData(data));
+                this.setState({
+                    titleText: "",
+                    bodyText: "",
+                    popup: React.createElement(Popup_1.Popup, { title: "Success", message: "Massmail will be incrementally sent", callback: this.resetState }),
+                });
             }
             catch (err) {
-                console.log(err);
+                this.setState({
+                    popup: React.createElement(Popup_1.Popup, { title: "Sorry!", message: "There was an error on our end, please check back soon", callback: this.resetState }),
+                });
             }
         });
     }
@@ -2234,7 +2338,8 @@ class MailView extends React.Component {
                     React.createElement("textarea", { placeholder: "Body", value: this.state.bodyText, onChange: (ev) => this.setState({ bodyText: ev.target.value }), className: "mail-body interaction-style" }))),
             React.createElement("div", { className: "row row-offset-1" },
                 React.createElement("div", { className: "col-4" },
-                    React.createElement("button", { type: "submit", onClick: this.sendMail, className: "interaction-style" }, "Submit")))));
+                    React.createElement("button", { type: "submit", onClick: this.sendMail, className: "interaction-style" }, "Submit"))),
+            this.state.popup !== null && this.state.popup));
     }
 }
 exports.MailView = MailView;

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 494);
+/******/ 	return __webpack_require__(__webpack_require__.s = 492);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1619,7 +1619,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 37:
+/***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1666,12 +1666,13 @@ function setResource(instance, arg, value) {
 exports.setResource = setResource;
 const cookies = new Cookies();
 function isBoardMember() {
-    cookies.set('isBoardMember', 'true');
-    return true;
+    const ret = cookies.get('is_board_member');
+    return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    return 8;
+    const ret = cookies.get('member_id');
+    return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
 function xsrfCookieName() {
@@ -2095,7 +2096,7 @@ function cleanCookies() {
 
 /***/ }),
 
-/***/ 494:
+/***/ 492:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2103,13 +2104,13 @@ function cleanCookies() {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const ReactDOM = __webpack_require__(4);
-const RankingView_1 = __webpack_require__(495);
+const RankingView_1 = __webpack_require__(493);
 ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.querySelector("ranking-view"));
 
 
 /***/ }),
 
-/***/ 495:
+/***/ 493:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2117,7 +2118,7 @@ ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.q
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
-const LocalResourceResolver_1 = __webpack_require__(37);
+const LocalResourceResolver_1 = __webpack_require__(36);
 const ranking_url = '/api/members/top_players';
 class RanksTable extends React.Component {
     render() {
