@@ -42,7 +42,7 @@ class MatchTest(CustomTestCase):
     def test_find_match_by_member(self):
         self.test_create_match()
         self.create_example_data()
-        response = self.client.get(reverse('api:get_match'), {"id": 1})
+        response = self.client.get(reverse('api:current_match'), {"id": 1})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["match_id"], 0)
 

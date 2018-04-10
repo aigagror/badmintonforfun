@@ -43,6 +43,8 @@ def next_on_queue(request):
 def dequeue_next_party_to_court(request):
     """
     POST -- Dequeues the next party on the specified queue to play
+            This function automatically creates a match for the members in the party and assigns
+            the match to a court
         Needs parameter type=one of CASUAL, RANKED, KOTH
     :param request:
     :return:

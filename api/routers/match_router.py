@@ -5,8 +5,9 @@ from .router import validate_keys, http_response
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
-from api.cursor_api import dictfetchall, serializeDict
+from api.cursor_api import dictfetchall, serializeDict, serializeSetOfModels, serializeModel
 from django.http import HttpResponse
+from api.models import *
 
 
 @restrictRouter(allowed=["GET"])
@@ -85,7 +86,7 @@ def delete_match(request):
 
 
 @restrictRouter(allowed=["GET"])
-def get_match(request):
+def current_match(request):
     """
         GET -- The current match id of the match the member is playing
             Needs parameter id=member id
@@ -101,7 +102,53 @@ def get_match(request):
     return find_current_match_by_member(member_id)
 
 @restrictRouter(allowed=["GET"])
-def recent_matches(request):
+def all_matches(request):
+
+    context = {
+        'matches': None
+    }
+
+    matches = Match.objects.raw("SELECT * FROM api_match")
+    matches_dict = []
+
+
+    for match in matches:
+
+        match_dict = {
+            'match': serializeModel(match),
+            'team_a': [],
+            'team_b': [],
+        }
+
+        # team A
+        team_a_playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s AND team = 'A'", [match.id])
+
+        # team B
+        team_b_playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s AND team = 'B'", [match.id])
+
+        for player_a in team_a_playedins:
+            players = Member.objects.raw("SELECT * FROM api_member WHERE id = %s", [player_a.id])
+            player = players[0]
+            player_dict = serializeModel(player)
+            match_dict['team_a'].append(player_dict)
+
+        for player_b in team_b_playedins:
+            players = Member.objects.raw("SELECT * FROM api_member WHERE id = %s", [player_b.id])
+            player = players[0]
+            player_dict = serializeModel(player)
+            match_dict['team_b'].append(player_dict)
+
+
+        matches_dict.append(match_dict)
+
+    context['matches'] = matches_dict
+
+    return http_response(context)
+
+
+
+@restrictRouter(allowed=["GET"])
+def all_matches_from_member(request):
     """
             (CASE WHEN 
                 (api_playedin.team = 'A') THEN api_match.scoreA ELSE api_match.scoreB END) AS my_score,
