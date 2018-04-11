@@ -20,6 +20,24 @@ POST = "post"
 GET = "get"
 
 def run(path_name, email, method, args):
+    """
+    This decorator extracts Permission p \in {None, Interested, Member, BoardMember} from the email that was given
+    It then asserts that the api described by the path_name and method is not valid for any person with permission below
+    permission p.
+
+    It then calls the api with the given parameters encapsulated by args and stores the result in
+    self.response
+
+    After calling the api, it stores some nice results in some variables such as
+    self.interesteds_now = Interested.objects.all()
+    self.number_of_interesteds_now = len(list(self.interesteds_now))
+
+    :param path_name:
+    :param email:
+    :param method:
+    :param args:
+    :return:
+    """
     def wrapper(test_func):
         def call_api(self):
             if method == POST:
