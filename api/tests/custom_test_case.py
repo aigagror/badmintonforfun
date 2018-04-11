@@ -6,17 +6,20 @@ from enum import Enum
 from django.urls import reverse
 
 
-NONE = 'none@gmail.com'
-INTERESTED = 'interested@gmail.com'
-MEMBER = 'drong4@illinois.edu'
-BOARD_MEMBER = 'obama@gmail.com'
+_class_ranking = [Interested, Member, BoardMember]
+
+INTERESTED = 'interested@illinois.edu'
+MEMBER = 'member@illinois.edu'
+EDDIE = 'ezhuang2@illinois.edu'
+GRACE = 'gshen3@illinois.edu'
+BHUVAN = 'bhuvan2@illinois.edu'
+DAN = 'drong4@illinois.edu'
+BOARD_MEMBER = 'board_member@illinois.edu'
 
 POST = "post"
 GET = "get"
 
-_permission_ranking = [NONE, INTERESTED, MEMBER, BOARD_MEMBER]
-
-def run(path_name, permission, method, args):
+def run(path_name, email, method, args):
     def wrapper(test_func):
         def call_api(self):
             if method == POST:
@@ -25,11 +28,16 @@ def run(path_name, permission, method, args):
                 self.response = self.client.get(reverse('api:{}'.format(path_name)), args)
 
         def authentication(self):
-            self.permission = permission
-            self.url_name = path_name
+            for x in reversed(_class_ranking):
+                person = x.objects.get(email=email)
+                if person is not None:
+                    self.permission = x
+                    break
+
+            self.path_name = path_name
 
             # Login
-            user = User.objects.create_user(username=permission, email=permission)
+            user = User.objects.create_user(username=email, email=email)
             self.client.force_login(user)
 
             call_api(self)
@@ -38,12 +46,14 @@ def run(path_name, permission, method, args):
             test_func(self)
 
             # Assert that the url requires authentication
-            ranking = _permission_ranking.index(permission)
+            ranking = _class_ranking.index(self.permission)
             for i in range(ranking):
                 self.client.logout()
-                lower_permission = _permission_ranking[i]
+                lower_class = _class_ranking[i]
 
-                user = User.objects.create_user(username=lower_permission, email=lower_permission)
+                person = lower_class.objects.first()
+
+                user = User.objects.create_user(username=person.first_name, email=person.email)
                 self.client.force_login(user)
 
                 call_api(self)
@@ -144,11 +154,16 @@ class CustomTestCase(TestCase):
 
     def _create_parties(self):
         """
+        Member is on the casual queue as a party of 1
         Eddie is on the casual queue as a party of 1
         Bhuvan and Dan are on the casual queue as a party of 2
-        (Bhuvan and Dan have priority on the casual queue)
+
+        (Member has the highest priority on the casual queue)
 
         There is no party on the ranked queue
+
+        No one else is on any party
+
         :return:
         """
         casual_queue = Queue.objects.get(type='CASUAL')
@@ -181,6 +196,8 @@ class CustomTestCase(TestCase):
         Eddie has played all matches (80 minutes in total)
         Bhuvan has played one match (10 minutes)
         Dan has played one match (10 minutes)
+
+        Everyone else has not played in any matches
 
         :return:
         """
@@ -223,9 +240,12 @@ class CustomTestCase(TestCase):
     def _create_people(self):
         # Create some interesteds
         interesteds = []
-        interesteds.append(Interested(first_name='Interested', last_name='Guy', email='interested@gmail.com'))
+        interesteds.append(Interested(first_name='Interested', last_name='Guy', email='interested@illinois.edu'))
+
         # Create some members
         members = []
+        members.append(Member(first_name="Member", last_name="Guy", dateJoined=datetime.date.today(),
+                              email="member@illinois.edu", bio="I'm a member"))
         members.append(Member(first_name="Eddie", last_name="Huang", dateJoined=datetime.date.today(),
                               email="ezhuang2@illinois.edu", bio="Hi my name is Eddie. I like badminton"))
         members.append(Member(first_name="Bhuvan", last_name="Venkatesh", dateJoined=datetime.date.today(),
@@ -236,10 +256,14 @@ class CustomTestCase(TestCase):
                               email="gshen3@illinois.edu"))
         members.append(Member(first_name="Jared", last_name="Franzone", dateJoined=datetime.date.today(),
                               email="jfranz2@illinois.edu"))
+
         # Create some boards
         boards = []
+        boards.append(BoardMember(first_name='Board', last_name='Member', dateJoined=datetime.date.today(),
+                                  job="SOME_JOB", email='board_member@illinois.edu', bio="I'm a board member"))
         boards.append(BoardMember(first_name='Barack', last_name='Obama', dateJoined=datetime.date.today(),
-                                  job="PRESIDENT", email='obama@gmail.com'))
+                                  job="PRESIDENT", email='obama@gmail.com', bio='Change we can believe in'))
+
         print("People in the example data")
         for person in (interesteds + members + boards):
             person.save()
