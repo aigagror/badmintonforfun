@@ -178,9 +178,7 @@ def finish_match(id, scoreA, scoreB):
 
             if dequeue_resp.message == 'No parties on this queue':
                 return http_response(message='No parties on this queue')
-
-
-        return response
+            return dequeue_resp
     else:
         return http_response(message='Violating win by 2 rule or at least one player having at least 21 points', code=400)
 
