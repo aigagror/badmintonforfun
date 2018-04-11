@@ -3,6 +3,7 @@ from django.db import connection
 from django.http import HttpResponse
 from ..models import *
 import json
+from .queue_call import get_parties_by_playtime
 
 
 def edit_match(id, score_a, score_b):
@@ -85,6 +86,11 @@ def find_current_match_by_member(id):
 
 
 def _get_winners(match):
+    """
+        Returns a list of the team of winners
+    :param match:
+    :return:
+    """
     if match.scoreA > match.scoreB:
         playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s AND team = 'A'", [match.id])
     else:
@@ -116,6 +122,7 @@ def finish_match(id, scoreA, scoreB):
         return http_response(message='There was an error updating your scores!', code=400)
 
     match = matches[0]
+    court_id = match.court_id
     if abs(match.scoreA - match.scoreB) >= 2 and (match.scoreB >= 21 or match.scoreA >= 21):
         query = '''
             UPDATE api_match SET court_id=NULL, endDateTime=datetime('now') WHERE api_match.id=%s
@@ -143,33 +150,90 @@ def finish_match(id, scoreA, scoreB):
                         sibling_match = bracket_node_sibling.match
                         if sibling_match is not None and sibling_match.endDateTime is not None:
                             # We must add a match to the parent node!
-                            parent_index = index // 2
-                            bracket_nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE tournament_id = %s AND level = %s AND sibling_index = %s", [tournament.id, level - 1, parent_index])
-                            parent_node = bracket_nodes[0]
+                            parent_node = _get_parent_node(tournament.id, level, index)
                             if parent_node.match is None:
-                                new_match = Match(startDateTime=datetime.datetime.now(), scoreA=0, scoreB=0)
-                                new_match.save()
+                                # new_match = Match(startDateTime=datetime.datetime.now(), scoreA=0, scoreB=0)
+                                # new_match.save()
 
                                 winners_of_match = _get_winners(match)
                                 winners_of_sibling_match = _get_winners(sibling_match)
 
-                                for winner in winners_of_match:
-                                    response = run_connection("INSERT INTO api_playedin(team, match_id, member_id) VALUES(%s, %s, %s)", "A", new_match.id, winner.id)
-                                    if response.status_code != 200:
-                                        return response
-
-                                for winner in winners_of_sibling_match:
-                                    response = run_connection("INSERT INTO api_playedin(team, match_id, member_id) VALUES(%s, %s, %s)", "B", new_match.id, winner.id)
-                                    if response.status_code != 200:
-                                        return response
+                                new_match = create_match(scoreA=0, scoreB=0, a_players=winners_of_match,
+                                                         b_players=winners_of_sibling_match)
+                                if new_match.status_code != 200:
+                                    return http_response('Could not create new match properly!', code=400)
 
                                 response = run_connection("UPDATE api_bracketnode SET match_id = %s WHERE id = %s", new_match.id, parent_node.id)
+                    else:
+                        # there's no sibling and it's not the 0 level, which shouldn't exist - return error
+                        return http_response('Could not find a sibling for your match!', code=400)
+
+        #put the next match on the court
+        court = Court.objects.raw("SELECT * FROM api_court WHERE id=%s AND queue_id IS NOT NULL")
+
+        if len(list(court)) > 0:
+            #that means it has a queue id
+            queue = Queue.objects.raw("SELECT * FROM api_queue WHERE id=%s", court.queue_id)
+            dequeue_resp = dequeue_next_party_to_court(queue.type, court.id)
+
+            if dequeue_resp.message == 'No parties on this queue':
+                return http_response(message='No parties on this queue')
 
 
         return response
     else:
         return http_response(message='Violating win by 2 rule or at least one player having at least 21 points', code=400)
 
+
+def dequeue_next_party_to_court(queue_type, court_id):
+
+    response = get_parties_by_playtime(queue_type)
+    my_json = json.loads(response.content.decode())
+    parties = my_json['parties']
+    if len(parties) == 0:
+        return http_response({}, message='No parties on this queue', code=400)
+
+    party_to_dequeue = parties[0]
+
+    party_id = party_to_dequeue['party_id']
+
+    queues = Queue.objects.raw("SELECT * FROM api_queue WHERE type = %s", [queue_type])
+    if len(list(queues)) == 0:
+        return http_response({}, message='No such queue found', code=400)
+
+    queue = queues[0]
+
+    # Get the members from the party
+    members = Member.objects.raw("SELECT * FROM api_member WHERE party_id = %s", [party_id])
+
+    # Remove party from queue
+    response = run_connection("DELETE FROM api_party WHERE id = %s", party_id)
+    if response.status_code != 200:
+        # Error
+        return response
+
+    # Create match on court
+
+    a_players, b_players = []
+    # Assign teams
+    num_members = len(list(members))
+    for i in range(num_members):
+        team = "A" if i % 2 == 0 else "B"
+        member = members[i]
+        if team == "A":
+            a_players.append(member)
+        else:
+            b_players.append(member)
+
+    return create_match(scoreA=0, scoreB=0, a_players=a_players, b_players=b_players)
+
+def _get_parent_node(tournament_id, curr_level, index):
+    parent_index = index // 2
+    bracket_nodes = BracketNode.objects.raw(
+        "SELECT * FROM api_bracketnode WHERE tournament_id = %s AND level = %s AND sibling_index = %s",
+        [tournament_id, curr_level - 1, parent_index])
+    parent_node = bracket_nodes[0]
+    return parent_node
 
 def _top_players():
     with connection.cursor() as cursor:

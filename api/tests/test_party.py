@@ -9,120 +9,72 @@ from .custom_test_case import *
 
 class PartyTest(CustomTestCase):
 
+    @run(path_name="create_party", permission=MEMBER, method=POST, args={'queue_type': 'CASUAL', 'member_ids': '2,3,4,5'})
     def test_create_bad_party(self):
-        self.create_example_data()
-
-        # Eddie is already in a party
-        eddie = Member.objects.get(first_name='Eddie')
-
-        parties = Party.objects.all()
-
-        number_of_parties_before = len(list(parties))
-
-        response = self.client.post(reverse('api:create_party'), {'queue_type': 'CASUAL', 'member_id': eddie.id})
+        response = self.response
         self.assertBadResponse(response)
 
         parties = Party.objects.all()
         number_of_parties_after = len(list(parties))
+        number_of_parties_before = len(list(self.original_parties))
 
         self.assertEqual(number_of_parties_after, number_of_parties_before)
 
 
+    @run(path_name="create_party", permission=MEMBER, method=POST,
+         args={'queue_type': 'CASUAL', 'member_ids': '2,3,4,5'})
     def test_create_party(self):
-        self.create_example_data()
-
-        grace = Member.objects.get(first_name='Grace')
-        self.assertIsNone(grace.party)
-
-        foo = reverse('api:create_party')
-        response = self.client.post(reverse('api:create_party'), {'queue_type': "CASUAL", 'member_id': grace.id})
+        response = self.response
         self.assertGoodResponse(response)
 
-        grace = Member.objects.get(first_name='Grace')
-        self.assertIsNotNone(grace.party)
+        parties = Party.objects.all()
+        number_of_parties_after = len(list(parties))
+
+        number_of_parties_before = len(list(self.original_parties))
+
+        self.assertEqual(number_of_parties_after, number_of_parties_before + 1)
 
 
-
+    @run(path_name="get_party_for_member", permission=MEMBER, method=GET,
+         args={})
     def test_get_party(self):
-        self.create_example_data()
-        eddie = Member.objects.get(first_name='Eddie')
-        response = self.client.get(reverse('api:get_party_for_member'), {'member_id': eddie.id})
+        response = self.response
         self.assertGoodResponse(response)
 
         json = response.json()
         self.assertTrue('party_id' in json)
 
-    def test_get_no_party(self):
-        some_guy = Member(first_name='some', last_name='guy', dateJoined=datetime.date.today(), email='someguy@gmail.com')
-        some_guy.save()
 
-        response = self.client.get(reverse('api:get_party_for_member'), {'member_id': some_guy.id})
+    @run(path_name="get_party_for_member", permission=MEMBER, method=GET,
+         args={})
+    def test_get_no_party(self):
+        response = self.response
 
         json = response.json()
         self.assertTrue('party_id' not in json)
 
+
+    @run(path_name="party_add_member", permission=MEMBER, method=POST,
+         args={'member_id': 3})
     def test_add_member_to_party(self):
-        self.create_example_data()
+        foo = 0
 
-        parties = Party.objects.all()
 
-        self.assertGreaterEqual(len(list(parties)), 2)
-
-        some_guy = Member(first_name='some', last_name='guy', dateJoined=datetime.date.today(),
-                         email='someguy@gmail.com')
-        some_guy.save()
-
-        first_party = parties[0]
-        second_party = parties[1]
-
-        response = self.client.post(reverse('api:party_add_member'), {'party_id': first_party.id, 'member_id': some_guy.id})
-        self.assertGoodResponse(response)
-
-        guys_in_first_party = Member.objects.filter(party_id=first_party.id)
-        self.assertEqual(len(list(guys_in_first_party)), 2)
-
+    @run(path_name="party_add_member", permission=MEMBER, method=POST,
+         args={'member_id': 1})
     def test_add_bad_member_to_party(self):
-        self.create_example_data()
+        foo = 0
 
-        # Eddie is already in a party
-        eddie = Member.objects.get(first_name='Eddie')
 
-        parties = Party.objects.all()
-        for party in parties:
-            response = self.client.post(reverse('api:party_add_member'),
-                                        {'party_id': party.id, 'member_id': eddie.id})
-            self.assertBadResponse(response)
-
+    @run(path_name="party_remove_member", permission=MEMBER, method=POST,
+         args={'member_id': 1})
     def test_remove_member_from_party(self):
-        self.create_example_data()
-
-        parties = Party.objects.all()
-
-        self.assertGreaterEqual(len(list(parties)), 2)
-
-        number_of_parties_before_removal = len(list(parties))
-
-        first_party = parties[0] # This party only has one member (Eddie). Removing Eddie from the party should remove the party
-        second_party = parties[1] # This party has two members(Bhuvan and Dan). Removing Bhuvan should just leave Dan in the party
-
-        eddie = Member.objects.get(email='ezhuang2@illinois.edu')
-        bhuvan = Member.objects.get(email='bhuvan2@illinois.edu')
-
-        response = self.client.post(reverse('api:party_remove_member'), {'party_id': first_party.id, 'member_id': eddie.id})
-        self.assertGoodResponse(response)
-
-        parties = Party.objects.all()
-        self.assertEqual(len(list(parties)), number_of_parties_before_removal - 1)
-
-        response = self.client.post(reverse('api:party_remove_member'), {'party_id': second_party.id, 'member_id': bhuvan.id})
-        self.assertGoodResponse(response)
-        parties = Party.objects.all()
-        self.assertEqual(len(list(parties)), number_of_parties_before_removal - 1)
-
-        members_of_second_party = Member.objects.filter(party=second_party)
-        self.assertEqual(len(list(members_of_second_party)), 1)
-        self.assertEqual(members_of_second_party[0].first_name, 'Daniel')
+        foo = 0
 
 
+    @run(path_name="delete_party", permission=MEMBER, method=POST,
+         args={})
+    def test_delete_party(self):
+        foo = 0
 
 

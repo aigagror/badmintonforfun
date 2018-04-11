@@ -63,6 +63,7 @@ class CustomTestCase(TestCase):
         self.original_interesteds = Interested.objects.all()
         self.original_members = Member.objects.all()
         self.original_boards = Member.objects.all()
+        self.original_parties = Party.objects.all()
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
@@ -80,38 +81,116 @@ class CustomTestCase(TestCase):
             courts[i].save()
 
         # Create a casual queue
-        queue = Queue(type="CASUAL")
-        queue.save()
+        casual_queue = Queue(type="CASUAL")
+        casual_queue.save()
 
-        # Create some interesteds
-        interesteds = []
-        interesteds.append(Interested(first_name='Interested', last_name='Guy', email='interested@gmail.com'))
+        # Create a ranked queue
+        ranked_queue = Queue(type="RANKED")
+        ranked_queue.save()
+
+        # Create some people
+        people = self._create_people()
+
+        # Create some matches
+        self._create_matches()
+
+        # Add the first four courts to the casual queue
+        for i in range(4):
+            courts[i].queue = casual_queue
+            courts[i].save()
+
+        # Add the next two courts to the ranked queue
+        for i in range(4,6):
+            courts[i].queue = ranked_queue
+            courts[i].save()
 
 
-        # Create some members
-        members = []
-        members.append(Member(first_name="Eddie", last_name="Huang", dateJoined=datetime.date.today(),
-                              email="ezhuang2@illinois.edu", bio="Hi my name is Eddie. I like badminton"))
-        members.append(Member(first_name="Bhuvan", last_name="Venkatesh", dateJoined=datetime.date.today(),
-                              email="bhuvan2@illinois.edu"))
-        members.append(Member(first_name="Daniel", last_name="Rong", dateJoined=datetime.date.today(),
-                              email="drong4@illinois.edu"))
-        members.append(Member(first_name="Grace", last_name="Shen", dateJoined=datetime.date.today(),
-                              email="gshen3@illinois.edu"))
-        members.append(Member(first_name="Jared", last_name="Franzone", dateJoined=datetime.date.today(),
-                              email="jfranz2@illinois.edu"))
+        # Create the parties
+        self._create_parties()
 
-        # Create some boards
-        boards = []
-        boards.append(BoardMember(first_name='Barack', last_name='Obama', dateJoined=datetime.date.today(),
-                                  job="PRESIDENT", email='obama@gmail.com'))
+        # Create the tournament
+        self._create_tournament()
 
-        for person in (interesteds + members + boards):
-            person.save()
+        # Create some announcements
+        self._create_announcements()
 
-        # Eddie has played many matches, an hour in total
-        matches = []
+    def _create_tournament(self):
+        """
+        Creates a tournament in which the bracket tree structure is a perfect tree of height 3
+        The leaf nodes contain empty matches with no one on them
+        :param now:
+        :return:
+        """
+
+
         now = datetime.datetime.now(tz=api.datetime_extension.utc)
+
+
+        # Create a tournament bracket with all of the children having a match
+        tournament = Tournament(date=datetime.date.today())
+        tournament.save()
+        # Create a full tree of height 3
+        for level in range(4):
+            for sibling_index in range(2 ** level):
+                bracket_node = BracketNode(tournament=tournament, level=level, sibling_index=sibling_index)
+                bracket_node.save()
+        for index in range(2 ** 3):
+            bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=index)
+            # Create an empty match
+            match = Match(startDateTime=now, scoreA=0, scoreB=0)
+            match.save()
+            bracket_node.match = match
+            bracket_node.save()
+
+    def _create_parties(self):
+        """
+        Eddie is on the casual queue as a party of 1
+        Bhuvan and Dan are on the casual queue as a party of 2
+        (Bhuvan and Dan have priority on the casual queue)
+
+        There is no party on the ranked queue
+        :return:
+        """
+        casual_queue = Queue.objects.get(type='CASUAL')
+        eddie = Member.objects.get(first_name='Eddie')
+        bhuvan = Member.objects.get(first_name='Bhuvan')
+        dan = Member.objects.get(first_name='Dan')
+
+        # Eddie is on the casual queue as a party of 1
+        party = Party(queue=casual_queue)
+        party.save()
+
+        eddie.party = party
+        eddie.save()
+
+        # Bhuvan and Dan are on the casual queue as a party of 2 (Bhuvan and Dan have priority)
+        party = Party(queue=casual_queue)
+        party.save()
+
+        bhuvan.party = party
+        bhuvan.save()
+        dan.party = party
+        dan.save()
+
+    def _create_matches(self):
+        """
+        NOTE: This function asssumes that certain people were already created
+
+        This function creates 8 matches, 10 minutes each.
+
+        Eddie has played all matches (80 minutes in total)
+        Bhuvan has played one match (10 minutes)
+        Dan has played one match (10 minutes)
+
+        :return:
+        """
+
+        eddie = Member.objects.get(email='ezhuang2@illinois.edu')
+        bhuvan = Member.objects.get(first_name='Bhuvan')
+        dan = Member.objects.get(first_name='Dan')
+
+        now = datetime.datetime.now(tz=api.datetime_extension.utc)
+        matches = []
         matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-80),
                              endDateTime=now + datetime.timedelta(minutes=-70), scoreA=21, scoreB=19))
         matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-70),
@@ -130,58 +209,42 @@ class CustomTestCase(TestCase):
                              endDateTime=now + datetime.timedelta(minutes=-0), scoreA=21, scoreB=19))
         for match in matches:
             match.save()
-            playedin = PlayedIn(member=members[0],match=match, team="A")
+            playedin = PlayedIn(member=eddie, match=match, team="A")
             playedin.save()
 
-        # Bhuvan has played one match (10 minutes)
-        playedin = PlayedIn(member=members[1], match=matches[0], team="A")
+
+        playedin = PlayedIn(member=bhuvan, match=matches[0], team="A")
         playedin.save()
 
-        # Dan has played one match (10 minutes)
-        playedin = PlayedIn(member=members[2], match=matches[0], team="B")
+
+        playedin = PlayedIn(member=dan, match=matches[0], team="B")
         playedin.save()
 
-        # Add the first four courts to the casual queue
-        for i in range(4):
-            courts[i].queue = queue
-            courts[i].save()
-
-        # Eddie is on the casual queue as a party of 1
-        party = Party(queue=queue)
-        party.save()
-        members[0].party = party
-        members[0].save()
-
-        # Bhuvan and Dan are on the casual queue as a party of 2 (Bhuvan and Dan have priority)
-        party = Party(queue=queue)
-        party.save()
-        members[1].party = party
-        members[1].save()
-        members[2].party = party
-        members[2].save()
-
-        # Create a tournament bracket with all of the children having a match
-        tournament = Tournament(date=datetime.date.today())
-        tournament.save()
-
-        # Create a full tree of height 3
-        for level in range(4):
-            for sibling_index in range(2**level):
-                bracket_node = BracketNode(tournament=tournament, level=level, sibling_index=sibling_index)
-                bracket_node.save()
-
-        for index in range(2**3):
-            bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=index)
-            # Create an empty match
-            match = Match(startDateTime=now, scoreA=0, scoreB=0)
-            match.save()
-            bracket_node.match = match
-            bracket_node.save()
-
-        # Create some announcements
-        self._create_announcements()
-
-
+    def _create_people(self):
+        # Create some interesteds
+        interesteds = []
+        interesteds.append(Interested(first_name='Interested', last_name='Guy', email='interested@gmail.com'))
+        # Create some members
+        members = []
+        members.append(Member(first_name="Eddie", last_name="Huang", dateJoined=datetime.date.today(),
+                              email="ezhuang2@illinois.edu", bio="Hi my name is Eddie. I like badminton"))
+        members.append(Member(first_name="Bhuvan", last_name="Venkatesh", dateJoined=datetime.date.today(),
+                              email="bhuvan2@illinois.edu"))
+        members.append(Member(first_name="Daniel", last_name="Rong", dateJoined=datetime.date.today(),
+                              email="drong4@illinois.edu"))
+        members.append(Member(first_name="Grace", last_name="Shen", dateJoined=datetime.date.today(),
+                              email="gshen3@illinois.edu"))
+        members.append(Member(first_name="Jared", last_name="Franzone", dateJoined=datetime.date.today(),
+                              email="jfranz2@illinois.edu"))
+        # Create some boards
+        boards = []
+        boards.append(BoardMember(first_name='Barack', last_name='Obama', dateJoined=datetime.date.today(),
+                                  job="PRESIDENT", email='obama@gmail.com'))
+        print("People in the example data")
+        for person in (interesteds + members + boards):
+            person.save()
+            print("{}: {}".format(person, person.id))
+        return members
 
     def _create_announcements(self):
         # Create some announcements

@@ -8,21 +8,17 @@ from api.models import *
 from .custom_test_case import *
 
 class QueueTest(CustomTestCase):
+
+    @run(path_name="get_queues", permission=MEMBER, method=GET, args={})
     def test_get_queues(self):
-        response = self.client.get(reverse('api:get_queues'))
-        json = response.json()
-        self.assertEqual(json['message'], 'There are no queues.')
-
-        # Create a queue
-        self.create_example_data()
-
         response = self.client.get(reverse('api:get_queues'))
         self.assertGoodResponse(response)
         json = response.json()
         self.assertEqual(json['queues'][0]['type'], 'CASUAL')
 
+    @run(path_name="create_queue", permission=BOARD_MEMBER, method=POST, args={'queue_type': 'CASUAL'})
     def test_create_queue(self):
-        response = self.client.post(reverse('api:create_queue'), {'queue_type': 'CASUAL'})
+        response = self.response
         self.assertGoodResponse(response)
 
         queues = Queue.objects.all()
@@ -33,44 +29,3 @@ class QueueTest(CustomTestCase):
         # Cannot create another queue of the same type
         response = self.client.post(reverse('api:create_queue'), {'queue_type': 'CASUAL'})
         self.assertBadResponse(response)
-
-    def test_next_party(self):
-        self.create_example_data()
-        response = self.client.get(reverse('api:queue_next_party'), {'type': 'CASUAL'})
-        json = response.json()
-        self.assertEqual(len(json['parties']), 2)
-
-        # Test empty queue
-        queue = Queue(type="KOTH")
-        queue.save()
-        response = self.client.get(reverse('api:queue_next_party'), {'type': 'KOTH'})
-        json = response.json()
-        self.assertEqual(len(json['parties']), 0)
-
-    def test_dequeue_party(self):
-        self.create_example_data()
-        response = self.client.post(reverse('api:dequeue_next_party_to_court'), {'type': 'CASUAL'})
-        self.assertGoodResponse(response)
-
-        # There should now only be one party on CASUAL queue (Eddie)
-        # There should be a match with Bhuvan and Dan on some court
-
-        queue = Queue.objects.get(type='CASUAL')
-
-        parties = Party.objects.filter(queue=queue)
-
-        self.assertEqual(len(list(parties)), 1)
-
-        matches = Match.objects.raw("SELECT * FROM api_match WHERE court_id NOT NULL")
-        self.assertEqual(len(list(matches)), 1)
-
-        expected_new_match = matches[0]
-
-        playedins = PlayedIn.objects.filter(match=expected_new_match)
-        self.assertEqual(len(list(playedins)), 2)
-
-
-
-
-
-
