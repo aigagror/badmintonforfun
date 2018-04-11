@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from .custom_test_case import CustomTestCase
+from .custom_test_case import *
 from django.contrib.auth.models import User
 
 from api.models import Interested
@@ -9,12 +9,9 @@ from api.models import Interested
 
 class SettingsTest(CustomTestCase):
 
+    @assert_authentication(url_name="member_settings", permission=NONE, method=GET, args={})
     def test_board_member_setting(self):
-        self.create_example_data()
-        user = User.objects.create_user(email='ezhuang2@illinois.edu', username='aigagror')
-        self.client.force_login(user)
-
-        response = self.client.get(reverse('api:member_settings'))
+        response = self.response
         json = response.json()
         self.assertEqual(len(json), 3)
         self.assertFalse(json[0]['value']) # Privacy setting

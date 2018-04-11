@@ -2,11 +2,49 @@ from django.test import TestCase
 from api.models import *
 import datetime
 import api.datetime_extension
+from enum import Enum
+from django.urls import reverse
 
 
+NONE = 0
+INTERESTED = 1
+MEMBER = 2
+BOARD_MEMBER = 3
 
+POST = "post"
+GET = "get"
+
+def assert_authentication(url_name, permission, method, args):
+    def foo(func):
+        def bar(self):
+            self.permission = permission
+            self.url_name = url_name
+            self.create_example_data()
+            user = User.objects.create_user(username='foo', email='ezhuang2@illinois.edu')
+            self.client.force_login(user)
+
+            if method == POST:
+                self.response = self.client.post(reverse('api:{}'.format(url_name)), args)
+            elif method == GET:
+                self.response = self.client.get(reverse('api:{}'.format(url_name)), args)
+
+
+            func(self)
+
+            self.client.logout()
+
+            if method == POST:
+                response = self.client.post(reverse('api:{}'.format(url_name)), args)
+            elif method == GET:
+                response = self.client.get(reverse('api:{}'.format(url_name)), args)
+
+            self.assertEqual(response.status_code, 302)
+
+        return bar
+    return foo
 
 class CustomTestCase(TestCase):
+
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
         json = response.json()
