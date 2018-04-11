@@ -3,6 +3,9 @@ from api.models import *
 import datetime
 import api.datetime_extension
 
+
+
+
 class CustomTestCase(TestCase):
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
@@ -27,7 +30,7 @@ class CustomTestCase(TestCase):
         # Create some members
         members = []
         members.append(Member(first_name="Eddie", last_name="Huang", dateJoined=datetime.date.today(),
-                              email="ezhuang2@illinois.edu"))
+                              email="ezhuang2@illinois.edu", bio="Hi my name is Eddie. I like badminton"))
         members.append(Member(first_name="Bhuvan", last_name="Venkatesh", dateJoined=datetime.date.today(),
                               email="bhuvan2@illinois.edu"))
         members.append(Member(first_name="Daniel", last_name="Rong", dateJoined=datetime.date.today(),

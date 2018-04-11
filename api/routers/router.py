@@ -23,13 +23,15 @@ def auth_decorator(allowed=None):
     def _auth_decorator(func):
         def _func(request, *args, **kwargs):
             if not request.user.is_authenticated:
-                return redirect(LOGIN_URL)
+                result = redirect(LOGIN_URL)
+                return result
             member_class = get_member_class(request.user.email)
             if member_class.isSuperSet(allowed):
                 return HttpResponse('Not allowed', status=403)
             return func(request, *args, **kwargs)
         return _func
     return _auth_decorator
+
 
 
 @restrictRouter(allowed=["POST"])
