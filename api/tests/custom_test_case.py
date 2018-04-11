@@ -29,7 +29,6 @@ def run(path_name, permission, method, args):
             self.url_name = path_name
 
             # Login
-            self.create_example_data()
             user = User.objects.create_user(username=permission, email=permission)
             self.client.force_login(user)
 
@@ -59,6 +58,11 @@ def run(path_name, permission, method, args):
     return wrapper
 
 class CustomTestCase(TestCase):
+    def setUp(self):
+        self.create_example_data()
+        self.original_interesteds = Interested.objects.all()
+        self.original_members = Member.objects.all()
+        self.original_boards = Member.objects.all()
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)

@@ -15,24 +15,38 @@ class SettingsTest(CustomTestCase):
         self.assertEqual(len(json), 3)
         self.assertFalse(json[0]['value']) # Privacy setting
 
-    @run(path_name="add_interested", permission=NONE, method=GET, args={'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False,
-                           'email': 'ezhuang2@illinois.edu'})
-    def test_promote(self):
+    @run(path_name="add_interested", permission=NONE, method=GET, args=
+                            {'first_name': 'Eddie', 'last_name': 'Huang',
+                             'formerBoardMember': False,
+                             'email': 'ezhuang2@illinois.edu'})
+    def test_add_interested(self):
         response = self.response
         j = response.json()
         self.assertEqual(j['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
-        member_dict = {'id': 1}
-        response = self.client.post(reverse('api:promote'), member_dict)
+
+    @run(path_name="promote", permission=BOARD_MEMBER, method=POST, args={'id': 1})
+    def test_promote_interested(self):
+        response = self.response
         j = response.json()
         self.assertEqual(j['message'], 'OK')
         self.assertEqual(response.status_code, 200)
 
-        boardmember_dict = {'id': 1, 'job': 'PRESIDENT'}
-        response = self.client.post(reverse('api:promote'), boardmember_dict)
-        self.assertEqual(response.json()['message'], 'OK')
-        self.assertEqual(response.status_code, 200)
+        members = Member.objects.all()
+        self.assertEqual(len(list(members)), len(list(self.original_members)) + 1)
+
+
+    @run(path_name="promote", permission=BOARD_MEMBER, method=POST, args={'id': 2, 'job': 'PRESIDENT'})
+    def test_promote_member(self):
+        response = self.response
+        self.assertGoodResponse(response)
+
+        boards = BoardMember.objects.all()
+        self.assertEqual(len(list(boards)), len(list(self.original_boards)) + 1)
+
+
+    # TODO: Fix the test cases
     #
     # def test_get_member_info(self):
     #     interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False, 'email': 'ezhuang2@illinois.edu'}
