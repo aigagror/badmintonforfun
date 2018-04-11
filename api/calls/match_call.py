@@ -97,7 +97,7 @@ def _get_winners(match):
 
     return winners
 
-def finish_match(id):
+def finish_match(id, scoreA, scoreB):
     """
         Ends the match, updates the scores, removes court id
     :param id:
@@ -106,10 +106,14 @@ def finish_match(id):
     :return:
     """
 
-    # Check that the scores are valid
+    # Check that the match exists
     matches = Match.objects.raw("SELECT * FROM api_match WHERE id = %s", [id])
     if len(list(matches)) <= 0:
         return http_response(message='No such match', code=400)
+
+    resp = edit_match(id, scoreA, scoreB)
+    if resp.status_code == 400:
+        return http_response(message='There was an error updating your scores!', code=400)
 
     match = matches[0]
     if abs(match.scoreA - match.scoreB) >= 2 and (match.scoreB >= 21 or match.scoreA >= 21):

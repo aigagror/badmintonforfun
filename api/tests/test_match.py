@@ -53,4 +53,3 @@ class MatchTest(CustomTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(str(Match.objects.get(id=0)), "A['Eddie Huang', 'Bhuvan Venkatesh']-B['Daniel Rong', 'Grace Shen']:21-23")
         self.assertEqual(list(Match.objects.filter(id=0).values('court_id'))[0]['court_id'], None)
-
