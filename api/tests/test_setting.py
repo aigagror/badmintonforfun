@@ -8,14 +8,14 @@ from api.models import Interested
 
 class SettingsTest(CustomTestCase):
 
-    @run(path_name="member_settings", permission=MEMBER, method=GET, args={})
+    @run(path_name="member_settings", email=MEMBER, method=GET, args={})
     def test_board_member_setting(self):
         response = self.response
         json = response.json()
         self.assertEqual(len(json), 3)
         self.assertFalse(json[0]['value']) # Privacy setting
 
-    @run(path_name="add_interested", permission=NONE, method=GET, args=
+    @run(path_name="add_interested", email=NONE, method=GET, args=
                             {'first_name': 'Eddie', 'last_name': 'Huang',
                              'formerBoardMember': False,
                              'email': 'ezhuang2@illinois.edu'})
@@ -26,7 +26,7 @@ class SettingsTest(CustomTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    @run(path_name="promote", permission=BOARD_MEMBER, method=POST, args={'id': 1})
+    @run(path_name="promote", email=BOARD_MEMBER, method=POST, args={'id': 1})
     def test_promote_interested(self):
         response = self.response
         j = response.json()
@@ -37,7 +37,7 @@ class SettingsTest(CustomTestCase):
         self.assertEqual(len(list(members)), len(list(self.original_members)) + 1)
 
 
-    @run(path_name="promote", permission=BOARD_MEMBER, method=POST, args={'id': 2, 'job': 'PRESIDENT'})
+    @run(path_name="promote", email=BOARD_MEMBER, method=POST, args={'id': 2, 'job': 'PRESIDENT'})
     def test_promote_member(self):
         response = self.response
         self.assertGoodResponse(response)
