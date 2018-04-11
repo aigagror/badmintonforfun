@@ -6,34 +6,33 @@ from django.contrib.auth.models import User
 from api.models import Interested
 
 
-
 class SettingsTest(CustomTestCase):
 
-    @assert_authentication(url_name="member_settings", permission=MEMBER, method=GET, args={})
+    @run(path_name="member_settings", permission=MEMBER, method=GET, args={})
     def test_board_member_setting(self):
         response = self.response
         json = response.json()
         self.assertEqual(len(json), 3)
         self.assertFalse(json[0]['value']) # Privacy setting
 
-    # def test_promote(self):
-    #     interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False,
-    #                        'email': 'ezhuang2@illinois.edu'}
-    #     response = self.client.post(reverse('api:add_interested'), interested_dict)
-    #     j = response.json()
-    #     self.assertEqual(j['message'], 'OK')
-    #     self.assertEqual(response.status_code, 200)
-    #
-    #     member_dict = {'id': 1}
-    #     response = self.client.post(reverse('api:promote'), member_dict)
-    #     j = response.json()
-    #     self.assertEqual(j['message'], 'OK')
-    #     self.assertEqual(response.status_code, 200)
-    #
-    #     boardmember_dict = {'id': 1, 'job': 'PRESIDENT'}
-    #     response = self.client.post(reverse('api:promote'), boardmember_dict)
-    #     self.assertEqual(response.json()['message'], 'OK')
-    #     self.assertEqual(response.status_code, 200)
+    @run(path_name="add_interested", permission=NONE, method=GET, args={'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False,
+                           'email': 'ezhuang2@illinois.edu'})
+    def test_promote(self):
+        response = self.response
+        j = response.json()
+        self.assertEqual(j['message'], 'OK')
+        self.assertEqual(response.status_code, 200)
+
+        member_dict = {'id': 1}
+        response = self.client.post(reverse('api:promote'), member_dict)
+        j = response.json()
+        self.assertEqual(j['message'], 'OK')
+        self.assertEqual(response.status_code, 200)
+
+        boardmember_dict = {'id': 1, 'job': 'PRESIDENT'}
+        response = self.client.post(reverse('api:promote'), boardmember_dict)
+        self.assertEqual(response.json()['message'], 'OK')
+        self.assertEqual(response.status_code, 200)
     #
     # def test_get_member_info(self):
     #     interested_dict = {'first_name': 'Eddie', 'last_name': 'Huang', 'formerBoardMember': False, 'email': 'ezhuang2@illinois.edu'}

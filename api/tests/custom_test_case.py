@@ -16,17 +16,17 @@ GET = "get"
 
 _permission_ranking = [NONE, INTERESTED, MEMBER, BOARD_MEMBER]
 
-def assert_authentication(url_name, permission, method, args):
-    def foo(test_func):
+def run(path_name, permission, method, args):
+    def wrapper(test_func):
         def call_api(self):
             if method == POST:
-                self.response = self.client.post(reverse('api:{}'.format(url_name)), args)
+                self.response = self.client.post(reverse('api:{}'.format(path_name)), args)
             elif method == GET:
-                self.response = self.client.get(reverse('api:{}'.format(url_name)), args)
+                self.response = self.client.get(reverse('api:{}'.format(path_name)), args)
 
-        def bar(self):
+        def authentication(self):
             self.permission = permission
-            self.url_name = url_name
+            self.url_name = path_name
 
             # Login
             self.create_example_data()
@@ -54,8 +54,9 @@ def assert_authentication(url_name, permission, method, args):
             self.client.logout()
             call_api(self)
             self.assertEqual(self.response.status_code, 302)
-        return bar
-    return foo
+
+        return authentication
+    return wrapper
 
 class CustomTestCase(TestCase):
 
