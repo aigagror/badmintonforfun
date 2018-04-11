@@ -29,7 +29,10 @@ def run(path_name, email, method, args):
 
         def authentication(self):
             for x in reversed(_class_ranking):
-                person = x.objects.get(email=email)
+                try:
+                    person = x.objects.get(email=email)
+                except:
+                    person = None
                 if person is not None:
                     self.permission = x
                     break
@@ -42,8 +45,23 @@ def run(path_name, email, method, args):
 
             call_api(self)
 
+            # Get the resulting models
+            self.interesteds_now = Interested.objects.all()
+            self.number_of_interesteds_now = len(list(self.interesteds_now))
+
+            self.members_now = Member.objects.all()
+            self.number_of_members_now = len(list(self.members_now))
+
+            self.parties_now = Party.objects.all()
+            self.number_of_parties_now = len(list(self.parties_now))
+
+            self.matches_now = Match.objects.all()
+            self.number_of_matches_now = len(list(self.matches_now))
+
             # Run the test case
             test_func(self)
+
+
 
             # Assert that the url requires authentication
             ranking = _class_ranking.index(self.permission)
@@ -71,9 +89,16 @@ class CustomTestCase(TestCase):
     def setUp(self):
         self.create_example_data()
         self.original_interesteds = Interested.objects.all()
+        self.original_number_of_interesteds = len(list(self.original_interesteds))
+
         self.original_members = Member.objects.all()
+        self.original_number_of_members = len(list(self.original_members))
+
         self.original_boards = Member.objects.all()
+        self.original_number_of_boards = len(list(self.original_boards))
+
         self.original_parties = Party.objects.all()
+        self.original_number_of_parties = len(list(self.original_parties))
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
@@ -169,7 +194,7 @@ class CustomTestCase(TestCase):
         casual_queue = Queue.objects.get(type='CASUAL')
         eddie = Member.objects.get(first_name='Eddie')
         bhuvan = Member.objects.get(first_name='Bhuvan')
-        dan = Member.objects.get(first_name='Dan')
+        dan = Member.objects.get(first_name='Daniel')
 
         # Eddie is on the casual queue as a party of 1
         party = Party(queue=casual_queue)
@@ -204,7 +229,7 @@ class CustomTestCase(TestCase):
 
         eddie = Member.objects.get(email='ezhuang2@illinois.edu')
         bhuvan = Member.objects.get(first_name='Bhuvan')
-        dan = Member.objects.get(first_name='Dan')
+        dan = Member.objects.get(first_name='Daniel')
 
         now = datetime.datetime.now(tz=api.datetime_extension.utc)
         matches = []

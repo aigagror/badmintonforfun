@@ -18,11 +18,7 @@ class PartyTest(CustomTestCase):
         response = self.response
         self.assertBadResponse(response)
 
-        parties = Party.objects.all()
-        number_of_parties_after = len(list(parties))
-        number_of_parties_before = len(list(self.original_parties))
-
-        self.assertEqual(number_of_parties_after, number_of_parties_before)
+        self.assertEqual(self.original_number_of_parties, self.number_of_parties_now)
 
 
     @run(path_name="create_party", email=GRACE, method=POST,
@@ -35,12 +31,7 @@ class PartyTest(CustomTestCase):
         response = self.response
         self.assertGoodResponse(response)
 
-        parties = Party.objects.all()
-        number_of_parties_after = len(list(parties))
-
-        number_of_parties_before = len(list(self.original_parties))
-
-        self.assertEqual(number_of_parties_after, number_of_parties_before + 1)
+        self.assertEqual(self.original_number_of_parties, self.number_of_parties_now + 1)
 
 
     @run(path_name="get_party_for_member", email=MEMBER, method=GET,
@@ -69,6 +60,13 @@ class PartyTest(CustomTestCase):
         According to the example data, member_id 6 is Grace who is not yet in a party. So this is valid
         :return:
         """
+        response = self.response
+
+        self.assertGoodResponse(response)
+
+        grace = Member.objects.get(first_name='Grace')
+        self.assertIsNotNone(grace.party)
+
 
 
     @run(path_name="party_add_member", email=MEMBER, method=POST,
@@ -78,6 +76,8 @@ class PartyTest(CustomTestCase):
         According to the example data, member_id 3 is Eddie who is already in a party. So this is not valid
         :return:
         """
+        response = self.response
+        self.assertBadResponse(response)
 
 
     @run(path_name="party_remove_member", email=DAN, method=POST,
@@ -87,15 +87,25 @@ class PartyTest(CustomTestCase):
         According to the example data, member_id 4 is Bhuvan who is in a party with Dan. So this is not valid
         :return:
         """
+        response = self.response
+        self.assertBadResponse(response)
+
+        bhuvan = Member.objects.get(first_name='Bhuvan')
+        self.assertIsNone(bhuvan.party)
 
 
     @run(path_name="delete_party", email=MEMBER, method=POST,
          args={})
     def test_delete_party(self):
         """
-        According to the example data, member_id 4 is Bhuvan who is in a party with Dan. So this is not valid
+        Delete the party of 'Member'
         :return:
         """
-        
+        response = self.response
+        self.assertGoodResponse(response)
+
+        self.assertEqual(self.number_of_parties_now, self.original_number_of_parties - 1)
+
+
 
 
