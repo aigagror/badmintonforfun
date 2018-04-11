@@ -6,40 +6,54 @@ from enum import Enum
 from django.urls import reverse
 
 
-NONE = 0
-INTERESTED = 1
-MEMBER = 2
-BOARD_MEMBER = 3
+NONE = 'none@gmail.com'
+INTERESTED = 'interested@gmail.com'
+MEMBER = 'drong4@illinois.edu'
+BOARD_MEMBER = 'obama@gmail.com'
 
 POST = "post"
 GET = "get"
 
-def assert_authentication(url_name, permission, method, args):
-    def foo(func):
-        def bar(self):
-            self.permission = permission
-            self.url_name = url_name
-            self.create_example_data()
-            user = User.objects.create_user(username='foo', email='ezhuang2@illinois.edu')
-            self.client.force_login(user)
+_permission_ranking = [NONE, INTERESTED, MEMBER, BOARD_MEMBER]
 
+def assert_authentication(url_name, permission, method, args):
+    def foo(test_func):
+        def call_api(self):
             if method == POST:
                 self.response = self.client.post(reverse('api:{}'.format(url_name)), args)
             elif method == GET:
                 self.response = self.client.get(reverse('api:{}'.format(url_name)), args)
 
+        def bar(self):
+            self.permission = permission
+            self.url_name = url_name
 
-            func(self)
+            # Login
+            self.create_example_data()
+            user = User.objects.create_user(username=permission, email=permission)
+            self.client.force_login(user)
+
+            call_api(self)
+
+            # Run the test case
+            test_func(self)
+
+            # Assert that the url requires authentication
+            ranking = _permission_ranking.index(permission)
+            for i in range(ranking):
+                self.client.logout()
+                lower_permission = _permission_ranking[i]
+
+                user = User.objects.create_user(username=lower_permission, email=lower_permission)
+                self.client.force_login(user)
+
+                call_api(self)
+
+                self.assertEqual(self.response.status_code, 403)
 
             self.client.logout()
-
-            if method == POST:
-                response = self.client.post(reverse('api:{}'.format(url_name)), args)
-            elif method == GET:
-                response = self.client.get(reverse('api:{}'.format(url_name)), args)
-
-            self.assertEqual(response.status_code, 302)
-
+            call_api(self)
+            self.assertEqual(self.response.status_code, 302)
         return bar
     return foo
 
@@ -64,6 +78,10 @@ class CustomTestCase(TestCase):
         queue = Queue(type="CASUAL")
         queue.save()
 
+        # Create some interesteds
+        interesteds = []
+        interesteds.append(Interested(first_name='Interested', last_name='Guy', email='interested@gmail.com'))
+
 
         # Create some members
         members = []
@@ -78,8 +96,13 @@ class CustomTestCase(TestCase):
         members.append(Member(first_name="Jared", last_name="Franzone", dateJoined=datetime.date.today(),
                               email="jfranz2@illinois.edu"))
 
-        for member in members:
-            member.save()
+        # Create some boards
+        boards = []
+        boards.append(BoardMember(first_name='Barack', last_name='Obama', dateJoined=datetime.date.today(),
+                                  job="PRESIDENT", email='obama@gmail.com'))
+
+        for person in (interesteds + members + boards):
+            person.save()
 
         # Eddie has played many matches, an hour in total
         matches = []

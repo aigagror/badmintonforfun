@@ -9,7 +9,7 @@ from api.models import Interested
 
 class SettingsTest(CustomTestCase):
 
-    @assert_authentication(url_name="member_settings", permission=NONE, method=GET, args={})
+    @assert_authentication(url_name="member_settings", permission=MEMBER, method=GET, args={})
     def test_board_member_setting(self):
         response = self.response
         json = response.json()
