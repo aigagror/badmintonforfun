@@ -84,21 +84,21 @@ class PartyTest(CustomTestCase):
          args={'member_id': 4})
     def test_remove_member_from_party(self):
         """
-        According to the example data, member_id 4 is Bhuvan who is in a party with Dan. So this is not valid
+        According to the example data, member_id 4 is Bhuvan who is in a party with Dan. Dan removes Bhuvan from party
         :return:
         """
         response = self.response
-        self.assertBadResponse(response)
+        self.assertGoodResponse(response)
 
         bhuvan = Member.objects.get(first_name='Bhuvan')
         self.assertIsNone(bhuvan.party)
 
 
-    @run(path_name="delete_party", email=MEMBER, method=POST,
+    @run(path_name="delete_party", email=DAN, method=POST,
          args={})
     def test_delete_party(self):
         """
-        Delete the party of 'Member'
+        Delete the party of 'Dan'. Bhuvan should then not be associated with a party because CASCADE
         :return:
         """
         response = self.response
@@ -106,6 +106,8 @@ class PartyTest(CustomTestCase):
 
         self.assertEqual(self.number_of_parties_now, self.original_number_of_parties - 1)
 
+        bhuvan = Member.objects.get(first_name='Bhuvan')
+        self.assertIsNone(bhuvan.party)
 
 
 

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
 from api.calls.party_call import *
@@ -6,18 +7,28 @@ from api.cursor_api import http_response, run_connection
 from api.models import *
 
 @csrf_exempt
+@login_required
 @restrictRouter(allowed=["POST"])
 def create_party(request):
     """
-    POST -- Creates a party
-        Required Keys: queue_id, member_ids
+    POST -- Creates a party. Anyone with Member permission or above can do this.
+        Required Keys: queue_type, member_ids
             NOTE: member_ids is a comma separated list of ids to add to the party
     :param request:
     :return:
     """
 
+    session_email = request.user.email
+    if not session_email:
+        return http_response({}, message="You are not logged in", code=302)
+
+    try:
+        user = Member.objects.get(email=session_email)
+    except Member.DoesNotExist:
+        return http_response({}, message="You do not have the required permissions", code=403)
+
     post_dict = dict(request.POST.items())
-    if not validate_keys(['queue_type', 'member_id'], post_dict):
+    if not validate_keys(['queue_type', 'member_ids'], post_dict):
         return http_response({}, message="Keys not found", code=400)
 
     queue_type = post_dict['queue_type']
@@ -28,10 +39,12 @@ def create_party(request):
     queue = queues[0]
 
     queue_id = queue.id
-    member_id = int(post_dict['member_id'])
+    user_id = user.id
+    member_ids = int(post_dict['member_ids'])
+    member_ids = member_ids.split(",")  # list of ids to add to the party
 
-    # Check if member_id is already in a party
-    rawquery = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND party_id NOT NULL", [member_id])
+    # Check if the user is already in a party
+    rawquery = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND party_id NOT NULL", [user_id])
     member_is_in_party = len(list(rawquery)) > 0
     if member_is_in_party:
         return http_response(message="Member is already in a party", code=400)
@@ -47,17 +60,19 @@ def create_party(request):
     if response.status_code != 200:
         return response
 
-    response = run_connection("UPDATE api_member SET party_id = %s WHERE interested_ptr_id = %s", new_id, member_id)
-    if response.status_code != 200:
-        return response
+    # response = run_connection("UPDATE api_member SET party_id = %s WHERE interested_ptr_id = %s", new_id, member_id)
+    # if response.status_code != 200:
+    #     return response
+    add_members_to_party(new_id, member_ids)
 
     return response
 
 @csrf_exempt
+@login_required()
 @restrictRouter(allowed=["POST"])
 def add_member(request):
     """
-        POST -- Removes members from a party
+        POST -- Adds a member to the logged in user's party
             Required Keys: id, delete
             Optional Keys: queue_id, add_members, remove_members
                 NOTE: `add_members` and `remove_members` are comma separated lists of
@@ -66,12 +81,21 @@ def add_member(request):
         :param request:
         :return:
     """
+    session_email = request.user.email
+    if session_email is None:
+        return http_response({}, message="You are not logged in", code=302)
+
+    try:
+        user = Member.objects.get(email=session_email)
+    except Member.DoesNotExist:
+        return http_response({}, message="You do not have the required permissions", code=403)
+
     post_dict = dict(request.POST.items())
-    if not validate_keys(['party_id', 'member_id'], post_dict):
+    if not validate_keys(['member_id'], post_dict):
         return http_response({}, message="Keys not found", code=400)
 
-    party_id = int(post_dict['party_id'])
     member_id = int(post_dict['member_id'])
+    party_id = user.party_id
 
     rawquery = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND party_id NOT NULL", [member_id])
     member_is_in_party = len(list(rawquery)) > 0
@@ -88,11 +112,12 @@ def add_member(request):
     return response
 
 @csrf_exempt
+@login_required()
 @restrictRouter(allowed=["POST"])
 def remove_member(request):
     """
-        POST -- Removes members from a party
-            Required Keys: id, delete
+        POST -- Removes a member from the logged in user's party
+            Required Keys: member_id
             Optional Keys: queue_id, add_members, remove_members
                 NOTE: `add_members` and `remove_members` are comma separated lists of
                     member id's to add or remove from the party respectively
@@ -100,28 +125,72 @@ def remove_member(request):
         :param request:
         :return:
     """
+    session_email = request.user.email
+    if session_email is None:
+        return http_response({}, message="You are not logged in", code=302)
+
+    try:
+        user = Member.objects.get(email=session_email)
+    except Member.DoesNotExist:
+        return http_response({}, message="You do not have the required permissions", code=403)
+
+    party_id = user.party_id
+
+    if party_id is None:
+        return http_response(message='You are not part of a party', code=400)
+
     post_dict = dict(request.POST.items())
-    if not validate_keys(['party_id', 'member_id'], post_dict):
+    if not validate_keys(['member_id'], post_dict):
         return http_response({}, message="Keys not found", code=400)
 
-
-    party_id = int(post_dict['party_id'])
     member_id = int(post_dict['member_id'])
+    member = Member.objects.get(id=member_id)
+    if member.party_id != party_id:
+        return http_response(message='The specified member is not in your party!', code=400)
     return party_remove_member(party_id, member_id)
 
-@restrictRouter(allowed=["DELETE"])
+@login_required()
+@restrictRouter(allowed=["POST"])
 def delete_party(request):
-    delete_dict = dict(request.DELETE.items())
-    party_id = delete_dict.get('party_id')
+    """
+    DELETE -- Deletes the party that the member is in, if any.
+            We are allowing "POST" here because django tests don't allow DELETE
+    :param request:
+    :return:
+    """
+    session_email = request.user.email
+    if session_email is None:
+        return http_response({}, message="You are not logged in", code=302)
+
+    try:
+        user = Member.objects.get(email=session_email)
+    except Member.DoesNotExist:
+        return http_response({}, message="You do not have the required permissions", code=403)
+
+    party_id = user.party_id
+
     if party_id is None:
-        return http_response(message='No party passed in', code=400)
+        return http_response(message='You are not in a party', code=400)
     return run_connection("DELETE FROM api_party WHERE id = %s", party_id)
 
 
 @restrictRouter(allowed=["GET"])
 def member_party(request):
-    get_dict = dict(request.GET.items())
-    member_id = get_dict.get('member_id')
-    if member_id is None:
-        return http_response(message='No member id passed in', code=400)
+    """
+    GET -- The logged in user's party
+    :param request:
+    :return:
+    """
+    session_email = request.user.email
+    if session_email is None:
+        return http_response({}, message="You are not logged in", code=302)
+
+    try:
+        user = Member.objects.get(email=session_email)
+    except Member.DoesNotExist:
+        return http_response({}, message="You do not have the required permissions", code=403)
+
+    member_id = user.id
+    # if member_id is None:
+    #     return http_response(message='No member id passed in', code=400)
     return get_member_party(member_id)

@@ -213,6 +213,7 @@ class CustomTestCase(TestCase):
         eddie = Member.objects.get(first_name='Eddie')
         bhuvan = Member.objects.get(first_name='Bhuvan')
         dan = Member.objects.get(first_name='Daniel')
+        member = Member.objects.get(first_name='Member')
 
         # Eddie is on the casual queue as a party of 1
         party = Party(queue=casual_queue)
@@ -229,6 +230,14 @@ class CustomTestCase(TestCase):
         bhuvan.save()
         dan.party = party
         dan.save()
+
+        # Member is on the casual queue as a party of 1
+        party = Party(queue=casual_queue)
+        party.save()
+
+        member.party = party
+        member.save()
+
 
     def _create_matches(self):
         """

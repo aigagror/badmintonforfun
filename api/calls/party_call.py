@@ -92,3 +92,13 @@ def party_remove_member(party_id, member_id):
         Party.objects.get(id=party_id).delete()
         return http_response(message="OK")
     return response
+
+def add_members_to_party(party_id, member_ids):
+    """
+    Add a list of members to a specified party
+    :param member_ids: list of members to add to the party
+    :return:
+    """
+    for member_id in member_ids:
+        run_connection("UPDATE api_member SET party_id=%s WHERE interested_ptr_id=%s", party_id, member_id)
+    return http_response(message="OK")
