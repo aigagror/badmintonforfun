@@ -21,7 +21,6 @@ class MatchTest(CustomTestCase):
     @run(path_name='current_match', email=GRACE, method=GET, args={})
     def test_get_current_match(self):
         response = self.response
-        print(response.json()["message"])
         self.assertGoodResponse(response)
 
         json = response.json()
