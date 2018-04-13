@@ -141,63 +141,66 @@ def finish_match(id, scoreA, scoreB):
 
     match = matches[0]
     court_id = match.court_id
-    if abs(match.scoreA - match.scoreB) >= 2 and (match.scoreB >= 21 or match.scoreA >= 21):
-        query = "UPDATE api_match SET endDateTime=datetime('now'), court_id=NULL WHERE id=%s"
 
-        response = run_connection(query, id)
+    #check to make sure match should actually be finished
+    if not (abs(match.scoreA - match.scoreB) >= 2) and not((match.scoreB >= 21 or match.scoreA >= 21)):
+        return http_response(message='Violating win by 2 rule or at least one player having at least 21 points',
+                             code=400)
 
-        # Check if this match belongs to a tournament. If so, we may need to update the tournament too
-        tournaments = Tournament.objects.raw("SELECT * FROM api_tournament WHERE endDate IS NULL")
-        if len(list(tournaments)) > 0:
-            tournament = tournaments[0]
-            bracket_nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE tournament_id = %s AND match_id IS NOT NULL AND match_id = %s", [tournament.id, match.id])
+    query = "UPDATE api_match SET endDateTime=datetime('now'), court_id=NULL WHERE id=%s"
+
+    response = run_connection(query, id)
+
+    # Check if this match belongs to a tournament. If so, we may need to update the tournament too
+    tournament_id = _is_tournament_match(match.id)
+    if tournament_id is not None:
+        bracket_node, level = _get_bracket_node_and_level(match.id, tournament_id)
+        if level > 0:
+            index = bracket_node.sibling_index
+            index_of_sibling = index + 1 if index % 2 == 0 else index - 1
+
+            # See if sibling exists
+            bracket_nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE tournament_id = %s AND level = %s AND sibling_index = %s", [tournament_id, level, index_of_sibling])
             if len(list(bracket_nodes)) > 0:
-                bracket_node = bracket_nodes[0]
-                level = bracket_node.level
-                if level > 0:
-                    index = bracket_node.sibling_index
-                    index_of_sibling = index + 1 if index % 2 == 0 else index - 1
+                bracket_node_sibling = bracket_nodes[0]
 
-                    # See if sibling exists
-                    bracket_nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE tournament_id = %s AND level = %s AND sibling_index = %s", [tournament.id, level, index_of_sibling])
-                    if len(list(bracket_nodes)) > 0:
-                        bracket_node_sibling = bracket_nodes[0]
+                sibling_match = bracket_node_sibling.match
+                if sibling_match is not None and sibling_match.endDateTime is not None:
+                    # We must add a match to the parent node!
+                    parent_node = _get_parent_node(tournament_id, level, index)
+                    if parent_node.match is None:
+                        # new_match = Match(startDateTime=datetime.datetime.now(), scoreA=0, scoreB=0)
+                        # new_match.save()
 
-                        sibling_match = bracket_node_sibling.match
-                        if sibling_match is not None and sibling_match.endDateTime is not None:
-                            # We must add a match to the parent node!
-                            parent_node = _get_parent_node(tournament.id, level, index)
-                            if parent_node.match is None:
-                                # new_match = Match(startDateTime=datetime.datetime.now(), scoreA=0, scoreB=0)
-                                # new_match.save()
+                        winners_of_match = _get_winners(match)
+                        winners_of_sibling_match = _get_winners(sibling_match)
 
-                                winners_of_match = _get_winners(match)
-                                winners_of_sibling_match = _get_winners(sibling_match)
+                        new_match = create_match(score_a=0, score_b=0, a_players=winners_of_match,
+                                                 b_players=winners_of_sibling_match)
+                        if new_match.status_code != 200:
+                            return http_response('Could not create new match properly!', code=400)
 
-                                new_match = create_match(score_a=0, score_b=0, a_players=winners_of_match,
-                                                         b_players=winners_of_sibling_match)
-                                if new_match.status_code != 200:
-                                    return http_response('Could not create new match properly!', code=400)
+                        response = run_connection("UPDATE api_bracketnode SET match_id = %s WHERE id = %s", new_match.id, parent_node.id)
+            else:
+                # there's no sibling and it's not the 0 level, which shouldn't exist - return error
+                return http_response('Could not find a sibling for your match!', code=400)
 
-                                response = run_connection("UPDATE api_bracketnode SET match_id = %s WHERE id = %s", new_match.id, parent_node.id)
-                    else:
-                        # there's no sibling and it's not the 0 level, which shouldn't exist - return error
-                        return http_response('Could not find a sibling for your match!', code=400)
+    #check if this match is a ranked match
+    if _is_ranked_match(id):
+        #@TODO: some ranking modifications
+        return http_response({}, message="need a placeholder")
 
-        #put the next match on the court
-        court = Court.objects.raw("SELECT * FROM api_court WHERE id=%s AND queue_id IS NOT NULL", [court_id])
-        if len(list(court)) > 0:
-            court = court[0]
-            #that means it has a queue id
-            queue = Queue.objects.raw("SELECT * FROM api_queue WHERE id=%s", [court.queue_id])
-            if len(list(queue)) > 0:
-                queue = queue[0]
-                dequeue_resp = dequeue_next_party_to_court(queue.type, court.id)
+    #put the next match on the court
+    court = Court.objects.raw("SELECT * FROM api_court WHERE id=%s AND queue_id IS NOT NULL", [court_id])
+    if len(list(court)) > 0:
+        court = court[0]
+        #that means it has a queue id
+        queue = Queue.objects.raw("SELECT * FROM api_queue WHERE id=%s", [court.queue_id])
+        if len(list(queue)) > 0:
+            queue = queue[0]
+            dequeue_resp = dequeue_next_party_to_court(queue.type, court.id)
 
-        return response
-
-    else:
-        return http_response(message='Violating win by 2 rule or at least one player having at least 21 points', code=400)
+    return response
 
 
 def dequeue_next_party_to_court(queue_type, court_id):
@@ -296,6 +299,64 @@ def _players(match_id, team):
     """
     players = Interested.objects.raw(query, [match_id, team])
     return players
+
+def _is_tournament_match(id):
+    """
+        Given a match id, return tournament it's part of
+        if it's not part of a tournament, return None
+    :param id:
+    :return:
+    """
+    tournaments = Tournament.objects.raw("SELECT * FROM api_tournament WHERE endDate IS NULL")
+    if len(list(tournaments)) > 0:
+        tournament = tournaments[0]
+        bracket_nodes = BracketNode.objects.raw(
+            "SELECT * FROM api_bracketnode WHERE tournament_id = %s AND match_id IS NOT NULL AND match_id = %s",
+            [tournament.id, id])
+        if len(list(bracket_nodes)) > 0:
+            return tournament
+
+    return None
+
+
+def _is_ranked_match(id):
+    """
+        Given a match id, return True if it's a ranked match, False if not
+    :param id:
+    :return:
+    """
+    match_court = Match.objects.raw("SELECT * FROM api_match WHERE api_match.id=%s", [id])
+    if len(list(match_court)) > 0:
+        court_id = match_court[0].court_id
+        courts = Court.objects.raw("SELECT * FROM api_court WHERE api_court.id=%s", [court_id])
+        if (len(list(courts))) > 0:
+            court = courts[0]
+            queues = Queue.objects.raw("SELECT * FROM api_queue WHERE api_queue.id=%s", [court.queue_id])
+            if (len(list(queues))) > 0:
+                queue = queues[0]
+                if queue.type == "RANKED":
+                    return True
+
+    return False
+
+def _get_bracket_node_and_level(id, tournament_id):
+    """
+        Given a match id and tournament id, get the match's bracket node and level
+    :param id:
+    :return:
+    """
+
+    if _is_tournament_match(id):
+        bracket_nodes = BracketNode.objects.raw(
+            "SELECT * FROM api_bracketnode WHERE tournament_id = %s AND match_id IS NOT NULL AND match_id = %s",
+            [tournament_id, id])
+        if len(list(bracket_nodes)) > 0:
+            bracket_node = bracket_nodes[0]
+            level = bracket_node.level
+
+            return bracket_node, level
+    else:
+        return None
 
 def get_match(id):
     query = Match.objects.raw("SELECT * FROM api_match WHERE id = %s", [id])
