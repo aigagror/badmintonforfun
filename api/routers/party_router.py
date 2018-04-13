@@ -78,7 +78,10 @@ def create_party(request):
                 # Add to a_players, if half of players aren't already on there
                 a_players.append(member_id)
             else:
-                b_players.append(member_id)
+                if len(b_players < num_players/2):
+                    b_players.append(member_id)
+                else:
+                    a_players.append(member_id)
 
         create_match(score_a=0, score_b=0, a_players=a_players, b_players=b_players, court_id=open_court_id)
         return http_response(message="OK", code=200)
