@@ -38,7 +38,7 @@ class PartyTest(CustomTestCase):
          args={'queue_type': 'RANKED', 'member_ids': '8,9'})
     def test_create_party_that_creates_a_match(self):
         """
-        According to the example data, 'Jared' is not yet on a party and the courts associated with the ranked queue are empty
+        According to the example data, 'Jared' is not yet on a party and there is a free court associated with the ranked queue
         Therefore, there should be no new party and instead there should be a new match on one of the courts associated with the
         ranked queue
         :return:

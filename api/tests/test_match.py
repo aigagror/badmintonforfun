@@ -29,6 +29,7 @@ class MatchTest(CustomTestCase):
         """
         Grace is associated with one unfinished match,
         which is on a court which is associated with the casual queue
+        Since this was a casual match, Grace's level should not increase
         :return:
         """
         response = self.response
@@ -57,4 +58,43 @@ class MatchTest(CustomTestCase):
                 break
 
         self.assertTrue(successfully_dequeued)
+
+        # Grace's level should still be 0
+        self.assertEqual(grace.level, 0)
+
+
+    @run(path_name='finish_match', email=JOSHUA, method=POST, args={'scoreA': 21, 'scoreB': 19})
+    def test_finish_ranked_match(self):
+        """
+        Joshua was on an ongoing ranked match. Since he won, his level should increase by some constant
+        :return:
+        """
+
+        response = self.response
+        self.assertGoodResponse(response)
+
+        # Assert that all the courts for the ranked queue are empty now
+        ranked_queue = Queue.objects.get(type='RANKED')
+        ranked_courts = Court.objects.filter(queue=ranked_queue)
+        for court in ranked_courts:
+            match = Match.objects.get(court=court)
+            self.assertIsNone(match)
+
+        # Assert that a new match was added
+        self.assertEqual(self.number_of_matches_now, self.original_number_of_matches + 1)
+
+        # Assert that the match that joshua was a part of is finished
+        joshua = Member.objects.get(first_name='Joshua')
+        playedin = PlayedIn.objects.get(member=joshua)
+        match = playedin.match
+
+        self.assertIsNotNone(match.endDateTime)
+
+
+        # Assert that Joshua's level increased by some constant
+        # (Let's say for now that every win increases your level by 10)
+        self.assertEqual(joshua.level, 10)
+
+
+
 
