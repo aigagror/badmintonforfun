@@ -125,6 +125,27 @@ class PartyTest(CustomTestCase):
         jared = Member.objects.get(first_name='Jared')
         self.assertEqual(jared.party, party)
 
+    @run(path_name='join_party', email=MEMBER, method=POST, args={'party_id': 2})
+    def test_bad_join_party(self):
+        """
+        Member is already party of some party
+        :return:
+        """
+        response = self.response
+        self.assertBadResponse(response)
+
+        self.assertEqual(self.number_of_parties_now, self.original_number_of_parties)
+
+        # No party should be empty
+        all_parties = Party.objects.all()
+        for party in all_parties:
+            party_members = Member.objects.filter(party=party)
+            self.assertGreater(len(list(party_members)), 0)
+
+        # Member should still be a part of some party
+        member = Member.objects.get(first_name='Member')
+        self.assertIsNotNone(member.party)
+
     @run(path_name='leave_party', email=Member, method=POST, args={})
     def test_leave_party_that_removes_party(self):
         """
