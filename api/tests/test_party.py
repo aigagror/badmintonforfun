@@ -38,7 +38,7 @@ class PartyTest(CustomTestCase):
          args={'queue_type': 'RANKED', 'member_ids': '8,9'})
     def test_create_party_that_creates_a_match(self):
         """
-        According to the example data, 'Jared' is not yet on a party and the courts associated with the ranked queue are empty
+        According to the example data, 'Jared' is not yet on a party and there is a free court associated with the ranked queue
         Therefore, there should be no new party and instead there should be a new match on one of the courts associated with the
         ranked queue
         :return:
@@ -139,6 +139,59 @@ class PartyTest(CustomTestCase):
 
         bhuvan = Member.objects.get(first_name='Bhuvan')
         self.assertIsNone(bhuvan.party_id)
+
+    @run(path_name="get_free_members", email=JARED, method=POST, args={})
+    def test_get_free_members(self):
+        """
+        Gets the members who are not in a party and are not in an ongoing match and are not himself
+        :return:
+        """
+
+        jared = Member.objects.get(first_name='Jared') # Should not see himself
+
+        # These guys are in a party
+        member = Member.objects.get(first_name='Member')
+        eddie = Member.objects.get(first_name='Eddie')
+        bhuvan = Member.objects.get(first_name='Bhuvan')
+        dan = Member.objects.get(first_name='Dan')
+
+        # Grace is in an ongoing match
+        grace = Member.objects.get(first_name='Grace')
+
+        people_who_should_not_be_included = [jared, member, eddie, bhuvan, dan, grace]
+
+        response = self.response
+        self.assertGoodResponse(response)
+
+        json = response.json()
+
+        self.assertTrue('free_members' in json)
+
+        free_members = json['free_members']
+
+        # Obama and 'BoardMember' should at least be in here
+        self.assertGreaterEqual(len(free_members), 2)
+
+        for free_member in free_members:
+            self.assertTrue('id' in free_member)
+            self.assertTrue('first_name' in free_member)
+            self.assertTrue('last_name' in free_member)
+
+            first_names_of_people_who_should_not_be_included = [m.first_name for m in people_who_should_not_be_included]
+
+            self.assertFalse(free_member['first_name'] in first_names_of_people_who_should_not_be_included)
+
+        # Check that Barack is in here
+        barack_is_free = False
+        for free_member in free_members:
+            first_name = free_member['first_name']
+            if first_name == 'Barack':
+                barack_is_free = True
+
+        self.assertTrue(barack_is_free)
+
+
+
 
 
 
