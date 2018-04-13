@@ -74,6 +74,7 @@ def emails_for_key(key):
     emails = list(map(lambda x: x['email'], results))
     return emails
 
+
 @auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["GET", "POST"])
 def mail(request):

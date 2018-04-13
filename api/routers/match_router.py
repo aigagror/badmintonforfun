@@ -2,13 +2,14 @@ from api.calls.match_call import get_top_players, create_match as get_create_mat
 from api.calls.match_call import find_current_match_by_member, delete_match as get_delete_match, finish_match as get_finish_match
 from django.contrib.auth.decorators import login_required
 from api.routers.router import restrictRouter
-from .router import validate_keys, http_response
+from .router import validate_keys, http_response, auth_decorator
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
 from api.cursor_api import dictfetchall, serializeDict, serializeSetOfModels, serializeModel
 from django.http import HttpResponse
 from api.models import *
+from api.calls.interested_call import MemberClass
 
 
 @restrictRouter(allowed=["GET"])
@@ -22,6 +23,8 @@ def top_players(request):
     return get_top_players()
 
 
+@login_required
+@csrf_exempt
 @restrictRouter(allowed=["POST"])
 def edit_match(request):
     """
@@ -30,14 +33,16 @@ def edit_match(request):
     :param request:
     :return:
     """
+    check_login_status(request)
 
     dict_post = dict(request.POST.items())
     validate_keys(["score_A", "score_B", "id"], dict_post)
     return get_edit_match(dict_post["id"], dict_post["score_A"], dict_post["score_B"])
 
 
-@login_required
 @csrf_exempt
+@login_required
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def finish_match(request):
     """
@@ -47,12 +52,14 @@ def finish_match(request):
     :return:
     """
 
+
     dict_post = dict(request.POST.items())
     validate_keys(["id", "scoreA", "scoreB"], dict_post)
     return get_finish_match(dict_post["id"], dict_post["scoreA"], dict_post["scoreB"])
 
 
 @csrf_exempt
+@login_required
 @restrictRouter(allowed=["POST"])
 def create_match(request):
     """
@@ -63,6 +70,7 @@ def create_match(request):
     :param request:
     :return:
     """
+    check_login_status(request)
 
     dict_post = json.loads(request.body.decode('utf8').replace("'", '"'))
     # write something to make sure a_players and b_players are lists

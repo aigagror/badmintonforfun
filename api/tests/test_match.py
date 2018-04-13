@@ -24,7 +24,6 @@ class MatchTest(CustomTestCase):
         self.assertTrue('teamA' in match)
         self.assertTrue('teamB' in match)
 
-
     @run(path_name='finish_match', email=GRACE, method=POST, args={'id': 9, 'scoreA': 21, 'scoreB': 19})
     def test_finish_match(self):
         """

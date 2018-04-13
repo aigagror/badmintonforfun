@@ -19,6 +19,7 @@ def restrictRouter(allowed=list(), incomplete=list()):
         return _func
     return _restrictRouter
 
+
 def auth_decorator(allowed=None):
     def _auth_decorator(func):
         def _func(request, *args, **kwargs):
@@ -32,12 +33,6 @@ def auth_decorator(allowed=None):
         return _func
     return _auth_decorator
 
-
-
-@restrictRouter(allowed=["POST"])
-def sign_in(request):
-    code = dict(request.POST.items())
-    return logged_in(code)
 
 def validate_keys(keys, validate_dict):
     for key in keys:
