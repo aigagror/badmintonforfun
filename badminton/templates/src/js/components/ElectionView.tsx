@@ -100,7 +100,9 @@ class ElectionCandidate extends React.Component<any, any> {
 			</div>
 
 			<div className="col-8 row-2 election-label-div">
-			<label htmlFor={""+this.props.person.id} className="election-label">{this.props.person.name}</label>
+			<label htmlFor={""+this.props.person.id} className="election-label">
+				{this.props.person.first_name + ' ' + this.props.person.last_name}
+			</label>
 			</div>
 
 			</div>

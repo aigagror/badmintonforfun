@@ -10,7 +10,8 @@ from api.calls.settings_call import *
 from api.routers.router import restrictRouter, validate_keys, auth_decorator
 from api.cursor_api import *
 from django.contrib.auth.decorators import login_required
-from api.calls.interested_call import get_member_class, id_for_member, MemberClass
+from api.utils import MemberClass, get_member_class, id_for_member
+
 
 @restrictRouter(allowed=["GET", "POST"])
 @auth_decorator(allowed=MemberClass.MEMBER)

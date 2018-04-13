@@ -103,7 +103,7 @@ def delete_campaign(id, email, job):
 
 
 def get_current_campaigns():
-
+    print(1)
     curr_election_dict = get_current_election()
     curr_election = curr_election_dict["election"]
     if curr_election is None:
@@ -133,6 +133,7 @@ def get_current_election():
     Returns the one current election and all of its campaigns
     :return:
     """
+    print(2)
     curr_election = Election.objects.raw("SELECT * FROM api_election AS election\
         WHERE endDate IS NULL OR endDate >= date('now')\
         ORDER BY election.date DESC LIMIT 1;")
@@ -141,6 +142,16 @@ def get_current_election():
         return None
     else:
         election = curr_election[0]
+        with connection.cursor() as cursor:
+            query = """
+                SELECT * FROM api_campaign WHERE election_id = %s
+                JOIN api_interested ON api_campaign.campaigner = api_interested.id
+            """
+            cursor.execute(query, [election.id])
+
+            results = dictfetchall(cursor)
+            print(hello)
+            print(results)
         campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [election.id])
         return {'election': election, 'campaigns': campaigns}
 
@@ -149,7 +160,6 @@ def current_election():
     Returns the one current election going on
     :return:
     """
-
     election_dict = get_current_election()
     if election_dict is None:
         return HttpResponse(json.dumps({"status": "down", "message": "Sorry there is no election!"}), content_type='application/json')
@@ -207,7 +217,6 @@ def get_election(id):
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM api_election WHERE id=%s", [id])
         election = dictfetchone(cursor)
-
     if election:
         return HttpResponse(json.dumps({'code': 200, 'message': 'OK',
                                         'election': {'date': serializeDate(election['date']),

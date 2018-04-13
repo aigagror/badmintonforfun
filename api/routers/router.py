@@ -2,7 +2,7 @@
 
 from api.calls.match_call import *
 from django.contrib.auth.decorators import login_required
-from api.calls.interested_call import get_member_class
+from api.utils import get_member_class
 from badminton_server.settings import LOGIN_URL
 from django.shortcuts import redirect
 

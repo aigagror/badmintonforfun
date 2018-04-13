@@ -9,10 +9,11 @@ from django.db import connection
 from api.cursor_api import dictfetchall, serializeDict, serializeSetOfModels, serializeModel
 from django.http import HttpResponse
 from api.models import *
-from api.calls.interested_call import MemberClass
-
+from api.utils import MemberClass
+from api.routers.router import auth_decorator
 
 @restrictRouter(allowed=["GET"])
+@auth_decorator(allowed=MemberClass.MEMBER)
 def top_players(request):
     """
     GET -- Gets the top 5 players
@@ -23,8 +24,7 @@ def top_players(request):
     return get_top_players()
 
 
-@login_required
-@csrf_exempt
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def edit_match(request):
     """
@@ -40,8 +40,6 @@ def edit_match(request):
     return get_edit_match(dict_post["id"], dict_post["score_A"], dict_post["score_B"])
 
 
-@csrf_exempt
-@login_required
 @auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def finish_match(request):
@@ -78,13 +76,10 @@ def create_match(request):
     return get_create_match(dict_post["score_A"], dict_post["score_B"], dict_post["a_players"], dict_post["b_players"])
 
 
-@csrf_exempt
+@login_required
 @restrictRouter(allowed=["DELETE"])
 def delete_match(request):
     """
-        DELETE -- delete a match
-            PLEASE PASS IN AS RAW DATA.
-            Required keys: id
     :param request:
     :return:
     """
@@ -162,13 +157,6 @@ def all_matches(request):
 @restrictRouter(allowed=["GET"])
 def all_matches_from_member(request):
     """
-            (CASE WHEN 
-                (api_playedin.team = 'A') THEN api_match.scoreA ELSE api_match.scoreB END) AS my_score,
-            (CASE WHEN 
-                (api_playedin.team = 'B') THEN api_match.scoreA ELSE api_match.scoreB END) AS their_score,
-            api_match.party_id,
-            api_match.endDateTime,
-            api_match.startDateTime
     """
     member_id = request.GET.get('id', None)
     if member_id is None:

@@ -8,9 +8,10 @@ from api.cursor_api import *
 from api.routers.router import restrictRouter
 from api.models import *
 import datetime
+from api.utils import MemberClass
+from api.routers.router import auth_decorator
 
-
-@csrf_exempt
+@auth_decorator(MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_election(request):
     """
@@ -20,33 +21,46 @@ def get_election(request):
     :param request:
     :return:
     """
-    elections = Election.objects.raw("SELECT * FROM api_election AS election\
-        WHERE election.endDate IS NULL OR election.endDate >= %s\
-        ORDER BY election.date DESC LIMIT 1", [datetime.datetime.now().strftime("%Y%m%d")])
+    with connection.cursor() as cursor:
+        query = """
+        SELECT * FROM api_election AS election
+        WHERE election.endDate IS NULL OR election.endDate >= %s
+        ORDER BY election.date DESC LIMIT 1
+        """
+        cursor.execute(query, [datetime.datetime.now().strftime("%Y%m%d")])
+        elections = dictfetchall(cursor)
+
+    print(elections)
     if len(list(elections)) == 0:
         return HttpResponse(json.dumps({"message":"No current election available", "status": "down"}), content_type="application/json")
 
     current_election = elections[0]
 
-    campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [current_election.id])
+    with connection.cursor() as cursor:
+        query = """
+        SELECT * FROM api_campaign 
+        JOIN api_interested ON api_campaign.campaigner_id = api_interested.id
+        WHERE election_id = %s
+        """
+        cursor.execute(query, [current_election['id']])
+        campaigns = dictfetchall(cursor)
+        print(campaigns)
 
     context = {
-        'election': serializeModel(current_election),
-        'campaigns': serializeSetOfModels(campaigns),
+        'election': (serializeDict(current_election)),
+        'campaigns': (serializeDict(campaigns)),
         "order": list(map(lambda x: x[0], JOBS))
     }
     return http_response(context)
 
 
-@csrf_exempt
+@auth_decorator(MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST", "DELETE"])
 def edit_election(request):
     """
     POST -- Edits an election
-        Required Keys: id
         Optional Keys: startDate, endDate
     DELETE -- Deletes an election
-        Required Keys: id
     :param request:
     :return:
     """
@@ -84,7 +98,7 @@ def edit_election(request):
         return delete_election(dict_delete[idKey])
 
 
-@csrf_exempt
+@auth_decorator(MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST"])
 def electionCreateRouter(request):
     """

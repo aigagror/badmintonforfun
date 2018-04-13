@@ -9,7 +9,8 @@ from api.cursor_api import dictfetchall
 import json
 from django.http import HttpResponse
 from api.routers.router import validate_keys, restrictRouter, auth_decorator
-from api.calls.interested_call import get_member_class, id_for_member, MemberClass
+from api.utils import MemberClass, get_member_class, id_for_member
+
 
 @restrictRouter(allowed=["GET"])
 @auth_decorator(MemberClass.MEMBER)

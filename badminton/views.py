@@ -13,7 +13,7 @@ import os.path
 from badminton_server.settings import DEBUG
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
-from api.calls.interested_call import get_member_class, id_for_member, MemberClass
+from api.utils import MemberClass, get_member_class, id_for_member
 
 
 def _file_or_error(file_name, ret_type=str):
@@ -106,6 +106,7 @@ def _get_template_name(template):
         template += '.html'
     return template
 
+@ensure_csrf_cookie
 def _bypass_template_server(request, template, ensure_cookie=True):
     """
         This function takes the template string and renders
@@ -143,7 +144,6 @@ def _bypass_template_server(request, template, ensure_cookie=True):
 def _login_template_server(request, template):
     return _bypass_template_server(request, template)
 
-@ensure_csrf_cookie
 def template_server(request, template=None):
     template = _get_template_name(template)
     if template in public_templates:

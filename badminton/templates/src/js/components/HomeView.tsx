@@ -7,19 +7,19 @@ import { isBoardMember, xsrfCookieName, xsrfHeaderName, getMemberId } from '../c
 import { EditableTextarea } from '../common/EditableTextarea';
 import { objectToFormData } from '../common/Utils';
 
+axios.defaults.xsrfCookieName = xsrfCookieName();
+axios.defaults.xsrfHeaderName = xsrfHeaderName();
+
 declare var require: Function;
 const moment = require('moment');
 const BigCalendar = require('react-big-calendar');
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
-const stat_urls = "/api/match/recent/"
+const stat_urls = "/api/match/all_matches_from_member/"
 const announce_url = "/api/announcements/get/";
 const announce_create_url = "/api/announcements/create/";
 const announce_edit_url = "/api/announcements/edit/";
 const announce_delete_url = "/api/announcements/delete/";
-
-axios.defaults.xsrfCookieName = xsrfCookieName();
-axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 class GameView extends React.Component<any, any> {
 	render() {

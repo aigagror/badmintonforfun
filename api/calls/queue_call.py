@@ -7,19 +7,26 @@ from operator import itemgetter
 def get_queues():
     dict = {}
     dict['queues'] = []
-    queues = Queue.objects.raw("SELECT * FROM api_queue")
+    queues = Queue.objects.raw("SELECT * FROM api_queue");
     if len(list(queues)) >= 1:
         for queue in queues:
-            queue_dict = serializeModel(queue)
-            queue_dict['parties'] = []
+            queue_dict = {
+                "type": queue.type,
+                "id": queue.id,
+                "parties": []
+            }
             parties = Party.objects.raw("SELECT * FROM api_party WHERE queue_id = %s", [queue.id])
             for party in parties:
                 party_dict = serializeModel(party)
 
                 members = Member.objects.raw("SELECT * FROM api_member WHERE party_id = %s", [party.id])
-                members_dict = serializeSetOfModels(members)
+                members_dict = [{
+                    "first_name": member.first_name,
+                    "last_name": member.last_name,
+                    "id": member.id
+                } for member in members]
                 party_dict['members'] = members_dict
-                party_dict['number of members'] = len(members_dict)
+                party_dict['num_members'] = len(members_dict)
 
                 queue_dict['parties'].append(party_dict)
 

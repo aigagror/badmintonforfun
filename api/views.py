@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout, login
 from django.template import Context, Template
 from django.contrib.auth import logout as auth_logout
-from api.calls.interested_call import get_member_class, MemberClass, add_interested
+from api.calls.interested_call import add_interested
+from api.utils import MemberClass, get_member_class
 from api.routers.router import auth_decorator, restrictRouter, validate_keys
 from django.db import connection
 from api.cursor_api import dictfetchall
