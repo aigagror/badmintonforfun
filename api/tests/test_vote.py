@@ -15,7 +15,7 @@
 #
 #         campaigner1 = Member(first_name='Eddie', last_name='Huang', dateJoined=datetime.date.today(), email='ezhuang2@illinois.edu')
 #         campaigner2 = Member(first_name='Bhuvan', last_name='Venkatesh', dateJoined=datetime.date.today(), email='bhuvan2@illinois.edu')
-#         campaigner3 = Member(first_name='Grace', last_name='Shen', dateJoined=datetime.date.today(), email='gshen2@illinois.edu')
+#         campaigner3 = Member(first_name='Grace', last_name='Shen', dateJoined=datetime.date.today(), email='gshen3@illinois.edu')
 #         campaigner4 = Member(first_name='Daniel', last_name='Rong', dateJoined=datetime.date.today(), email='drong4@illinois.edu')
 #
 #         campaigner1.save()

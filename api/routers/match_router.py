@@ -104,9 +104,12 @@ def current_match(request):
     :return:
     """
 
-    member_id = request.user.id
-    if member_id is None:
-        return http_response({}, message="No user id!", code=400)
+    email = request.user.email
+    members = Interested.objects.raw("SELECT * FROM api_interested WHERE email = %s", [email])
+    if len(list(members)) <= 0:
+        return http_response({}, message="Member does not exist", code=400)
+    member = members[0]
+    member_id = member.id
 
     return find_current_match_by_member(member_id)
 
