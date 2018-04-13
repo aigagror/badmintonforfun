@@ -71,19 +71,33 @@ def find_current_match_by_member(id):
     :param id:
     :return:
     """
-    with connection.cursor() as cursor:
-        # query = '''SELECT api_match.id AS match_id FROM api_match, api_playedin
-        # WHERE api_playedin.member_id=%s AND api_match.id=api_playedin.match_id AND api_match.endDateTime IS NULL
-        # '''
 
-        query = "SELECT * FROM api_playedin WHERE api_playedin.member_id=%s"
+    with connection.cursor() as cursor:
+        query = '''SELECT * FROM api_match, api_playedin
+        WHERE api_playedin.member_id=%s AND api_match.id=api_playedin.match_id AND api_match.endDateTime IS NULL
+        '''
 
         cursor.execute(query, [id])
         result = dictfetchone(cursor)
-        print("Matches I've played in: ")
-        print(result)
+
         if result:
-            return http_response({"match_id": result["match_id"]})
+            match_id = result["match_id"]
+            people = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id=%s", [match_id])
+            if len(list(people)) <= 0:
+                return http_response({}, message="Oops... this shouldn't happen!", code=400)
+
+            teamA = []
+            teamB = []
+            for person in people:
+                if person.team == "A":
+                    teamA.append(person.member_id)
+                else:
+                    teamB.append(person.member_id)
+
+            match_json = {"match": {"match_id": match_id, "scoreA": result["scoreA"],
+                                            "scoreB": result["scoreB"], "teamA": teamA, "teamB": teamB}}
+
+            return http_response(match_json)
         else:
             return http_response({}, message="Couldn't find a current match for this member. Are you sure this member is in a match?",
                                  code=400)
