@@ -9,43 +9,52 @@ from .custom_test_case import *
 import json
 
 class MatchTest(CustomTestCase):
-    test_date = datetime.date(2018, 3, 24)
+    @run(path_name='current_match', email=GRACE, method=GET, args={})
+    def test_get_current_match(self):
+        response = self.response
+        self.assertGoodResponse(response)
 
-    def test_create_match(self):
-        matches = len(list(Match.objects.all()))
-        playedin = len(list(PlayedIn.objects.all()))
-        response = self.client.post(reverse('api:create_match'), {"score_A": 21, "score_B": 23, "a_players": [1, 2], "b_players": [3, 4]},
-                                    content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(matches + 1, len(list(Match.objects.all())))
-        self.assertEqual(playedin + 4, len(list(PlayedIn.objects.all())))
+        json = response.json()
+        self.assertTrue('match' in json)
+        match = json['match']
 
-    def test_edit_match(self):
-        self.test_create_match()
-        m = Match.objects.get(id=0)
-        self.assertEqual(str(m), "A['Eddie Huang', 'Bhuvan Venkatesh']-B['Daniel Rong', 'Grace Shen']:21-23")
-        response = self.client.post(reverse('api:edit_match'), {"id": 0, "score_A": 19, "score_B": 21})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(str(Match.objects.get(id=0)), "A['Eddie Huang', 'Bhuvan Venkatesh']-B['Daniel Rong', 'Grace Shen']:19-21")
+        self.assertTrue('scoreA' in match)
+        self.assertTrue('scoreB' in match)
 
-    def test_delete_match(self):
-        self.test_create_match()
-        matches = len(list(Match.objects.all()))
-        playedin = len(list(PlayedIn.objects.all()))
-        response = self.client.delete(reverse('api:delete_match'), {"id": 0})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(matches - 1, len(list(Match.objects.all())))
-        self.assertEqual(playedin - 4, len(list(PlayedIn.objects.all())))
+        self.assertTrue('teamA' in match)
+        self.assertTrue('teamB' in match)
 
-    def test_find_match_by_member(self):
-        self.test_create_match()
-        response = self.client.get(reverse('api:current_match'), {"id": 1})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["match_id"], 0)
 
+    @run(path_name='finish_match', email=GRACE, method=POST, args={'scoreA': 21, 'scoreB': 19})
     def test_finish_match(self):
-        self.test_create_match()
-        response = self.client.post(reverse('api:finish_match'), {"id": 0})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(str(Match.objects.get(id=0)), "A['Eddie Huang', 'Bhuvan Venkatesh']-B['Daniel Rong', 'Grace Shen']:21-23")
-        self.assertEqual(list(Match.objects.filter(id=0).values('court_id'))[0]['court_id'], None)
+        """
+        Grace is associated with one unfinished match,
+        which is on a court which is associated with the casual queue
+        :return:
+        """
+        response = self.response
+        self.assertGoodResponse(response)
+
+        casual_queue = Queue.objects.get(type='CASUAL')
+        casual_courts = Court.objects.filter(queue=casual_queue)
+
+        # The one match that Grace is a part of should be taken off the court and finished
+        grace = Member.objects.get(first_name='Grace')
+        member_playedin = PlayedIn.objects.get(member=grace)
+        match_of_grace = member_playedin.match
+
+        self.assertIsNone(match_of_grace.court)
+        self.assertIsNotNone(match_of_grace.endDateTime)
+
+        # One of these courts must should now contain a match involving Member
+        successfully_dequeued = False
+        member = Member.objects.get(first_name='Member')
+        for court in casual_courts:
+            match_on_court = Match.objects.get(court=court)
+            playedin = PlayedIn.objects.get(match=match_on_court)
+            if playedin.member == member:
+                successfully_dequeued = True
+                break
+
+        self.assertTrue(successfully_dequeued)
+

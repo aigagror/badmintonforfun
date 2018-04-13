@@ -8,12 +8,14 @@ from django.urls import reverse
 
 _class_ranking = [Interested, Member, BoardMember]
 
+NO_ONE = 'noone@illinois.edu'
 INTERESTED = 'interested@illinois.edu'
 MEMBER = 'member@illinois.edu'
 EDDIE = 'ezhuang2@illinois.edu'
 GRACE = 'gshen3@illinois.edu'
 BHUVAN = 'bhuvan2@illinois.edu'
 DAN = 'drong4@illinois.edu'
+JARED = 'jfranz2@illinois.edu'
 BOARD_MEMBER = 'board_member@illinois.edu'
 
 POST = "post"
@@ -118,6 +120,9 @@ class CustomTestCase(TestCase):
         self.original_parties = Party.objects.all()
         self.original_number_of_parties = len(list(self.original_parties))
 
+        self.original_matches = Match.objects.all()
+        self.original_number_of_matches = len(list(self.original_matches))
+
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
         json = response.json()
@@ -127,12 +132,6 @@ class CustomTestCase(TestCase):
         self.assertNotEqual(response.status_code, 200)
 
     def create_example_data(self):
-        # Create some courts
-        courts = []
-        for i in range(8):
-            courts.append(Court())
-            courts[i].save()
-
         # Create a casual queue
         casual_queue = Queue(type="CASUAL")
         casual_queue.save()
@@ -141,22 +140,27 @@ class CustomTestCase(TestCase):
         ranked_queue = Queue(type="RANKED")
         ranked_queue.save()
 
-        # Create some people
-        people = self._create_people()
-
-        # Create some matches
-        self._create_matches()
+        # Create some courts
+        courts = []
+        for i in range(8):
+            courts.append(Court())
+            courts[i].save()
 
         # Add the first four courts to the casual queue
         for i in range(4):
             courts[i].queue = casual_queue
             courts[i].save()
 
+        # Create some people
+        people = self._create_people()
+
+        # Create some matches
+        self._create_matches()
+
         # Add the next two courts to the ranked queue
         for i in range(4,6):
             courts[i].queue = ranked_queue
             courts[i].save()
-
 
         # Create the parties
         self._create_parties()
@@ -243,11 +247,16 @@ class CustomTestCase(TestCase):
         """
         NOTE: This function asssumes that certain people were already created
 
-        This function creates 8 matches, 10 minutes each.
+        This function creates
+            8 finished matches, 10 minutes long each.
+            4 unfinished matches, all on the first four courts
+                which are associated with the CASUAL queue
 
-        Eddie has played all matches (80 minutes in total)
+        Eddie has played all 8 finished matches (80 minutes in total)
         Bhuvan has played one match (10 minutes)
         Dan has played one match (10 minutes)
+
+        Grace is on one of the 4 unfinished matches
 
         Everyone else has not played in any matches
 
@@ -257,36 +266,63 @@ class CustomTestCase(TestCase):
         eddie = Member.objects.get(email='ezhuang2@illinois.edu')
         bhuvan = Member.objects.get(first_name='Bhuvan')
         dan = Member.objects.get(first_name='Daniel')
+        grace = Member.objects.get(first_name='Grace')
 
         now = datetime.datetime.now(tz=api.datetime_extension.utc)
-        matches = []
-        matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-80),
+        finished_matches = []
+
+        # Finished matches
+        finished_matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-80),
                              endDateTime=now + datetime.timedelta(minutes=-70), scoreA=21, scoreB=19))
-        matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-70),
+        finished_matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-70),
                              endDateTime=now + datetime.timedelta(minutes=-60), scoreA=21, scoreB=19))
-        matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-60),
+        finished_matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-60),
                              endDateTime=now + datetime.timedelta(minutes=-50), scoreA=21, scoreB=19))
-        matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-50),
+        finished_matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-50),
                              endDateTime=now + datetime.timedelta(minutes=-40), scoreA=21, scoreB=19))
-        matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-40),
+        finished_matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-40),
                              endDateTime=now + datetime.timedelta(minutes=-30), scoreA=21, scoreB=19))
-        matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-30),
+        finished_matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-30),
                              endDateTime=now + datetime.timedelta(minutes=-20), scoreA=21, scoreB=19))
-        matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-20),
+        finished_matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-20),
                              endDateTime=now + datetime.timedelta(minutes=-10), scoreA=21, scoreB=19))
-        matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-10),
+        finished_matches.append(Match(startDateTime=now + datetime.timedelta(minutes=-10),
                              endDateTime=now + datetime.timedelta(minutes=-0), scoreA=21, scoreB=19))
-        for match in matches:
+
+        for match in finished_matches:
             match.save()
+
+            # Eddie played in all finished matches
             playedin = PlayedIn(member=eddie, match=match, team="A")
             playedin.save()
 
-
-        playedin = PlayedIn(member=bhuvan, match=matches[0], team="A")
+        # Bhuvan and Dan
+        playedin = PlayedIn(member=bhuvan, match=finished_matches[0], team="A")
         playedin.save()
 
+        playedin = PlayedIn(member=dan, match=finished_matches[0], team="B")
+        playedin.save()
 
-        playedin = PlayedIn(member=dan, match=matches[0], team="B")
+        # Unfinished matches
+        unfinished_matches = []
+        unfinished_matches.append(Match(startDateTime=now, scoreA=21, scoreB=19))
+        unfinished_matches.append(Match(startDateTime=now, scoreA=21, scoreB=19))
+        unfinished_matches.append(Match(startDateTime=now, scoreA=21, scoreB=19))
+        unfinished_matches.append(Match(startDateTime=now, scoreA=21, scoreB=19))
+
+        for match in unfinished_matches:
+            # Assign these unfinished matches on the courts
+            # That are associated with the casual queue
+            casual_queue = Queue.objects.get(type='CASUAL')
+            i = unfinished_matches.index(match)
+            courts = Court.objects.filter(queue=casual_queue)
+            court = courts[i]
+            match.court = court
+
+            match.save()
+
+        # Member played in one unfinished match
+        playedin = PlayedIn(member=grace, match=unfinished_matches[0], team='A')
         playedin.save()
 
     def _create_people(self):

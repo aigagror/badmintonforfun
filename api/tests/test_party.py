@@ -21,8 +21,8 @@ class PartyTest(CustomTestCase):
         self.assertEqual(self.original_number_of_parties, self.number_of_parties_now)
 
 
-    @run(path_name="create_party", email=GRACE, method=POST,
-         args={'queue_type': 'CASUAL', 'member_ids': '2,3,4,5'})
+    @run(path_name="create_party", email=JARED, method=POST,
+         args={'queue_type': 'CASUAL', 'member_ids': '8,9'})
     def test_create_party(self):
         """
         According to the example data, 'Grace' is not yet on a party, so this should be ok
@@ -32,6 +32,37 @@ class PartyTest(CustomTestCase):
         self.assertGoodResponse(response)
 
         self.assertEqual(self.number_of_parties_now, self.original_number_of_parties + 1)
+
+
+    @run(path_name='create_party', email=JARED, method=POST,
+         args={'queue_type': 'RANKED', 'member_ids': '8,9'})
+    def test_create_party_that_creates_a_match(self):
+        """
+        According to the example data, 'Jared' is not yet on a party and the courts associated with the ranked queue are empty
+        Therefore, there should be no new party and instead there should be a new match on one of the courts associated with the
+        ranked queue
+        :return:
+        """
+
+        response = self.response
+        self.assertGoodResponse(response)
+
+        self.assertEqual(self.number_of_parties_now, self.original_number_of_parties)
+
+        self.assertEqual(self.number_of_matches_now, self.original_number_of_matches + 1)
+
+        ranked_queue = Queue.objects.get(type="RANKED")
+        ranked_courts = Court.objects.filter(queue=ranked_queue)
+
+        ongoing_ranked_match_exists = False
+        for court in ranked_courts:
+            match = Match.objects.get(court=court)
+            if match is not None:
+                ongoing_ranked_match_exists = True
+                break
+
+
+        self.assertTrue(ongoing_ranked_match_exists)
 
 
     @run(path_name="get_party_for_member", email=MEMBER, method=GET,

@@ -11,21 +11,16 @@ class QueueTest(CustomTestCase):
 
     @run(path_name="get_queues", email=MEMBER, method=GET, args={})
     def test_get_queues(self):
-        response = self.client.get(reverse('api:get_queues'))
-        self.assertGoodResponse(response)
-        json = response.json()
-        self.assertEqual(json['queues'][0]['type'], 'CASUAL')
-
-    @run(path_name="create_queue", email=BOARD_MEMBER, method=POST, args={'queue_type': 'CASUAL'})
-    def test_create_queue(self):
         response = self.response
         self.assertGoodResponse(response)
+        json = response.json()
 
-        queues = Queue.objects.all()
-        self.assertEqual(len(list(queues)), 1)
-        queue = queues[0]
-        self.assertEqual(queue.type, 'CASUAL')
+        self.assertTrue('queues' in json)
 
-        # Cannot create another queue of the same type
-        response = self.client.post(reverse('api:create_queue'), {'queue_type': 'CASUAL'})
-        self.assertBadResponse(response)
+        self.assertGreaterEqual(len(json['queues']), 2)
+
+        some_queue = json['queues'][0]
+
+        self.assertTrue('type' in some_queue)
+        self.assertTrue('parties' in some_queue)
+
