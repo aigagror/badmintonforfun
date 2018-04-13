@@ -171,7 +171,10 @@ def delete_party(request):
 
     if party_id is None:
         return http_response(message='You are not in a party', code=400)
-    return run_connection("DELETE FROM api_party WHERE id = %s", party_id)
+    run_connection("DELETE FROM api_party WHERE id = %s", party_id)
+
+    # Make sure any members associated with this party are updated
+    return run_connection("UPDATE api_member SET party_id=NULL WHERE party_id=%s", party_id)
 
 
 @restrictRouter(allowed=["GET"])
