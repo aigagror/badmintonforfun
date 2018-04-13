@@ -151,16 +151,16 @@ class CustomTestCase(TestCase):
             courts[i].queue = casual_queue
             courts[i].save()
 
+        # Add the next two courts to the ranked queue
+        for i in range(4, 6):
+            courts[i].queue = ranked_queue
+            courts[i].save()
+
         # Create some people
         people = self._create_people()
 
         # Create some matches
         self._create_matches()
-
-        # Add the next two courts to the ranked queue
-        for i in range(4,6):
-            courts[i].queue = ranked_queue
-            courts[i].save()
 
         # Create the parties
         self._create_parties()
@@ -257,6 +257,7 @@ class CustomTestCase(TestCase):
         Dan has played one match (10 minutes)
 
         Grace is on one of the 4 unfinished matches
+        (yes, that means 3 of the unfinished matches have no one associated with them...). That is a TODO
 
         Everyone else has not played in any matches
 
