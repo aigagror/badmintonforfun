@@ -345,7 +345,7 @@ class CustomTestCase(TestCase):
             match.save()
 
         # Joshua playing in one unfinished ranked match
-        playedin = PlayedIn(member=joshua, match=unfinished_casual_matches[0], team='A')
+        playedin = PlayedIn(member=joshua, match=unfinished_ranked_matches[0], team='A')
         playedin.save()
 
     def _create_people(self):
