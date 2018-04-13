@@ -31,7 +31,7 @@ def delete_match(id):
     return response
 
 
-def create_match(score_a, score_b, a_players, b_players):
+def create_match(score_a, score_b, a_players, b_players, court_id):
     with connection.cursor() as cursor:
         query = """
         SELECT MAX(id)
@@ -45,10 +45,10 @@ def create_match(score_a, score_b, a_players, b_players):
 
 
     query = """
-    INSERT INTO api_match(id, startDateTime, scoreA, scoreB) VALUES (%s, %s, %s, %s)
+    INSERT INTO api_match(id, startDateTime, scoreA, scoreB, court_id) VALUES (%s, %s, %s, %s, %s)
     """
     today = datetime.datetime.now()
-    response = run_connection(query, newID, serializeDateTime(today), score_a, score_b)
+    response = run_connection(query, newID, serializeDateTime(today), score_a, score_b, court_id)
     for p in a_players:
         query = """
         INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
@@ -223,7 +223,7 @@ def dequeue_next_party_to_court(queue_type, court_id):
         else:
             b_players.append(member)
 
-    return create_match(scoreA=0, scoreB=0, a_players=a_players, b_players=b_players)
+    return create_match(scoreA=0, scoreB=0, a_players=a_players, b_players=b_players, court_id=court_id)
 
 def _get_parent_node(tournament_id, curr_level, index):
     parent_index = index // 2

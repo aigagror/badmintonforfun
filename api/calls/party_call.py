@@ -1,6 +1,6 @@
 from api.calls.queue_call import get_parties_by_playtime, get_queues as call_get_queues
 from api.routers.router import restrictRouter, validate_keys, run_connection
-from api.models import Party, Member
+from api.models import Party, Member, Court, Match
 from api.cursor_api import *
 
 
@@ -102,3 +102,28 @@ def add_members_to_party(party_id, member_ids):
     for member_id in member_ids:
         run_connection("UPDATE api_member SET party_id=%s WHERE interested_ptr_id=%s", party_id, member_id)
     return http_response(message="OK")
+
+def queue_is_empty_with_open_court(queue_id):
+    """
+    # Check if there are other parties on this queue. If not, for each court associated with
+    # this queue, check if there are matches with NULL endDateTime with the court id. If for a court_id, there
+    # are NO matches with a NULL endDateTime, that means there is no ongoing match on that court. In that case,
+    # return the open court_id. In any other case, return None.
+    :param queue_id:
+    :return: court_id of the open court or None
+    """
+    raw_query = Party.objects.raw("SELECT * FROM api_party WHERE queue_id=%s", [queue_id])
+    queue_is_empty = len(list(raw_query)) == 0
+
+    if queue_is_empty:
+        raw_query = Court.objects.raw("SELECT * FROM api_court WHERE queue_id=%s", [queue_id])
+        courts = list(raw_query)
+        for court in courts:
+            raw_query = Match.objects.raw("SELECT * FROM api_match WHERE court_id=%s AND endDateTime IS NULL", [court.id])
+            court_is_free = len(list(raw_query)) == 0
+            if court_is_free:
+                return court.id
+        return None
+
+    else:
+        return None

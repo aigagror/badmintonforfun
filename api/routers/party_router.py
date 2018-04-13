@@ -1,7 +1,10 @@
+import random
+
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
 from api.calls.party_call import *
+from api.calls.match_call import *
 from api.routers.router import restrictRouter, validate_keys
 from api.cursor_api import http_response, run_connection
 from api.models import *
@@ -13,7 +16,7 @@ def create_party(request):
     """
     POST -- Creates a party. Anyone with Member permission or above can do this.
         Required Keys: queue_type, member_ids
-            NOTE: member_ids is a comma separated list of ids to add to the party
+            NOTE: member_ids is a comma separated list of ids to add to the party (EXCLUDES the user themselves)
     :param request:
     :return:
     """
@@ -42,6 +45,8 @@ def create_party(request):
     user_id = user.id
     member_ids = post_dict['member_ids']
     member_ids = member_ids.split(",")  # list of ids to add to the party
+    if user_id not in member_ids:
+        member_ids.append(str(user_id)) # add self to the party, if not already specified
 
     # Check if the user is already in a party
     rawquery = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND party_id NOT NULL", [user_id])
@@ -56,16 +61,39 @@ def create_party(request):
         party_with_max_id = parties_with_max_id[0]
         new_id = party_with_max_id.id + 1
 
-    response = run_connection("INSERT INTO api_party(id, queue_id) VALUES (%s, %s)", new_id, queue_id)
-    if response.status_code != 200:
+    # Check if there are other parties on this queue. If not, for each court associated with
+    # this queue, check if there are matches with NULL endDateTime with the court id. If for a court_id, there
+    # are no matches with a NULL endDateTime, that means there is no ongoing match on that court. In that case,
+    # skip creating a party and just throw this group into a match on that empty court.
+    open_court_id = queue_is_empty_with_open_court(queue_id)
+    if open_court_id:
+        # Create match
+        # Randomize the member_id's into two teams (preferably equal numbers on each team)
+        a_players = []
+        b_players = []
+        num_players = len(member_ids)
+        for member_id in member_ids:
+            choice = random.choice([True, False])
+            if choice and len(a_players) < num_players/2:
+                # Add to a_players, if half of players aren't already on there
+                a_players.append(member_id)
+            else:
+                b_players.append(member_id)
+
+        create_match(score_a=0, score_b=0, a_players=a_players, b_players=b_players, court_id=open_court_id)
+        return http_response(message="OK", code=200)
+    else:
+        # Create party on the queue
+        response = run_connection("INSERT INTO api_party(id, queue_id) VALUES (%s, %s)", new_id, queue_id)
+        if response.status_code != 200:
+            return response
+
+        # response = run_connection("UPDATE api_member SET party_id = %s WHERE interested_ptr_id = %s", new_id, member_id)
+        # if response.status_code != 200:
+        #     return response
+        add_members_to_party(new_id, member_ids)
+
         return response
-
-    # response = run_connection("UPDATE api_member SET party_id = %s WHERE interested_ptr_id = %s", new_id, member_id)
-    # if response.status_code != 200:
-    #     return response
-    add_members_to_party(new_id, member_ids)
-
-    return response
 
 @csrf_exempt
 @login_required()
