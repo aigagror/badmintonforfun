@@ -65,7 +65,7 @@ def edit_party(party_id, queue_id=None, add_members=None, remove_members=None):
 
 
 def get_member_party(member_id):
-    query_set = (Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT party_id FROM api_member WHERE interested_ptr_id=%s)", member_id))
+    query_set = (Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT party_id FROM api_member WHERE interested_ptr_id=%s)", [member_id]))
     if len(list(query_set)) == 0:
         return http_response({}, message="This member is not part of a party", status=400)
     party = query_set[0]

@@ -31,7 +31,7 @@ class PartyTest(CustomTestCase):
         response = self.response
         self.assertGoodResponse(response)
 
-        self.assertEqual(self.original_number_of_parties, self.number_of_parties_now + 1)
+        self.assertEqual(self.number_of_parties_now, self.original_number_of_parties + 1)
 
 
     @run(path_name="get_party_for_member", email=MEMBER, method=GET,
@@ -91,7 +91,7 @@ class PartyTest(CustomTestCase):
         self.assertGoodResponse(response)
 
         bhuvan = Member.objects.get(first_name='Bhuvan')
-        self.assertIsNone(bhuvan.party)
+        self.assertIsNone(bhuvan.party_id)
 
 
     @run(path_name="delete_party", email=DAN, method=POST,
@@ -107,7 +107,7 @@ class PartyTest(CustomTestCase):
         self.assertEqual(self.number_of_parties_now, self.original_number_of_parties - 1)
 
         bhuvan = Member.objects.get(first_name='Bhuvan')
-        self.assertIsNone(bhuvan.party)
+        self.assertIsNone(bhuvan.party_id)
 
 
 

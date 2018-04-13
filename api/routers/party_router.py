@@ -18,8 +18,8 @@ def create_party(request):
     :return:
     """
 
-    session_email = request.user.email
-    if not session_email:
+    session_email = request.user.username
+    if not request.user.is_authenticated:
         return http_response({}, message="You are not logged in", code=302)
 
     try:
@@ -40,14 +40,14 @@ def create_party(request):
 
     queue_id = queue.id
     user_id = user.id
-    member_ids = int(post_dict['member_ids'])
+    member_ids = post_dict['member_ids']
     member_ids = member_ids.split(",")  # list of ids to add to the party
 
     # Check if the user is already in a party
     rawquery = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND party_id NOT NULL", [user_id])
     member_is_in_party = len(list(rawquery)) > 0
     if member_is_in_party:
-        return http_response(message="Member is already in a party", code=400)
+        return http_response(message="User is already in a party", code=400)
 
     parties_with_max_id = Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT MAX(id) FROM api_party)")
     if len(list(parties_with_max_id)) == 0:
@@ -81,8 +81,8 @@ def add_member(request):
         :param request:
         :return:
     """
-    session_email = request.user.email
-    if session_email is None:
+    session_email = request.user.username
+    if not request.user.is_authenticated:
         return http_response({}, message="You are not logged in", code=302)
 
     try:
@@ -125,8 +125,8 @@ def remove_member(request):
         :param request:
         :return:
     """
-    session_email = request.user.email
-    if session_email is None:
+    session_email = request.user.username
+    if not request.user.is_authenticated:
         return http_response({}, message="You are not logged in", code=302)
 
     try:
@@ -158,8 +158,8 @@ def delete_party(request):
     :param request:
     :return:
     """
-    session_email = request.user.email
-    if session_email is None:
+    session_email = request.user.username
+    if not request.user.is_authenticated:
         return http_response({}, message="You are not logged in", code=302)
 
     try:
@@ -181,8 +181,8 @@ def member_party(request):
     :param request:
     :return:
     """
-    session_email = request.user.email
-    if session_email is None:
+    session_email = request.user.username
+    if not request.user.is_authenticated:
         return http_response({}, message="You are not logged in", code=302)
 
     try:
