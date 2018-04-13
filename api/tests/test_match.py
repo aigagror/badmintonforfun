@@ -5,13 +5,23 @@ from django.urls import reverse
 
 from api import cursor_api
 from api.models import *
+from api.calls.match_call import *
 from .custom_test_case import *
 import json
 
 class MatchTest(CustomTestCase):
+
+    def test_create_match(self):
+        matches = len(list(Match.objects.all()))
+        playedin = len(list(PlayedIn.objects.all()))
+        create_match(score_a=21, score_b=23, a_players=[1, 2], b_players=[3, 4], court_id=5)
+        self.assertEqual(matches + 1, len(list(Match.objects.all())))
+        self.assertEqual(playedin + 4, len(list(PlayedIn.objects.all())))
+
     @run(path_name='current_match', email=GRACE, method=GET, args={})
     def test_get_current_match(self):
         response = self.response
+        print(response.json()["message"])
         self.assertGoodResponse(response)
 
         json = response.json()

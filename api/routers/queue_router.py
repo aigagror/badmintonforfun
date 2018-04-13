@@ -1,16 +1,18 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from api.calls.queue_call import get_parties_by_playtime, create_queue as call_create_queue, get_queues as call_get_queues
-from api.routers.router import restrictRouter, validate_keys
+from api.routers.router import restrictRouter, validate_keys, auth_decorator
 from ..cursor_api import *
 from ..models import QUEUE_TYPE
 from ..models import *
 import json
+from api.calls.interested_call import MemberClass
 
 QUEUES = ("CASUAL", "RANKED", "KOTH")
 
 
 @login_required
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_queues(request):
     """

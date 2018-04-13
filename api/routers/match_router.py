@@ -23,7 +23,6 @@ def top_players(request):
     return get_top_players()
 
 
-@login_required
 @csrf_exempt
 @restrictRouter(allowed=["POST"])
 def edit_match(request):
@@ -58,7 +57,6 @@ def finish_match(request):
     return get_finish_match(dict_post["id"], dict_post["scoreA"], dict_post["scoreB"])
 
 
-@csrf_exempt
 @login_required
 @restrictRouter(allowed=["POST"])
 def create_match(request):
@@ -97,19 +95,18 @@ def delete_match(request):
     return get_delete_match(dict_delete["id"])
 
 
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def current_match(request):
     """
         GET -- The current match id of the match the member is playing
-            Needs parameter id=member id
-            ex: api/match/get/?id=1
     :param request:
     :return:
     """
 
-    member_id = request.GET.get('id', None)
+    member_id = request.user.id
     if member_id is None:
-        return http_response({}, message="Please pass in a member id", code=400)
+        return http_response({}, message="No user id!", code=400)
 
     return find_current_match_by_member(member_id)
 
