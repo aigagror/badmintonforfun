@@ -1,5 +1,6 @@
 from api.calls.match_call import get_top_players, create_match as get_create_match, edit_match as get_edit_match
 from api.calls.match_call import find_current_match_by_member, delete_match as get_delete_match, finish_match as get_finish_match
+from django.contrib.auth.decorators import login_required
 from api.routers.router import restrictRouter
 from .router import validate_keys, http_response
 import json
@@ -35,17 +36,20 @@ def edit_match(request):
     return get_edit_match(dict_post["id"], dict_post["score_A"], dict_post["score_B"])
 
 
+@login_required
+@csrf_exempt
 @restrictRouter(allowed=["POST"])
 def finish_match(request):
     """
     POST -- ends the match (edits match score, removes court id, adds endDateTime)
+        RequiredKeys: match id, scoreA, scoreB
     :param request:
     :return:
     """
 
     dict_post = dict(request.POST.items())
-    validate_keys(["id"], dict_post)
-    return get_finish_match(dict_post["id"])
+    validate_keys(["id", "scoreA", "scoreB"], dict_post)
+    return get_finish_match(dict_post["id"], dict_post["scoreA"], dict_post["scoreB"])
 
 
 @csrf_exempt

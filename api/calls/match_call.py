@@ -124,9 +124,7 @@ def finish_match(id, scoreA, scoreB):
     match = matches[0]
     court_id = match.court_id
     if abs(match.scoreA - match.scoreB) >= 2 and (match.scoreB >= 21 or match.scoreA >= 21):
-        query = '''
-            UPDATE api_match SET court_id=NULL, endDateTime=datetime('now') WHERE api_match.id=%s
-            '''
+        query = "UPDATE api_match SET endDateTime=datetime('now'), court_id=NULL WHERE id=%s"
 
         response = run_connection(query, id)
 
@@ -158,7 +156,7 @@ def finish_match(id, scoreA, scoreB):
                                 winners_of_match = _get_winners(match)
                                 winners_of_sibling_match = _get_winners(sibling_match)
 
-                                new_match = create_match(scoreA=0, scoreB=0, a_players=winners_of_match,
+                                new_match = create_match(score_a=0, score_b=0, a_players=winners_of_match,
                                                          b_players=winners_of_sibling_match)
                                 if new_match.status_code != 200:
                                     return http_response('Could not create new match properly!', code=400)
@@ -169,16 +167,17 @@ def finish_match(id, scoreA, scoreB):
                         return http_response('Could not find a sibling for your match!', code=400)
 
         #put the next match on the court
-        court = Court.objects.raw("SELECT * FROM api_court WHERE id=%s AND queue_id IS NOT NULL")
-
+        court = Court.objects.raw("SELECT * FROM api_court WHERE id=%s AND queue_id IS NOT NULL", [court_id])
         if len(list(court)) > 0:
+            court = court[0]
             #that means it has a queue id
-            queue = Queue.objects.raw("SELECT * FROM api_queue WHERE id=%s", court.queue_id)
-            dequeue_resp = dequeue_next_party_to_court(queue.type, court.id)
+            queue = Queue.objects.raw("SELECT * FROM api_queue WHERE id=%s", [court.queue_id])
+            if len(list(queue)) > 0:
+                queue = queue[0]
+                dequeue_resp = dequeue_next_party_to_court(queue.type, court.id)
 
-            if dequeue_resp.message == 'No parties on this queue':
-                return http_response(message='No parties on this queue')
-            return dequeue_resp
+        return response
+
     else:
         return http_response(message='Violating win by 2 rule or at least one player having at least 21 points', code=400)
 
@@ -212,18 +211,20 @@ def dequeue_next_party_to_court(queue_type, court_id):
 
     # Create match on court
 
-    a_players, b_players = []
+    a_players = []
+    b_players = []
+
     # Assign teams
     num_members = len(list(members))
     for i in range(num_members):
         team = "A" if i % 2 == 0 else "B"
         member = members[i]
         if team == "A":
-            a_players.append(member)
+            a_players.append(member.id)
         else:
-            b_players.append(member)
+            b_players.append(member.id)
 
-    return create_match(scoreA=0, scoreB=0, a_players=a_players, b_players=b_players, court_id=court_id)
+    return create_match(score_a=0, score_b=0, a_players=a_players, b_players=b_players, court_id=court_id)
 
 def _get_parent_node(tournament_id, curr_level, index):
     parent_index = index // 2

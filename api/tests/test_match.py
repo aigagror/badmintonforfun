@@ -25,7 +25,7 @@ class MatchTest(CustomTestCase):
         self.assertTrue('teamB' in match)
 
 
-    @run(path_name='finish_match', email=GRACE, method=POST, args={'scoreA': 21, 'scoreB': 19})
+    @run(path_name='finish_match', email=GRACE, method=POST, args={'id': 9, 'scoreA': 21, 'scoreB': 19})
     def test_finish_match(self):
         """
         Grace is associated with one unfinished match,
@@ -42,6 +42,7 @@ class MatchTest(CustomTestCase):
         grace = Member.objects.get(first_name='Grace')
         member_playedin = PlayedIn.objects.get(member=grace)
         match_of_grace = member_playedin.match
+        print("Grace's match ID: " + str(match_of_grace.id))
 
         self.assertIsNone(match_of_grace.court)
         self.assertIsNotNone(match_of_grace.endDateTime)
