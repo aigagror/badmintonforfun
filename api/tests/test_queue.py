@@ -23,4 +23,5 @@ class QueueTest(CustomTestCase):
 
         self.assertTrue('type' in some_queue)
         self.assertTrue('parties' in some_queue)
+        self.assertTrue('average_play_time' in some_queue)
 
