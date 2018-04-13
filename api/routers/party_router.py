@@ -78,7 +78,7 @@ def create_party(request):
                 # Add to a_players, if half of players aren't already on there
                 a_players.append(member_id)
             else:
-                if len(b_players < num_players/2):
+                if len(b_players) < num_players/2:
                     b_players.append(member_id)
                 else:
                     a_players.append(member_id)
