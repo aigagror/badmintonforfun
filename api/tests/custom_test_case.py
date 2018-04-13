@@ -220,28 +220,33 @@ class CustomTestCase(TestCase):
         dan = Member.objects.get(first_name='Daniel')
         member = Member.objects.get(first_name='Member')
 
-        # Eddie is on the casual queue as a party of 1
-        party = Party(queue=casual_queue)
-        party.save()
+        parties = [Party(queue=casual_queue) for _ in range(4)]
+        for party in parties:
+            party.save()
 
-        eddie.party = party
+        # Eddie is on the casual queue as a party of 1
+        eddie.party = parties[0]
         eddie.save()
 
         # Bhuvan and Dan are on the casual queue as a party of 2 (Bhuvan and Dan have priority)
-        party = Party(queue=casual_queue)
-        party.save()
-
-        bhuvan.party = party
+        bhuvan.party = parties[1]
         bhuvan.save()
-        dan.party = party
+        dan.party = parties[1]
         dan.save()
 
         # Member is on the casual queue as a party of 1
-        party = Party(queue=casual_queue)
-        party.save()
-
-        member.party = party
+        member.party = parties[2]
         member.save()
+
+        print("ID's of parties")
+        for party in parties:
+            party_members = Member.objects.filter(party=party)
+            ret = '{}: ['.format(party.id)
+            for member in party_members:
+                ret += '{},'.format(str(member))
+            ret += ']'
+
+            print(ret)
 
 
     def _create_matches(self):
@@ -377,7 +382,7 @@ class CustomTestCase(TestCase):
         boards.append(BoardMember(first_name='Barack', last_name='Obama', dateJoined=datetime.date.today(),
                                   job="PRESIDENT", email='obama@gmail.com', bio='Change we can believe in'))
 
-        print("People in the example data")
+        print("ID's of people in the example data")
         for person in (interesteds + members + boards):
             person.save()
             print("{}: {}".format(person, person.id))
