@@ -62,6 +62,13 @@ def finish_match(request):
 
 
 @login_required
+@auth_decorator(allowed=MemberClass.MEMBER)
+def join_match(request):
+    return None
+
+def leave_match(request):
+    return None
+@login_required
 @restrictRouter(allowed=["POST"])
 def create_match(request):
     """
