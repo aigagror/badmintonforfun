@@ -40,9 +40,9 @@ class Party(models.Model):
 
     def __str__(self):
         members = Member.objects.filter(party=self.id)
-        ret = str(self.leader) + ':'
+        ret = ''
         for member in members:
-            ret += ' {}'.format(str(member))
+            ret += '{}'.format(str(member))
         return ret
 
 
