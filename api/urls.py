@@ -105,7 +105,7 @@ tournament_paths = [
 
 rankings_paths = [
     re_path(r'level/?$', rankings_router.get_rankings_by_level, name='get_rankings_by_level'),
-    re_path(r'winratio/?$', rankings_router.get_rankings_by_win_ratio, name='get_rankings_by_win_ratio'),
+    re_path(r'win_ratio/?$', rankings_router.get_rankings_by_win_ratio, name='get_rankings_by_win_ratio'),
 ]
 
 """
