@@ -82,6 +82,8 @@ def run(path_name, email, method, args):
             self.matches_now = Match.objects.all()
             self.number_of_matches_now = len(list(self.matches_now))
 
+            self.playedins_now = PlayedIn.objects.all()
+            self.number_of_playedins_now = len(list(self.playedins_now))
             # Run the test case
             test_func(self)
 
@@ -126,6 +128,9 @@ class CustomTestCase(TestCase):
 
         self.original_matches = Match.objects.all()
         self.original_number_of_matches = len(list(self.original_matches))
+
+        self.original_playedins = PlayedIn.objects.all()
+        self.original_number_of_playedins = len(list(self.original_playedins))
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
@@ -255,7 +260,7 @@ class CustomTestCase(TestCase):
 
     def _create_matches(self):
         """
-        NOTE: This function asssumes that certain people were already created
+        NOTE: This function assumes that certain people were already created
 
         This function creates
             8 finished matches, 10 minutes long each.
@@ -340,6 +345,11 @@ class CustomTestCase(TestCase):
         playedin = PlayedIn(member=grace, match=unfinished_casual_matches[0], team='A')
         playedin.save()
 
+        #Dan and Bhuvan are playing in one unfinished ranked match
+        playedin = PlayedIn(member=dan, match=unfinished_casual_matches[1], team='A')
+        playedin.save()
+        playedin = PlayedIn(member=bhuvan, match=unfinished_casual_matches[1], team='B')
+        playedin.save()
 
         # Unfinished ranked matches
         unfinished_ranked_matches = [Match(startDateTime=now, scoreA=21, scoreB=19)]
