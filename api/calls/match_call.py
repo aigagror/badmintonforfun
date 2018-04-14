@@ -283,7 +283,8 @@ def _top_players():
                 (playedin.team = 'B' AND match.scoreB > match.scoreA) THEN 1 ELSE NULL END) AS wins, 
             COUNT(*) AS total_games,
             api_interested.first_name AS first_name,
-            api_interested.last_name AS last_name
+            api_interested.last_name AS last_name,
+            member.level AS level
         FROM ((api_member AS member
           INNER JOIN api_playedin AS playedin ON member.interested_ptr_id = playedin.member_id)
           INNER JOIN api_match AS match ON match.id = playedin.match_id)

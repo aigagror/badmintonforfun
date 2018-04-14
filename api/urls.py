@@ -18,7 +18,7 @@ from django.urls import re_path, path, include
 from api.routers import demo, router, votes_router, \
     settings_router, match_router, election_router, \
     campaign_router, announcement_router, queue_router, \
-    party_router, tournament_router, member_router
+    party_router, tournament_router, member_router, rankings_router
 
 announcements_paths = [
     # Gets the 3 latest announcements | Edits an announcement
@@ -101,9 +101,14 @@ tournament_paths = [
     re_path(r'bracket_node/?$', tournament_router.get_bracket_node, name='get_tournament_bracket_node'),
 
     # This api should really only be called on the leaf nodes of the tree
-    re_path(r'add/match?$', tournament_router.add_match, name='add_match_to_tournament'),
+    re_path(r'add/match/?$', tournament_router.add_match, name='add_match_to_tournament'),
     re_path(r'finish/?$', tournament_router.finish_tournament_router, name='finish_tournament'),
     re_path(r'^$', tournament_router.get_tournament, name='get_tournament'),
+]
+
+rankings_paths = [
+    re_path(r'level/?$', rankings_router.get_rankings_by_level, name='get_rankings_by_level'),
+    re_path(r'winratio/?$', rankings_router.get_rankings_by_win_ratio, name='get_rankings_by_win_ratio'),
 ]
 
 """
@@ -137,4 +142,5 @@ urlpatterns = [
     path('party/', include(party_paths)),
     path('tournament/', include(tournament_paths)),
     path('mail/', views.mail),
+    path('rankings/', include(rankings_paths)),
 ]

@@ -68,7 +68,7 @@ class MatchTest(CustomTestCase):
 
         self.assertTrue(successfully_dequeued)
 
-        # Grace's level should still be 0
+        # Grace's level should still be 0, since she's team A
         self.assertEqual(grace.level, 0)
 
 
@@ -101,9 +101,10 @@ class MatchTest(CustomTestCase):
         self.assertIsNotNone(match.endDateTime)
 
 
-        # Assert that Joshua's level increased by some constant
+        # Assert that Joshua's level increased by some constant, since he's team A
+        # Joshua's original level is 10.
         # (Let's say for now that every win increases your level by 10)
-        self.assertEqual(joshua.level, 10)
+        self.assertEqual(joshua.level, 20)
 
 
 

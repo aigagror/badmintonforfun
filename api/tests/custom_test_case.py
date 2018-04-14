@@ -374,7 +374,7 @@ class CustomTestCase(TestCase):
         members.append(Member(first_name="Jared", last_name="Franzone", dateJoined=datetime.date.today(),
                               email="jfranz2@illinois.edu"))
         members.append(Member(first_name='Joshua', last_name='Cheng', dateJoined=datetime.date.today(),
-                              email='jcheng2@illinois.edu'))
+                              email='jcheng2@illinois.edu', level=10))
 
         # Create some boards
         boards = []
