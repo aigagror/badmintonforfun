@@ -6,7 +6,7 @@ from ..cursor_api import *
 from ..models import QUEUE_TYPE
 from ..models import *
 import json
-from api.calls.interested_call import MemberClass
+from api.utils import MemberClass
 
 QUEUES = ("CASUAL", "RANKED", "KOTH")
 

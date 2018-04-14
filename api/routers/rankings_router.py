@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
-from api.calls.interested_call import MemberClass
+from api.utils import MemberClass
 from api.calls.rankings_call import get_top_players_by_level
 from api.routers.router import *
 

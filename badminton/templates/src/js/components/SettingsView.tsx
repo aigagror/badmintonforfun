@@ -271,7 +271,13 @@ class MemberSettings extends React.Component<any, any> {
 		return <>
 		<h3>Members</h3>
 		{
-			this.state.members.map((member: any, idx: number) => {
+			this.state.members.sort((a: any, b: any) => {
+					const cmp = a.first_name.localeCompare(b.first_name);
+					if (cmp === 0) {
+						return a.last_name.localeCompare(b.last_name);
+					}
+					return cmp;
+				}).map((member: any, idx: number) => {
 				return <div key={idx} className="row">
 				<div className="col-5 col-es-12">
 				<h4>{member.first_name} {member.last_name}</h4> 
@@ -281,7 +287,8 @@ class MemberSettings extends React.Component<any, any> {
 					options={this.state.memberTypes}
 					defaultValue={member.type}
 					onChange={(role: any) => {this.alterMember(idx, role)}}
-					name={member.member_id} />
+					name={member.member_id}
+					override={true} />
 				</div>
 				<div className="col-3 col-es-12">
 				<button 
@@ -403,20 +410,7 @@ export class SettingsView extends React.Component<any, any> {
 	}
 
 	performRequest() {
-		if (isBoardMember()) {
-			axios.get(reg_url)
-			.then((res) => {
-				this.setState({
-					loading: false,
-					regular_settings: <StandardSettings data={res.data}/>,
-				})
-			})
-			.catch((res) => {
-				console.log(res);
-			})
-		}
-		else {
-			axios.get(reg_url)
+		axios.get(reg_url)
 			.then((res) => {
 				this.setState({
 					loading: false,
@@ -427,7 +421,6 @@ export class SettingsView extends React.Component<any, any> {
 			.catch((res) => {
 				console.log(res);
 			})
-		}
 	}
 
 	componentDidMount() {
@@ -446,7 +439,7 @@ export class SettingsView extends React.Component<any, any> {
 		return <div className="election-view">
 	    	{ this.state.regular_settings !== null &&
 	    		this.state.regular_settings }
-	    	<BoardSettings />
+	    	{ isBoardMember() && <BoardSettings /> }
 	    </div>
 	}
 }

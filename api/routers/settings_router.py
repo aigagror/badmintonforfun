@@ -177,7 +177,6 @@ def settingsSchedulesRouter(request):
     :param request:
     :return:
     """
-    # session_id = request.session.get('session_id', None)
     session_id = id_for_member(request.user.email)
     if not is_board_member(session_id):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),
@@ -187,7 +186,8 @@ def settingsSchedulesRouter(request):
     elif request.method == "POST":
         # INSERT or UPDATE
         # dict_post = dict(request.POST.items())
-        json_post_data = json.loads(request.body)
+        print(request.body)
+        json_post_data = json.loads(request.body.decode('utf8'))
         if not validate_keys(["schedule"], json_post_data):
             HttpResponse(json.dumps({'message': 'Missing parameter schedule'}),
                          content_type='application/json', status=400)

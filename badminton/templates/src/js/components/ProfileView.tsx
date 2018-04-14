@@ -22,7 +22,6 @@ export class ProfileView extends React.Component<any, any> {
 			}
 		})
 		.then((res) => {
-			console.log(res.data);
 			this.setState({
 				bio: res.data.bio,
 				name: res.data.first_name + ' ' + res.data.last_name,
@@ -50,7 +49,7 @@ export class ProfileView extends React.Component<any, any> {
 				</div>
 				<div className="col-6">
 				<h2>{this.state.name}</h2>
-				<p>{this.state.bio}</p>
+				<p>{this.state.bio.length === 0 ? <i>No description provided</i> : this.state.bio}</p>
 				</div>
 			</div>
 			</div>;

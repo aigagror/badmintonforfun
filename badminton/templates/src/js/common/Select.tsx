@@ -14,12 +14,13 @@ export interface SelectProps {
     defaultValue?: string,
     onChange: (value: string) => void,
     options: Array<Option>,
-    name: string
+    name: string,
+    override?: boolean,
 }
 
 interface SelectState {
     status: string,
-    width: number
+    width: number,
 }
 
 const selectFadeOutClassName = 'select-check-fade-out';
@@ -78,7 +79,7 @@ export class Select extends React.Component<SelectProps, SelectState> {
     }
 
     _scrollCondition(): boolean {
-        return this.state.width < 500;
+        return this.state.width < 500 || this.props.override;
     }
 
     _decideInitialStatus(): string {

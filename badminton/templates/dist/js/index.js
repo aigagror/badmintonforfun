@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 295);
+/******/ 	return __webpack_require__(__webpack_require__.s = 306);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -72,21 +72,21 @@ module.exports = React;
 
 /***/ }),
 
-/***/ 295:
+/***/ 306:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
+const ReactDOM = __webpack_require__(4);
 ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: () => { window.location.href = "/login"; } }, "Sign In"), document.querySelector("member-button"));
 ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: () => { window.location.href = "./interested.html"; } }, "Interested"), document.querySelector("interested-button"));
 
 
 /***/ }),
 
-/***/ 5:
+/***/ 4:
 /***/ (function(module, exports) {
 
 module.exports = ReactDOM;

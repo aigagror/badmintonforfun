@@ -5,7 +5,7 @@ import axios from 'axios';
 import { RegisterElectionView } from "./RegisterElection";
 import { RadioButton } from '../common/RadioButton';
 import { Select, Option } from "../common/Select";
-import { xsrfCookieName, xsrfHeaderName, getMemberId } from '../common/LocalResourceResolver';
+import { xsrfCookieName, xsrfHeaderName, getMemberId, isBoardMember } from '../common/LocalResourceResolver';
 import { EditableTextarea } from '../common/EditableTextarea';
 import DatePicker from 'react-datepicker';
 import {objectToFormData} from '../common/Utils';
@@ -86,6 +86,7 @@ class ElectionCandidate extends React.Component<any, any> {
 					if (!ev.target.checked) return;
 
 					let data = new FormData();
+					data.append('voter', ""+getMemberId());
 					data.append('campaign', ev.target.value);
 					try {
 						const res = await axios.post(cast_vote_url, data);
@@ -109,7 +110,7 @@ class ElectionCandidate extends React.Component<any, any> {
 				initValue={this.state.pitch} 
 				onSave={this.updateCandidate} 
 				onDelete={this.deleteCandidate}
-				editableOverride={this.props.person.id !== getMemberId()} />
+				editableOverride={isBoardMember() || (this.props.person.id !== getMemberId())} />
 			</div>
 			</div>
 			);
@@ -252,11 +253,11 @@ class ElectionUp extends React.Component<any, any> {
 		return (<>
 		<div className="grid row-offset-1">
 
-		<ElectionUpBoardEditable 
+		{isBoardMember() && <ElectionUpBoardEditable 
 			refresh={this.props.refresh}
 			id={this.props.id}
 			startDate={this.props.startDate}
-			endDate={this.props.endDate} />
+			endDate={this.props.endDate} />}
 
 		<form onSubmit={this.submitVotes}>
 		{

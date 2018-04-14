@@ -708,9 +708,7 @@ def schedule_to_dict():
     """
     schedule = get_schedule()
     num_entries = len(list(schedule))
-    if num_entries == 0:
-        return HttpResponse(json.dumps({"message": "There is nothing in the schedule."}),
-                            content_type="application/json")
+
     ret_list = []
     for i in range(num_entries):
         entry = serializeModel(schedule[i])
@@ -722,7 +720,7 @@ def schedule_to_dict():
 
     context = {'schedule': ret_list}
 
-    return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+    return HttpResponse(json.dumps(context), content_type="application/json")
 
 
 def addto_edit_schedule(dict_post):

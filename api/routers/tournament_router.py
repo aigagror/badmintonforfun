@@ -25,7 +25,6 @@ def create_tournament_router(request):
     :param request:
     :return:
     """
-    # json_post_data = json.loads(request.body.decode('utf8').replace("'", '"'))
     post_dict = dict(request.POST.items())
     if not validate_keys(["num_players", "tournament_type"], post_dict):
         HttpResponse(json.dumps({'message': 'Missing parameters num_players or tournament_type'}),

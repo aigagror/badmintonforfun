@@ -432,7 +432,7 @@ module.exports = __webpack_require__(13);
 var utils = __webpack_require__(1);
 var bind = __webpack_require__(7);
 var Axios = __webpack_require__(15);
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 
 /**
  * Create an instance of Axios
@@ -517,7 +517,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 var utils = __webpack_require__(1);
 var InterceptorManager = __webpack_require__(24);
 var dispatchRequest = __webpack_require__(25);
@@ -1073,7 +1073,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(1);
 var transformData = __webpack_require__(26);
 var isCancel = __webpack_require__(10);
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 var isAbsoluteURL = __webpack_require__(27);
 var combineURLs = __webpack_require__(28);
 
@@ -1522,6 +1522,285 @@ module.exports = function spread(callback) {
 /***/ }),
 
 /***/ 4:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+
+/***/ 498:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+const ReactDOM = __webpack_require__(4);
+const TournamentView_1 = __webpack_require__(499);
+ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), document.querySelector("tournament-view"));
+
+
+/***/ }),
+
+/***/ 499:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+const axios_1 = __webpack_require__(12);
+const Select_1 = __webpack_require__(52);
+const Utils_1 = __webpack_require__(54);
+const tourney_url = '/api/tournament/';
+const columnWidth = 160;
+const rowHeight = 40;
+const rowSpacing = 10;
+const colSpacing = 50;
+const lazyHack = 10000000;
+const svgOffset = 20;
+const calcX = (col) => (columnWidth + colSpacing) * col + svgOffset;
+const calcY = (col, row, maxCols) => {
+    if (col === 0) {
+        return (rowHeight + rowSpacing) * row + col * ((rowHeight + rowSpacing) / 2) + svgOffset;
+    }
+    const numBlocksCenter = Math.pow(2, col);
+    const ytop = calcY(0, row * numBlocksCenter, maxCols);
+    const ybot = calcY(0, (row + 1) * numBlocksCenter - 1, maxCols) + rowHeight;
+    return (ytop + ybot - rowHeight) / 2;
+};
+class Matchup extends React.Component {
+    render() {
+        var extra;
+        const opts = {
+            stroke: "white",
+            fill: "white",
+            fontFamily: "Arial",
+            fontSize: "16px",
+        };
+        const startingX = this.props.x;
+        const startingY = this.props.y + 15;
+        if (this.props.data.state === "undecided") {
+            extra = React.createElement("text", { style: opts, x: startingX, y: startingY, height: rowHeight, width: columnWidth }, "TBA");
+        }
+        else if (this.props.data.state === "decided") {
+            extra = React.createElement(React.Fragment, null,
+                React.createElement("text", { style: opts, x: startingX, y: startingY }, this.props.data.team1),
+                React.createElement("text", { style: opts, x: startingX, y: startingY + rowHeight / 2 }, this.props.data.team2));
+        }
+        else {
+            const convert = (num) => {
+                if (num < 10) {
+                    return "0" + num;
+                }
+                return "" + num;
+            };
+            extra = React.createElement(React.Fragment, null,
+                React.createElement("text", { style: opts, x: startingX, y: startingY }, this.props.data.team1),
+                React.createElement("text", { style: opts, x: startingX, y: startingY + rowHeight / 2 }, this.props.data.team2),
+                React.createElement("text", { style: opts, x: startingX + columnWidth - 25, y: startingY }, this.props.data.team1_score),
+                React.createElement("text", { style: opts, x: startingX + columnWidth - 25, y: startingY + rowHeight / 2 }, this.props.data.team2_score));
+        }
+        const rectStyle = {
+            fill: 'black',
+            stroke: 'black',
+            strokeWidth: 5,
+        };
+        return (React.createElement(React.Fragment, null,
+            React.createElement("rect", { x: this.props.x, y: this.props.y, width: columnWidth, height: rowHeight, style: rectStyle, rx: "" + 3, ry: "" + 3 }),
+            extra));
+    }
+}
+function height(matchups) {
+    if (matchups === null || Object.keys(matchups).length === 0) {
+        return 0;
+    }
+    let hgt = Math.max(height(matchups.left_node), height(matchups.right_node)) + 1;
+    return hgt;
+}
+class TournamentCell extends React.Component {
+    constructor(props) {
+        super(props);
+        this.agglomerateData = this.agglomerateData.bind(this);
+        this._merge = this._merge.bind(this);
+    }
+    _merge(aggCall, toX, toY) {
+        if (aggCall.length === 0) {
+            return [];
+        }
+        let [othElems, [othX, othY]] = aggCall;
+        const offsetX = 6;
+        const midX = othX + columnWidth + offsetX;
+        var midY = othY + rowHeight / 2;
+        const halfX = midX + colSpacing / 2;
+        const offsetY = 9;
+        if (toY < midY) {
+            toY += offsetY;
+        }
+        else {
+            toY -= offsetY;
+        }
+        const lineOpts = {
+            stroke: "black",
+            strokeWidth: 1.5,
+        };
+        return [React.createElement("line", Object.assign({}, lineOpts, { x1: "" + midX, y1: "" + midY, x2: "" + halfX, y2: "" + midY })),
+            React.createElement("line", Object.assign({}, lineOpts, { x1: "" + halfX, y1: "" + midY, x2: "" + halfX, y2: "" + toY })),
+            React.createElement("line", Object.assign({}, lineOpts, { x1: "" + halfX, y1: "" + toY, x2: "" + (toX - offsetX), y2: "" + toY })),
+            ...othElems];
+    }
+    agglomerateData(data, row, col, maxCols) {
+        //elements, root
+        if (data === null || Object.keys(data).length === 0) {
+            return [];
+        }
+        let { left_node, right_node } = data, rest = __rest(data, ["left_node", "right_node"]);
+        const x = calcX(col);
+        const y = calcY(col, row, maxCols);
+        var elems = [React.createElement(Matchup, { x: x, y: y, data: rest })];
+        const entry = y + rowHeight / 2;
+        if (data.left_node !== null) {
+            const accumulated = this._merge(this.agglomerateData(data.left_node, row * 2, col - 1, maxCols), x, entry);
+            elems = elems.concat(accumulated);
+        }
+        if (data.right_node !== null) {
+            const accumulated = this._merge(this.agglomerateData(data.right_node, row * 2 + 1, col - 1, maxCols), x, entry);
+            elems = elems.concat(accumulated);
+        }
+        return [elems, [x, y]];
+    }
+    render() {
+        console.log(this.props.matches);
+        const maxHeight = height(this.props.matches);
+        let [elems, ...rest] = this.agglomerateData(this.props.matches, 0, maxHeight - 1, maxHeight);
+        return React.createElement("svg", { width: "" + window.innerWidth, height: "" + window.innerHeight },
+            React.createElement("g", null, elems));
+    }
+}
+class TournamentDown extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            players: "",
+            type: 'Doubles'
+        };
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+    onSubmit(ev) {
+        const data = {
+            num_players: this.state.players,
+            tournament_type: this.state.type,
+        };
+        axios_1.default.post('/api/tournament/create', Utils_1.objectToFormData(data))
+            .then((res) => {
+            console.log(res);
+        })
+            .catch((res) => {
+            console.log(res);
+        });
+        ev.preventDefault();
+    }
+    render() {
+        const opts = [
+            new Select_1.Option('Doubles', 'Doubles'),
+            new Select_1.Option('Singles', 'Singles'),
+        ];
+        return React.createElement("form", { onSubmit: this.onSubmit },
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { className: "col-6" },
+                    React.createElement("input", { type: "text", className: "interaction-style", placeholder: "Number of players", value: this.state.players, onChange: (ev) => this.setState({ players: ev.target.value }) })),
+                React.createElement("div", { className: "col-6" },
+                    React.createElement(Select_1.Select, { onChange: (val) => this.setState({ type: val }), options: opts, name: "emailName", defaultValue: this.state.type }))),
+            React.createElement("button", { type: "submit", className: "interaction-style" }, "Submit"));
+    }
+}
+class TournamentView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            status: null,
+            matches: null,
+        };
+        this.refresh = this.refresh.bind(this);
+        this.finishTournament = this.finishTournament.bind(this);
+    }
+    finishTournament() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = {
+                    tournament_id: this.state.id,
+                };
+                const res = yield axios_1.default.post(tourney_url + 'finish/', Utils_1.objectToFormData(data));
+                console.log(res);
+                this.refresh();
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
+    refresh() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const res = yield axios_1.default.get(tourney_url);
+                const data = res.data;
+                if (data.status === "down") {
+                    this.setState({
+                        status: data.status,
+                        matches: res.data,
+                    });
+                }
+                else {
+                    this.setState({
+                        status: data.status,
+                        matches: data.tournament.bracket_nodes,
+                        id: data.tournament.tournament_id,
+                    });
+                }
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
+    componentDidMount() {
+        this.refresh();
+    }
+    render() {
+        if (this.state.status === null) {
+            return null;
+        }
+        if (this.state.status === "down") {
+            return React.createElement(TournamentDown, { refresh: this.refresh });
+        }
+        return (React.createElement("div", { className: "tournament-div" },
+            React.createElement(TournamentCell, { matches: this.state.matches }),
+            React.createElement("button", { onClick: this.finishTournament, className: "interaction-style" }, "Finish")));
+    }
+}
+exports.TournamentView = TournamentView;
+
+
+/***/ }),
+
+/***/ 5:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1626,192 +1905,185 @@ module.exports = defaults;
 
 /***/ }),
 
-/***/ 498:
+/***/ 52:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const TournamentView_1 = __webpack_require__(499);
-ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), document.querySelector("tournament-view"));
-
-
-/***/ }),
-
-/***/ 499:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
-            t[p[i]] = s[p[i]];
-    return t;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const tourney_url = '/mock/tournament.json';
-const columnWidth = 160;
-const rowHeight = 40;
-const rowSpacing = 10;
-const colSpacing = 50;
-const lazyHack = 10000000;
-const svgOffset = 20;
-const calcX = (col) => (columnWidth + colSpacing) * col + svgOffset;
-const calcY = (col, row, maxCols) => {
-    if (col === 0) {
-        return (rowHeight + rowSpacing) * row + col * ((rowHeight + rowSpacing) / 2) + svgOffset;
+class Option {
+    constructor(val, displ) {
+        this.value = val;
+        this.display = displ;
     }
-    const numBlocksCenter = Math.pow(2, col);
-    const ytop = calcY(0, row * numBlocksCenter, maxCols);
-    const ybot = calcY(0, (row + 1) * numBlocksCenter - 1, maxCols) + rowHeight;
-    return (ytop + ybot - rowHeight) / 2;
-};
-class Matchup extends React.Component {
+}
+exports.Option = Option;
+const selectFadeOutClassName = 'select-check-fade-out';
+class SelectArea extends React.Component {
     render() {
-        var extra;
-        const opts = {
-            stroke: "white",
-            fill: "white",
-            "font-family": "Arial",
-            "font-size": "16px",
-        };
-        const startingX = this.props.x;
-        const startingY = this.props.y + 15;
-        if (this.props.data.state === "undecided") {
-            extra = React.createElement("text", { style: opts, x: startingX, y: startingY, height: rowHeight, width: columnWidth }, "TBA");
-        }
-        else if (this.props.data.state === "decided") {
-            extra = React.createElement(React.Fragment, null,
-                React.createElement("text", { style: opts, x: startingX, y: startingY }, this.props.data.team1),
-                React.createElement("text", { style: opts, x: startingX, y: startingY + rowHeight / 2 }, this.props.data.team2));
-        }
-        else {
-            const convert = (num) => {
-                if (num < 10) {
-                    return "0" + num;
-                }
-                return "" + num;
-            };
-            extra = React.createElement(React.Fragment, null,
-                React.createElement("text", { style: opts, x: startingX, y: startingY }, this.props.data.team1),
-                React.createElement("text", { style: opts, x: startingX, y: startingY + rowHeight / 2 }, this.props.data.team2),
-                React.createElement("text", { style: opts, x: startingX + columnWidth - 25, y: startingY }, this.props.data.team1_score),
-                React.createElement("text", { style: opts, x: startingX + columnWidth - 25, y: startingY + rowHeight / 2 }, this.props.data.team2_score));
-        }
-        const rectStyle = {
-            fill: 'black',
-            stroke: 'black',
-            'stroke-width': 5,
-        };
-        return (React.createElement(React.Fragment, null,
-            React.createElement("rect", { x: this.props.x, y: this.props.y, width: columnWidth, height: rowHeight, style: rectStyle, rx: "" + 3, ry: "" + 3 }),
-            extra));
+        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: this.props.onChange }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
+        }));
     }
 }
-function height(matchups) {
-    if (matchups === null) {
-        return 0;
-    }
-    let hgt = Math.max(height(matchups.feeder_lhs), height(matchups.feeder_rhs)) + 1;
-    return hgt;
-}
-class TournamentCell extends React.Component {
+class Select extends React.Component {
     constructor(props) {
         super(props);
-        this.agglomerateData = this.agglomerateData.bind(this);
-        this._merge = this._merge.bind(this);
-    }
-    _merge(aggCall, toX, toY) {
-        let [othElems, [othX, othY]] = aggCall;
-        const offsetX = 6;
-        const midX = othX + columnWidth + offsetX;
-        var midY = othY + rowHeight / 2;
-        const halfX = midX + colSpacing / 2;
-        const offsetY = 9;
-        if (toY < midY) {
-            toY += offsetY;
-        }
-        else {
-            toY -= offsetY;
-        }
-        const lineOpts = {
-            stroke: "black",
-            strokeWidth: 1.5,
-        };
-        return [React.createElement("line", Object.assign({}, lineOpts, { x1: "" + midX, y1: "" + midY, x2: "" + halfX, y2: "" + midY })),
-            React.createElement("line", Object.assign({}, lineOpts, { x1: "" + halfX, y1: "" + midY, x2: "" + halfX, y2: "" + toY })),
-            React.createElement("line", Object.assign({}, lineOpts, { x1: "" + halfX, y1: "" + toY, x2: "" + (toX - offsetX), y2: "" + toY })),
-            ...othElems];
-    }
-    agglomerateData(data, row, col, maxCols) {
-        //elements, root
-        if (data === null) {
-            return [];
-        }
-        let { feeder_lhs, feeder_rhs } = data, rest = __rest(data, ["feeder_lhs", "feeder_rhs"]);
-        const x = calcX(col);
-        const y = calcY(col, row, maxCols);
-        var elems = [React.createElement(Matchup, { x: x, y: y, data: rest })];
-        const entry = y + rowHeight / 2;
-        if (data.feeder_lhs !== null) {
-            const accumulated = this._merge(this.agglomerateData(data.feeder_lhs, row * 2, col - 1, maxCols), x, entry);
-            elems = elems.concat(accumulated);
-        }
-        if (data.feeder_rhs !== null) {
-            const accumulated = this._merge(this.agglomerateData(data.feeder_rhs, row * 2 + 1, col - 1, maxCols), x, entry);
-            elems = elems.concat(accumulated);
-        }
-        return [elems, [x, y]];
-    }
-    render() {
-        const maxHeight = height(this.props.matches);
-        let [elems, ...rest] = this.agglomerateData(this.props.matches, 0, maxHeight - 1, maxHeight);
-        return React.createElement("svg", { width: "" + window.innerWidth, height: "" + window.innerHeight },
-            React.createElement("g", null, elems));
-    }
-}
-class TournamentView extends React.Component {
-    constructor(props) {
-        super(props);
+        this.change = this.change.bind(this);
+        this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
+        this._decideInitialStatus = this._decideInitialStatus.bind(this);
+        this._scrollCondition = this._scrollCondition.bind(this);
+        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
+        const status = this._decideInitialStatus();
         this.state = {
-            matches: null,
+            status: status,
+            width: document.documentElement.clientWidth,
         };
+        this.scrollDiv = null;
     }
-    componentDidMount() {
-        axios_1.default.get(tourney_url)
-            .then((res) => {
-            this.setState({
-                matches: res.data.matches,
-            });
-        })
-            .catch((res) => {
+    _scrollCondition() {
+        return this.state.width < 500 || this.props.override;
+    }
+    _decideInitialStatus() {
+        if (this.props.defaultValue) {
+            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            if (!value) {
+                return "";
+            }
+            else {
+                return value.display;
+            }
+        }
+        else {
+            return this.props.options[0].display;
+        }
+    }
+    documentResizeUpdate() {
+        this.setState({
+            width: document.documentElement.clientWidth
         });
     }
-    render() {
-        if (this.state.matches === null) {
-            return null;
+    componentDidMount() {
+        if (this._scrollCondition()) {
+            return;
         }
-        return (React.createElement("div", { className: "tournament-div" },
-            React.createElement(TournamentCell, { matches: this.state.matches })));
+        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
+        document.addEventListener('mousedown', this.handleClickOutside);
+        const defaultHeight = 30;
+        this.scrollDiv.style.height = defaultHeight + "px";
+        this.interval = setInterval(() => {
+            const movableArea = this.innerDiv.scrollTop /
+                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            this.scrollDiv.style.top = "" + offset + "px";
+        }, 20);
+        const divMove = (e) => {
+            const boundingRect = this.selectDiv.getBoundingClientRect();
+            const fuzz = .2;
+            const height = boundingRect.bottom - boundingRect.top;
+            const bottom = boundingRect.bottom - fuzz * height;
+            const top = boundingRect.top + fuzz * height;
+            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            const percentage = (adjusted - top) / (bottom - top);
+            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        };
+        function mouseUp() {
+            window.removeEventListener('mousemove', divMove, true);
+        }
+        function mouseDown() {
+            window.addEventListener('mousemove', divMove, true);
+        }
+        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
+        window.addEventListener('mouseup', mouseUp, false);
+    }
+    componentWillUnmount() {
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.removeEventListener('mousedown', this.handleClickOutside);
+        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
+        clearInterval(this.interval);
+    }
+    /**
+     * Uncheck the input if clicked outside
+     * Best to leave the typing generic because typescript does _not_
+     * like non-generics with dom.
+     */
+    handleClickOutside(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
+        if (this.inputDiv && !this.wrapper.contains(event.target)) {
+            this.inputDiv.checked = false;
+        }
+    }
+    lazyAnimationAdder(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
+        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
+            this.selectDiv.classList.add(selectFadeOutClassName);
+        }
+    }
+    change(event) {
+        const target = event.target;
+        if (this.props.onChange) {
+            this.props.onChange(target.value);
+        }
+        if (this._scrollCondition()) {
+            return;
+        }
+        else {
+            // Cool trick to get the label for the input
+            const elem = document.querySelector('label[for="' + target.id + '"]');
+            this.setState({
+                status: elem.innerHTML,
+            });
+            this.inputDiv.checked = false;
+        }
+    }
+    render() {
+        if (this._scrollCondition()) {
+            return React.createElement("select", { className: "interaction-style", onChange: this.change }, this.props.options.map((option, idx) => {
+                return React.createElement(React.Fragment, null,
+                    React.createElement("option", { value: option.value }, option.display));
+            }));
+        }
+        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
+                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("b", { className: 'select-arrow' })),
+            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
+                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, onChange: this.change }),
+                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
     }
 }
-exports.TournamentView = TournamentView;
+exports.Select = Select;
 
 
 /***/ }),
 
-/***/ 5:
-/***/ (function(module, exports) {
+/***/ 54:
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = ReactDOM;
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function objectToFormData(obj) {
+    const data = new FormData();
+    for (let key of Object.keys(obj)) {
+        data.append(key, obj[key]);
+    }
+    return data;
+}
+exports.objectToFormData = objectToFormData;
+
 
 /***/ }),
 

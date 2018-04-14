@@ -432,7 +432,7 @@ module.exports = __webpack_require__(13);
 var utils = __webpack_require__(1);
 var bind = __webpack_require__(7);
 var Axios = __webpack_require__(15);
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 
 /**
  * Create an instance of Axios
@@ -517,7 +517,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 var utils = __webpack_require__(1);
 var InterceptorManager = __webpack_require__(24);
 var dispatchRequest = __webpack_require__(25);
@@ -1073,7 +1073,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(1);
 var transformData = __webpack_require__(26);
 var isCancel = __webpack_require__(10);
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 var isAbsoluteURL = __webpack_require__(27);
 var combineURLs = __webpack_require__(28);
 
@@ -1522,6 +1522,101 @@ module.exports = function spread(callback) {
 /***/ }),
 
 /***/ 4:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+
+/***/ 487:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+const ReactDOM = __webpack_require__(4);
+const Queue_1 = __webpack_require__(488);
+ReactDOM.render(React.createElement(Queue_1.Queue, null), document.querySelector("queue-view"));
+
+
+/***/ }),
+
+/***/ 488:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+const axios_1 = __webpack_require__(12);
+const queueUrl = '/api/queue/';
+class PartyView extends React.Component {
+    render() {
+        return React.createElement("div", null,
+            React.createElement("h3", null, "Party"),
+            this.props.party.members.map((member, idx) => {
+                return React.createElement("div", { key: idx },
+                    React.createElement("p", null, member.first_name + ' ' + member.last_name));
+            }));
+    }
+}
+class SpecificQueueView extends React.Component {
+    render() {
+        return React.createElement("div", null,
+            React.createElement("h2", null, this.props.type),
+            this.props.parties.map((party, idx) => {
+                return React.createElement(PartyView, { party: party, idx: idx });
+            }));
+    }
+}
+class Queue extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: null,
+        };
+        this.refreshQueue = this.refreshQueue.bind(this);
+    }
+    refreshQueue() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const queueData = yield axios_1.default.get(queueUrl);
+                this.setState({
+                    data: queueData.data,
+                });
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
+    componentDidMount() {
+        this.refreshQueue();
+    }
+    render() {
+        if (this.state.data === null) {
+            return React.createElement("p", null, "Loading");
+        }
+        return React.createElement("div", null, this.state.data.queues.map((queue, idx) => {
+            return React.createElement(SpecificQueueView, { parties: queue.parties, type: queue.type, key: idx });
+        }));
+    }
+}
+exports.Queue = Queue;
+
+
+/***/ }),
+
+/***/ 5:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1623,101 +1718,6 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ }),
-
-/***/ 487:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const Queue_1 = __webpack_require__(488);
-ReactDOM.render(React.createElement(Queue_1.Queue, null), document.querySelector("queue-view"));
-
-
-/***/ }),
-
-/***/ 488:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const queueUrl = '/api/queue/';
-class PartyView extends React.Component {
-    render() {
-        return React.createElement("div", null,
-            React.createElement("h3", null, "Party"),
-            this.props.party.members.map((member, idx) => {
-                return React.createElement("div", { key: idx },
-                    React.createElement("p", null, member.first_name + ' ' + member.last_name));
-            }));
-    }
-}
-class SpecificQueueView extends React.Component {
-    render() {
-        return React.createElement("div", null,
-            React.createElement("h2", null, this.props.type),
-            this.props.parties.map((party, idx) => {
-                return React.createElement(PartyView, { party: party, idx: idx });
-            }));
-    }
-}
-class Queue extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: null,
-        };
-        this.refreshQueue = this.refreshQueue.bind(this);
-    }
-    refreshQueue() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const queueData = yield axios_1.default.get(queueUrl);
-                this.setState({
-                    data: queueData.data,
-                });
-            }
-            catch (err) {
-                console.log(err);
-            }
-        });
-    }
-    componentDidMount() {
-        this.refreshQueue();
-    }
-    render() {
-        if (this.state.data === null) {
-            return React.createElement("p", null, "Loading");
-        }
-        return React.createElement("div", null, this.state.data.queues.map((queue, idx) => {
-            return React.createElement(SpecificQueueView, { parties: queue.parties, type: queue.type, key: idx });
-        }));
-    }
-}
-exports.Queue = Queue;
-
-
-/***/ }),
-
-/***/ 5:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
 
 /***/ }),
 

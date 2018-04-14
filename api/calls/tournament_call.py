@@ -8,10 +8,9 @@ def get_most_recent_tournament():
     Returns the most recent tournament, including the bracket nodes associated with it
     :return:
     """
-    most_recent_tournaments = Tournament.objects.raw("SELECT * FROM api_tournament ORDER BY date LIMIT 1")
+    most_recent_tournaments = Tournament.objects.raw("SELECT * FROM api_tournament ORDER BY date DESC LIMIT 1")
     if len(list(most_recent_tournaments)) == 0:
-        # No tournaments
-        return http_response(message="No tournaments exist", code=400)
+        return http_response({"status":"down"},message="No tournaments exist", code=200)
 
     most_recent_tournament = most_recent_tournaments[0]
     t_id = most_recent_tournament.id

@@ -24,7 +24,6 @@ export class EditableTextarea extends React.Component<any, any> {
 
 
 	render() {
-		console.log(this.props.editableOverride);
 		return <div className="editable-textarea-div">
 		<textarea className={
 			"editable-textarea interaction-style " + (this.state.readonly ? 

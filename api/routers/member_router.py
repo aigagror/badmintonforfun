@@ -21,7 +21,9 @@ def get_profile(request):
             "id": int # Needs to be a valid member
         }
     """
-    member_id = id_for_member(request.user.email)
+    if 'id' not in request.GET:
+        return HttpResponse('Required key id not included', status=400)
+    member_id = request.GET['id']
     with connection.cursor() as cursor:
         query = '''
         SELECT bio, first_name, last_name, picture

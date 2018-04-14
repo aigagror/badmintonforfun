@@ -432,7 +432,7 @@ module.exports = __webpack_require__(13);
 var utils = __webpack_require__(1);
 var bind = __webpack_require__(7);
 var Axios = __webpack_require__(15);
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 
 /**
  * Create an instance of Axios
@@ -517,7 +517,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 var utils = __webpack_require__(1);
 var InterceptorManager = __webpack_require__(24);
 var dispatchRequest = __webpack_require__(25);
@@ -899,64 +899,6 @@ module.exports = (
 
 /***/ }),
 
-/***/ 217:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const default_pic_url = "/assets/default_profile.png";
-const bio_url = '/api/members/profile/';
-class ProfileView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            bio: null,
-            name: null,
-        };
-    }
-    componentDidMount() {
-        axios_1.default.get(bio_url, {
-            params: {
-                id: this.props.member_id
-            }
-        })
-            .then((res) => {
-            console.log(res.data);
-            this.setState({
-                bio: res.data.bio,
-                name: res.data.first_name + ' ' + res.data.last_name,
-                url: res.data.picture,
-            });
-        })
-            .catch((res) => {
-            console.log(res);
-        });
-    }
-    render() {
-        if (this.state.bio === null) {
-            return null;
-        }
-        var url = this.state.url;
-        if (url === null) {
-            url = default_pic_url;
-        }
-        return React.createElement("div", { className: "profile-div" },
-            React.createElement("div", { className: "grid row row-8" },
-                React.createElement("div", { className: "col-6" },
-                    React.createElement("img", { className: "profile-picture", src: url, alt: "Profile picture" })),
-                React.createElement("div", { className: "col-6" },
-                    React.createElement("h2", null, this.state.name),
-                    React.createElement("p", null, this.state.bio))));
-    }
-}
-exports.ProfileView = ProfileView;
-
-
-/***/ }),
-
 /***/ 22:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -997,6 +939,63 @@ function btoa(input) {
 }
 
 module.exports = btoa;
+
+
+/***/ }),
+
+/***/ 228:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+const axios_1 = __webpack_require__(12);
+const default_pic_url = "/assets/default_profile.png";
+const bio_url = '/api/members/profile/';
+class ProfileView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            bio: null,
+            name: null,
+        };
+    }
+    componentDidMount() {
+        axios_1.default.get(bio_url, {
+            params: {
+                id: this.props.member_id
+            }
+        })
+            .then((res) => {
+            this.setState({
+                bio: res.data.bio,
+                name: res.data.first_name + ' ' + res.data.last_name,
+                url: res.data.picture,
+            });
+        })
+            .catch((res) => {
+            console.log(res);
+        });
+    }
+    render() {
+        if (this.state.bio === null) {
+            return null;
+        }
+        var url = this.state.url;
+        if (url === null) {
+            url = default_pic_url;
+        }
+        return React.createElement("div", { className: "profile-div" },
+            React.createElement("div", { className: "grid row row-8" },
+                React.createElement("div", { className: "col-6" },
+                    React.createElement("img", { className: "profile-picture", src: url, alt: "Profile picture" })),
+                React.createElement("div", { className: "col-6" },
+                    React.createElement("h2", null, this.state.name),
+                    React.createElement("p", null, this.state.bio.length === 0 ? React.createElement("i", null, "No description provided") : this.state.bio))));
+    }
+}
+exports.ProfileView = ProfileView;
 
 
 /***/ }),
@@ -1131,7 +1130,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(1);
 var transformData = __webpack_require__(26);
 var isCancel = __webpack_require__(10);
-var defaults = __webpack_require__(4);
+var defaults = __webpack_require__(5);
 var isAbsoluteURL = __webpack_require__(27);
 var combineURLs = __webpack_require__(28);
 
@@ -1580,6 +1579,27 @@ module.exports = function spread(callback) {
 /***/ }),
 
 /***/ 4:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+
+/***/ 482:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+const ReactDOM = __webpack_require__(4);
+const ProfileView_1 = __webpack_require__(228);
+ReactDOM.render(React.createElement(ProfileView_1.ProfileView, { member_id: member_id }), document.querySelector("profile-view"));
+
+
+/***/ }),
+
+/***/ 5:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1681,27 +1701,6 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ }),
-
-/***/ 482:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const ProfileView_1 = __webpack_require__(217);
-ReactDOM.render(React.createElement(ProfileView_1.ProfileView, { member_id: member_id }), document.querySelector("profile-view"));
-
-
-/***/ }),
-
-/***/ 5:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
 
 /***/ }),
 
