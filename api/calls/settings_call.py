@@ -137,15 +137,15 @@ def delete_from_interested(id):
 
 
 def delete_from_member(id):
-    with connection.cursor() as cursor:
-        query = '''
-        DELETE FROM api_member
-        WHERE interested_ptr_id=%s
-        '''
-        cursor.execute(query, [id])
-    return HttpResponse(json.dumps({"message": "Successfully deleted from member."}),
-                        content_type="application/json")
+    # Delete from member and also remove any entries in PlayedIn, Vote, Campaign that are associated
+    # with the member.
+    run_connection("DELETE FROM api_playedin WHERE member_id=%s", id)
+    run_connection("DELETE FROM api_vote WHERE voter_id=%s", id)
+    run_connection("DELETE FROM api_campaign WHERE campaigner_id=%s", id)
 
+    run_connection("DELETE FROM api_member WHERE interested_ptr_id=%s", id)
+
+    return http_response(message="OK")
 
 
 def delete_from_boardmember(id):
@@ -189,24 +189,6 @@ def remove_member(member_id):
     :param member_id: The id of the person we want to remove from the database
     :return:
     """
-    # with connection.cursor() as cursor:
-    #     query = '''
-    #             DELETE FROM api_boardmember
-    #             WHERE member_ptr_id=%s;
-    #             '''
-    #     cursor.execute(query, [member_id])
-    #
-    #     query = '''
-    #             DELETE FROM api_member
-    #             WHERE interested_ptr_id=%s;
-    #             '''
-    #     cursor.execute(query, [member_id])
-    #
-    #     query = '''
-    #             DELETE FROM api_interested
-    #             WHERE id=%s;
-    #             '''
-    #     cursor.execute(query, [member_id])
     delete_from_boardmember(member_id)
     delete_from_member(member_id)
     delete_from_interested(member_id)
