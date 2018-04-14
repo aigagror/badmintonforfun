@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from api.calls.party_call import *
 from api.calls.match_call import *
-from api.routers.router import restrictRouter, validate_keys
+from api.routers.router import restrictRouter, validate_keys, auth_decorator
 from api.cursor_api import http_response, run_connection
 from api.models import *
 
@@ -228,3 +228,46 @@ def member_party(request):
     # if member_id is None:
     #     return http_response(message='No member id passed in', code=400)
     return get_member_party(member_id)
+
+
+@login_required()
+@restrictRouter(allowed=["POST"])
+def join_party(request):
+    session_email = request.user.username
+    if not request.user.is_authenticated:
+        return http_response({}, message="You are not logged in", code=302)
+
+    try:
+        user = Member.objects.get(email=session_email)
+    except Member.DoesNotExist:
+        return http_response({}, message="You do not have the required permissions", code=403)
+
+    member_id = user.id
+    curr_party_id = user.party_id
+    if curr_party_id is not None:
+        return http_response(message="You are already in a party", code=400)
+
+    post_dict = dict(request.POST.items())
+    if not validate_keys(['party_id'], post_dict):
+        return http_response({}, message="Keys not found", code=400)
+    party_id = post_dict["party_id"]
+
+    return run_connection("UPDATE api_member SET party_id=%s WHERE interested_ptr_id=%s", party_id, member_id)
+
+
+@login_required()
+@restrictRouter(allowed=["POST"])
+def leave_party(request):
+    session_email = request.user.username
+    if not request.user.is_authenticated:
+        return http_response({}, message="You are not logged in", code=302)
+
+    try:
+        user = Member.objects.get(email=session_email)
+    except Member.DoesNotExist:
+        return http_response({}, message="You do not have the required permissions", code=403)
+
+    member_id = user.id
+    party_id = user.party_id
+
+    return party_remove_member(party_id, member_id)

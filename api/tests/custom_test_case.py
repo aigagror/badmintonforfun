@@ -220,7 +220,8 @@ class CustomTestCase(TestCase):
         dan = Member.objects.get(first_name='Daniel')
         member = Member.objects.get(first_name='Member')
 
-        parties = [Party(queue=casual_queue) for _ in range(4)]
+        # 3 Parties
+        parties = [Party(queue=casual_queue) for _ in range(3)]
         for party in parties:
             party.save()
 

@@ -91,6 +91,9 @@ match_paths = [
 
 party_paths = [
     re_path(r'party/member/?$', party_router.member_party, name='get_party_for_member'),
+    re_path(r'party/join/?$', party_router.join_party, name='join_party'),
+    re_path(r'party/leave/?$', party_router.leave_party, name='leave_party'),
+
 ]
 
 tournament_paths = [

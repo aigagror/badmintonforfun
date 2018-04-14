@@ -110,25 +110,25 @@ class PartyTest(CustomTestCase):
         response = self.response
         self.assertBadResponse(response)
 
-    @run(path_name='join_party', email=JARED, method=POST, args={'party_id': 1})
+    @run(path_name='join_party', email=JARED, method=POST, args={'party_id': 3})
     def test_join_party(self):
         """
-        Jared joined Member's party
+        Jared joined Member's party (id = 3)
         :return:
         """
         response = self.response
         self.assertGoodResponse(response)
 
         member = Member.objects.get(first_name='Member')
-        party = member
+        party = member.party
 
         jared = Member.objects.get(first_name='Jared')
-        self.assertEqual(jared.party, party)
+        self.assertEqual(jared.party_id, party.id)
 
     @run(path_name='join_party', email=MEMBER, method=POST, args={'party_id': 2})
     def test_bad_join_party(self):
         """
-        Member is already party of some party
+        Member is already party of some party, so should fail and Member should remain in party 3
         :return:
         """
         response = self.response
@@ -140,13 +140,15 @@ class PartyTest(CustomTestCase):
         all_parties = Party.objects.all()
         for party in all_parties:
             party_members = Member.objects.filter(party=party)
+            if len(list(party_members)) == 0:
+                print(party.id)
             self.assertGreater(len(list(party_members)), 0)
 
         # Member should still be a part of some party
         member = Member.objects.get(first_name='Member')
         self.assertIsNotNone(member.party)
 
-    @run(path_name='leave_party', email=Member, method=POST, args={})
+    @run(path_name='leave_party', email=MEMBER, method=POST, args={})
     def test_leave_party_that_removes_party(self):
         """
         Member has left his party. Since he was the only one in the party, this also deletes the party
