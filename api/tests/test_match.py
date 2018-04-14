@@ -18,6 +18,19 @@ class MatchTest(CustomTestCase):
         self.assertEqual(matches + 1, len(list(Match.objects.all())))
         self.assertEqual(playedin + 4, len(list(PlayedIn.objects.all())))
 
+    @run(path_name='join_match', email=JARED, method=POST, args={'match_id': 1})
+    def test_join_match(self):
+        """
+        Jared never played in a match before
+        :return:
+        """
+        response = self.response
+        self.assertGoodResponse(response)
+
+        jared = Member.objects.get(first_name='Jared')
+        playedin = PlayedIn.objects.get(member=jared)
+        self.assertIsNotNone(playedin)
+
     @run(path_name='current_match', email=GRACE, method=GET, args={})
     def test_get_current_match(self):
         response = self.response

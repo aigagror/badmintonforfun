@@ -354,6 +354,11 @@ class CustomTestCase(TestCase):
         playedin = PlayedIn(member=joshua, match=unfinished_ranked_matches[0], team='A')
         playedin.save()
 
+        all_matches = finished_matches + unfinished_casual_matches + unfinished_ranked_matches
+        print('ID\'s of all matches')
+        for match in all_matches:
+            print('{}: {}'.format(match.id, str(match)))
+
     def _create_people(self):
         # Create some interesteds
         interesteds = []
@@ -386,7 +391,7 @@ class CustomTestCase(TestCase):
         print("ID's of people in the example data")
         for person in (interesteds + members + boards):
             person.save()
-            print("{}: {}".format(person, person.id))
+            print("{}: {}".format(person.id, person))
         return members
 
     def _create_announcements(self):
