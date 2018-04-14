@@ -3,6 +3,18 @@ from api.models import Queue, Party, Member
 from api.cursor_api import http_response, dictfetchall
 from operator import itemgetter
 
+"""
+    FUNCTIONS: (*) = not sure if works, look at this later
+    get_queues() returns an http response
+    get_parties_by_playtime(queue_type) returns an http_response
+    delete_queue(id) returns an http response
+    get_queue_by_id(id) returns a boolean (T/F whether there's a queue with id)
+    get_queue_by_type(queue_type) returns a dictionary, or None
+    get_queue_type(queue_id) returns a string
+    edit_queue(id, type) returns an http response
+    create_queue(id) returns an http response
+"""
+
 
 def get_queues():
     """
@@ -128,7 +140,6 @@ def get_queue_by_id(id):
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM api_queue WHERE id=%s", [id])
         result = dictfetchone(cursor)
-        print(result)
         if result:
             return True
         else:
@@ -144,6 +155,7 @@ def get_queue_by_type(queue_type):
         else:
             return None
 
+
 def get_queue_type(queue_id):
     rawquery = Queue.objects.raw("SELECT * FROM api_queue WHERE id=%s", [str(queue_id)])
     if len(list(rawquery)) == 0:
@@ -151,6 +163,7 @@ def get_queue_type(queue_id):
     else:
         queue = rawquery[0]
         return str(queue.type)
+
 
 def edit_queue(id, type):
     """

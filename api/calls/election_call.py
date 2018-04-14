@@ -45,7 +45,6 @@ def get_votes_from_member(id):
     return HttpResponse(json.dumps(results), content_type='application/json')
 
 
-
 def get_campaign(id, email, job):
     """
         Get the member's campaign

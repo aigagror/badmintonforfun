@@ -13,6 +13,7 @@ from api.models import *
 from api.calls.interested_call import MemberClass
 
 
+
 @restrictRouter(allowed=["GET"])
 def top_players(request):
     """
