@@ -49,7 +49,7 @@ class MatchTest(CustomTestCase):
         self.assertEqual(playedin.team, 'A')
 
     @run(path_name='join_match', email=JARED, method=POST, args={'match_id': 1, 'team': 'A'})
-    def test_bad_join_match(self):
+    def test_bad_join_finished_match(self):
         """
         Cannot join a finished match
         :return:
@@ -65,6 +65,22 @@ class MatchTest(CustomTestCase):
         playedin = PlayedIn.objects.get(member=jared, match=match)
         self.assertIsNone(playedin)
 
+    @run(path_name='join_match', email=GRACE, method=POST, args={'match_id': 13, 'team': 'B'})
+    def test_bad_join_match(self):
+        """
+        Grace is already in an ongoing match
+        :return:
+        """
+        response = self.response
+        self.assertBadResponse(response)
+
+        json = response.json
+        self.assertEqual(json['message'], 'Member is already in a match')
+
+        match = Match.objects.get(id=13)
+        grace = Member.objects.get(first_name='Grace')
+        playedin = PlayedIn.objects.get(member=grace, match=match)
+        self.assertIsNone(playedin)
 
     @run(path_name='leave_match', email=GRACE, method=POST, args={'match_id': 9})
     def test_leave_match_that_deletes_match(self):
