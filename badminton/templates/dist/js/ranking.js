@@ -2115,26 +2115,37 @@ ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.q
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
 const LocalResourceResolver_1 = __webpack_require__(39);
-const ranking_url = '/api/members/top_players';
+const ranking_url = '/api/rankings/winratio/';
+const ranking_level = '/api/rankings/level/';
 class RanksTable extends React.Component {
     render() {
-        return React.createElement("table", { className: "stats-table row-offset-1" },
-            React.createElement("thead", { className: "row-3" },
-                React.createElement("tr", null,
-                    React.createElement("th", { className: "col-3 col-es-6" }, "Rank"),
-                    React.createElement("th", { className: "col-3 col-es-6" }, "Name"))),
-            React.createElement("tbody", null, this.props.ranks.map((rank, idx) => {
-                return (React.createElement("tr", { key: idx, className: (LocalResourceResolver_1.getMemberId() === rank.id ? "my-rank " : "") + "row-2" },
-                    React.createElement("td", { className: "col-3 col-es-6" }, idx + 1),
-                    React.createElement("td", { className: "col-3 col-es-6" },
-                        rank.first_name,
-                        " ",
-                        rank.last_name)));
-            })));
+        return React.createElement("div", null,
+            React.createElement("h4", null, this.props.title),
+            React.createElement("table", { className: "stats-table row-offset-1" },
+                React.createElement("thead", { className: "row-3" },
+                    React.createElement("tr", null,
+                        React.createElement("th", { className: "col-3 col-es-6" }, "Rank"),
+                        React.createElement("th", { className: "col-3 col-es-6" }, "Name"))),
+                React.createElement("tbody", null, this.props.ranks.map((rank, idx) => {
+                    return (React.createElement("tr", { key: idx, className: (LocalResourceResolver_1.getMemberId() === rank.id ? "my-rank " : "") + "row-2" },
+                        React.createElement("td", { className: "col-3 col-es-6" }, idx + 1),
+                        React.createElement("td", { className: "col-3 col-es-6" },
+                            rank.first_name,
+                            " ",
+                            rank.last_name)));
+                }))));
     }
 }
 class RankingView extends React.Component {
@@ -2149,23 +2160,29 @@ class RankingView extends React.Component {
         this.performRequest();
     }
     performRequest() {
-        const regular = this.state.regular;
-        var url = ranking_url;
-        axios_1.default.get(url)
-            .then((res) => {
-            this.setState({
-                ranks: res.data,
-                loading: false,
-            });
-        })
-            .catch((res) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            const regular = this.state.regular;
+            var url = ranking_url;
+            try {
+                const [res, level] = [yield axios_1.default.get(url), yield axios_1.default.get(ranking_level)];
+                this.setState({
+                    ranks: res.data.rankings,
+                    level: level.data.rankings,
+                    loading: false,
+                });
+            }
+            catch (err) {
+                console.log(err);
+            }
         });
     }
     render() {
         if (this.state.loading === true) {
             return React.createElement("p", null, "Loading");
         }
-        return React.createElement(RanksTable, { ranks: this.state.ranks, myRank: this.state.myRanks });
+        return React.createElement(React.Fragment, null,
+            React.createElement(RanksTable, { ranks: this.state.ranks, myRank: this.state.myRanks, title: "Rankings by Win/Loss" }),
+            React.createElement(RanksTable, { ranks: this.state.level, myRank: this.state.myRanks, title: "Rankings by Level" }));
     }
 }
 exports.RankingView = RankingView;

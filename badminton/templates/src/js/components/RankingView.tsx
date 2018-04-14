@@ -3,11 +3,14 @@ import axios from 'axios';
 import {Slider} from '../common/Slider';
 import { getMemberId } from '../common/LocalResourceResolver'
 
-const ranking_url = '/api/members/top_players';
+const ranking_url = '/api/rankings/winratio/';
+const ranking_level = '/api/rankings/level/';
 
 class RanksTable extends React.Component<any, any> {
 	render() {
-		return <table className="stats-table row-offset-1">
+		return <div>
+		<h4>{this.props.title}</h4>
+		<table className="stats-table row-offset-1">
 			<thead className="row-3">
 			<tr><th className="col-3 col-es-6">Rank</th>
 				<th className="col-3 col-es-6">Name</th></tr>
@@ -23,6 +26,7 @@ class RanksTable extends React.Component<any, any> {
 			}
 			</tbody>
 		</table>
+		</div>
 	}
 }
 
@@ -41,29 +45,30 @@ export class RankingView extends React.Component<any, any> {
 		this.performRequest();
 	}
 
-	performRequest() {
+	async performRequest() {
 
 		const regular = this.state.regular;
 		var url = ranking_url;
-
-		axios.get(url)
-			.then((res) => {
-				this.setState({
-					ranks: res.data,
-					loading: false,
-				})
+		try {
+			const [res, level] = [await axios.get(url), await axios.get(ranking_level)];
+			this.setState({
+				ranks: res.data.rankings,
+				level: level.data.rankings,
+				loading: false,
 			})
-			.catch((res) => {
-
-			})
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	render() {
 		if (this.state.loading === true) {
 			return <p>Loading</p>
 		}
-
-		return <RanksTable ranks={this.state.ranks} myRank={this.state.myRanks}/>
+		return <>
+		<RanksTable ranks={this.state.ranks} myRank={this.state.myRanks} title="Rankings by Win/Loss"/>
+		<RanksTable ranks={this.state.level} myRank={this.state.myRanks} title="Rankings by Level"/>
+		</>
 	}
 
 }

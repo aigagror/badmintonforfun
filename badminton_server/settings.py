@@ -141,6 +141,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+BFF_EMAIL = 'FILL_ME_OUT'
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '613791656516-s7k2pbsbosa0c83o8omr0m1p1gp9q8vh.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'Hc8xak_rGLvCMZNaEv_E-8nX'
 

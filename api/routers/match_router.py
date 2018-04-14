@@ -12,18 +12,6 @@ from api.models import *
 from api.utils import MemberClass
 from api.routers.router import auth_decorator
 
-@restrictRouter(allowed=["GET"])
-@auth_decorator(allowed=MemberClass.MEMBER)
-def top_players(request):
-    """
-    GET -- Gets the top 5 players
-        Required Keys: None
-    :param request:
-    :return:
-    """
-    return get_top_players()
-
-
 @auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def edit_match(request):

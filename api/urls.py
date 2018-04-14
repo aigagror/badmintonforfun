@@ -30,7 +30,6 @@ announcements_paths = [
 ]
 
 members_paths = [
-    re_path(r'top_players?$', match_router.top_players, name='top_players'),
     re_path(r'profile/?$', member_router.get_profile)
 ]
 

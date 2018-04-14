@@ -12,6 +12,8 @@ from api.utils import MemberClass, get_member_class
 from api.routers.router import auth_decorator, restrictRouter, validate_keys
 from django.db import connection
 from api.cursor_api import dictfetchall
+from django.core.mail import send_mail
+from badminton_server.settings import BFF_EMAIL
 
 def sign_in(request):
     url = Template("{% url 'social:begin' 'google-oauth2' %}")
@@ -112,6 +114,13 @@ def mail(request):
         if not validate_keys(keys, request.POST):
             return HttpResponse("Missing key, one of %s".format(','.join(keys)), status=400)
 
-        print(emails_for_key(request.POST[list_mail_key]))
-
-        raise NotImplementedError("Hello")
+        emails = emails_for_key(request.POST[list_mail_key])
+        subject = request.POST[title_mail_key]
+        message = request.POST[body_mail_key]
+        send_mail(
+            subject,
+            message,
+            BFF_EMAIL,
+            emails,
+            fail_silently=False,
+        )

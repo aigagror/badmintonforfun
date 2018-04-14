@@ -2537,6 +2537,7 @@ class MemberSettings extends React.Component {
                 }
                 return cmp;
             }).map((member, idx) => {
+                console.log(member.type);
                 return React.createElement("div", { key: idx, className: "row" },
                     React.createElement("div", { className: "col-5 col-es-12" },
                         React.createElement("h4", null,

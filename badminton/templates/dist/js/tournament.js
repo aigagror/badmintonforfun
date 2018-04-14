@@ -1594,6 +1594,7 @@ class Matchup extends React.Component {
             fill: "white",
             fontFamily: "Arial",
             fontSize: "16px",
+            cursor: "pointer",
         };
         const startingX = this.props.x;
         const startingY = this.props.y + 15;

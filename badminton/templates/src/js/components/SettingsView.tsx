@@ -278,6 +278,7 @@ class MemberSettings extends React.Component<any, any> {
 					}
 					return cmp;
 				}).map((member: any, idx: number) => {
+				console.log(member.type);
 				return <div key={idx} className="row">
 				<div className="col-5 col-es-12">
 				<h4>{member.first_name} {member.last_name}</h4> 
