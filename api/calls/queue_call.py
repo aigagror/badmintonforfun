@@ -144,6 +144,13 @@ def get_queue_by_type(queue_type):
         else:
             return None
 
+def get_queue_type(queue_id):
+    rawquery = Queue.objects.raw("SELECT * FROM api_queue WHERE id=%s", [str(queue_id)])
+    if len(list(rawquery)) == 0:
+        return None
+    else:
+        queue = rawquery[0]
+        return str(queue.type)
 
 def edit_queue(id, type):
     """

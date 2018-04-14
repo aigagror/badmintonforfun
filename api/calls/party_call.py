@@ -146,7 +146,6 @@ def get_free_members_call(member_id):
     WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=match.id AND match.endDateTime IS NULL)
     """
 
-    print(query)
     free_members = Member.objects.raw(query, [member_id])
     free_members = serializeSetOfModels(free_members)
     context = {
