@@ -212,7 +212,7 @@ class PartyTest(CustomTestCase):
         bhuvan = Member.objects.get(first_name='Bhuvan')
         self.assertIsNone(bhuvan.party_id)
 
-    @run(path_name="get_free_members", email=JARED, method=POST, args={})
+    @run(path_name="get_free_members", email=JARED, method=GET, args={})
     def test_get_free_members(self):
         """
         Gets the members who are not in a party and are not in an ongoing match and are not himself

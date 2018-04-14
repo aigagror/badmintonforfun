@@ -274,3 +274,27 @@ def leave_party(request):
     party_id = user.party_id
 
     return party_remove_member(party_id, member_id)
+
+
+@login_required()
+@auth_decorator(allowed=MemberClass.MEMBER)
+@restrictRouter(allowed=["GET"])
+def get_free_members(request):
+    """
+    GET -- "free members" in this context mean members who are not currently in a party or an ongoing match.
+        This will represent the members who are available to invite to a party.
+        The returned members will exclude the logged in user who made the request.
+    :param request:
+    :return:
+    """
+    session_email = request.user.username
+    if not request.user.is_authenticated:
+        return http_response({}, message="You are not logged in", code=302)
+
+    try:
+        user = Member.objects.get(email=session_email)
+    except Member.DoesNotExist:
+        return http_response({}, message="You do not have the required permissions", code=403)
+
+    member_id = user.id
+    return get_free_members_call(member_id)
