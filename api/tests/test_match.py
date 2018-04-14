@@ -57,13 +57,14 @@ class MatchTest(CustomTestCase):
         response = self.response
         self.assertBadResponse(response)
 
-        json = response.json
+        json = response.json()
         self.assertEqual(json['message'], 'Cannot join a finished match')
 
         match = Match.objects.get(id=1)
         jared = Member.objects.get(first_name='Jared')
-        playedin = PlayedIn.objects.get(member=jared, match=match)
-        self.assertIsNone(playedin)
+        playedin = PlayedIn.objects.filter(member=jared, match=match)
+        playedin = list(playedin)
+        self.assertEquals(playedin, [])
 
     @run(path_name='join_match', email=GRACE, method=POST, args={'match_id': 13, 'team': 'B'})
     def test_bad_join_match(self):
@@ -74,13 +75,14 @@ class MatchTest(CustomTestCase):
         response = self.response
         self.assertBadResponse(response)
 
-        json = response.json
+        json = response.json()
         self.assertEqual(json['message'], 'Member is already in a match')
 
         match = Match.objects.get(id=13)
         grace = Member.objects.get(first_name='Grace')
-        playedin = PlayedIn.objects.get(member=grace, match=match)
-        self.assertIsNone(playedin)
+        playedin = PlayedIn.objects.filter(member=grace, match=match)
+        playedin = list(playedin)
+        self.assertEquals(playedin, [])
 
     @run(path_name='leave_match', email=GRACE, method=POST, args={'match_id': 9})
     def test_leave_match_that_deletes_match(self):
