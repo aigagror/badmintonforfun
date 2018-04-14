@@ -127,3 +127,29 @@ def queue_is_empty_with_open_court(queue_id):
 
     else:
         return None
+
+
+def get_free_members_call(member_id):
+    """
+    GET -- "free members" in this context mean members who are not currently in a party or an ongoing match.
+        This will represent the members who are available to invite to a party.
+        The returned members will exclude the logged in user who made the request.
+    :param: member_id -- The id of the member making the request
+    :return:
+    """
+    query = """
+    SELECT * 
+    FROM api_member 
+    WHERE party_id IS NULL AND interested_ptr_id <> %s AND interested_ptr_id NOT IN 
+    (SELECT m.interested_ptr_id
+    FROM api_member AS m, api_playedin AS plin, api_match AS match
+    WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=match.id AND match.endDateTime IS NULL)
+    """
+
+    print(query)
+    free_members = Member.objects.raw(query, [member_id])
+    free_members = serializeSetOfModels(free_members)
+    context = {
+        "free_members": free_members
+    }
+    return http_response(context, code=200)

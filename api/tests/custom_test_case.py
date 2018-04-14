@@ -17,6 +17,7 @@ BHUVAN = 'bhuvan2@illinois.edu'
 DAN = 'drong4@illinois.edu'
 JARED = 'jfranz2@illinois.edu'
 BOARD_MEMBER = 'board_member@illinois.edu'
+JOSHUA = 'jcheng2@illinois.edu'
 
 POST = "post"
 GET = "get"
@@ -219,28 +220,34 @@ class CustomTestCase(TestCase):
         dan = Member.objects.get(first_name='Daniel')
         member = Member.objects.get(first_name='Member')
 
-        # Eddie is on the casual queue as a party of 1
-        party = Party(queue=casual_queue)
-        party.save()
+        # 3 Parties
+        parties = [Party(queue=casual_queue) for _ in range(3)]
+        for party in parties:
+            party.save()
 
-        eddie.party = party
+        # Eddie is on the casual queue as a party of 1
+        eddie.party = parties[0]
         eddie.save()
 
         # Bhuvan and Dan are on the casual queue as a party of 2 (Bhuvan and Dan have priority)
-        party = Party(queue=casual_queue)
-        party.save()
-
-        bhuvan.party = party
+        bhuvan.party = parties[1]
         bhuvan.save()
-        dan.party = party
+        dan.party = parties[1]
         dan.save()
 
         # Member is on the casual queue as a party of 1
-        party = Party(queue=casual_queue)
-        party.save()
-
-        member.party = party
+        member.party = parties[2]
         member.save()
+
+        print("ID's of parties")
+        for party in parties:
+            party_members = Member.objects.filter(party=party)
+            ret = '{}: ['.format(party.id)
+            for member in party_members:
+                ret += '{},'.format(str(member))
+            ret += ']'
+
+            print(ret)
 
 
     def _create_matches(self):
@@ -252,12 +259,16 @@ class CustomTestCase(TestCase):
             4 unfinished matches, all on the first four courts
                 which are associated with the CASUAL queue
 
+            1 unfinished match on a RANKED court
+
         Eddie has played all 8 finished matches (80 minutes in total)
         Bhuvan has played one match (10 minutes)
         Dan has played one match (10 minutes)
 
-        Grace is on one of the 4 unfinished matches
+        Grace is on one of the 4 unfinished matches that's on a casual court
         (yes, that means 3 of the unfinished matches have no one associated with them...). That is a TODO
+
+        Joshua is on the 1 unfinished match that's on a ranked court
 
         Everyone else has not played in any matches
 
@@ -268,6 +279,7 @@ class CustomTestCase(TestCase):
         bhuvan = Member.objects.get(first_name='Bhuvan')
         dan = Member.objects.get(first_name='Daniel')
         grace = Member.objects.get(first_name='Grace')
+        joshua = Member.objects.get(first_name='Joshua')
 
         now = datetime.datetime.now(tz=api.datetime_extension.utc)
         finished_matches = []
@@ -304,27 +316,48 @@ class CustomTestCase(TestCase):
         playedin = PlayedIn(member=dan, match=finished_matches[0], team="B")
         playedin.save()
 
-        # Unfinished matches
-        unfinished_matches = []
-        unfinished_matches.append(Match(startDateTime=now, scoreA=21, scoreB=19))
-        unfinished_matches.append(Match(startDateTime=now, scoreA=21, scoreB=19))
-        unfinished_matches.append(Match(startDateTime=now, scoreA=21, scoreB=19))
-        unfinished_matches.append(Match(startDateTime=now, scoreA=21, scoreB=19))
+        # Unfinished casual matches
+        unfinished_casual_matches = [Match(startDateTime=now, scoreA=21, scoreB=19),
+                                     Match(startDateTime=now, scoreA=21, scoreB=19),
+                                     Match(startDateTime=now, scoreA=21, scoreB=19),
+                                     Match(startDateTime=now, scoreA=21, scoreB=19)]
 
-        for match in unfinished_matches:
+        for match in unfinished_casual_matches:
             # Assign these unfinished matches on the courts
             # That are associated with the casual queue
             casual_queue = Queue.objects.get(type='CASUAL')
-            i = unfinished_matches.index(match)
+            i = unfinished_casual_matches.index(match)
             courts = Court.objects.filter(queue=casual_queue)
             court = courts[i]
             match.court = court
 
             match.save()
 
-        # Member played in one unfinished match
-        playedin = PlayedIn(member=grace, match=unfinished_matches[0], team='A')
+        # Grace playing in one unfinished casual match
+        playedin = PlayedIn(member=grace, match=unfinished_casual_matches[0], team='A')
         playedin.save()
+
+
+        # Unfinished ranked matches
+        unfinished_ranked_matches = [Match(startDateTime=now, scoreA=21, scoreB=19)]
+
+        for match in unfinished_ranked_matches:
+            ranked_queue = Queue.objects.get(type='RANKED')
+            i = unfinished_ranked_matches.index(match)
+            courts = Court.objects.filter(queue=ranked_queue)
+            court = courts[i]
+            match.court = court
+
+            match.save()
+
+        # Joshua playing in one unfinished ranked match
+        playedin = PlayedIn(member=joshua, match=unfinished_ranked_matches[0], team='A')
+        playedin.save()
+
+        all_matches = finished_matches + unfinished_casual_matches + unfinished_ranked_matches
+        print('ID\'s of all matches')
+        for match in all_matches:
+            print('{}: {}'.format(match.id, str(match)))
 
     def _create_people(self):
         # Create some interesteds
@@ -345,6 +378,8 @@ class CustomTestCase(TestCase):
                               email="gshen3@illinois.edu"))
         members.append(Member(first_name="Jared", last_name="Franzone", dateJoined=datetime.date.today(),
                               email="jfranz2@illinois.edu"))
+        members.append(Member(first_name='Joshua', last_name='Cheng', dateJoined=datetime.date.today(),
+                              email='jcheng2@illinois.edu', level=10))
 
         # Create some boards
         boards = []
@@ -353,10 +388,10 @@ class CustomTestCase(TestCase):
         boards.append(BoardMember(first_name='Barack', last_name='Obama', dateJoined=datetime.date.today(),
                                   job="PRESIDENT", email='obama@gmail.com', bio='Change we can believe in'))
 
-        print("People in the example data")
+        print("ID's of people in the example data")
         for person in (interesteds + members + boards):
             person.save()
-            print("{}: {}".format(person, person.id))
+            print("{}: {}".format(person.id, person))
         return members
 
     def _create_announcements(self):

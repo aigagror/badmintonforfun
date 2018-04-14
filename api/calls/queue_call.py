@@ -5,6 +5,12 @@ from operator import itemgetter
 
 
 def get_queues():
+    """
+    Returns a dictionary; "queues" has the queue ID as id, type, and parties in the queue;
+            parties have the party ID as id, queue ID as queue, a list of members, and the number of members in
+            the party
+    :return:
+    """
     dict = {}
     dict['queues'] = []
     queues = Queue.objects.raw("SELECT * FROM api_queue");

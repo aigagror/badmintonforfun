@@ -2,7 +2,7 @@ from api.calls.match_call import get_top_players, create_match as get_create_mat
 from api.calls.match_call import find_current_match_by_member, delete_match as get_delete_match, finish_match as get_finish_match
 from django.contrib.auth.decorators import login_required
 from api.routers.router import restrictRouter
-from .router import validate_keys, http_response, auth_decorator
+from .router import validate_keys, http_response, auth_decorator, get_member_id_from_email
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
@@ -45,18 +45,21 @@ def edit_match(request):
 def finish_match(request):
     """
     POST -- ends the match (edits match score, removes court id, adds endDateTime)
-        RequiredKeys: match id, scoreA, scoreB
+            and adds 10 points to the level of all members of the winning team.
+        RequiredKeys: scoreA, scoreB
     :param request:
     :return:
     """
 
-
+    member_id = get_member_id_from_email(request.user.email)
+    match = find_current_match_by_member(member_id)
+    match_id = (json.loads(match.content.decode('utf8').replace("'", '"')))["match"]["match_id"]
     dict_post = dict(request.POST.items())
-    validate_keys(["id", "scoreA", "scoreB"], dict_post)
-    return get_finish_match(dict_post["id"], dict_post["scoreA"], dict_post["scoreB"])
+    validate_keys(["scoreA", "scoreB"], dict_post)
+
+    return get_finish_match(match_id, dict_post["scoreA"], dict_post["scoreB"])
 
 
-@csrf_exempt
 @login_required
 @restrictRouter(allowed=["POST"])
 def create_match(request):
@@ -68,7 +71,6 @@ def create_match(request):
     :param request:
     :return:
     """
-    check_login_status(request)
 
     dict_post = json.loads(request.body.decode('utf8').replace("'", '"'))
     # write something to make sure a_players and b_players are lists
@@ -92,20 +94,16 @@ def delete_match(request):
     return get_delete_match(dict_delete["id"])
 
 
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def current_match(request):
     """
         GET -- The current match id of the match the member is playing
-            Needs parameter id=member id
-            ex: api/match/get/?id=1
     :param request:
     :return:
     """
 
-    member_id = request.GET.get('id', None)
-    if member_id is None:
-        return http_response({}, message="Please pass in a member id", code=400)
-
+    member_id = get_member_id_from_email(request.user.email)
     return find_current_match_by_member(member_id)
 
 @restrictRouter(allowed=["GET"])

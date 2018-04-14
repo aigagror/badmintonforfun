@@ -42,4 +42,12 @@ def validate_keys(keys, validate_dict):
     return True
 
 
+def get_member_id_from_email(email):
+    members = Interested.objects.raw("SELECT * FROM api_interested WHERE email = %s", [email])
+    if len(list(members)) <= 0:
+        return http_response({}, message="Member does not exist", code=400)
+    member = members[0]
+    return member.id
+
+
 
