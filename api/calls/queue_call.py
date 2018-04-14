@@ -19,6 +19,12 @@ def get_queues():
             queue_dict = serializeModel(queue)
             queue_dict['parties'] = []
             parties = Party.objects.raw("SELECT * FROM api_party WHERE queue_id = %s", [queue.id])
+
+            response = get_parties_by_playtime(queue.type)
+            content = response.content.decode()
+            content = json.loads(content)
+
+
             for party in parties:
                 party_dict = serializeModel(party)
 
@@ -27,10 +33,20 @@ def get_queues():
                 party_dict['members'] = members_dict
                 party_dict['number of members'] = len(members_dict)
 
+                response_parties = content['parties']
+                curr_party_avg_play_time = 0
+                for i in range(len(response_parties)):
+                    if response_parties[i]['party_id'] == party.id:
+                        curr_party_avg_play_time = round(response_parties[i]['avg_time'], 3)
+                        break
+
+                party_dict['average_play_time'] = curr_party_avg_play_time
+
                 queue_dict['parties'].append(party_dict)
 
             dict['queues'].append(queue_dict)
 
+        print(dict)
         return http_response(dict)
     else:
         return http_response({}, message="There are no queues.", code=200)
