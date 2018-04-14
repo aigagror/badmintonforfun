@@ -73,6 +73,9 @@ def run(path_name, email, method, args):
             self.members_now = Member.objects.all()
             self.number_of_members_now = len(list(self.members_now))
 
+            self.boards_now = BoardMember.objects.all()
+            self.number_of_boards_now = len(list(self.boards_now))
+
             self.parties_now = Party.objects.all()
             self.number_of_parties_now = len(list(self.parties_now))
 
@@ -115,7 +118,7 @@ class CustomTestCase(TestCase):
         self.original_members = Member.objects.all()
         self.original_number_of_members = len(list(self.original_members))
 
-        self.original_boards = Member.objects.all()
+        self.original_boards = BoardMember.objects.all()
         self.original_number_of_boards = len(list(self.original_boards))
 
         self.original_parties = Party.objects.all()
