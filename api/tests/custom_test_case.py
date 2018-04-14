@@ -177,6 +177,9 @@ class CustomTestCase(TestCase):
         # Create some announcements
         self._create_announcements()
 
+        # Create an election and some campaigns
+        self._create_election_and_campaigns()
+
     def _create_tournament(self):
         """
         Creates a tournament in which the bracket tree structure is a perfect tree of height 3
@@ -472,6 +475,27 @@ class CustomTestCase(TestCase):
 
 
 
+    def _create_election_and_campaigns(self):
+        election = Election(date=datetime.date.today())
+        election.save()
 
+        campaigners = [Member.objects.get(first_name='Eddie'),
+                       Member.objects.get(first_name='Bhuvan'),
+                       Member.objects.get(first_name='Grace'),
+                       Member.objects.get(first_name='Daniel')]
+
+        campaigns = [Campaign(job='President', campaigner=campaigners[0], election=election, pitch='I am Eddie'),
+                     Campaign(job='President', campaigner=campaigners[1], election=election, pitch='I am Bhuvan'),
+                     Campaign(job='President', campaigner=campaigners[2], election=election, pitch='I am Grace'),
+                     Campaign(job='President', campaigner=campaigners[3], election=election, pitch='I am Dan')]
+
+
+        print("Election ID and dates:")
+        print(str(election.id) + ", " + str(election))
+        index = 0
+        for campaign in campaigns:
+            campaign.save()
+            print("{}: {}".format(campaigners[index], campaign))
+            index += 1
 
 

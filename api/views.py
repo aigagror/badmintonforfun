@@ -75,6 +75,7 @@ def emails_for_key(key):
     return emails
 
 
+@login_required
 @auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["GET", "POST"])
 def mail(request):
