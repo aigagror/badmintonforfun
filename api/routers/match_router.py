@@ -46,6 +46,7 @@ def edit_match(request):
 def finish_match(request):
     """
     POST -- ends the match (edits match score, removes court id, adds endDateTime)
+            and adds 10 points to the level of all members of the winning team.
         RequiredKeys: scoreA, scoreB
     :param request:
     :return:

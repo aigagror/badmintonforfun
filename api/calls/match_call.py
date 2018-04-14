@@ -123,7 +123,8 @@ def _get_winners(match):
 
 def finish_match(id, scoreA, scoreB):
     """
-        Ends the match, updates the scores, removes court id
+        Ends the match, updates the scores, removes court id. Also increases the level of
+        all members of the winning team by 10.
     :param id:
     :param scoreA:
     :param scoreB:
@@ -150,6 +151,10 @@ def finish_match(id, scoreA, scoreB):
     query = "UPDATE api_match SET endDateTime=datetime('now'), court_id=NULL WHERE id=%s"
 
     response = run_connection(query, id)
+
+    # Reward the winners by giving 10 points to their level
+    winning_team = "A" if scoreA > scoreB else "B"
+    _reward_winning_team(match.id, winning_team, 10)
 
     # Check if this match belongs to a tournament. If so, we may need to update the tournament too
     tournament_id = _is_tournament_match(match.id)
@@ -201,6 +206,19 @@ def finish_match(id, scoreA, scoreB):
             dequeue_resp = dequeue_next_party_to_court(queue.type, court.id)
 
     return response
+
+
+def _reward_winning_team(match_id, winning_team, points):
+    query = """
+    UPDATE api_member
+    SET level=level+%s
+    WHERE interested_ptr_id IN 
+    (SELECT m.interested_ptr_id 
+    FROM api_member AS m, api_playedin AS plin, api_match
+    WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=%s AND plin.team=%s)
+    """
+    return run_connection(query, points, match_id, winning_team)
+
 
 
 def dequeue_next_party_to_court(queue_type, court_id):

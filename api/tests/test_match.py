@@ -33,7 +33,7 @@ class MatchTest(CustomTestCase):
         self.assertTrue('teamA' in match)
         self.assertTrue('teamB' in match)
 
-    @run(path_name='finish_match', email=GRACE, method=POST, args={'scoreA': 21, 'scoreB': 19})
+    @run(path_name='finish_match', email=GRACE, method=POST, args={'scoreA': 21, 'scoreB': 23})
     def test_finish_match(self):
         """
         Grace is associated with one unfinished match,
@@ -86,11 +86,12 @@ class MatchTest(CustomTestCase):
         ranked_queue = Queue.objects.get(type='RANKED')
         ranked_courts = Court.objects.filter(queue=ranked_queue)
         for court in ranked_courts:
-            match = Match.objects.get(court=court)
-            self.assertIsNone(match)
+            matches = Match.objects.filter(court=court)  # Match.objects.get(court=court) was throwing errors
+            self.assertTrue(len(list(matches)) == 0)
 
-        # Assert that a new match was added
-        self.assertEqual(self.number_of_matches_now, self.original_number_of_matches + 1)
+        # Assert that the number of matches remain the same (finishing a match just sets the endDateTime of an
+        # existing match.
+        self.assertEqual(self.number_of_matches_now, self.original_number_of_matches)
 
         # Assert that the match that joshua was a part of is finished
         joshua = Member.objects.get(first_name='Joshua')
