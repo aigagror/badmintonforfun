@@ -15,13 +15,13 @@ from .queue_call import get_parties_by_playtime
     create_match(score_a, score_b, a_players, b_players, court_id) returns an http response
     find_current_match_by_member(id) returns an http response
     finish_match(id, scoreA, scoreB) returns an http response
-    (* haven't tested properly yet) dequeue_next_party_to_court(queue_type, court_id) returns an http response
+    (* HAVEN'T TESTED PROPERLY YET) dequeue_next_party_to_court(queue_type, court_id) returns an http response
     get_top_players() returns an http response
     get_match(id) returns an http response
     get_all_matches() returns an http response
     
     _get_winners(match) returns a list of winners (Member objects)
-    (* should this return an http response) _reward_winning_team(match_id, winning_team, points) returns an http response
+    (* SHOULD THIS RETURN AN HTTP RESPONSE) _reward_winning_team(match_id, winning_team, points) returns an http response
     _get_parent_node(tournament_id, curr_level, index) returns BracketNode object
     _top_players() returns a dictionary
     _all_matches() returns a RawQuerySet of Match objects
@@ -72,20 +72,30 @@ def join_match(match_id, member_id, team):
 def leave_match(match_id, member_id):
     """
         Given a match id and member id, let the member leave a match
-    :param id:
+    :param match_id:
+    :param member_id:
     :return:
     """
 
     #if there's only one player in the match
-    #ADD FUNCTION TO MAKE SURE THAT IS THE ONE PLAYER IN THE MATCH (modify _players?)
-    if _num_players_in_match(match_id) == 1:
+    players = list(_players(match_id))
+    found = 0
+    for player in players:
+        if player.id == member_id:
+            found = 1
+
+    if _num_players_in_match(match_id) == 1 and found == 1:
+        run_connection("DELETE FROM api_playedin WHERE member_id=%s AND match_id=%s", member_id, match_id)
         return delete_match(match_id)
 
     if _is_finished_match(match_id):
         return http_response({}, message="Cannot leave a finished match", code=400)
 
-
-
+    if found == 1:
+        response = run_connection("DELETE FROM api_playedin WHERE member_id=%s AND match_id=%s", member_id, match_id)
+        return response
+    else:
+        return http_response({}, message="Cannot leave a match you're not part of!", code=400)
 
 
 def delete_match(id):
@@ -337,6 +347,10 @@ def dequeue_next_party_to_court(queue_type, court_id):
         # Error
         return response
 
+    # Update the members so they have party_id null
+    update = run_connection("UPDATE api_member SET party_id=NULL WHERE party_id=%s", party_id)
+    if update.status_code != 200:
+        return update
 
     # Create match on court
     a_players = []
@@ -403,14 +417,25 @@ def _all_matches():
     return all_matches
 
 
-def _players(match_id, team):
-    query = """
-    SELECT * 
-    FROM api_interested, api_playedin 
-    WHERE api_playedin.match_id = %s AND api_playedin.member_id = api_interested.id
-      AND api_playedin.team = %s
-    """
-    players = Interested.objects.raw(query, [match_id, team])
+def _players(match_id, team=None):
+    if team is None:
+        query = '''
+        SELECT * FROM api_interested, api_playedin WHERE api_playedin.match_id=%s
+        AND api_playedin.member_id=api_interested.id
+        '''
+
+        players = Interested.objects.raw(query, [match_id])
+
+    else:
+        query = """
+        SELECT * 
+        FROM api_interested, api_playedin 
+        WHERE api_playedin.match_id = %s AND api_playedin.member_id = api_interested.id
+          AND api_playedin.team = %s
+        """
+
+        players = Interested.objects.raw(query, [match_id, team])
+
     return players
 
 

@@ -12,19 +12,49 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
+ID's of parties
+1: [Eddie Huang,]
+2: [Bhuvan Venkatesh,Daniel Rong,]
+3: [Member Guy,]
+{'courts': [{'court_id': 1, 'queue_type': 'CASUAL', 'match': {'match_id': 9, 'teamA': ['Grace Shen'], 'teamB': []}}, {'court_id': 2, 'queue_type': 'CASUAL', 'match': {'match_id': 10, 'teamA': ['Daniel Rong'], 'teamB': ['Bhuvan Venkatesh']}}, {'court_id': 3, 'queue_type': 'CASUAL', 'match': {'match_id': 11, 'teamA': [], 'teamB': []}}, {'court_id': 4, 'queue_type': 'CASUAL', 'match': {'match_id': 12, 'teamA': [], 'teamB': []}}, {'court_id': 5, 'queue_type': 'RANKED', 'match': {'match_id': 13, 'teamA': ['Joshua Cheng'], 'teamB': []}}, {'court_id': 6, 'queue_type': 'RANKED', 'match': None}, {'court_id': 7, 'queue_type': 'None', 'match': None}, {'court_id': 8, 'queue_type': 'None', 'match': None}]}
+ID's of people in the example data
+1: Interested Guy
+2: Member Guy
+3: Eddie Huang
+4: Bhuvan Venkatesh
+5: Daniel Rong
+6: Grace Shen
+7: Jared Franzone
+8: Joshua Cheng
+9: Board Member
+10: Barack Obama
+ID's of all matches
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -41,48 +71,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
-ID's of parties
-1: [Eddie Huang,]
-2: [Bhuvan Venkatesh,Daniel Rong,]
-3: [Member Guy,]
-ID's of people in the example data
-1: Interested Guy
-2: Member Guy
-3: Eddie Huang
-4: Bhuvan Venkatesh
-5: Daniel Rong
-6: Grace Shen
-7: Jared Franzone
-8: Joshua Cheng
-9: Board Member
-10: Barack Obama
-ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -100,19 +101,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -131,19 +132,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -160,19 +161,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -189,19 +190,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -218,19 +219,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -247,19 +248,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -276,19 +277,48 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
+ID's of parties
+1: [Eddie Huang,]
+2: [Bhuvan Venkatesh,Daniel Rong,]
+3: [Member Guy,]
+ID's of people in the example data
+1: Interested Guy
+2: Member Guy
+3: Eddie Huang
+4: Bhuvan Venkatesh
+5: Daniel Rong
+6: Grace Shen
+7: Jared Franzone
+8: Joshua Cheng
+9: Board Member
+10: Barack Obama
+ID's of all matches
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -306,19 +336,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -335,19 +365,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -364,19 +394,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -393,19 +423,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -422,19 +452,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -451,19 +481,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -480,19 +510,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -509,19 +539,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -538,19 +568,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -567,19 +597,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -596,19 +626,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -625,19 +655,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -654,19 +684,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -683,56 +713,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
-ID's of parties
-1: [Eddie Huang,]
-2: [Bhuvan Venkatesh,Daniel Rong,]
-3: [Member Guy,]
-
-    SELECT * 
-    FROM api_member 
-    WHERE party_id IS NULL AND interested_ptr_id <> %s AND interested_ptr_id NOT IN 
-    (SELECT m.interested_ptr_id
-    FROM api_member AS m, api_playedin AS plin, api_match AS match
-    WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=match.id AND match.endDateTime IS NULL)
-    
-ID's of people in the example data
-1: Interested Guy
-2: Member Guy
-3: Eddie Huang
-4: Bhuvan Venkatesh
-5: Daniel Rong
-6: Grace Shen
-7: Jared Franzone
-8: Joshua Cheng
-9: Board Member
-10: Barack Obama
-ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -749,19 +742,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -778,19 +771,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -807,19 +800,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -836,19 +829,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -865,19 +858,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -894,19 +887,48 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
+ID's of parties
+1: [Eddie Huang,]
+2: [Bhuvan Venkatesh,Daniel Rong,]
+3: [Member Guy,]
+ID's of people in the example data
+1: Interested Guy
+2: Member Guy
+3: Eddie Huang
+4: Bhuvan Venkatesh
+5: Daniel Rong
+6: Grace Shen
+7: Jared Franzone
+8: Joshua Cheng
+9: Board Member
+10: Barack Obama
+ID's of all matches
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -924,19 +946,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
@@ -954,19 +976,19 @@ ID's of people in the example data
 9: Board Member
 10: Barack Obama
 ID's of all matches
-1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|19:23-19:33
-2: A|21['Eddie Huang']	B|19[]	Time|19:33-19:43
-3: A|21['Eddie Huang']	B|19[]	Time|19:43-19:53
-4: A|21['Eddie Huang']	B|19[]	Time|19:53-20:03
-5: A|21['Eddie Huang']	B|19[]	Time|20:03-20:13
-6: A|21['Eddie Huang']	B|19[]	Time|20:13-20:23
-7: A|21['Eddie Huang']	B|19[]	Time|20:23-20:33
-8: A|21['Eddie Huang']	B|19[]	Time|20:33-20:43
-9: A|21['Grace Shen']	B|19[]	Time|20:43-
-10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|20:43-
-11: A|21[]	B|19[]	Time|20:43-
-12: A|21[]	B|19[]	Time|20:43-
-13: A|21['Joshua Cheng']	B|19[]	Time|20:43-
+1: A|21['Eddie Huang', 'Bhuvan Venkatesh']	B|19['Daniel Rong']	Time|20:26-20:36
+2: A|21['Eddie Huang']	B|19[]	Time|20:36-20:46
+3: A|21['Eddie Huang']	B|19[]	Time|20:46-20:56
+4: A|21['Eddie Huang']	B|19[]	Time|20:56-21:06
+5: A|21['Eddie Huang']	B|19[]	Time|21:06-21:16
+6: A|21['Eddie Huang']	B|19[]	Time|21:16-21:26
+7: A|21['Eddie Huang']	B|19[]	Time|21:26-21:36
+8: A|21['Eddie Huang']	B|19[]	Time|21:36-21:46
+9: A|21['Grace Shen']	B|19[]	Time|21:46-
+10: A|21['Daniel Rong']	B|19['Bhuvan Venkatesh']	Time|21:46-
+11: A|21[]	B|19[]	Time|21:46-
+12: A|21[]	B|19[]	Time|21:46-
+13: A|21['Joshua Cheng']	B|19[]	Time|21:46-
 ID's of parties
 1: [Eddie Huang,]
 2: [Bhuvan Venkatesh,Daniel Rong,]
