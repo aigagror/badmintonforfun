@@ -1,8 +1,9 @@
 from api.calls.match_call import get_top_players, create_match as get_create_match, edit_match as get_edit_match
 from api.calls.match_call import find_current_match_by_member, delete_match as get_delete_match, finish_match as get_finish_match
+from api.calls.match_call import join_match as get_join_match
 from django.contrib.auth.decorators import login_required
 from api.routers.router import restrictRouter
-from .router import validate_keys, http_response, auth_decorator, get_member_id_from_email
+from .router import validate_keys, http_response, auth_decorator, get_member_id_from_email, get_match_from_member_id
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
@@ -53,8 +54,7 @@ def finish_match(request):
     """
 
     member_id = get_member_id_from_email(request.user.email)
-    match = find_current_match_by_member(member_id)
-    match_id = (json.loads(match.content.decode('utf8').replace("'", '"')))["match"]["match_id"]
+    match_id = get_match_from_member_id(member_id)
     dict_post = dict(request.POST.items())
     validate_keys(["scoreA", "scoreB"], dict_post)
 
@@ -63,11 +63,23 @@ def finish_match(request):
 
 @login_required
 @auth_decorator(allowed=MemberClass.MEMBER)
+@restrictRouter(allowed=["POST"])
 def join_match(request):
-    return None
+    """
+        POST -- lets a single player join a match on a particular team's side
+            Required Keys: team
+    :param request:
+    :return:
+    """
+    member_id = get_member_id_from_email(request.user.email)
+    dict_post = dict(request.POST.items())
+    validate_keys(["match_id", "team"], dict_post)
+    return get_join_match(dict_post["match_id"], member_id, dict_post["team"])
 
 def leave_match(request):
     return None
+
+
 @login_required
 @restrictRouter(allowed=["POST"])
 def create_match(request):

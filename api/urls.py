@@ -18,7 +18,8 @@ from django.urls import re_path, path, include
 from api.routers import demo, router, votes_router, \
     settings_router, match_router, election_router, \
     campaign_router, announcement_router, queue_router, \
-    party_router, tournament_router, member_router, rankings_router
+    party_router, tournament_router, member_router, rankings_router, \
+    courts_router
 
 announcements_paths = [
     # Gets the 3 latest announcements | Edits an announcement
@@ -110,6 +111,10 @@ rankings_paths = [
     re_path(r'win_ratio/?$', rankings_router.get_rankings_by_win_ratio, name='get_rankings_by_win_ratio'),
 ]
 
+courts_paths = [
+    re_path(r'^$', courts_router.get_courts, name='get_courts'),
+]
+
 """
 re_path(r'demo/?$', demo.index, name='demo_index'),
 re_path(r'demo/matches/?$', demo.matches, name='demo_matches'),
@@ -142,4 +147,5 @@ urlpatterns = [
     path('tournament/', include(tournament_paths)),
     path('mail/', views.mail),
     path('rankings/', include(rankings_paths)),
+    path('courts/', include(courts_paths))
 ]

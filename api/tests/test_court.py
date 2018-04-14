@@ -28,13 +28,14 @@ class CourtTest(CustomTestCase):
         some_courts_have_matches = False
         some_courts_are_empty = False
         for court in courts:
-            self.assertTrue('queue' in court)
+            self.assertTrue('queue_type' in court)
             self.assertTrue('match' in court)
+            self.assertTrue('court_id' in court)
             match = court['match']
 
             if match is not None:
                 some_courts_have_matches = True
-                self.assertTrue('id' in match)
+                self.assertTrue('match_id' in match)
                 self.assertTrue('teamA' in match)
                 self.assertTrue('teamB' in match)
             else:

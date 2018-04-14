@@ -50,4 +50,10 @@ def get_member_id_from_email(email):
     return member.id
 
 
+def get_match_from_member_id(member_id):
+    match = find_current_match_by_member(member_id)
+    match_id = (json.loads(match.content.decode('utf8').replace("'", '"')))["match"]["match_id"]
+    return match_id
+
+
 
