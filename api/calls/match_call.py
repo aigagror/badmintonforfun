@@ -148,13 +148,16 @@ def finish_match(id, scoreA, scoreB):
         return http_response(message='Violating win by 2 rule or at least one player having at least 21 points',
                              code=400)
 
+    #check if this match is a ranked match
+    if _is_ranked_match(id):
+        print(str(id) + "is a ranked match")
+        # Reward the winners by giving 10 points to their level
+        winning_team = "A" if scoreA > scoreB else "B"
+        _reward_winning_team(match.id, winning_team, 10)
+
     query = "UPDATE api_match SET endDateTime=datetime('now'), court_id=NULL WHERE id=%s"
 
     response = run_connection(query, id)
-
-    # Reward the winners by giving 10 points to their level
-    winning_team = "A" if scoreA > scoreB else "B"
-    _reward_winning_team(match.id, winning_team, 10)
 
     # Check if this match belongs to a tournament. If so, we may need to update the tournament too
     tournament_id = _is_tournament_match(match.id)
@@ -189,11 +192,6 @@ def finish_match(id, scoreA, scoreB):
             else:
                 # there's no sibling and it's not the 0 level, which shouldn't exist - return error
                 return http_response('Could not find a sibling for your match!', code=400)
-
-    #check if this match is a ranked match
-    if _is_ranked_match(id):
-        #@TODO: some ranking modifications
-        return http_response({}, message="need a placeholder")
 
     #put the next match on the court
     court = Court.objects.raw("SELECT * FROM api_court WHERE id=%s AND queue_id IS NOT NULL", [court_id])
