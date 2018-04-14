@@ -79,10 +79,6 @@ queue_paths = [
     # Gets all the queues with all the parties sorted by priority
     path('', queue_router.get_queues, name='get_queues'),
 
-    # Gets the next part on the queue
-    # This url seems a little redundant from the 'get_queues' url - Eddie
-    re_path(r'next/?$', queue_router.next_on_queue, name='queue_next_party'),
-
     re_path(r'create/?', queue_router.create_queue, name='create_queue'),
 ]
 
@@ -111,7 +107,7 @@ tournament_paths = [
 
 rankings_paths = [
     re_path(r'level/?$', rankings_router.get_rankings_by_level, name='get_rankings_by_level'),
-    re_path(r'winratio/?$', rankings_router.get_rankings_by_win_ratio, name='get_rankings_by_win_ratio'),
+    re_path(r'win_ratio/?$', rankings_router.get_rankings_by_win_ratio, name='get_rankings_by_win_ratio'),
 ]
 
 """
