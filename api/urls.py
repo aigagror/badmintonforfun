@@ -77,10 +77,6 @@ queue_paths = [
     # Gets all the queues with all the parties sorted by priority
     path('', queue_router.get_queues, name='get_queues'),
 
-    # Gets the next part on the queue
-    # This url seems a little redundant from the 'get_queues' url - Eddie
-    re_path(r'next/?$', queue_router.next_on_queue, name='queue_next_party'),
-
     re_path(r'create/?', queue_router.create_queue, name='create_queue'),
 ]
 
