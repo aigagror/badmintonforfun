@@ -3,6 +3,7 @@ import random
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
+from api.calls.interested_call import MemberClass
 from api.calls.party_call import *
 from api.calls.match_call import *
 from api.routers.router import restrictRouter, validate_keys, auth_decorator
@@ -231,6 +232,7 @@ def member_party(request):
 
 
 @login_required()
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def join_party(request):
     session_email = request.user.username
@@ -256,6 +258,7 @@ def join_party(request):
 
 
 @login_required()
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def leave_party(request):
     session_email = request.user.username
