@@ -21525,6 +21525,7 @@ class EditableTextarea extends React.Component {
         });
     }
     render() {
+        console.log(this.props.editableOverride);
         return React.createElement("div", { className: "editable-textarea-div" },
             React.createElement("textarea", { className: "editable-textarea interaction-style " + (this.state.readonly ?
                     "editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : "")), value: this.state.textValue, onChange: (ev) => {

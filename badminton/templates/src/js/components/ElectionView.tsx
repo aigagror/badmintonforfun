@@ -70,8 +70,7 @@ class ElectionCandidate extends React.Component<any, any> {
 			email: this.props.person.campaigner,
 		}
 		try {
-			let res = await axios.post(campaign_url, objectToFormData(data));
-			console.log(res);
+			const res = await axios.post(campaign_url, objectToFormData(data));
 		} catch(err) {
 			console.log(err);
 		}
@@ -87,11 +86,9 @@ class ElectionCandidate extends React.Component<any, any> {
 					if (!ev.target.checked) return;
 
 					let data = new FormData();
-					data.append('voter', "8");
 					data.append('campaign', ev.target.value);
 					try {
-						let res = await axios.post(cast_vote_url, data);
-						console.log(res);
+						const res = await axios.post(cast_vote_url, data);
 					} catch (err) {
 						console.log(err);
 					}
@@ -111,7 +108,8 @@ class ElectionCandidate extends React.Component<any, any> {
 			<EditableTextarea 
 				initValue={this.state.pitch} 
 				onSave={this.updateCandidate} 
-				onDelete={this.deleteCandidate} />
+				onDelete={this.deleteCandidate}
+				editableOverride={this.props.person.id !== getMemberId()} />
 			</div>
 			</div>
 			);
@@ -132,8 +130,6 @@ class ElectionRole extends React.Component<any, any> {
 			</div>
 			{
 				this.props.candidates.map((key: any, idx: any) => {
-					console.log(key);
-					console.log(this.props.voted);
 					return <ElectionCandidate 
 						person={key} 
 						role={this.props.role} 

@@ -20105,6 +20105,7 @@ class EditableTextarea extends React.Component {
         });
     }
     render() {
+        console.log(this.props.editableOverride);
         return React.createElement("div", { className: "editable-textarea-div" },
             React.createElement("textarea", { className: "editable-textarea interaction-style " + (this.state.readonly ?
                     "editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : "")), value: this.state.textValue, onChange: (ev) => {
@@ -20613,8 +20614,7 @@ class ElectionCandidate extends React.Component {
                 email: this.props.person.campaigner,
             };
             try {
-                let res = yield axios_1.default.post(campaign_url, Utils_1.objectToFormData(data));
-                console.log(res);
+                const res = yield axios_1.default.post(campaign_url, Utils_1.objectToFormData(data));
             }
             catch (err) {
                 console.log(err);
@@ -20632,8 +20632,7 @@ class ElectionCandidate extends React.Component {
                             data.append('voter', "8");
                             data.append('campaign', ev.target.value);
                             try {
-                                let res = yield axios_1.default.post(cast_vote_url, data);
-                                console.log(res);
+                                const res = yield axios_1.default.post(cast_vote_url, data);
                             }
                             catch (err) {
                                 console.log(err);
@@ -20642,7 +20641,7 @@ class ElectionCandidate extends React.Component {
                 React.createElement("div", { className: "col-8 row-2 election-label-div" },
                     React.createElement("label", { htmlFor: "" + this.props.person.id, className: "election-label" }, this.props.person.first_name + ' ' + this.props.person.last_name))),
             React.createElement("div", { className: "row col-offset-1 col-12" },
-                React.createElement(EditableTextarea_1.EditableTextarea, { initValue: this.state.pitch, onSave: this.updateCandidate, onDelete: this.deleteCandidate }))));
+                React.createElement(EditableTextarea_1.EditableTextarea, { initValue: this.state.pitch, onSave: this.updateCandidate, onDelete: this.deleteCandidate, editableOverride: this.props.person.id !== LocalResourceResolver_1.getMemberId() }))));
     }
 }
 class ElectionRole extends React.Component {
@@ -20655,8 +20654,6 @@ class ElectionRole extends React.Component {
                 React.createElement("div", { className: "col-3" },
                     React.createElement("h3", null, this.props.role))),
             this.props.candidates.map((key, idx) => {
-                console.log(key);
-                console.log(this.props.voted);
                 return React.createElement(ElectionCandidate, { person: key, role: this.props.role, key: idx, refresh: this.props.refresh, voted: this.props.voted });
             })));
     }

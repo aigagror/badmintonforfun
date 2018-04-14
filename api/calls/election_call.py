@@ -103,7 +103,6 @@ def delete_campaign(id, email, job):
 
 
 def get_current_campaigns():
-    print(1)
     curr_election_dict = get_current_election()
     curr_election = curr_election_dict["election"]
     if curr_election is None:
@@ -144,14 +143,13 @@ def get_current_election():
         election = curr_election[0]
         with connection.cursor() as cursor:
             query = """
-                SELECT * FROM api_campaign WHERE election_id = %s
-                JOIN api_interested ON api_campaign.campaigner = api_interested.id
+                SELECT * FROM api_campaign
+                JOIN api_interested ON api_campaign.campaigner_id = api_interested.id
+                WHERE election_id = %s
             """
             cursor.execute(query, [election.id])
 
             results = dictfetchall(cursor)
-            print(hello)
-            print(results)
         campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [election.id])
         return {'election': election, 'campaigns': campaigns}
 
