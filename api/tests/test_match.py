@@ -19,7 +19,7 @@ class MatchTest(CustomTestCase):
         self.assertEqual(playedin + 4, len(list(PlayedIn.objects.all())))
 
     @run(path_name='join_match', email=JARED, method=POST, args={'match_id': 9, 'team': 'B'})
-    def test_join_match_team_A(self):
+    def test_join_match_team_B(self):
         """
         Jared has not played in this match before
         :return:
@@ -34,7 +34,7 @@ class MatchTest(CustomTestCase):
         self.assertEqual(playedin.team, 'B')
 
     @run(path_name='join_match', email=JARED, method=POST, args={'match_id': 9, 'team': 'A'})
-    def test_join_match_team_B(self):
+    def test_join_match_team_A(self):
         """
         Jared has not played in this match before
         :return:
@@ -92,8 +92,9 @@ class MatchTest(CustomTestCase):
         self.assertEqual(self.number_of_matches_now, self.original_number_of_matches - 1)
 
         grace = Member.objects.get(first_name='Grace')
-        playedin = PlayedIn.objects.get(member=grace)
-        self.assertIsNone(playedin)
+        playedin = PlayedIn.objects.filter(member=grace)
+        playedin = list(playedin)
+        self.assertEquals(playedin, [])
 
     @run(path_name='leave_match', email=EDDIE, method=POST, args={'match_id': 1})
     def test_bad_leave_match(self):
@@ -110,6 +111,12 @@ class MatchTest(CustomTestCase):
         eddie = Member.objects.get(first_name='Eddie')
         playedin = PlayedIn.objects.get(member=eddie, match=match)
         self.assertIsNotNone(playedin)
+
+    @run(path_name='leave_match', email=EDDIE, method=POST, args={'match_id': 9})
+    def test_leave_match(self):
+        response = self.response
+        self.assertGoodResponse(response)
+
 
     @run(path_name='current_match', email=GRACE, method=GET, args={})
     def test_get_current_match(self):

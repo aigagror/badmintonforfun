@@ -5,6 +5,33 @@ from ..models import *
 import json
 from .queue_call import get_parties_by_playtime
 
+"""
+    FUNCTIONS: (*) = not sure if works, look at this later
+    
+    edit_match(id, score_a, score_b) returns an http response
+    join_match(match_id, member_id, team) returns an http response
+    leave_match(match_id, member_id) returns an http response
+    delete_match(id) returns an http response
+    create_match(score_a, score_b, a_players, b_players, court_id) returns an http response
+    find_current_match_by_member(id) returns an http response
+    finish_match(id, scoreA, scoreB) returns an http response
+    (* haven't tested properly yet) dequeue_next_party_to_court(queue_type, court_id) returns an http response
+    get_top_players() returns an http response
+    get_match(id) returns an http response
+    get_all_matches() returns an http response
+    
+    _get_winners(match) returns a list of winners (Member objects)
+    (* should this return an http response) _reward_winning_team(match_id, winning_team, points) returns an http response
+    _get_parent_node(tournament_id, curr_level, index) returns BracketNode object
+    _top_players() returns a dictionary
+    _all_matches() returns a RawQuerySet of Match objects
+    _players(match_id, team) returns a RawQuerySet of Interested objects(?)
+    _num_players_in_match(id) returns an integer
+    _is_finished_match(id) returns a boolean
+    _is_tournament_match(id) returns a Tournament object or None
+    _is_ranked_match(id) returns a boolean
+    _get_bracket_node_and_level(id, tournament_id) returns a BracketNode object and the level of the BracketNode
+"""
 
 def edit_match(id, score_a, score_b):
     query = """
@@ -42,7 +69,31 @@ def join_match(match_id, member_id, team):
     return response
 
 
+def leave_match(match_id, member_id):
+    """
+        Given a match id and member id, let the member leave a match
+    :param id:
+    :return:
+    """
+
+    #if there's only one player in the match
+    #ADD FUNCTION TO MAKE SURE THAT IS THE ONE PLAYER IN THE MATCH (modify _players?)
+    if _num_players_in_match(match_id) == 1:
+        return delete_match(match_id)
+
+    if _is_finished_match(match_id):
+        return http_response({}, message="Cannot leave a finished match", code=400)
+
+
+
+
+
 def delete_match(id):
+    """
+        Delete a match, as well as the playedin relationship
+    :param id:
+    :return:
+    """
     playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s", [id])
     for p in playedins:
         query = """
@@ -59,6 +110,15 @@ def delete_match(id):
 
 
 def create_match(score_a, score_b, a_players, b_players, court_id):
+    """
+        Create a new match! Should only be used by queues
+    :param score_a:
+    :param score_b:
+    :param a_players:
+    :param b_players:
+    :param court_id:
+    :return:
+    """
     with connection.cursor() as cursor:
         query = """
         SELECT MAX(id)
@@ -146,6 +206,7 @@ def _get_winners(match):
 
     return winners
 
+
 def finish_match(id, scoreA, scoreB):
     """
         Ends the match, updates the scores, removes court id. Also increases the level of
@@ -175,7 +236,6 @@ def finish_match(id, scoreA, scoreB):
 
     #check if this match is a ranked match
     if _is_ranked_match(id):
-        print(str(id) + "is a ranked match")
         # Reward the winners by giving 10 points to their level
         winning_team = "A" if scoreA > scoreB else "B"
         _reward_winning_team(match.id, winning_team, 10)
@@ -232,6 +292,13 @@ def finish_match(id, scoreA, scoreB):
 
 
 def _reward_winning_team(match_id, winning_team, points):
+    """
+        Give the winning team ("A" or "B") of the match points.
+    :param match_id:
+    :param winning_team:
+    :param points:
+    :return:
+    """
     query = """
     UPDATE api_member
     SET level=level+%s
@@ -241,7 +308,6 @@ def _reward_winning_team(match_id, winning_team, points):
     WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=%s AND plin.team=%s)
     """
     return run_connection(query, points, match_id, winning_team)
-
 
 
 def dequeue_next_party_to_court(queue_type, court_id):
@@ -271,8 +337,8 @@ def dequeue_next_party_to_court(queue_type, court_id):
         # Error
         return response
 
-    # Create match on court
 
+    # Create match on court
     a_players = []
     b_players = []
 
@@ -288,6 +354,7 @@ def dequeue_next_party_to_court(queue_type, court_id):
 
     return create_match(score_a=0, score_b=0, a_players=a_players, b_players=b_players, court_id=court_id)
 
+
 def _get_parent_node(tournament_id, curr_level, index):
     parent_index = index // 2
     bracket_nodes = BracketNode.objects.raw(
@@ -295,6 +362,7 @@ def _get_parent_node(tournament_id, curr_level, index):
         [tournament_id, curr_level - 1, parent_index])
     parent_node = bracket_nodes[0]
     return parent_node
+
 
 def _top_players():
     with connection.cursor() as cursor:

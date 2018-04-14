@@ -252,7 +252,7 @@ class CustomTestCase(TestCase):
 
     def _create_matches(self):
         """
-        NOTE: This function asssumes that certain people were already created
+        NOTE: This function assumes that certain people were already created
 
         This function creates
             8 finished matches, 10 minutes long each.
@@ -335,6 +335,12 @@ class CustomTestCase(TestCase):
 
         # Grace playing in one unfinished casual match
         playedin = PlayedIn(member=grace, match=unfinished_casual_matches[0], team='A')
+        playedin.save()
+
+        #Eddie and Bhuvan are playing in one unfinished casual match
+        playedin = PlayedIn(member=dan, match=unfinished_casual_matches[1], team='A')
+        playedin.save()
+        playedin = PlayedIn(member=bhuvan, match=unfinished_casual_matches[1], team='B')
         playedin.save()
 
 
