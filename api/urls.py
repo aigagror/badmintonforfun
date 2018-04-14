@@ -54,23 +54,6 @@ settings_paths = [
     re_path(r'queues/?$', settings_router.settingsQueueRouter, name='queue_settings'),
 ]
 
-queue_paths = [
-    # Creates a party
-    re_path(r'party/create/?$', party_router.create_party, name='create_party'),
-    # Edits/deletes a party
-    re_path(r'party/remove_member/?$', party_router.remove_member, name='party_remove_member'),
-    re_path(r'party/add_member/?$', party_router.add_member, name='party_add_member'),
-    re_path(r'party/delete/?$', party_router.delete_party, name='delete_party'),
-    # Gets the next part on the queue
-    re_path(r'party/next/?$', queue_router.next_on_queue, name='queue_next_party'),
-    re_path(r'party/dequeue/?$', queue_router.dequeue_next_party_to_court, name='dequeue_next_party_to_court'),
-
-    re_path(r'create/?', queue_router.create_queue, name='create_queue'),
-
-    # Gets the queues with all the parties on them
-    path('', queue_router.get_queues, name='get_queues'),
-]
-
 campaign_paths = [
     re_path(r'create/?$', campaign_router.create_campaign, name='create_campaign'),
     path('get/<int:campaigner_id>/', campaign_router.get_campaign_from_campaigner, name='get_campaign_from_campaigner'),
@@ -89,10 +72,28 @@ match_paths = [
     re_path(r'all/?$', match_router.all_matches, name='all_matches'),
 ]
 
+queue_paths = [
+
+    # Gets all the queues with all the parties sorted by priority
+    path('', queue_router.get_queues, name='get_queues'),
+
+    # Gets the next part on the queue
+    # This url seems a little redundant from the 'get_queues' url - Eddie
+    re_path(r'next/?$', queue_router.next_on_queue, name='queue_next_party'),
+
+    re_path(r'create/?', queue_router.create_queue, name='create_queue'),
+]
+
 party_paths = [
-    re_path(r'member/?$', party_router.member_party, name='get_party_for_member'),
+    re_path(r'get/?$', party_router.member_party, name='get_party_for_member'),
+    # Creates a party
+    re_path(r'create/?$', party_router.create_party, name='create_party'),
+    # Edits/deletes a party
+    re_path(r'delete/?$', party_router.delete_party, name='delete_party'),
     re_path(r'join/?$', party_router.join_party, name='join_party'),
     re_path(r'leave/?$', party_router.leave_party, name='leave_party'),
+    re_path(r'remove_member/?$', party_router.remove_member, name='party_remove_member'),
+    re_path(r'add_member/?$', party_router.add_member, name='party_add_member'),
     re_path(r'free_members/?$', party_router.get_free_members, name='get_free_members'),
 ]
 
