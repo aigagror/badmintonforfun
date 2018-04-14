@@ -144,7 +144,10 @@ class Match(models.Model):
             elif play.team == TEAMS[1][0]:
                 team_b_members.append(play.member)
 
-        return 'A{}-B{}:{}-{}'.format([str(m) for m in team_a_members], [str(m) for m in team_b_members], self.scoreA, self.scoreB)
+        return 'A|{}{}\tB|{}{}\tTime|{}-{}'.format(self.scoreA, [str(m) for m in team_a_members],
+                                                 self.scoreB, [str(m) for m in team_b_members],
+                                                 self.startDateTime.time().strftime('%H:%M'),
+                                                 self.endDateTime.time().strftime('%H:%M') if self.endDateTime is not None else '')
 
 class PlayedIn(models.Model):
     class Meta:
