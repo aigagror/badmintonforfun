@@ -78,7 +78,7 @@ class Member(Interested):
     dateJoined = models.DateField('date joined')
     party = models.ForeignKey(Party, on_delete=models.SET_NULL, null=True, blank=True)
     bio = models.CharField(max_length=500, default='', blank=True)
-    picture = models.TextField(null=True)
+    picture = models.TextField(null=True, blank=True)
 
     def clean(self):
         if self.party is not None:
