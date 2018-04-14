@@ -40,9 +40,9 @@ class Party(models.Model):
 
     def __str__(self):
         members = Member.objects.filter(party=self.id)
-        ret = str(self.leader) + ':'
+        ret = ''
         for member in members:
-            ret += ' {}'.format(str(member))
+            ret += '{}'.format(str(member))
         return ret
 
 
@@ -78,7 +78,7 @@ class Member(Interested):
     dateJoined = models.DateField('date joined')
     party = models.ForeignKey(Party, on_delete=models.SET_NULL, null=True, blank=True)
     bio = models.CharField(max_length=500, default='', blank=True)
-    picture = models.TextField(null=True)
+    picture = models.TextField(null=True, blank=True)
 
     def clean(self):
         if self.party is not None:

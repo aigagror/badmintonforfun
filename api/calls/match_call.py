@@ -15,6 +15,33 @@ def edit_match(id, score_a, score_b):
     return response
 
 
+def join_match(match_id, member_id, team):
+    """
+        Given a match ID and member_id, add the member to the match (by adding playedin)
+    :param id:
+    :return:
+    """
+
+    if _num_players_in_match(match_id) == 4:
+        return http_response({}, message="Cannot join this match, there are already 4 people in it!", code=400)
+
+    current_match = find_current_match_by_member(member_id)
+    if current_match.status_code == 200:
+        return http_response({}, message="Member is already in a match", code=400)
+
+    if _is_finished_match(match_id):
+        return http_response({}, message="Cannot join a finished match", code=400)
+
+    member = list(Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s", [member_id]))[0]
+    if member.party_id is not None:
+        return http_response({}, message="Member is already in a party. Can only join matches if alone.", code=400)
+
+    query = "INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)"
+    response = run_connection(query, member_id, team, match_id)
+
+    return response
+
+
 def delete_match(id):
     playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s", [id])
     for p in playedins:
@@ -71,7 +98,6 @@ def find_current_match_by_member(id):
     :param id:
     :return:
     """
-
     with connection.cursor() as cursor:
         query = '''SELECT * FROM api_match, api_playedin
         WHERE api_playedin.member_id=%s AND api_match.id=api_playedin.match_id AND api_match.endDateTime IS NULL
@@ -96,7 +122,6 @@ def find_current_match_by_member(id):
 
             match_json = {"match": {"match_id": match_id, "scoreA": result["scoreA"],
                                             "scoreB": result["scoreB"], "teamA": teamA, "teamB": teamB}}
-
             return http_response(match_json)
         else:
             return http_response({}, message="Couldn't find a current match for this member. Are you sure this member is in a match?",
@@ -298,14 +323,17 @@ def _top_players():
 
     return results
 
+
 def get_top_players():
     results = _top_players()
 
     return HttpResponse(json.dumps(results), content_type='application/json')
 
+
 def _all_matches():
     all_matches = Match.objects.raw("SELECT * FROM api_match")
     return all_matches
+
 
 def _players(match_id, team):
     query = """
@@ -316,6 +344,36 @@ def _players(match_id, team):
     """
     players = Interested.objects.raw(query, [match_id, team])
     return players
+
+
+def _num_players_in_match(id):
+    """
+        Given a match id, return the number of players in the match
+    :param id:
+    :return:
+    """
+
+    players = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id=%s", [id])
+    return len(list(players))
+
+
+def _is_finished_match(id):
+    """
+        Given a match id, return whether the match is finished or not
+    :param id:
+    :return:
+    """
+
+    match = Match.objects.raw("SELECT * FROM api_match WHERE id=%s", [id])
+    if len(list(match)) > 0:
+        match = match[0]
+        if match.endDateTime is None:
+            return False
+        else:
+            return True
+
+    return False
+
 
 def _is_tournament_match(id):
     """
