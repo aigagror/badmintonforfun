@@ -5,6 +5,33 @@ from ..models import *
 import json
 from .queue_call import get_parties_by_playtime
 
+"""
+    FUNCTIONS: (*) = not sure if works, look at this later
+    
+    edit_match(id, score_a, score_b) returns an http response
+    join_match(match_id, member_id, team) returns an http response
+    leave_match(match_id, member_id) returns an http response
+    delete_match(id) returns an http response
+    create_match(score_a, score_b, a_players, b_players, court_id) returns an http response
+    find_current_match_by_member(id) returns an http response
+    finish_match(id, scoreA, scoreB) returns an http response
+    (* HAVEN'T TESTED PROPERLY YET) dequeue_next_party_to_court(queue_type, court_id) returns an http response
+    get_top_players() returns an http response
+    get_match(id) returns an http response
+    get_all_matches() returns an http response
+    
+    _get_winners(match) returns a list of winners (Member objects)
+    (* SHOULD THIS RETURN AN HTTP RESPONSE) _reward_winning_team(match_id, winning_team, points) returns an http response
+    _get_parent_node(tournament_id, curr_level, index) returns BracketNode object
+    _top_players() returns a dictionary
+    _all_matches() returns a RawQuerySet of Match objects
+    _players(match_id, team) returns a RawQuerySet of Interested objects(?)
+    _num_players_in_match(id) returns an integer
+    _is_finished_match(id) returns a boolean
+    _is_tournament_match(id) returns a Tournament object or None
+    _is_ranked_match(id) returns a boolean
+    _get_bracket_node_and_level(id, tournament_id) returns a BracketNode object and the level of the BracketNode
+"""
 
 def edit_match(id, score_a, score_b):
     query = """
@@ -15,7 +42,68 @@ def edit_match(id, score_a, score_b):
     return response
 
 
+def join_match(match_id, member_id, team):
+    """
+        Given a match ID and member_id, add the member to the match (by adding playedin)
+    :param id:
+    :return:
+    """
+
+    if _num_players_in_match(match_id) == 4:
+        return http_response({}, message="Cannot join this match, there are already 4 people in it!", code=400)
+
+    current_match = find_current_match_by_member(member_id)
+    if current_match.status_code == 200:
+        return http_response({}, message="Member is already in a match", code=400)
+
+    if _is_finished_match(match_id):
+        return http_response({}, message="Cannot join a finished match", code=400)
+
+    member = list(Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s", [member_id]))[0]
+    if member.party_id is not None:
+        return http_response({}, message="Member is already in a party. Can only join matches if alone.", code=400)
+
+    query = "INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)"
+    response = run_connection(query, member_id, team, match_id)
+
+    return response
+
+
+def leave_match(match_id, member_id):
+    """
+        Given a match id and member id, let the member leave a match
+    :param match_id:
+    :param member_id:
+    :return:
+    """
+
+    #if there's only one player in the match
+    players = list(_players(match_id))
+    found = 0
+    for player in players:
+        if player.id == member_id:
+            found = 1
+
+    if _num_players_in_match(match_id) == 1 and found == 1:
+        run_connection("DELETE FROM api_playedin WHERE member_id=%s AND match_id=%s", member_id, match_id)
+        return delete_match(match_id)
+
+    if _is_finished_match(match_id):
+        return http_response({}, message="Cannot leave a finished match", code=400)
+
+    if found == 1:
+        response = run_connection("DELETE FROM api_playedin WHERE member_id=%s AND match_id=%s", member_id, match_id)
+        return response
+    else:
+        return http_response({}, message="Cannot leave a match you're not part of!", code=400)
+
+
 def delete_match(id):
+    """
+        Delete a match, as well as the playedin relationship
+    :param id:
+    :return:
+    """
     playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s", [id])
     for p in playedins:
         query = """
@@ -32,6 +120,15 @@ def delete_match(id):
 
 
 def create_match(score_a, score_b, a_players, b_players, court_id):
+    """
+        Create a new match! Should only be used by queues
+    :param score_a:
+    :param score_b:
+    :param a_players:
+    :param b_players:
+    :param court_id:
+    :return:
+    """
     with connection.cursor() as cursor:
         query = """
         SELECT MAX(id)
@@ -71,7 +168,6 @@ def find_current_match_by_member(id):
     :param id:
     :return:
     """
-
     with connection.cursor() as cursor:
         query = '''SELECT * FROM api_match, api_playedin
         WHERE api_playedin.member_id=%s AND api_match.id=api_playedin.match_id AND api_match.endDateTime IS NULL
@@ -96,7 +192,6 @@ def find_current_match_by_member(id):
 
             match_json = {"match": {"match_id": match_id, "scoreA": result["scoreA"],
                                             "scoreB": result["scoreB"], "teamA": teamA, "teamB": teamB}}
-
             return http_response(match_json)
         else:
             return http_response({}, message="Couldn't find a current match for this member. Are you sure this member is in a match?",
@@ -120,6 +215,7 @@ def _get_winners(match):
         winners.append(member)
 
     return winners
+
 
 def finish_match(id, scoreA, scoreB):
     """
@@ -148,13 +244,15 @@ def finish_match(id, scoreA, scoreB):
         return http_response(message='Violating win by 2 rule or at least one player having at least 21 points',
                              code=400)
 
+    #check if this match is a ranked match
+    if _is_ranked_match(id):
+        # Reward the winners by giving 10 points to their level
+        winning_team = "A" if scoreA > scoreB else "B"
+        _reward_winning_team(match.id, winning_team, 10)
+
     query = "UPDATE api_match SET endDateTime=datetime('now'), court_id=NULL WHERE id=%s"
 
     response = run_connection(query, id)
-
-    # Reward the winners by giving 10 points to their level
-    winning_team = "A" if scoreA > scoreB else "B"
-    _reward_winning_team(match.id, winning_team, 10)
 
     # Check if this match belongs to a tournament. If so, we may need to update the tournament too
     tournament_id = _is_tournament_match(match.id)
@@ -190,11 +288,6 @@ def finish_match(id, scoreA, scoreB):
                 # there's no sibling and it's not the 0 level, which shouldn't exist - return error
                 return http_response('Could not find a sibling for your match!', code=400)
 
-    #check if this match is a ranked match
-    if _is_ranked_match(id):
-        #@TODO: some ranking modifications
-        return http_response({}, message="need a placeholder")
-
     #put the next match on the court
     court = Court.objects.raw("SELECT * FROM api_court WHERE id=%s AND queue_id IS NOT NULL", [court_id])
     if len(list(court)) > 0:
@@ -209,6 +302,13 @@ def finish_match(id, scoreA, scoreB):
 
 
 def _reward_winning_team(match_id, winning_team, points):
+    """
+        Give the winning team ("A" or "B") of the match points.
+    :param match_id:
+    :param winning_team:
+    :param points:
+    :return:
+    """
     query = """
     UPDATE api_member
     SET level=level+%s
@@ -218,7 +318,6 @@ def _reward_winning_team(match_id, winning_team, points):
     WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=%s AND plin.team=%s)
     """
     return run_connection(query, points, match_id, winning_team)
-
 
 
 def dequeue_next_party_to_court(queue_type, court_id):
@@ -248,8 +347,12 @@ def dequeue_next_party_to_court(queue_type, court_id):
         # Error
         return response
 
-    # Create match on court
+    # Update the members so they have party_id null
+    update = run_connection("UPDATE api_member SET party_id=NULL WHERE party_id=%s", party_id)
+    if update.status_code != 200:
+        return update
 
+    # Create match on court
     a_players = []
     b_players = []
 
@@ -265,6 +368,7 @@ def dequeue_next_party_to_court(queue_type, court_id):
 
     return create_match(score_a=0, score_b=0, a_players=a_players, b_players=b_players, court_id=court_id)
 
+
 def _get_parent_node(tournament_id, curr_level, index):
     parent_index = index // 2
     bracket_nodes = BracketNode.objects.raw(
@@ -272,6 +376,7 @@ def _get_parent_node(tournament_id, curr_level, index):
         [tournament_id, curr_level - 1, parent_index])
     parent_node = bracket_nodes[0]
     return parent_node
+
 
 def _top_players():
     with connection.cursor() as cursor:
@@ -300,24 +405,68 @@ def _top_players():
 
     return results
 
+
 def get_top_players():
     results = _top_players()
 
     return HttpResponse(json.dumps(results), content_type='application/json')
 
+
 def _all_matches():
     all_matches = Match.objects.raw("SELECT * FROM api_match")
     return all_matches
 
-def _players(match_id, team):
-    query = """
-    SELECT * 
-    FROM api_interested, api_playedin 
-    WHERE api_playedin.match_id = %s AND api_playedin.member_id = api_interested.id
-      AND api_playedin.team = %s
-    """
-    players = Interested.objects.raw(query, [match_id, team])
+
+def _players(match_id, team=None):
+    if team is None:
+        query = '''
+        SELECT * FROM api_interested, api_playedin WHERE api_playedin.match_id=%s
+        AND api_playedin.member_id=api_interested.id
+        '''
+
+        players = Interested.objects.raw(query, [match_id])
+
+    else:
+        query = """
+        SELECT * 
+        FROM api_interested, api_playedin 
+        WHERE api_playedin.match_id = %s AND api_playedin.member_id = api_interested.id
+          AND api_playedin.team = %s
+        """
+
+        players = Interested.objects.raw(query, [match_id, team])
+
     return players
+
+
+def _num_players_in_match(id):
+    """
+        Given a match id, return the number of players in the match
+    :param id:
+    :return:
+    """
+
+    players = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id=%s", [id])
+    return len(list(players))
+
+
+def _is_finished_match(id):
+    """
+        Given a match id, return whether the match is finished or not
+    :param id:
+    :return:
+    """
+
+    match = Match.objects.raw("SELECT * FROM api_match WHERE id=%s", [id])
+    if len(list(match)) > 0:
+        match = match[0]
+        if match.endDateTime is None:
+            return False
+        else:
+            return True
+
+    return False
+
 
 def _is_tournament_match(id):
     """

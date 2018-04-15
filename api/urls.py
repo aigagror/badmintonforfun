@@ -18,7 +18,8 @@ from django.urls import re_path, path, include
 from api.routers import demo, router, votes_router, \
     settings_router, match_router, election_router, \
     campaign_router, announcement_router, queue_router, \
-    party_router, tournament_router, member_router, rankings_router
+    party_router, tournament_router, member_router, rankings_router, \
+    courts_router
 
 announcements_paths = [
     # Gets the 3 latest announcements | Edits an announcement
@@ -47,27 +48,11 @@ settings_paths = [
     re_path(r'member/?$', settings_router.settingsRouter, name='member_settings'),
     re_path(r'boardmembers/?$', settings_router.settingsBoardMemberRouter, name='boardmembers'),
     re_path(r'members/all/?$', settings_router.settingsAllMembersRouter, name='all_members'),
+    re_path(r'members/all/delete/?$', settings_router.delete_member, name='delete_member'),
     re_path(r'interested/add/?$', settings_router.settingsInterestedCreateRouter, name='add_interested'),
     re_path(r'schedule/?$', settings_router.settingsSchedulesRouter, name='schedule'),
     re_path(r'courts/?$', settings_router.settingsCourtRouter, name='court_settings'),
     re_path(r'queues/?$', settings_router.settingsQueueRouter, name='queue_settings'),
-]
-
-queue_paths = [
-    # Creates a party
-    re_path(r'party/create/?$', party_router.create_party, name='create_party'),
-    # Edits/deletes a party
-    re_path(r'party/remove_member/?$', party_router.remove_member, name='party_remove_member'),
-    re_path(r'party/add_member/?$', party_router.add_member, name='party_add_member'),
-    re_path(r'party/delete/?$', party_router.delete_party, name='delete_party'),
-    # Gets the next part on the queue
-    re_path(r'party/next/?$', queue_router.next_on_queue, name='queue_next_party'),
-    re_path(r'party/dequeue/?$', queue_router.dequeue_next_party_to_court, name='dequeue_next_party_to_court'),
-
-    re_path(r'create/?', queue_router.create_queue, name='create_queue'),
-
-    # Gets the queues with all the parties on them
-    path('', queue_router.get_queues, name='get_queues'),
 ]
 
 campaign_paths = [
@@ -81,6 +66,8 @@ campaign_paths = [
 match_paths = [
     re_path(r'edit/?$', match_router.edit_match, name='edit_match'),
     re_path(r'finish/?$', match_router.finish_match, name='finish_match'),
+    re_path(r'join/?$', match_router.join_match, name='join_match'),
+    re_path(r'leave/?$', match_router.leave_match, name='leave_match'),
     re_path(r'create/?$', match_router.create_match, name='create_match'),
     re_path(r'delete/?$', match_router.delete_match, name='delete_match'),
     re_path(r'get/?$', match_router.current_match, name='current_match'),
@@ -88,10 +75,24 @@ match_paths = [
     re_path(r'all/?$', match_router.all_matches, name='all_matches'),
 ]
 
+queue_paths = [
+
+    # Gets all the queues with all the parties sorted by priority
+    path('', queue_router.get_queues, name='get_queues'),
+
+    re_path(r'create/?', queue_router.create_queue, name='create_queue'),
+]
+
 party_paths = [
-    re_path(r'member/?$', party_router.member_party, name='get_party_for_member'),
+    re_path(r'get/?$', party_router.member_party, name='get_party_for_member'),
+    # Creates a party
+    re_path(r'create/?$', party_router.create_party, name='create_party'),
+    # Edits/deletes a party
+    re_path(r'delete/?$', party_router.delete_party, name='delete_party'),
     re_path(r'join/?$', party_router.join_party, name='join_party'),
     re_path(r'leave/?$', party_router.leave_party, name='leave_party'),
+    re_path(r'remove_member/?$', party_router.remove_member, name='party_remove_member'),
+    re_path(r'add_member/?$', party_router.add_member, name='party_add_member'),
     re_path(r'free_members/?$', party_router.get_free_members, name='get_free_members'),
 ]
 
@@ -107,7 +108,11 @@ tournament_paths = [
 
 rankings_paths = [
     re_path(r'level/?$', rankings_router.get_rankings_by_level, name='get_rankings_by_level'),
-    re_path(r'winratio/?$', rankings_router.get_rankings_by_win_ratio, name='get_rankings_by_win_ratio'),
+    re_path(r'win_ratio/?$', rankings_router.get_rankings_by_win_ratio, name='get_rankings_by_win_ratio'),
+]
+
+courts_paths = [
+    re_path(r'^$', courts_router.get_courts, name='get_courts'),
 ]
 
 """
@@ -142,4 +147,5 @@ urlpatterns = [
     path('tournament/', include(tournament_paths)),
     path('mail/', views.mail),
     path('rankings/', include(rankings_paths)),
+    path('courts/', include(courts_paths))
 ]

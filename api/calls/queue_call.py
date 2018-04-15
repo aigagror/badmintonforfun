@@ -3,6 +3,18 @@ from api.models import Queue, Party, Member
 from api.cursor_api import http_response, dictfetchall
 from operator import itemgetter
 
+"""
+    FUNCTIONS: (*) = not sure if works, look at this later
+    get_queues() returns an http response
+    get_parties_by_playtime(queue_type) returns an http_response
+    delete_queue(id) returns an http response
+    get_queue_by_id(id) returns a boolean (T/F whether there's a queue with id)
+    get_queue_by_type(queue_type) returns a dictionary, or None
+    get_queue_type(queue_id) returns a string
+    edit_queue(id, type) returns an http response
+    create_queue(id) returns an http response
+"""
+
 
 def get_queues():
     """
@@ -22,6 +34,12 @@ def get_queues():
                 "parties": []
             }
             parties = Party.objects.raw("SELECT * FROM api_party WHERE queue_id = %s", [queue.id])
+
+            response = get_parties_by_playtime(queue.type)
+            content = response.content.decode()
+            content = json.loads(content)
+
+
             for party in parties:
                 party_dict = serializeModel(party)
 
@@ -34,10 +52,20 @@ def get_queues():
                 party_dict['members'] = members_dict
                 party_dict['num_members'] = len(members_dict)
 
+                response_parties = content['parties']
+                curr_party_avg_play_time = 0
+                for i in range(len(response_parties)):
+                    if response_parties[i]['party_id'] == party.id:
+                        curr_party_avg_play_time = round(response_parties[i]['avg_time'], 3)
+                        break
+
+                party_dict['average_play_time'] = curr_party_avg_play_time
+
                 queue_dict['parties'].append(party_dict)
 
             dict['queues'].append(queue_dict)
 
+        print(dict)
         return http_response(dict)
     else:
         return http_response({}, message="There are no queues.", code=200)
@@ -119,7 +147,6 @@ def get_queue_by_id(id):
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM api_queue WHERE id=%s", [id])
         result = dictfetchone(cursor)
-        print(result)
         if result:
             return True
         else:
@@ -134,6 +161,15 @@ def get_queue_by_type(queue_type):
             return result
         else:
             return None
+
+
+def get_queue_type(queue_id):
+    rawquery = Queue.objects.raw("SELECT * FROM api_queue WHERE id=%s", [str(queue_id)])
+    if len(list(rawquery)) == 0:
+        return None
+    else:
+        queue = rawquery[0]
+        return str(queue.type)
 
 
 def edit_queue(id, type):

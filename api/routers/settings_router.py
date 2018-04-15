@@ -79,12 +79,13 @@ def settingsBoardMemberRouter(request):
         return boardmembers_config_edit(json_post_data)
 
 
-@auth_decorator(allowed=MemberClass.MEMBER)
-@restrictRouter(allowed=["GET", "POST", "DELETE"])
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
+@restrictRouter(allowed=["GET", "POST"])
 def settingsAllMembersRouter(request):
     """
-    Allows boardmembers to get/edit/delete information on all the people in the club (interested, members, boardmembers)
-    Expect input/output dictionary to be of the form
+    Allows boardmembers to get information on all the people in the club (interested, members, boardmembers)
+    AND promote/demote people
+    Expect GET output dictionary to be of the form
     {
         'members': [
             {
@@ -97,32 +98,38 @@ def settingsAllMembersRouter(request):
             ...
         ]
     }
+    Look at POST branch below for specific input dictionaries
     :param request:
     :return:
     """
-    session_id = id_for_member(request.user.email)
-    if not is_board_member(session_id):
-        return HttpResponse(json.dumps({"message": "You are not a board member."}),
-                            content_type="application/json")
+
     if request.method == "GET":
         return get_all_club_members()
     elif request.method == "POST":
-        # Promote/demote members (Interested, Member, Boardmember)
+        # Promote/demote ONE member (Interested, Member, Boardmember)
+        # {"member_id": _, "status": _}
         # Going to Boardmember, the default 'job'='OFFICER'
-        json_post_data = json.loads(request.body.decode('utf8').replace("'", '"'))
-        if not validate_keys(["members"], json_post_data):
-            HttpResponse(json.dumps({'message': 'Missing parameters members'}),
-                         content_type='application/json', status=400)
-        return update_all_club_members_status(json_post_data)
-    elif request.method == "DELETE":
-        # Here, the dictionary should ONLY contain the information for members that should be deleted
-        # Remove people from the db completely
-        # dict_delete = json.loads(request.body.decode('utf8').replace("'", '"'))
-        json_delete_data = json.loads(request.body.decode('utf8').replace("'", '"'))
-        if not validate_keys(["members"], json_delete_data):
-            HttpResponse(json.dumps({'message': 'Missing parameter members'}),
-                         content_type='application/json', status=400)
-        return delete_multiple_club_members(json_delete_data)
+        post_dict = dict(request.POST.items())
+        if not  validate_keys(["member_id", "status"], post_dict):
+            return http_response({}, message="Keys not found", code=400)
+        return update_club_member_status(post_dict)
+
+
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
+@restrictRouter(allowed=["POST"])
+def delete_member(request):
+    """
+    DELETE -- (labeled as POST because Django doesn't handle DELETE)
+        Delete ONE member from the db completely
+    :param request:
+    :return:
+    """
+    # Here, the dictionary should be {"member_id": _}
+    post_dict = dict(request.POST.items())
+    if not validate_keys(["member_id"], post_dict):
+        HttpResponse(json.dumps({'message': 'Missing parameter member_id'}),
+                     content_type='application/json', status=400)
+    return delete_club_member(post_dict)
 
 
 @auth_decorator(allowed=MemberClass.BOARD_MEMBER)

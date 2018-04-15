@@ -19,7 +19,7 @@ class MatchTest(CustomTestCase):
         self.assertEqual(playedin + 4, len(list(PlayedIn.objects.all())))
 
     @run(path_name='join_match', email=JARED, method=POST, args={'match_id': 9, 'team': 'B'})
-    def test_join_match_team_A(self):
+    def test_join_match_team_B(self):
         """
         Jared has not played in this match before
         :return:
@@ -34,7 +34,7 @@ class MatchTest(CustomTestCase):
         self.assertEqual(playedin.team, 'B')
 
     @run(path_name='join_match', email=JARED, method=POST, args={'match_id': 9, 'team': 'A'})
-    def test_join_match_team_B(self):
+    def test_join_match_team_A(self):
         """
         Jared has not played in this match before
         :return:
@@ -57,13 +57,14 @@ class MatchTest(CustomTestCase):
         response = self.response
         self.assertBadResponse(response)
 
-        json = response.json
+        json = response.json()
         self.assertEqual(json['message'], 'Cannot join a finished match')
 
         match = Match.objects.get(id=1)
         jared = Member.objects.get(first_name='Jared')
-        playedin = PlayedIn.objects.get(member=jared, match=match)
-        self.assertIsNone(playedin)
+        playedin = PlayedIn.objects.filter(member=jared, match=match)
+        playedin = list(playedin)
+        self.assertEquals(playedin, [])
 
     @run(path_name='join_match', email=GRACE, method=POST, args={'match_id': 13, 'team': 'B'})
     def test_bad_join_match(self):
@@ -74,13 +75,14 @@ class MatchTest(CustomTestCase):
         response = self.response
         self.assertBadResponse(response)
 
-        json = response.json
+        json = response.json()
         self.assertEqual(json['message'], 'Member is already in a match')
 
         match = Match.objects.get(id=13)
         grace = Member.objects.get(first_name='Grace')
-        playedin = PlayedIn.objects.get(member=grace, match=match)
-        self.assertIsNone(playedin)
+        playedin = PlayedIn.objects.filter(member=grace, match=match)
+        playedin = list(playedin)
+        self.assertEquals(playedin, [])
 
     @run(path_name='leave_match', email=GRACE, method=POST, args={'match_id': 9})
     def test_leave_match_that_deletes_match(self):
@@ -90,8 +92,9 @@ class MatchTest(CustomTestCase):
         self.assertEqual(self.number_of_matches_now, self.original_number_of_matches - 1)
 
         grace = Member.objects.get(first_name='Grace')
-        playedin = PlayedIn.objects.get(member=grace)
-        self.assertIsNone(playedin)
+        playedin = PlayedIn.objects.filter(member=grace)
+        playedin = list(playedin)
+        self.assertEquals(playedin, [])
 
     @run(path_name='leave_match', email=EDDIE, method=POST, args={'match_id': 1})
     def test_bad_leave_match(self):
@@ -109,6 +112,24 @@ class MatchTest(CustomTestCase):
         playedin = PlayedIn.objects.get(member=eddie, match=match)
         self.assertIsNotNone(playedin)
 
+    @run(path_name='leave_match', email=EDDIE, method=POST, args={'match_id': 9})
+    def test_bad_leave_match_not_in_match(self):
+        response = self.response
+        self.assertBadResponse(response)
+
+        json = response.json()
+        self.assertEqual(json['message'], "Cannot leave a match you're not part of!")
+
+
+    @run(path_name='leave_match', email=DAN, method=POST, args={'match_id': 10})
+    def test_leave_match(self):
+        response = self.response
+        self.assertGoodResponse(response)
+
+        playedin = len(list(PlayedIn.objects.all()))
+        self.assertEqual(playedin, self.original_number_of_playedins - 1)
+
+
     @run(path_name='current_match', email=GRACE, method=GET, args={})
     def test_get_current_match(self):
         response = self.response
@@ -124,7 +145,7 @@ class MatchTest(CustomTestCase):
         self.assertTrue('teamA' in match)
         self.assertTrue('teamB' in match)
 
-    @run(path_name='finish_match', email=GRACE, method=POST, args={'scoreA': 21, 'scoreB': 23})
+    @run(path_name='finish_match', email=GRACE, method=POST, args={'scoreA': 21, 'scoreB': 19})
     def test_finish_match(self):
         """
         Grace is associated with one unfinished match,
@@ -148,16 +169,20 @@ class MatchTest(CustomTestCase):
         self.assertIsNotNone(match_of_grace.endDateTime)
 
         # One of these courts must should now contain a match involving Member
-        successfully_dequeued = False
-        member = Member.objects.get(first_name='Member')
+        successfully_dequeued = 0
+        member_dan = Member.objects.get(first_name='Daniel')
+        member_bhuvan = Member.objects.get(first_name='Bhuvan')
         for court in casual_courts:
             match_on_court = Match.objects.get(court=court)
-            playedin = PlayedIn.objects.get(match=match_on_court)
-            if playedin.member == member:
-                successfully_dequeued = True
-                break
+            playedin = PlayedIn.objects.filter(match=match_on_court)
+            playedin = list(playedin)
+            for played in playedin:
+                if played.member == member_dan:
+                    successfully_dequeued += 1
+                elif played.member == member_bhuvan:
+                    successfully_dequeued += 1
 
-        self.assertTrue(successfully_dequeued)
+        self.assertTrue(successfully_dequeued, 2)
 
         # Grace's level should still be 0, since she's team A
         self.assertEqual(grace.level, 0)
