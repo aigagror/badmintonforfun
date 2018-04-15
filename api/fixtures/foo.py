@@ -1,4 +1,5 @@
 import pandas
+import datetime
 
 from api.models import *
 
@@ -13,15 +14,18 @@ for file in data_files:
         email = bar.email
         status = bar.status
 
-        interested_exists = Interested.objects.filter(email=email).count() > 0
+        interested_exists = Interested.objects.filter(email=email).exists()
 
         if interested_exists == False:
             # Add him as member or interested
             if status == 'paid':
                 print('Adding new member {}'.format(email))
-
+                member = Member(first_name=first_name, last_name=last_name, email=email, dateJoined=datetime.date.today())
+                member.save()
             else:
                 print('Adding new interested {}'.format(email))
+                interested = Interested(first_name=first_name, last_name=last_name, email=email)
+                interested.save()
 
         else:
             print('Ignoring {}'.format(email))
