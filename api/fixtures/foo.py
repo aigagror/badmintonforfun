@@ -17,11 +17,11 @@ for file in data_files:
 
         if interested_exists == False:
             # Add him as member or interested
-            print('Adding {}'.format(email))
-            if status is None:
-                print('Adding new interested {}'.format(email))
-            else:
+            if status == 'paid':
                 print('Adding new member {}'.format(email))
+
+            else:
+                print('Adding new interested {}'.format(email))
 
         else:
             print('Ignoring {}'.format(email))
