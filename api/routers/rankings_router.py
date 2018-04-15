@@ -6,8 +6,6 @@ from api.calls.rankings_call import get_top_players_by_level
 from api.routers.router import *
 
 
-@csrf_exempt
-@login_required
 @auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_rankings_by_level(request):
@@ -21,8 +19,6 @@ def get_rankings_by_level(request):
     return http_response(dict=context)
 
 
-@csrf_exempt
-@login_required
 @auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_rankings_by_win_ratio(request):

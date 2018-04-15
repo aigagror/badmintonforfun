@@ -3,7 +3,7 @@ import random
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
-from api.utils import MemberClass
+from api.utils import MemberClass, id_for_member
 from api.calls.party_call import *
 from api.calls.match_call import *
 from api.routers.router import restrictRouter, validate_keys, auth_decorator
@@ -21,15 +21,6 @@ def create_party(request):
     :param request:
     :return:
     """
-
-    session_email = request.user.username
-    if not request.user.is_authenticated:
-        return http_response({}, message="You are not logged in", code=302)
-
-    try:
-        user = Member.objects.get(email=session_email)
-    except Member.DoesNotExist:
-        return http_response({}, message="You do not have the required permissions", code=403)
 
     post_dict = dict(request.POST.items())
     if not validate_keys(['queue_type', 'member_ids'], post_dict):
@@ -209,6 +200,7 @@ def delete_party(request):
     return run_connection("UPDATE api_member SET party_id=NULL WHERE party_id=%s", party_id)
 
 
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def member_party(request):
     """
@@ -216,22 +208,10 @@ def member_party(request):
     :param request:
     :return:
     """
-    session_email = request.user.username
-    if not request.user.is_authenticated:
-        return http_response({}, message="You are not logged in", code=302)
-
-    try:
-        user = Member.objects.get(email=session_email)
-    except Member.DoesNotExist:
-        return http_response({}, message="You do not have the required permissions", code=403)
-
-    member_id = user.id
-    # if member_id is None:
-    #     return http_response(message='No member id passed in', code=400)
+    member_id = id_for_member(request.user.email)
     return get_member_party(member_id)
 
 
-@login_required()
 @auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def join_party(request):
@@ -257,7 +237,6 @@ def join_party(request):
     return run_connection("UPDATE api_member SET party_id=%s WHERE interested_ptr_id=%s", party_id, member_id)
 
 
-@login_required()
 @auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def leave_party(request):
@@ -276,7 +255,6 @@ def leave_party(request):
     return party_remove_member(party_id, member_id)
 
 
-@login_required()
 @auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_free_members(request):
@@ -287,14 +265,5 @@ def get_free_members(request):
     :param request:
     :return:
     """
-    session_email = request.user.username
-    if not request.user.is_authenticated:
-        return http_response({}, message="You are not logged in", code=302)
-
-    try:
-        user = Member.objects.get(email=session_email)
-    except Member.DoesNotExist:
-        return http_response({}, message="You do not have the required permissions", code=403)
-
-    member_id = user.id
+    member_id = id_for_member(request.user.email)
     return get_free_members_call(member_id)

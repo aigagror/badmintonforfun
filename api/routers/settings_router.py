@@ -147,12 +147,7 @@ def settingsInterestedCreateRouter(request):
     :param request:
     :return:
     """
-    # session_id = request.session.get('session_id', None)
     session_id = id_for_member(request.user.email)
-    if not is_board_member(session_id):
-        return http_response({}, message="You are not a board member.")
-
-    # dict_post = dict(request.POST.items())
     json_post_data = json.loads(request.body)
     p_first_name = json_post_data.get('first_name', '')
     p_last_name = json_post_data.get('last_name', '')
@@ -228,16 +223,12 @@ def settingsCourtRouter(request):
     :param request:
     :return:
     """
-    # session_id = request.session.get('session_id', None)
     session_id = id_for_member(request.user.email)
-    if not is_board_member(session_id):
-        return HttpResponse(json.dumps({"message": "You are not a board member."}),
-                            content_type="application/json")
     if request.method == "GET":
         return get_all_courts_formmated()
     elif request.method == "POST":
         # Used to add new courts OR change the queue types for the courts
-        json_post_data = json.loads(request.body)
+        json_post_data = request.POST
         if not validate_keys('courts', json_post_data):
             HttpResponse(json.dumps({'message': 'Missing parameter courts'}),
                          content_type='application/json', status=400)

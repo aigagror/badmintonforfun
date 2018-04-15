@@ -2,7 +2,7 @@ from django.http import HttpResponse
 
 from api.calls.election_call import get_votes_from_member, get_all_votes
 from api.cursor_api import deserializeDate
-from api.calls.interested_call import MemberClass
+from api.utils import MemberClass
 from api.routers.router import restrictRouter, auth_decorator
 from api.cursor_api import *
 from api.models import *

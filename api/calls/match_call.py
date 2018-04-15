@@ -190,12 +190,11 @@ def find_current_match_by_member(id):
                 else:
                     teamB.append(person.member_id)
 
-            match_json = {"match": {"match_id": match_id, "scoreA": result["scoreA"],
+            match_json = {'status':'playing', "match": {"match_id": match_id, "scoreA": result["scoreA"],
                                             "scoreB": result["scoreB"], "teamA": teamA, "teamB": teamB}}
             return http_response(match_json)
         else:
-            return http_response({}, message="Couldn't find a current match for this member. Are you sure this member is in a match?",
-                                 code=400)
+            return http_response({'status':'idle'}, message="Couldn't find a current match for this member. Are you sure this member is in a match?")
 
 
 def _get_winners(match):

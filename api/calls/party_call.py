@@ -67,7 +67,7 @@ def edit_party(party_id, queue_id=None, add_members=None, remove_members=None):
 def get_member_party(member_id):
     query_set = (Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT party_id FROM api_member WHERE interested_ptr_id=%s)", [member_id]))
     if len(list(query_set)) == 0:
-        return http_response({}, message="This member is not part of a party", status=400)
+        return http_response({'status': 'partyless'}, message="This member is not part of a party")
     party = query_set[0]
     context = {
         "party_id": party.id,
@@ -137,18 +137,16 @@ def get_free_members_call(member_id):
     :param: member_id -- The id of the member making the request
     :return:
     """
-    query = """
-    SELECT * 
-    FROM api_member 
-    WHERE party_id IS NULL AND interested_ptr_id <> %s AND interested_ptr_id NOT IN 
-    (SELECT m.interested_ptr_id
-    FROM api_member AS m, api_playedin AS plin, api_match AS match
-    WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=match.id AND match.endDateTime IS NULL)
-    """
-
-    free_members = Member.objects.raw(query, [member_id])
-    free_members = serializeSetOfModels(free_members)
-    context = {
-        "free_members": free_members
-    }
-    return http_response(context, code=200)
+    with connection.cursor() as cursor:
+        query = """
+        SELECT id, first_name, last_name
+        FROM api_member 
+        JOIN api_interested ON interested_ptr_id = id
+        WHERE party_id IS NULL AND interested_ptr_id <> %s AND interested_ptr_id NOT IN 
+            (SELECT m.interested_ptr_id
+            FROM api_member AS m, api_playedin AS plin, api_match AS match
+            WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=match.id AND match.endDateTime IS NULL)
+        """
+        cursor.execute(query, [member_id])
+        results = dictfetchall(cursor)
+        return HttpResponse(json.dumps(results), content_type='application/json', status=200)

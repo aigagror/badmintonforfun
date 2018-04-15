@@ -121,7 +121,7 @@ def get_parties_by_playtime(queue_type):
 
         for i in members_with_playtime:
             for j in parties:
-                if i["member_id"] in j["member_ids"]:
+                if i["member_id"] in j["member_ids"] and i["member_play_time"] is not None:
                     j["avg_time"] += i["member_play_time"]
 
         for i in parties:

@@ -1,4 +1,4 @@
-from api.calls.interested_call import MemberClass
+from api.utils import MemberClass
 from api.calls.courts_call import *
 from api.routers.router import *
 

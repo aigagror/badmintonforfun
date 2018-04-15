@@ -11,7 +11,6 @@ from api.utils import MemberClass
 QUEUES = ("CASUAL", "RANKED", "KOTH")
 
 
-@login_required
 @auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_queues(request):

@@ -142,8 +142,8 @@ def delete_from_member(id):
     run_connection("DELETE FROM api_playedin WHERE member_id=%s", id)
     run_connection("DELETE FROM api_vote WHERE voter_id=%s", id)
     run_connection("DELETE FROM api_campaign WHERE campaigner_id=%s", id)
-
     run_connection("DELETE FROM api_member WHERE interested_ptr_id=%s", id)
+    run_connection("DELETE FROM api_interested WHERE id=%s", id)
 
     return http_response(message="OK")
 

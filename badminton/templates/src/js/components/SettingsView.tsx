@@ -5,6 +5,7 @@ import { Popup } from '../common/Popup';
 import { Select, Option } from '../common/Select';
 import { isBoardMember } from '../common/LocalResourceResolver';
 import {getResource, setResource, xsrfCookieName, xsrfHeaderName, getMemberId} from '../common/LocalResourceResolver';
+import {objectToFormData} from '../common/Utils';
 import Dropzone from 'react-dropzone';
 
 axios.defaults.xsrfCookieName = xsrfCookieName();
@@ -17,6 +18,7 @@ enum LoadingState {
 
 const reg_url = '/api/settings/member/';
 const member_url = '/api/settings/members/all/';
+const member_url_delete = '/api/settings/members/all/delete/';
 const courts_url = '/api/settings/courts/';
 
 class OptionSetting extends React.Component<any, any> {
@@ -235,9 +237,7 @@ class MemberSettings extends React.Component<any, any> {
 	deleteMember(idx: number) {
 		return () => {
 			const toDelete = this.state.members[idx];
-			axios.delete(member_url, { 
-				data: { members: [toDelete] } 
-			})
+			axios.post(member_url_delete, objectToFormData({ member_id: toDelete }))
 			.then((res: any) => {
 				console.log(res);
 				this.performRequest();
@@ -268,7 +268,7 @@ class MemberSettings extends React.Component<any, any> {
 			return <p>Loading</p>
 		}
 
-		return <>
+		return <div style={{overflowY: 'scroll', height: '500px'}}>
 		<h3>Members</h3>
 		{
 			this.state.members.sort((a: any, b: any) => {
@@ -278,7 +278,6 @@ class MemberSettings extends React.Component<any, any> {
 					}
 					return cmp;
 				}).map((member: any, idx: number) => {
-				console.log(member.type);
 				return <div key={idx} className="row">
 				<div className="col-5 col-es-12">
 				<h4>{member.first_name} {member.last_name}</h4> 
@@ -301,7 +300,7 @@ class MemberSettings extends React.Component<any, any> {
 				</div>
 			})
 		}
-		</>
+		</div>
 	}
 }
 
