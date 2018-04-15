@@ -73,12 +73,17 @@ def run(path_name, email, method, args):
             self.members_now = Member.objects.all()
             self.number_of_members_now = len(list(self.members_now))
 
+            self.boards_now = BoardMember.objects.all()
+            self.number_of_boards_now = len(list(self.boards_now))
+
             self.parties_now = Party.objects.all()
             self.number_of_parties_now = len(list(self.parties_now))
 
             self.matches_now = Match.objects.all()
             self.number_of_matches_now = len(list(self.matches_now))
 
+            self.playedins_now = PlayedIn.objects.all()
+            self.number_of_playedins_now = len(list(self.playedins_now))
             # Run the test case
             test_func(self)
 
@@ -115,7 +120,7 @@ class CustomTestCase(TestCase):
         self.original_members = Member.objects.all()
         self.original_number_of_members = len(list(self.original_members))
 
-        self.original_boards = Member.objects.all()
+        self.original_boards = BoardMember.objects.all()
         self.original_number_of_boards = len(list(self.original_boards))
 
         self.original_parties = Party.objects.all()
@@ -123,6 +128,9 @@ class CustomTestCase(TestCase):
 
         self.original_matches = Match.objects.all()
         self.original_number_of_matches = len(list(self.original_matches))
+
+        self.original_playedins = PlayedIn.objects.all()
+        self.original_number_of_playedins = len(list(self.original_playedins))
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
@@ -171,6 +179,9 @@ class CustomTestCase(TestCase):
 
         # Create some announcements
         self._create_announcements()
+
+        # Create an election and some campaigns
+        self._create_election_and_campaigns()
 
     def _create_tournament(self):
         """
@@ -252,7 +263,7 @@ class CustomTestCase(TestCase):
 
     def _create_matches(self):
         """
-        NOTE: This function asssumes that certain people were already created
+        NOTE: This function assumes that certain people were already created
 
         This function creates
             8 finished matches, 10 minutes long each.
@@ -337,6 +348,11 @@ class CustomTestCase(TestCase):
         playedin = PlayedIn(member=grace, match=unfinished_casual_matches[0], team='A')
         playedin.save()
 
+        #Dan and Bhuvan are playing in one unfinished ranked match
+        playedin = PlayedIn(member=dan, match=unfinished_casual_matches[1], team='A')
+        playedin.save()
+        playedin = PlayedIn(member=bhuvan, match=unfinished_casual_matches[1], team='B')
+        playedin.save()
 
         # Unfinished ranked matches
         unfinished_ranked_matches = [Match(startDateTime=now, scoreA=21, scoreB=19)]
@@ -462,6 +478,27 @@ class CustomTestCase(TestCase):
 
 
 
+    def _create_election_and_campaigns(self):
+        election = Election(date=datetime.date.today())
+        election.save()
 
+        campaigners = [Member.objects.get(first_name='Eddie'),
+                       Member.objects.get(first_name='Bhuvan'),
+                       Member.objects.get(first_name='Grace'),
+                       Member.objects.get(first_name='Daniel')]
+
+        campaigns = [Campaign(job='President', campaigner=campaigners[0], election=election, pitch='I am Eddie'),
+                     Campaign(job='President', campaigner=campaigners[1], election=election, pitch='I am Bhuvan'),
+                     Campaign(job='President', campaigner=campaigners[2], election=election, pitch='I am Grace'),
+                     Campaign(job='President', campaigner=campaigners[3], election=election, pitch='I am Dan')]
+
+
+        print("Election ID and dates:")
+        print(str(election.id) + ", " + str(election))
+        index = 0
+        for campaign in campaigns:
+            campaign.save()
+            print("{}: {}".format(campaigners[index], campaign))
+            index += 1
 
 

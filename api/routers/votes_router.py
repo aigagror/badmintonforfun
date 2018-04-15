@@ -2,11 +2,13 @@ from django.http import HttpResponse
 
 from api.calls.election_call import get_votes_from_member, get_all_votes
 from api.cursor_api import deserializeDate
-from api.routers.router import restrictRouter
+from api.calls.interested_call import MemberClass
+from api.routers.router import restrictRouter, auth_decorator
 from api.cursor_api import *
 from api.models import *
 
 
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def cast_vote(request):
     """
@@ -34,7 +36,7 @@ def cast_vote(request):
     return response
 
 
-
+@auth_decorator(MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_votes_from_member(request, voter_id):
     """
@@ -55,6 +57,7 @@ def get_votes_from_member(request, voter_id):
     return http_response(context)
 
 
+@auth_decorator(MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["GET"])
 def all_votes(request):
     """

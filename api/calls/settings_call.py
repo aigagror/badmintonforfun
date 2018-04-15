@@ -1,6 +1,7 @@
 from django.db import connection, IntegrityError, ProgrammingError
 from api.cursor_api import *
-import json
+# import json
+from operator import itemgetter
 from django.http import HttpResponse
 
 from api.routers.router import validate_keys
@@ -136,15 +137,15 @@ def delete_from_interested(id):
 
 
 def delete_from_member(id):
-    with connection.cursor() as cursor:
-        query = '''
-        DELETE FROM api_member
-        WHERE interested_ptr_id=%s
-        '''
-        cursor.execute(query, [id])
-    return HttpResponse(json.dumps({"message": "Successfully deleted from member."}),
-                        content_type="application/json")
+    # Delete from member and also remove any entries in PlayedIn, Vote, Campaign that are associated
+    # with the member.
+    run_connection("DELETE FROM api_playedin WHERE member_id=%s", id)
+    run_connection("DELETE FROM api_vote WHERE voter_id=%s", id)
+    run_connection("DELETE FROM api_campaign WHERE campaigner_id=%s", id)
 
+    run_connection("DELETE FROM api_member WHERE interested_ptr_id=%s", id)
+
+    return http_response(message="OK")
 
 
 def delete_from_boardmember(id):
@@ -163,18 +164,6 @@ def get_interested():
     Returns the names and emails of the interested exclusively
     :return:
     """
-    # with connection.cursor() as cursor:
-    #     query = '''
-    #     SELECT *
-    #     FROM api_interested
-    #     WHERE email NOT IN (
-    #         SELECT interested_ptr_id
-    #         FROM api_member
-    #     )
-    #     '''
-    #     cursor.execute(query)
-    #     results = dictfetchall(cursor)
-    # return results
     return Interested.objects.raw("SELECT * FROM api_interested WHERE id NOT IN (SELECT interested_ptr_id FROM api_member)")
 
 
@@ -183,15 +172,6 @@ def get_members():
     Returns the names and emails of the members, exclusively (not board members)
     :return:
     """
-    # with connection.cursor() as cursor:
-    #     query = '''
-    #     SELECT *
-    #     FROM api_interested, api_member
-    #     WHERE api_interested.email = interested_ptr_id;
-    #     '''
-    #     cursor.execute(query)
-    #     results = dictfetchall(cursor)
-    # return results
     return (Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id NOT IN (SELECT member_ptr_id FROM api_boardmember)"))
 
 def get_board_members():
@@ -203,30 +183,15 @@ def get_board_members():
 
 def remove_member(member_id):
     """
-    Deletes the tuple in api_interested with 'email'. This should delete any related tuples in
+    Deletes the tuple in api_interested with 'member_id'. This should delete any related tuples in
     api_member and api_boardmember.
     Works for removing Interested's, Member's, or BoardMember's
     :param member_id: The id of the person we want to remove from the database
     :return:
     """
-    with connection.cursor() as cursor:
-        query = '''
-                DELETE FROM api_boardmember
-                WHERE member_ptr_id=%s;
-                '''
-        cursor.execute(query, [member_id])
-
-        query = '''
-                DELETE FROM api_member
-                WHERE interested_ptr_id=%s;
-                '''
-        cursor.execute(query, [member_id])
-
-        query = '''
-                DELETE FROM api_interested
-                WHERE id=%s;
-                '''
-        cursor.execute(query, [member_id])
+    delete_from_boardmember(member_id)
+    delete_from_member(member_id)
+    delete_from_interested(member_id)
 
     return HttpResponse(json.dumps({"message": "Successfully deleted member."}),
                         content_type="application/json")
@@ -640,57 +605,53 @@ def get_all_club_members():
 
     context = {'members': ret_list, 'memberTypes': ["Member", "BoardMember", "Interested"]}
 
-    return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
+    return http_response(dict=context, message="OK")
+    # return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
 
 
-def update_all_club_members_status(dict_post):
+def update_club_member_status(dict_post):
     """
-    POST request for boardmembers. Alter the statuses of members.
+    POST request for boardmembers. Alter the status of ONE member.
     Assumes a list of members and a drop-down for each one with the choices (Interested, Member, Boardmember).
     :param dict_post:
     :return:
     """
-    members = dict_post['members']
-    for member in members:
-        member_id = member['member_id']
-        new_status = member['status']
-        curr_status = get_status(member_id)
 
-        if new_status == "Boardmember":
-            if curr_status == "Member":
-                promote_to_board_member(member_id, "OFFICER")
-            elif curr_status == "Interested":
-                promote_to_member(member_id)
-                promote_to_board_member(member_id, "OFFICER")
-        elif new_status == "Member":
-            if curr_status == "Boardmember":
-                delete_from_boardmember(member_id)
-            elif curr_status == "Interested":
-                promote_to_member(member_id)
-        elif new_status == "Interested":
-            if curr_status == "Boardmember":
-                delete_from_boardmember(member_id)
-                delete_from_member(member_id)
-            elif curr_status == "Member":
-                delete_from_member(member_id)
+    member_id = dict_post["member_id"]
 
-    return HttpResponse(json.dumps({"message": "Successfully updated club member statuses."}),
-                        content_type="application/json")
+    curr_status = get_status(member_id)
+    new_status = dict_post["status"]
 
-def delete_multiple_club_members(dict_delete):
+    if new_status == "Boardmember":
+        if curr_status == "Member":
+            promote_to_board_member(member_id, "OFFICER")
+        elif curr_status == "Interested":
+            promote_to_member(member_id)
+            promote_to_board_member(member_id, "OFFICER")
+    elif new_status == "Member":
+        if curr_status == "Boardmember":
+            delete_from_boardmember(member_id)
+        elif curr_status == "Interested":
+            promote_to_member(member_id)
+    elif new_status == "Interested":
+        if curr_status == "Boardmember":
+            delete_from_boardmember(member_id)
+            delete_from_member(member_id)
+        elif curr_status == "Member":
+            delete_from_member(member_id)
+
+    return http_response(message="OK")
+
+def delete_club_member(dict_delete):
     """
-    DELETE request for boardmembers to remove club members. The provided dictionary
-    should ONLY have the information for the club members that will be deleted
+    DELETE request for boardmembers to remove a club member. The provided dictionary
+    will be {"member_id": _}
     :param dict_delete:
     :return:
     """
-    print(dict_delete)
-    members = dict_delete['members']
-    for member in members:
-        member_id = member['member_id']
-        remove_member(member_id)
-    return HttpResponse(json.dumps({"message": "Successfully removed club members."}),
-                        content_type="application/json")
+    member_id = dict_delete['member_id']
+    remove_member(member_id)
+    return http_response(message="OK")
 
 def schedule_to_dict():
     """
