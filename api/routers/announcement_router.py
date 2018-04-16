@@ -16,7 +16,7 @@ def get_announcements(request):
     :param request:
     :return:
     """
-    announcements = Announcement.objects.raw("SELECT * FROM api_announcement ORDER BY date DESC LIMIT 3")
+    announcements = Announcement.objects.raw("SELECT * FROM api_announcement ORDER BY date DESC")
     announcements_list = serializeSetOfModels(announcements)
 
     context = {

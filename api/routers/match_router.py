@@ -194,23 +194,26 @@ def all_matches_from_member(request):
     if member_id is None:
         return http_response({}, message="Please pass in a member id", code=400)
 
-    with connection.cursor() as cursor:
-        query = """
-        SELECT 
-            (CASE WHEN 
-                (api_playedin.team = 'A') THEN api_match.scoreA 
-                ELSE api_match.scoreB END) AS my_score,
-            (CASE WHEN 
-                (api_playedin.team = 'B') THEN api_match.scoreA 
-                ELSE api_match.scoreB END) AS their_score,
-            api_match.endDateTime,
-            api_match.startDateTime
-        FROM api_member
-        JOIN api_playedin ON api_member.interested_ptr_id = api_playedin.member_id
-        JOIN api_match ON api_match.id = api_playedin.match_id
-        WHERE api_member.interested_ptr_id = %s
-        """
+    playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE member_id = %s", [member_id])
 
-        cursor.execute(query, [member_id])
-        results = serializeDict(dictfetchall(cursor))
-    return HttpResponse(json.dumps(results), content_type="application/json")
+    matches = [p.match for p in playedins]
+    ret = []
+    for match in matches:
+        playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s", [match.id])
+        teamA = []
+        teamB = []
+        for playedin in playedins:
+            member = playedin.member
+            serealized_member = serializeModel(member)
+            if playedin.team == 'A':
+                teamA.append(serealized_member)
+            else:
+                teamB.append(serealized_member)
+        dict = {
+            'match': serializeModel(match),
+            'team_A': teamA,
+            'team_B': teamB,
+        }
+
+        ret.append(dict)
+    return HttpResponse(json.dumps(ret), content_type="application/json")
