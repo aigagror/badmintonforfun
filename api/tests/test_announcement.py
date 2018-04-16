@@ -8,41 +8,36 @@ from api.models import *
 from .custom_test_case import *
 
 class AnnouncementTest(CustomTestCase):
-    def test_get_announcements(self):
-        self.create_example_data()
 
-        response = self.client.get(reverse('api:get_announcements'))
+    @run(path_name='get_announcements', method=GET, email=INTERESTED, args={'title': 'Hello', 'entry': 'World'})
+    def test_get_announcements(self):
+        response = self.response
         self.assertGoodResponse(response)
 
         json = response.json()
         self.assertTrue('announcements' in json)
 
-        self.assertEqual(len(json['announcements']), 3)
 
+
+    @run(path_name='create_announcement', method=POST, email=BOARD_MEMBER, args={'title': 'Hello', 'entry': 'World'})
     def test_create_announcement(self):
-
-        announcements = Announcement.objects.all()
-        number_of_announcements_before = len(list(announcements))
-
-        response = self.client.post(reverse('api:create_announcement'), {'title': 'Hello', 'entry': 'World'})
+        response = self.response
         self.assertGoodResponse(response)
 
-        announcements = Announcement.objects.all()
-        number_of_announcements_after = len(list(announcements))
-
-        self.assertEqual(number_of_announcements_after, number_of_announcements_before + 1)
 
         announcement = Announcement.objects.get(title='Hello', entry='World')
+        self.assertIsNotNone(announcement)
 
+
+        all_announcements = Announcement.objects.all()
+        self.assertEqual(self.original_number_of_announcements + 1, len(list(all_announcements)))
+
+    @run(path_name='edit_announcement', method=POST, email=BOARD_MEMBER, args={'id': 0, 'title': 'Hello', 'entry': 'World'})
     def test_edit_announcement(self):
-        self.create_example_data()
-        announcements = Announcement.objects.all()
-        announcement = announcements[0]
-
-        response = self.client.post(reverse('api:edit_announcement'), {'id': announcement.id, 'title': 'Hello', 'entry': 'World'})
+        response = self.response
         self.assertGoodResponse(response)
 
-        announcement = Announcement.objects.get(title='Hello', entry='World')
-        Announcement.objects.exists()
+        all_announcements = Announcement.objects.all()
+        self.assertEqual(self.original_number_of_announcements, len(list(all_announcements)))
 
 

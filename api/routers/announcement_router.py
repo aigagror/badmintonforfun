@@ -2,11 +2,14 @@ from api.routers.router import *
 from api.models import *
 from django.views.decorators.csrf import ensure_csrf_cookie
 
+from api.utils import MemberClass
+
 _id_key = "id"
 _title_key = "title"
 _entry_key = "entry"
 
 @restrictRouter(allowed=["GET"])
+@auth_decorator(allowed=MemberClass.INTERESTED)
 def get_announcements(request):
     """
     GET - Get the 3 latest announcements
@@ -25,6 +28,7 @@ def get_announcements(request):
     return http_response(context)
 
 @restrictRouter(allowed=["POST"])
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 def create_announcement(request):
     """
     POST - Creates an announcement
@@ -32,9 +36,7 @@ def create_announcement(request):
     :param request:
     :return:
     """
-    print(request)
     dict_post = dict(request.POST.items())
-    print(dict_post)
     if not validate_keys([_title_key, _entry_key], dict_post):
         return http_response(message='Missing parameters')
     title = dict_post[_title_key]
@@ -43,6 +45,7 @@ def create_announcement(request):
     return response
 
 @restrictRouter(allowed=["POST"])
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 def edit_announcement(request):
     """
         POST - Creates an announcement

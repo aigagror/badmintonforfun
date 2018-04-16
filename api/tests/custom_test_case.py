@@ -141,6 +141,8 @@ class CustomTestCase(TestCase):
         self.original_votes = Vote.objects.all()
         self.original_number_of_votes = len(list(self.original_votes))
 
+        self.original_number_of_announcements = len(list(Announcement.objects.all()))
+
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
