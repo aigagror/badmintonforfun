@@ -92,7 +92,7 @@ def leave_match(request):
 
 @login_required
 @restrictRouter(allowed=["POST"])
-def create_match(request):
+def start_match(request):
     """
     POST -- create a match
         PLEASE PASS IN AS RAW DATA.

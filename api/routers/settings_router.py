@@ -85,7 +85,7 @@ def settingsAllMembersRouter(request):
     """
     Allows boardmembers to get information on all the people in the club (interested, members, boardmembers)
     AND promote/demote people
-    Expect GET output dictionary to be of the form
+    Expect GET OUTPUT dictionary to be of the form
     {
         'members': [
             {
@@ -93,11 +93,14 @@ def settingsAllMembersRouter(request):
                 'first_name': _,
                 'last_name': _,
                 'email': _,
-                'status': _ (Interested, Member, Boardmember)
+                'status': _ (Interested, Member, BoardMember)
             },
             ...
         ]
     }
+    Expect POST INPUT dictionary
+        Example: {"member_id": 39, "status": "Interested"}
+
     Look at POST branch below for specific input dictionaries
     :param request:
     :return:
@@ -106,9 +109,9 @@ def settingsAllMembersRouter(request):
     if request.method == "GET":
         return get_all_club_members()
     elif request.method == "POST":
-        # Promote/demote ONE member (Interested, Member, Boardmember)
+        # Promote/demote ONE member (Interested, Member, BoardMember)
         # {"member_id": _, "status": _}
-        # Going to Boardmember, the default 'job'='OFFICER'
+        # Going to BoardMember, the default 'job'='OFFICER'
         post_dict = dict(request.POST)
         print(post_dict)
         if not validate_keys(["member_id", "status"], post_dict):
@@ -122,6 +125,7 @@ def delete_member(request):
     """
     DELETE -- (labeled as POST because Django doesn't handle DELETE)
         Delete ONE member from the db completely
+        Example: {"member_id": 39}
     :param request:
     :return:
     """

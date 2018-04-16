@@ -11,12 +11,52 @@ import json
 
 class MatchTest(CustomTestCase):
 
-    def test_create_match(self):
+    def test_create_match_call(self):
         matches = len(list(Match.objects.all()))
         playedin = len(list(PlayedIn.objects.all()))
-        create_match(score_a=21, score_b=23, a_players=[1, 2], b_players=[3, 4], court_id=5)
+        create_match(a_players=[1, 2], b_players=[3, 4], court_id=5)
         self.assertEqual(matches + 1, len(list(Match.objects.all())))
         self.assertEqual(playedin + 4, len(list(PlayedIn.objects.all())))
+
+    @run(path_name='start_match', email=JARED, method=POST, args={'court_id': 6})
+    def test_start_match(self):
+        """
+        Can start a match on a court with no queue
+        :return:
+        """
+        response = self.response
+        self.assertGoodResponse(response)
+
+        self.assertEqual(self.original_number_of_matches + 1, self.number_of_matches_now)
+
+        jared = Member.objects.get(first_name='Jared')
+        playedin = PlayedIn.objects.get(member=jared)
+        self.assertIsNotNone(playedin)
+        match = playedin.match
+
+        # Should be an ongoing match
+        self.assertIsNone(match.endDateTime)
+
+        # Should be on this court
+        self.assertEqual(6, match.court_id)
+
+    @run(path_name='start_match', email=JARED, method=POST, args={'court_id': 5})
+    def test_start_bad_match(self):
+        """
+        Cannot start a match on a court that's associated with a queue
+        :return:
+        """
+        response = self.response
+        self.assertBadResponse(response)
+
+        self.assertEqual(self.original_number_of_matches, self.number_of_matches_now)
+
+        jared = Member.objects.get(first_name='Jared')
+        playedin = PlayedIn.objects.get(member=jared)
+        self.assertIsNone(playedin)
+
+        match_on_court = Match.objects.filter(court_id=5).exists()
+        self.assertFalse(match_on_court)
 
     @run(path_name='join_match', email=JARED, method=POST, args={'match_id': 9, 'team': 'B'})
     def test_join_match_team_B(self):
@@ -58,7 +98,7 @@ class MatchTest(CustomTestCase):
         self.assertBadResponse(response)
 
         json = response.json()
-        self.assertEqual(json['message'], 'Cannot join a finished match')
+        self.assertEqual('Cannot join a finished match', json['message'])
 
         match = Match.objects.get(id=1)
         jared = Member.objects.get(first_name='Jared')
@@ -165,7 +205,9 @@ class MatchTest(CustomTestCase):
         match_of_grace = member_playedin.match
         print("Grace's match ID: " + str(match_of_grace.id))
 
-        self.assertIsNone(match_of_grace.court)
+        court_query = Court.objects.filter(match=match_of_grace)
+
+        self.assertFalse(court_query.exists())
         self.assertIsNotNone(match_of_grace.endDateTime)
 
         # One of these courts must should now contain a match involving Member
@@ -173,7 +215,7 @@ class MatchTest(CustomTestCase):
         member_dan = Member.objects.get(first_name='Daniel')
         member_bhuvan = Member.objects.get(first_name='Bhuvan')
         for court in casual_courts:
-            match_on_court = Match.objects.get(court=court)
+            match_on_court = court.match
             playedin = PlayedIn.objects.filter(match=match_on_court)
             playedin = list(playedin)
             for played in playedin:
@@ -186,7 +228,6 @@ class MatchTest(CustomTestCase):
 
         # Grace's level should still be 0, since she's team A
         self.assertEqual(grace.level, 0)
-
 
     @run(path_name='finish_match', email=JOSHUA, method=POST, args={'scoreA': 21, 'scoreB': 19})
     def test_finish_ranked_match(self):
