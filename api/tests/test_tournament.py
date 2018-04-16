@@ -9,28 +9,30 @@
 # import api.datetime_extension
 #
 # class TournamentTest(CustomTestCase):
+#
+#     @run(path_name='get_tournament', email=MEMBER, method=GET, args={})
 #     def test_get_tournament(self):
-#         response = self.client.get(reverse('api:get_tournament'))
-#         self.assertBadResponse(response)
-#
-#         json = response.json()
-#         self.assertEqual(json['message'], 'No tournaments exist')
-#
-#         self.create_example_data()
-#
-#         response = self.client.get(reverse('api:get_tournament'))
+#         response = self.response
 #         self.assertGoodResponse(response)
 #
 #         json = response.json()
 #         self.assertTrue('tournament' in json)
-#         print(json['tournament'])
+#         tournament = json['tournament']
+#         self.assertTrue('bracket_nodes' in tournament)
+#         bracket_nodes = tournament['bracket_nodes']
+#         for node in bracket_nodes:
+#             self.assertTrue('matches' in node)
+#             matches = node['matches']
+#             for match in matches:
+#                 self.assertTrue('team_A' in match)
+#                 self.assertTrue('team_B' in match)
 #
+#     @run(path_name='create_tournament', email=BOARD_MEMBER, method=POST, args={'num_players': 4, 'tournament_type': 'DOUBLES', 'elimination_type': 'SINGLE'})
 #     def test_create_tournament(self):
-#         today = datetime.date.today()
-#         response = self.client.post(reverse('api:create_tournament'), {'num_players': 4, 'tournament_type': 'Doubles'})
+#         response = self.response
 #         self.assertGoodResponse(response)
 #
-#         tournament = Tournament.objects.get(date=today)
+#
 #         self.assertEqual(tournament.date, today)
 #
 #     def test_finish_tournament(self):

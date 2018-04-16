@@ -205,7 +205,9 @@ class MatchTest(CustomTestCase):
         match_of_grace = member_playedin.match
         print("Grace's match ID: " + str(match_of_grace.id))
 
-        self.assertIsNone(match_of_grace.court)
+        court_query = Court.objects.filter(match=match_of_grace)
+
+        self.assertFalse(court_query.exists())
         self.assertIsNotNone(match_of_grace.endDateTime)
 
         # One of these courts must should now contain a match involving Member
@@ -213,7 +215,7 @@ class MatchTest(CustomTestCase):
         member_dan = Member.objects.get(first_name='Daniel')
         member_bhuvan = Member.objects.get(first_name='Bhuvan')
         for court in casual_courts:
-            match_on_court = Match.objects.get(court=court)
+            match_on_court = court.match
             playedin = PlayedIn.objects.filter(match=match_on_court)
             playedin = list(playedin)
             for played in playedin:
@@ -226,7 +228,6 @@ class MatchTest(CustomTestCase):
 
         # Grace's level should still be 0, since she's team A
         self.assertEqual(grace.level, 0)
-
 
     @run(path_name='finish_match', email=JOSHUA, method=POST, args={'scoreA': 21, 'scoreB': 19})
     def test_finish_ranked_match(self):

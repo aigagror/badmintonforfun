@@ -84,6 +84,9 @@ def run(path_name, email, method, args):
 
             self.playedins_now = PlayedIn.objects.all()
             self.number_of_playedins_now = len(list(self.playedins_now))
+
+            self.votes_now = Vote.objects.all()
+            self.number_of_votes_now = len(list(self.votes_now))
             # Run the test case
             test_func(self)
 
@@ -131,6 +134,13 @@ class CustomTestCase(TestCase):
 
         self.original_playedins = PlayedIn.objects.all()
         self.original_number_of_playedins = len(list(self.original_playedins))
+
+        self.original_tournaments = Tournament.objects.all()
+        self.original_number_of_tournaments = len(list(self.original_tournaments))
+
+        self.original_votes = Vote.objects.all()
+        self.original_number_of_votes = len(list(self.original_votes))
+
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
@@ -206,10 +216,8 @@ class CustomTestCase(TestCase):
         for index in range(2 ** 3):
             bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=index)
             # Create an empty match
-            match = Match(startDateTime=now, scoreA=0, scoreB=0)
+            match = Match(startDateTime=now, scoreA=0, scoreB=0, bracket_node=bracket_node)
             match.save()
-            bracket_node.match = match
-            bracket_node.save()
 
     def _create_parties(self):
         """
@@ -334,15 +342,17 @@ class CustomTestCase(TestCase):
                                      Match(startDateTime=now, scoreA=21, scoreB=19)]
 
         for match in unfinished_casual_matches:
+            match.save()
+
             # Assign these unfinished matches on the courts
             # That are associated with the casual queue
             casual_queue = Queue.objects.get(type='CASUAL')
             i = unfinished_casual_matches.index(match)
             courts = Court.objects.filter(queue=casual_queue)
             court = courts[i]
-            match.court = court
+            court.match = match
 
-            match.save()
+            court.save()
 
         # Grace playing in one unfinished casual match
         playedin = PlayedIn(member=grace, match=unfinished_casual_matches[0], team='A')
@@ -358,13 +368,15 @@ class CustomTestCase(TestCase):
         unfinished_ranked_matches = [Match(startDateTime=now, scoreA=21, scoreB=19)]
 
         for match in unfinished_ranked_matches:
+            match.save()
+
             ranked_queue = Queue.objects.get(type='RANKED')
             i = unfinished_ranked_matches.index(match)
             courts = Court.objects.filter(queue=ranked_queue)
             court = courts[i]
-            match.court = court
+            court.match = match
 
-            match.save()
+            court.save()
 
         # Joshua playing in one unfinished ranked match
         playedin = PlayedIn(member=joshua, match=unfinished_ranked_matches[0], team='A')
@@ -374,6 +386,10 @@ class CustomTestCase(TestCase):
         print('ID\'s of all matches')
         for match in all_matches:
             print('{}: {}'.format(match.id, str(match)))
+
+        courts = Court.objects.all()
+        court_list = list(courts)
+        foo = 0
 
     def _create_people(self):
         # Create some interesteds
@@ -479,6 +495,11 @@ class CustomTestCase(TestCase):
 
 
     def _create_election_and_campaigns(self):
+        """
+            Creates an election object with start date today
+            Campaigners are Eddie, Bhuvan, Grace, and Daniel, who each have campaigns.
+        :return:
+        """
         election = Election(date=datetime.date.today())
         election.save()
 
@@ -490,14 +511,18 @@ class CustomTestCase(TestCase):
         campaigns = [Campaign(job='President', campaigner=campaigners[0], election=election, pitch='I am Eddie'),
                      Campaign(job='President', campaigner=campaigners[1], election=election, pitch='I am Bhuvan'),
                      Campaign(job='President', campaigner=campaigners[2], election=election, pitch='I am Grace'),
-                     Campaign(job='President', campaigner=campaigners[3], election=election, pitch='I am Dan')]
+                     Campaign(job='Treasurer', campaigner=campaigners[3], election=election, pitch='I am Dan')]
 
+        # hardcoded one vote currently for Bhuvan's campaign by Member
+        vote = Vote(campaign_id=2, voter_id=2)
+        vote.save()
 
         print("Election ID and dates:")
         print(str(election.id) + ", " + str(election))
         index = 0
         for campaign in campaigns:
             campaign.save()
+            print("Campaign " + str(campaign.id))
             print("{}: {}".format(campaigners[index], campaign))
             index += 1
 
