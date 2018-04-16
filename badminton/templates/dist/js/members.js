@@ -1550,7 +1550,7 @@ ReactDOM.render(React.createElement(MemberView_1.MemberView, null), document.que
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
-const url = '/api/settings/members/all/';
+const url = '/api/members/all/';
 class Member extends React.Component {
     render() {
         return React.createElement("a", { href: "/profile.html?member_id=" + this.props.id }, this.props.name);
