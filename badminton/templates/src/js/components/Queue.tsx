@@ -71,17 +71,34 @@ const getSelectedMemberObj = () => {
 class CourtView extends React.Component<any, any> {
 	render() {
 		const name = 'court'+this.props.court.id;
+		const match = this.props.court.match;
+		console.log(this.props.court.queue_type === null && !this.props.hasParty);
+		console.log(this.props.court.queue_type);
 		return <div className="col-6">
 				<div className='row'>
 				<div className="col-6">
 				<h4>{this.props.court.queue_type === null ? "Free Play" : this.props.court.queue_type}</h4>
 				</div> 
-				{(this.props.court.queue_type === null && !this.props.hasParty) &&
-					<div className="col-6">
+				{
+					(this.props.court.queue_type === null && !this.props.hasParty) &&
+					 (match !== null ? <div className="col-6">
+					<button onClick={() => this.props.onJoin(match.match_id, match.teamA.length <= match.teamB.length ? 'A':'B')} 
+					className='interaction-style'>Join Match</button>
+					</div> : <div className="col-6">
 					<button onClick={() => this.props.onYes(this.props.court.court_id)} className='interaction-style'>Start Match</button>
-					</div> }
+					</div>)
+				}
+
 				</div>
-				<div className="court-style" data-tip data-event='click focus' data-for={name}></div>
+				{
+					match !== null ?  <div className="court-style">
+					{match.teamA.map((a : any, idx: number) => 
+						<div className={"court-a-team team-"+(idx+1)+"-"+match.teamA.length}>{a}</div>)}
+					{match.teamB.map((a : any, idx: number) => 
+						<div className={"court-b-team team-"+(idx+1)+"-"+match.teamB.length}>{a}</div>)}
+				</div>: 
+					<div className="court-style" data-tip data-event='click focus' data-for={name}></div>
+				}
 				</div>
 	}
 }
@@ -231,6 +248,8 @@ export class Queue extends React.Component<any, any> {
 		this.refreshQueue = this.refreshQueue.bind(this);
 		this.startMatch = this.startMatch.bind(this);
 		this.finishMatch = this.finishMatch.bind(this);
+		this.leaveMatch = this.leaveMatch.bind(this);
+		this.joinMatch = this.joinMatch.bind(this);
 	}
 
 	async refreshQueue() {
@@ -306,6 +325,7 @@ export class Queue extends React.Component<any, any> {
 			}
 		}
 		const onSwap = (id: any, event: any) => {
+			console.log(id);
 			if (event.target.checked) {
 				deleteArr(left, id);
 				right.push(id);
@@ -347,6 +367,31 @@ export class Queue extends React.Component<any, any> {
 		}
 	}
 
+	async leaveMatch() {
+		try {
+			const res = await axios.post('/api/match/leave/', objectToFormData({
+				match_id: this.state.matchId,
+			}));
+			this.refreshQueue();
+			console.log(res);
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	async joinMatch(match_id: any, team: any) {
+		try {
+			const res = await axios.post('/api/match/join/', objectToFormData({
+				match_id: match_id,
+				team: team,
+			}));
+			this.refreshQueue();
+			console.log(res);
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
 	render() {
 		if (this.state.memberState === null) {
 			return <p>Loading</p>
@@ -356,7 +401,12 @@ export class Queue extends React.Component<any, any> {
 				{this.state.popup && this.state.popup}
 				<h4>Team A: {this.state.teamA.map((a : any) => a.name).join(',') + " "}
 				 vs Team B: {this.state.teamB.map((a : any) => a.name).join(',')} </h4>
-				<div className="court-style"></div>
+				<div className="court-style">
+					{this.state.teamA.map((a : any, idx: number) => 
+						<div className={"court-a a-team-"+(idx+1)+"-"+this.state.teamA.length}>a.name</div>)}
+					{this.state.teamB.map((a : any, idx: number) => 
+						<div className={"court-a a-team-"+(idx+1)+"-"+this.state.teamB.length}>a.name</div>)}
+				</div>
 				<div className="col-5">
 				<input value={this.state.aScore} className='interaction-style' onChange={(ev: any) => this.setState({aScore: ev.target.value})}></input> 
 				</div>
@@ -367,7 +417,14 @@ export class Queue extends React.Component<any, any> {
 				<input value={this.state.bScore} className='interaction-style' onChange={(ev: any) => this.setState({bScore: ev.target.value})}></input> 
 				</div>
 
+				<div className="row">
+				<div className="col-6">
 				<button className='interaction-style' onClick={this.finishMatch}>Finish Match</button>
+				</div>
+				<div className="col-6">
+				<button className='interaction-style' onClick={this.leaveMatch}>Leave Match</button>
+				</div>
+				</div>
 				</div>
 		}
 
@@ -376,7 +433,9 @@ export class Queue extends React.Component<any, any> {
 			{this.state.popup && this.state.popup}
 			{
 				this.state.courtData.map((court: any, idx: number) => {
-					return <CourtView key={idx} court={court} hasParty={this.state.party!==null} onYes={this.startMatch}/>
+					return <CourtView key={idx} court={court} hasParty={this.state.party!==null} 
+						onYes={this.startMatch}
+						onJoin={this.joinMatch} />
 				})
 
 			}

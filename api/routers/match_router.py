@@ -87,6 +87,7 @@ def leave_match(request):
     """
     member_id = get_member_id_from_email(request.user.email)
     dict_post = dict(request.POST.items())
+    print(dict_post)
     validate_keys(["match_id"], dict_post)
     return get_leave_match(dict_post["match_id"], member_id)
 

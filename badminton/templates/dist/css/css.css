@@ -2501,6 +2501,23 @@ input[type="text"] {
   background-color: gray;
   corner-radius: 5px;
   margin-bottom: 10px; }
+
+.court-a-team {
+  position: absolute;
+  left: 10%; }
+
+.court-b-team {
+  position: absolute;
+  right: 10%; }
+
+.team-1-1 {
+  top: 45%; }
+
+.team-1-2 {
+  top: 30%; }
+
+.team-2-2 {
+  top: 60%; }
 /* The container */
 .radio-container {
   display: block;
