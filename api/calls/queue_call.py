@@ -214,8 +214,7 @@ def dequeue_party_to_court_call(queue_type):
         return http_response({}, message='No courts available for this queue', code=400)
     found_available_court = False;
     for court in queue_courts:
-        matches = Match.objects.raw("SELECT * FROM api_match WHERE court_id = %s", [court.id])
-        if len(list(matches)) == 0:
+        if court.match is None:
             # Found an empty court
             found_available_court = True
 
@@ -236,8 +235,8 @@ def dequeue_party_to_court_call(queue_type):
             now = datetime.datetime.now()
 
             response = run_connection(
-                "INSERT INTO api_match(id, startDateTime, court_id, scoreA, scoreB) VALUES (%s, %s, %s, 0, 0)",
-                id_of_new_match, serializeDateTime(now), court.id)
+                "INSERT INTO api_match(id, startDateTime, scoreA, scoreB) VALUES (%s, %s, 0, 0)",
+                id_of_new_match, serializeDateTime(now))
             if response.status_code != 200:
                 # Error
                 return response
@@ -252,6 +251,9 @@ def dequeue_party_to_court_call(queue_type):
                 if response.status_code != 200:
                     # Error
                     return response
+
+            # Add the match to the court
+            response = run_connection("UPDATE api_court SET match_id = %s WHERE id = %s", id_of_new_match, court.id)
 
             break
     if found_available_court:

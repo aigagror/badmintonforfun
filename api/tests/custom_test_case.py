@@ -334,15 +334,17 @@ class CustomTestCase(TestCase):
                                      Match(startDateTime=now, scoreA=21, scoreB=19)]
 
         for match in unfinished_casual_matches:
+            match.save()
+
             # Assign these unfinished matches on the courts
             # That are associated with the casual queue
             casual_queue = Queue.objects.get(type='CASUAL')
             i = unfinished_casual_matches.index(match)
             courts = Court.objects.filter(queue=casual_queue)
             court = courts[i]
-            match.court = court
+            court.match = match
 
-            match.save()
+            court.save()
 
         # Grace playing in one unfinished casual match
         playedin = PlayedIn(member=grace, match=unfinished_casual_matches[0], team='A')
@@ -358,13 +360,15 @@ class CustomTestCase(TestCase):
         unfinished_ranked_matches = [Match(startDateTime=now, scoreA=21, scoreB=19)]
 
         for match in unfinished_ranked_matches:
+            match.save()
+
             ranked_queue = Queue.objects.get(type='RANKED')
             i = unfinished_ranked_matches.index(match)
             courts = Court.objects.filter(queue=ranked_queue)
             court = courts[i]
-            match.court = court
+            court.match = match
 
-            match.save()
+            court.save()
 
         # Joshua playing in one unfinished ranked match
         playedin = PlayedIn(member=joshua, match=unfinished_ranked_matches[0], team='A')
@@ -374,6 +378,10 @@ class CustomTestCase(TestCase):
         print('ID\'s of all matches')
         for match in all_matches:
             print('{}: {}'.format(match.id, str(match)))
+
+        courts = Court.objects.all()
+        court_list = list(courts)
+        foo = 0
 
     def _create_people(self):
         # Create some interesteds

@@ -138,12 +138,18 @@ def create_match(a_players, b_players, court_id):
         else:
             newID = 0
 
-
     query = """
-    INSERT INTO api_match(id, startDateTime, scoreA, scoreB, court_id) VALUES (%s, %s, 0, 0, %s)
+    INSERT INTO api_match(id, startDateTime, scoreA, scoreB) VALUES (%s, %s, 0, 0)
     """
     today = datetime.datetime.now()
-    response = run_connection(query, newID, serializeDateTime(today), court_id)
+    response = run_connection(query, newID, serializeDateTime(today))
+
+    query = """
+    UPDATE api_court SET match_id = %s WHERE id = %s
+    """
+    response = run_connection(query, newID, court_id)
+
+
     for p in a_players:
         query = """
         INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
@@ -234,7 +240,13 @@ def finish_match(id, scoreA, scoreB):
         return http_response(message='There was an error updating your scores!', code=400)
 
     match = matches[0]
-    court_id = match.court_id
+    court_query = Court.objects.raw("SELECT * FROM api_court WHERE match_id = %s", [match.id])
+    if len(list(court_query)) > 0:
+        court = court_query[0]
+        court_id = court.id
+    else:
+        court_id = None
+
 
     #check to make sure match should actually be finished
     if not (abs(match.scoreA - match.scoreB) >= 2) and not((match.scoreB >= 21 or match.scoreA >= 21)):
@@ -247,7 +259,7 @@ def finish_match(id, scoreA, scoreB):
         winning_team = "A" if scoreA > scoreB else "B"
         _reward_winning_team(match.id, winning_team, 10)
 
-    query = "UPDATE api_match SET endDateTime=datetime('now'), court_id=NULL WHERE id=%s"
+    query = "UPDATE api_match SET endDateTime=datetime('now') WHERE id=%s"
 
     response = run_connection(query, id)
 
@@ -289,6 +301,10 @@ def finish_match(id, scoreA, scoreB):
     if court_id is not None:
         court = Court.objects.raw("SELECT * FROM api_court WHERE id = %s", [court_id])[0]
         queue = court.queue
+
+        # Remove the finished match from the court before dequeueing
+        remove_match_response = run_connection("UPDATE api_court SET match_id = NULL WHERE id = %s", court_id)
+
         dequeue_resp = dequeue_party_to_court_call(queue.type)
 
     return response
@@ -438,8 +454,8 @@ def _is_ranked_match(id):
     """
     match_court = Match.objects.raw("SELECT * FROM api_match WHERE api_match.id=%s", [id])
     if len(list(match_court)) > 0:
-        court_id = match_court[0].court_id
-        courts = Court.objects.raw("SELECT * FROM api_court WHERE api_court.id=%s", [court_id])
+        match = match_court[0]
+        courts = Court.objects.raw("SELECT * FROM api_court WHERE match_id=%s", [match.id])
         if (len(list(courts))) > 0:
             court = courts[0]
             queues = Queue.objects.raw("SELECT * FROM api_queue WHERE api_queue.id=%s", [court.queue_id])
