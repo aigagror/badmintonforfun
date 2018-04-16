@@ -105,7 +105,8 @@ def create_match(request):
     dict_post = json.loads(request.body.decode('utf8').replace("'", '"'))
     # write something to make sure a_players and b_players are lists
     validate_keys(["score_A", "score_B", "a_players", "b_players"], dict_post)
-    return get_create_match(dict_post["score_A"], dict_post["score_B"], dict_post["a_players"], dict_post["b_players"])
+    return get_create_match(dict_post["score_A"], dict_post["score_B"], dict_post["a_players"], 
+        dict_post["b_players"], dict_post["court_id"])
 
 
 @login_required

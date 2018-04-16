@@ -14,14 +14,14 @@ export class PopupProps {
 	/* Method to call after closing */
 	callback: () => void;
 	title: string;
-	message: string;
+	message?: string;
 }
 
 class PopupState {
 
 }
 
-export class Popup extends React.Component<PopupProps, PopupState> {
+export class Popup extends React.Component<PopupProps, any> {
 
 	private wrapperDiv: HTMLDivElement;
 	private screenDiv: HTMLDivElement;
@@ -85,10 +85,11 @@ export class Popup extends React.Component<PopupProps, PopupState> {
 				<div className="row-1">
 				<div className="col-offset-1 col-11">
 					<p className="popup-message">{this.props.message}</p>
+					{this.props.children}
 				</div>
 				</div>
 				<div className="row-offset-10">
-				<div className="col-offset-es-9 col-es-5 row-offset-es-9 col-offset-9 row-offset-11">
+				<div className="popup-check-button">
 					<button className="popup-button interaction-style row-2" onClick={this.close}>✔</button>
 				</div>
 				</div>

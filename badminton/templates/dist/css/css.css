@@ -2486,8 +2486,7 @@ input[type="text"] {
   border-radius: 10px;
   margin-bottom: 10px;
   margin-right: 10px;
-  position: relative;
-  cursor: pointer; }
+  position: relative; }
 
 .court-style:after {
   content: "";
@@ -3851,6 +3850,12 @@ input:checked + .slider:before {
 
 .popup-disabled {
   overflow: hidden; }
+
+.popup-check-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 20%; }
 nav {
   background-color: black;
   color: white;

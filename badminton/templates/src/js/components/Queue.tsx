@@ -4,6 +4,8 @@ import * as ReactTooltip from 'react-tooltip';
 import {Select, Option} from '../common/Select';
 import {objectToFormData} from '../common/Utils';
 import { xsrfCookieName, xsrfHeaderName, getMemberId, isBoardMember } from '../common/LocalResourceResolver';
+import { Popup } from '../common/Popup';
+import { Slider } from '../common/Slider';
 axios.defaults.xsrfCookieName = xsrfCookieName();
 axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
@@ -42,18 +44,45 @@ class SpecificQueueView extends React.Component<any, any> {
 	}
 }
 
+const getSelectedMemberIds = () => {
+	const inputs = document.querySelectorAll('.queue-party-input');
+	const out = [];
+	for (let i = 0; i < inputs.length; ++i) {
+		let input = inputs[i] as any;
+		if (input.checked) {
+			out.push(input.value)
+		}
+	}
+	return out;
+}
+
+const getSelectedMemberObj = () => {
+	const inputs = document.querySelectorAll('.queue-party-input');
+	const out = [];
+	for (let i = 0; i < inputs.length; ++i) {
+		let input = inputs[i] as any;
+		if (input.checked) {
+			out.push({'id': input.value, 'name': input.name})
+		}
+	}
+	return out;
+}
+
 class CourtView extends React.Component<any, any> {
 	render() {
 		const name = 'court'+this.props.court.id;
 		return <div className="col-6">
-				<h4>{this.props.court.queue_type}</h4>
+				<div className='row'>
+				<div className="col-6">
+				<h4>{this.props.court.queue_type === null ? "Free Play" : this.props.court.queue_type}</h4>
+				</div> 
+				{(this.props.court.queue_type === null && !this.props.hasParty) &&
+					<div className="col-6">
+					<button onClick={() => this.props.onYes(this.props.court.court_id)} className='interaction-style'>Start Match</button>
+					</div> }
+				</div>
 				<div className="court-style" data-tip data-event='click focus' data-for={name}></div>
-				<ReactTooltip globalEventOff='click' id={name} aria-haspopup='true' >
-				<h4>Start Match?</h4>
-				<button>Yes</button>
-				<button>No</button>
-				</ ReactTooltip>
-				</div>;
+				</div>
 	}
 }
 
@@ -90,20 +119,8 @@ class MyPartyView extends React.Component<any, any> {
 		}
 	}
 
-	getSelectedMemberIds() {
-		const inputs = document.querySelectorAll('.queue-party-input');
-		const out = [];
-		for (let i = 0; i < inputs.length; ++i) {
-			let input = inputs[i] as any;
-			if (input.checked) {
-				out.push(input.value)
-			}
-		}
-		return out;
-	}
-
 	async createParty() {
-		const out = this.getSelectedMemberIds();
+		const out = getSelectedMemberIds();
 		const joined = out.join(',')
 		const queue = this.state.selectedQueue;
 		try {
@@ -134,8 +151,9 @@ class MyPartyView extends React.Component<any, any> {
 		}
 	}
 
+
 	addMember() {
-		const out = this.getSelectedMemberIds();
+		const out = getSelectedMemberIds();
 		const requests = out.map((member_id: any) => {
 			axios.post('/api/party/add_member/', objectToFormData({'member_id': member_id}));
 		})
@@ -157,7 +175,7 @@ class MyPartyView extends React.Component<any, any> {
 		this.state.freeMembers.map((member: any, idx: number) => {
 					const member_ident = "member" + member.id;
 					return <div className="row" key={idx}>
-						<input type="checkbox" id={member_ident} value={member.id} className="interaction-style queue-party-input"/>
+						<input type="checkbox" id={member_ident} value={member.id} name={member.first_name + ' ' + member.last_name} className="interaction-style queue-party-input"/>
 	    				<label htmlFor={member_ident}>{member.first_name + ' ' + member.last_name}</label>
 	    				</div>
 				}) } </div>
@@ -211,6 +229,8 @@ export class Queue extends React.Component<any, any> {
 			queues: null,
 		}
 		this.refreshQueue = this.refreshQueue.bind(this);
+		this.startMatch = this.startMatch.bind(this);
+		this.finishMatch = this.finishMatch.bind(this);
 	}
 
 	async refreshQueue() {
@@ -230,7 +250,16 @@ export class Queue extends React.Component<any, any> {
 					party: isParty.data.status === 'partyless' ? null : isParty.data,
 				})
 			} else {
-				console.log("You are in a game!");
+				const match = await axios.get('/api/match/get/');
+				const matchData = match.data.match;
+				this.setState({
+					memberState: 'playing',
+					matchId: matchData.match_id,
+					teamA: matchData.teamA,
+					teamB: matchData.teamB,
+					aScore: matchData.scoreA,
+					bScore: matchData.scoreB,
+				})
 			}
 		} catch (err) {
 			console.log(err);
@@ -241,19 +270,113 @@ export class Queue extends React.Component<any, any> {
 		this.refreshQueue();
 	}
 
+	startMatch(court_id: number) {
+		const sel = getSelectedMemberObj();
+		if (sel.length === 0) {
+			this.setState({
+				popup:  <Popup title="One Member" message="Please pick at least one member" callback={() => this.setState({popup: null})} />
+			})
+			return;
+		}
+
+		const callback = async (left: any, right: any) => {
+			try {
+				const res = await axios.post('/api/match/create/', JSON.stringify({
+					court_id: court_id,
+					score_A: 0, 
+					score_B: 0, 
+					a_players: left, 
+					b_players: right,
+				}));
+				console.log(res.data);
+				this.setState({
+					popup: null
+				})
+				this.refreshQueue();
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		const left = sel.map((e: any) => e.id);
+		const right: any[] = [];
+		const deleteArr = (arr: any[], elem: any) => {
+			const idx = arr.findIndex((i: any) => i === elem);
+			if (idx != -1) {
+				arr.splice(idx, 1);
+			}
+		}
+		const onSwap = (id: any, event: any) => {
+			if (event.target.checked) {
+				deleteArr(left, id);
+				right.push(id);
+			} else {
+				deleteArr(right, id);
+				left.push(id);
+			}
+		}
+
+		const popup = <Popup title="Pick Sides - One Per side" callback={() => callback(left, right)}>
+			<div className="row">
+				<div className="col-6">Me</div>
+				<div className="col-6"><Slider change={(val: any) => onSwap(getMemberId(), val)}/></div>
+			</div>
+			{
+				sel.map((person: any, idx: number) => {
+					return <div className="row">
+						<div className="col-6">{person.name}</div>
+						<div className="col-6"><Slider change={(val: any) => onSwap(person.id, val)}/></div>
+					</div>
+				})
+			}
+		</Popup>
+		this.setState({
+				popup: popup
+		})
+	}
+
+	async finishMatch() {
+		try {
+			const res = await axios.post('/api/match/finish/', objectToFormData({
+				scoreA: this.state.aScore,
+				scoreB: this.state.bScore,
+			}));
+			this.refreshQueue();
+			console.log(res);
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
 	render() {
 		if (this.state.memberState === null) {
 			return <p>Loading</p>
 		}
 		else if (this.state.memberState === 'playing') {
-			return <p>Playing</p>
+			return <div className="col-12">
+				{this.state.popup && this.state.popup}
+				<h4>Team A: {this.state.teamA.map((a : any) => a.name).join(',') + " "}
+				 vs Team B: {this.state.teamB.map((a : any) => a.name).join(',')} </h4>
+				<div className="court-style"></div>
+				<div className="col-5">
+				<input value={this.state.aScore} className='interaction-style' onChange={(ev: any) => this.setState({aScore: ev.target.value})}></input> 
+				</div>
+				<div className="col-2">
+				to
+				</div>
+				<div className="col-5">
+				<input value={this.state.bScore} className='interaction-style' onChange={(ev: any) => this.setState({bScore: ev.target.value})}></input> 
+				</div>
+
+				<button className='interaction-style' onClick={this.finishMatch}>Finish Match</button>
+				</div>
 		}
 
 		return <div>
 			<div className="row">
+			{this.state.popup && this.state.popup}
 			{
 				this.state.courtData.map((court: any, idx: number) => {
-					return <CourtView key={idx} court={court}/>
+					return <CourtView key={idx} court={court} hasParty={this.state.party!==null} onYes={this.startMatch}/>
 				})
 
 			}

@@ -131,15 +131,11 @@ def create_match(score_a, score_b, a_players, b_players, court_id):
     """
     with connection.cursor() as cursor:
         query = """
-        SELECT MAX(id)
+        SELECT COALESCE(MAX(id)+1, 0) AS newID
         FROM api_match
         """
         result = cursor.execute(query)
-        if not result:
-            newID = result[0] + 1
-        else:
-            newID = 0
-
+        newID = dictfetchall(cursor)[0]['newID']
 
     query = """
     INSERT INTO api_match(id, startDateTime, scoreA, scoreB, court_id) VALUES (%s, %s, %s, %s, %s)
@@ -178,17 +174,19 @@ def find_current_match_by_member(id):
 
         if result:
             match_id = result["match_id"]
-            people = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id=%s", [match_id])
+            cursor.execute("SELECT * FROM api_playedin JOIN api_interested ON api_playedin.member_id = api_interested.id WHERE match_id=%s", [match_id])
+            people = dictfetchall(cursor)
             if len(list(people)) <= 0:
                 return http_response({}, message="Oops... this shouldn't happen!", code=400)
 
             teamA = []
             teamB = []
             for person in people:
-                if person.team == "A":
-                    teamA.append(person.member_id)
+                obj = {"name":person['first_name'] + ' ' + person['last_name'], "id": person['member_id'] }
+                if person['team'] == "A":
+                    teamA.append(obj)
                 else:
-                    teamB.append(person.member_id)
+                    teamB.append(obj)
 
             match_json = {'status':'playing', "match": {"match_id": match_id, "scoreA": result["scoreA"],
                                             "scoreB": result["scoreB"], "teamA": teamA, "teamB": teamB}}
