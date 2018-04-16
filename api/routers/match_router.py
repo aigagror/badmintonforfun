@@ -140,6 +140,22 @@ def current_match(request):
     member_id = get_member_id_from_email(request.user.email)
     return find_current_match_by_member(member_id)
 
+
+@auth_decorator(allowed=MemberClass.MEMBER)
+@restrictRouter(allowed=["POST"])
+def get_match(request):
+    """
+        POST -- Get the current match id of the match a specific member id is playing
+            Required Keys: member_id
+    :param request:
+    :return:
+    """
+
+    dict_post = dict(request.POST.items())
+    validate_keys("member_id", dict_post)
+    return find_current_match_by_member(dict_post["member_id"])
+
+
 @restrictRouter(allowed=["GET"])
 def all_matches(request):
 
