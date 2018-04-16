@@ -188,7 +188,7 @@ def remove_member(member_id):
     :param member_id: The id of the person we want to remove from the database
     :return:
     """
-    if get_status(member_id) == "Not Found":
+    if get_status(member_id) == "Not found":
         return http_response(message="Specified member_id " + member_id + " does not exist.", code=400)
 
     delete_from_boardmember(member_id)
@@ -612,7 +612,7 @@ def get_all_club_members():
         }
         ret_list.append(boardmember_dict)
 
-    print("Member statuses -->" + str(ret_list))
+    # print("Member statuses -->" + str(ret_list))
     context = {'members': ret_list, 'memberTypes': ["Member", "BoardMember", "Interested"]}
 
     return http_response(dict=context, message="OK")
@@ -634,7 +634,7 @@ def update_club_member_status(dict_post):
     print(new_status)
     print("curr: " + curr_status)
 
-    if get_status(member_id) == "Not Found":
+    if get_status(member_id) == "Not found":
         return http_response(message="Invalid member_id: " + str(member_id), code=400)
     if not _is_valid_status(new_status):
         return http_response(message="Invalid proposed status: " + str(new_status), code=400)
@@ -678,7 +678,9 @@ def delete_club_member(dict_delete):
     :param dict_delete:
     :return:
     """
+    print(str(dict_delete))
     member_id = dict_delete['member_id']
+    print("Deleting " + member_id)
     return remove_member(member_id)
 
 def schedule_to_dict():
