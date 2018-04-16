@@ -434,17 +434,15 @@ def _is_tournament_match(id):
     :param id:
     :return:
     """
-    tournaments = Tournament.objects.raw("SELECT * FROM api_tournament WHERE endDate IS NULL")
-    if len(list(tournaments)) > 0:
-        tournament = tournaments[0]
-        bracket_nodes = BracketNode.objects.raw(
-            "SELECT * FROM api_bracketnode WHERE tournament_id = %s AND match_id IS NOT NULL AND match_id = %s",
-            [tournament.id, id])
-        if len(list(bracket_nodes)) > 0:
-            return tournament
-
+    match_query = Match.objects.raw("SELECT * FROM api_match WHERE id = %s", [id])
+    if len(list(match_query)) > 0:
+        match = match_query[0]
+        bracket_node = match.bracket_node
+        if bracket_node is None:
+            return None
+        tournament = bracket_node.tournament
+        return tournament
     return None
-
 
 def _is_ranked_match(id):
     """

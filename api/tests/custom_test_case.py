@@ -132,6 +132,9 @@ class CustomTestCase(TestCase):
         self.original_playedins = PlayedIn.objects.all()
         self.original_number_of_playedins = len(list(self.original_playedins))
 
+        self.original_tournaments = Tournament.objects.all()
+        self.original_number_of_tournaments = len(list(self.original_tournaments))
+
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
         json = response.json()
@@ -206,10 +209,8 @@ class CustomTestCase(TestCase):
         for index in range(2 ** 3):
             bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=index)
             # Create an empty match
-            match = Match(startDateTime=now, scoreA=0, scoreB=0)
+            match = Match(startDateTime=now, scoreA=0, scoreB=0, bracket_node=bracket_node)
             match.save()
-            bracket_node.match = match
-            bracket_node.save()
 
     def _create_parties(self):
         """
