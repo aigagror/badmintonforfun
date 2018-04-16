@@ -3,7 +3,7 @@ from django.db import connection
 from django.http import HttpResponse
 from ..models import *
 import json
-from .queue_call import get_parties_by_playtime
+from .queue_call import get_parties_by_playtime, dequeue_party_to_court_call
 
 """
     FUNCTIONS: (*) = not sure if works, look at this later
@@ -286,14 +286,10 @@ def finish_match(id, scoreA, scoreB):
                 return http_response('Could not find a sibling for your match!', code=400)
 
     #put the next match on the court
-    court = Court.objects.raw("SELECT * FROM api_court WHERE id=%s AND queue_id IS NOT NULL", [court_id])
-    if len(list(court)) > 0:
-        court = court[0]
-        #that means it has a queue id
-        queue = Queue.objects.raw("SELECT * FROM api_queue WHERE id=%s", [court.queue_id])
-        if len(list(queue)) > 0:
-            queue = queue[0]
-            dequeue_resp = dequeue_next_party_to_court(queue.type, court.id)
+    if court_id is not None:
+        court = Court.objects.raw("SELECT * FROM api_court WHERE id = %s", [court_id])[0]
+        queue = court.queue
+        dequeue_resp = dequeue_party_to_court_call(queue.type)
 
     return response
 
@@ -315,56 +311,6 @@ def _reward_winning_team(match_id, winning_team, points):
     WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=%s AND plin.team=%s)
     """
     return run_connection(query, points, match_id, winning_team)
-
-
-def dequeue_next_party_to_court(queue_type, court_id):
-
-    response = get_parties_by_playtime(queue_type)
-    my_json = json.loads(response.content.decode())
-    parties = my_json['parties']
-    if len(parties) == 0:
-        return http_response({}, message='No parties on this queue', code=400)
-
-    party_to_dequeue = parties[0]
-
-    party_id = party_to_dequeue['party_id']
-
-    queues = Queue.objects.raw("SELECT * FROM api_queue WHERE type = %s", [queue_type])
-    if len(list(queues)) == 0:
-        return http_response({}, message='No such queue found', code=400)
-
-    queue = queues[0]
-
-    # Get the members from the party
-    members = Member.objects.raw("SELECT * FROM api_member WHERE party_id = %s", [party_id])
-
-    # Remove party from queue
-    response = run_connection("DELETE FROM api_party WHERE id = %s", party_id)
-    if response.status_code != 200:
-        # Error
-        return response
-
-    # Update the members so they have party_id null
-    update = run_connection("UPDATE api_member SET party_id=NULL WHERE party_id=%s", party_id)
-    if update.status_code != 200:
-        return update
-
-    # Create match on court
-    a_players = []
-    b_players = []
-
-    # Assign teams
-    num_members = len(list(members))
-    for i in range(num_members):
-        team = "A" if i % 2 == 0 else "B"
-        member = members[i]
-        if team == "A":
-            a_players.append(member.id)
-        else:
-            b_players.append(member.id)
-
-    return create_match(a_players=a_players, b_players=b_players, court_id=court_id)
-
 
 def _get_parent_node(tournament_id, curr_level, index):
     parent_index = index // 2
