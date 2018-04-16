@@ -10,6 +10,7 @@ import json
 from django.http import HttpResponse
 from api.routers.router import validate_keys, restrictRouter, auth_decorator
 from api.utils import MemberClass, get_member_class, id_for_member
+from api.calls.member_call import get_all_members
 
 
 @restrictRouter(allowed=["GET"])
@@ -38,3 +39,15 @@ def get_profile(request):
             return HttpResponse('Member id {} not found'.format(member_id), status=400)
         results = res[0]
     return HttpResponse(json.dumps(results), status=200, content_type="application/json")
+
+
+@auth_decorator(MemberClass.MEMBER)
+@restrictRouter(allowed=["GET"])
+def get_members(request):
+    """
+
+    :param request:
+    :return:
+    """
+
+    return get_all_members()
