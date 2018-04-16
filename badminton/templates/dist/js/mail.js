@@ -2257,7 +2257,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function objectToFormData(obj) {
     const data = new FormData();
     for (let key of Object.keys(obj)) {
-        data.append(key, obj[key]);
+        var serial = obj[key];
+        if (typeof serial === 'object') {
+            serial = JSON.stringify(obj[key]);
+        }
+        data.append(key, serial);
     }
     return data;
 }
@@ -2285,7 +2289,7 @@ class SelectArea extends React.Component {
     render() {
         return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
             return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: this.props.onChange }),
+                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.onChange(option.value, this.props.name + idx) }),
                 React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
         }));
     }
@@ -2310,9 +2314,9 @@ class Select extends React.Component {
         return this.state.width < 500 || this.props.override;
     }
     _decideInitialStatus() {
-        if (this.props.defaultValue) {
+        if (this.props.defaultValue !== undefined) {
             const value = this.props.options.find((option) => option.value === this.props.defaultValue);
-            if (!value) {
+            if (value === undefined) {
                 return "";
             }
             else {
@@ -2390,17 +2394,16 @@ class Select extends React.Component {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
     }
-    change(event) {
-        const target = event.target;
+    change(value, id) {
         if (this.props.onChange) {
-            this.props.onChange(target.value);
+            this.props.onChange(value);
         }
         if (this._scrollCondition()) {
             return;
         }
         else {
             // Cool trick to get the label for the input
-            const elem = document.querySelector('label[for="' + target.id + '"]');
+            const elem = document.querySelector('label[for="' + id + '"]');
             this.setState({
                 status: elem.innerHTML,
             });

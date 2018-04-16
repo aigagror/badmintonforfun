@@ -109,8 +109,9 @@ def settingsAllMembersRouter(request):
         # Promote/demote ONE member (Interested, Member, Boardmember)
         # {"member_id": _, "status": _}
         # Going to Boardmember, the default 'job'='OFFICER'
-        post_dict = dict(request.POST.items())
-        if not  validate_keys(["member_id", "status"], post_dict):
+        post_dict = dict(request.POST)
+        print(post_dict)
+        if not validate_keys(["member_id", "status"], post_dict):
             return http_response({}, message="Keys not found", code=400)
         return update_club_member_status(post_dict)
 
@@ -235,7 +236,7 @@ def settingsCourtRouter(request):
         return addto_edit_courts_formatted(json_post_data)
     elif request.method == "DELETE":
         # The input dictionary should hold information ONLY for the courts to be deleted
-        json_delete_data = json.loads(request.body)
+        json_delete_data = json.loads(request.body.decode('utf8'))
         if not validate_keys('courts', json_delete_data):
             HttpResponse(json.dumps({'message': 'Missing parameter courts'}),
                          content_type='application/json', status=400)

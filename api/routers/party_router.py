@@ -10,8 +10,7 @@ from api.routers.router import restrictRouter, validate_keys, auth_decorator
 from api.cursor_api import http_response, run_connection
 from api.models import *
 
-@csrf_exempt
-@login_required
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def create_party(request):
     """
@@ -90,8 +89,7 @@ def create_party(request):
 
         return response
 
-@csrf_exempt
-@login_required()
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def add_member(request):
     """
@@ -134,45 +132,31 @@ def add_member(request):
     response = run_connection("UPDATE api_member SET party_id = %s WHERE interested_ptr_id = %s", party_id, member_id)
     return response
 
-@csrf_exempt
-@login_required()
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def remove_member(request):
     """
         POST -- Removes a member from the logged in user's party
             Required Keys: member_id
-            Optional Keys: queue_id, add_members, remove_members
-                NOTE: `add_members` and `remove_members` are comma separated lists of
-                    member id's to add or remove from the party respectively
-
         :param request:
         :return:
     """
-    session_email = request.user.username
-    if not request.user.is_authenticated:
-        return http_response({}, message="You are not logged in", code=302)
+    post_dict = dict(request.POST.items())
 
-    try:
-        user = Member.objects.get(email=session_email)
-    except Member.DoesNotExist:
-        return http_response({}, message="You do not have the required permissions", code=403)
+    my_id = id_for_member(request.user.email)
+    party = party_for_member(my_id)
 
-    party_id = user.party_id
-
-    if party_id is None:
+    if party is None:
         return http_response(message='You are not part of a party', code=400)
 
-    post_dict = dict(request.POST.items())
-    if not validate_keys(['member_id'], post_dict):
-        return http_response({}, message="Keys not found", code=400)
-
+    party_id = user.party_id
     member_id = int(post_dict['member_id'])
     member = Member.objects.get(id=member_id)
     if member.party_id != party_id:
         return http_response(message='The specified member is not in your party!', code=400)
     return party_remove_member(party_id, member_id)
 
-@login_required()
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def delete_party(request):
     """

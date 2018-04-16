@@ -353,9 +353,13 @@ def get_all_courts():
     :return:
     """
     with connection.cursor() as cursor:
-        query = "SELECT * FROM api_court JOIN api_queue ON api_queue.id = api_court.queue_id"
+        query = """
+        SELECT api_court.id AS court_id, api_court.queue_id AS queue_id 
+        FROM api_court
+        """
         cursor.execute(query)
         results = dictfetchall(cursor)
+
     return results
 
 
@@ -730,13 +734,17 @@ def get_all_courts_formmated():
 
     ret_list = []
     for c in courts:
+        print(c)
         court_dict = {
-            'court_id': c['id'],
-            'court_type': c['type']
+            'court_id': c['court_id'],
+            'court_type': c['queue_id']
         }
         ret_list.append(court_dict)
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT id AS value, type AS display FROM api_queue")
+        res = dictfetchall(cursor)
     context = {'courts': ret_list}
-    context['court_types'] = list(map(lambda x: {"display":x[1], "value":x[0]}, QUEUE_TYPE))
+    context['court_types'] = res
     return HttpResponse(json.dumps(context, indent=4, sort_keys=True), content_type="application/json")
 
 def addto_edit_courts_formatted(dict_post):
@@ -745,15 +753,29 @@ def addto_edit_courts_formatted(dict_post):
     :param dict_post:
     :return:
     """
-    courts = dict_post['courts']
+    courts = json.loads(dict_post['courts'])
+    courtIdKey = 'court_id'
+    queueIdKey = 'queue_id'
+    print(courts)
     for c in courts:
-        if validate_keys(['court_id', 'queue_id'], c):
-            court_id = c['court_id']
-            queue_id = c['queue_id']
-            if court_id_exists(court_id):
-                edit_court_queue(court_id, queue_id)
-            else:
-                add_court(court_id, queue_id)
+        court_id = c.get(courtIdKey, None)
+        queue_id = c.get(queueIdKey, None)
+        if court_id is None and queue_id is None:
+            # Create Default
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO api_court DEFAULT VALUES")
+        elif court_id is None:
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO api_court (queue_id) VALUES (%s)", [queue_id])
+        elif court_id_exists(court_id):
+            edit_court_queue(court_id, queue_id)
+        elif queue_id is None:
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO api_court (court_id) VALUES (%s)", [court_id])
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO api_court (court_id, queue_id) VALUES (%s)", [court_id, queue_id])
+
     return HttpResponse(json.dumps({"message": "Successfully updated courts."}),
                         content_type="application/json")
 
@@ -765,6 +787,7 @@ def delete_courts_formatted(dict_delete):
     :return:
     """
     courts = dict_delete['courts']
+    print(courts)
     for c in courts:
         if validate_keys(['court_id'], c):
             court_id = c['court_id']

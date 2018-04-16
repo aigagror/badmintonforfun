@@ -250,10 +250,7 @@ class MemberSettings extends React.Component<any, any> {
 
 	alterMember(idx: number, toRole: any) {
 		const toEdit = this.state.members[idx];
-		toEdit.status = toRole
-		axios.post(member_url, { 
-			members: [toEdit]
-		})
+		axios.post(member_url, objectToFormData({member_id: toEdit.member_id, status: toRole}))
 		.then((res: any) => {
 			console.log(res);
 			this.performRequest();
@@ -315,15 +312,18 @@ class CourtSettings extends React.Component<any, any> {
 			courts: null,
 		}
 		this.performRequest = this.performRequest.bind(this);
+		this.deleteCourt = this.deleteCourt.bind(this);
+		this.addCourt = this.addCourt.bind(this);
 	}
 
 	async performRequest() {
 		try {
 			const res = await axios.get(this.courts_url);
 			const options = res.data.court_types.map((court: any) => new Option(court.value, court.display))
+			const adjustedOptions = [...options, new Option(null, "Free Play")]
 			this.setState({
 				courts: res.data.courts,
-				courtTypes: options,
+				courtTypes: adjustedOptions,
 				selectedValue: options[0].value,
 			})
 		} catch (ex) {
@@ -333,6 +333,28 @@ class CourtSettings extends React.Component<any, any> {
 
 	componentDidMount() {
 		this.performRequest()
+	}
+
+	async deleteCourt(court_id: any) {
+		try {
+			const datum = await axios.delete(courts_url, {
+				data: JSON.stringify({courts:[{court_id: court_id}]})
+			});
+			console.log(datum.data);
+			this.performRequest();
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	async addCourt(queue_id: any) {
+		try {
+			const datum = await axios.post(courts_url, objectToFormData({courts:[{queue_id: queue_id}]}));
+			console.log(datum.data);
+			this.performRequest();
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	render() {
@@ -351,12 +373,12 @@ class CourtSettings extends React.Component<any, any> {
 				<div className="col-4 col-es-12">
 				<Select 
 					options={this.state.courtTypes}
-					defaultValue={court.type}
+					defaultValue={court.court_type}
 					onChange={(i: any) => {console.log(i)}}
 					name={"courts" + idx} />
 				</div>
 				<div className="col-3 col-es-12">
-				<button className="interaction-style">Delete</button>
+				<button className="interaction-style" onClick={()=>this.deleteCourt(court.court_id)}>Delete</button>
 				</div>
 				</div>
 			})
@@ -367,11 +389,11 @@ class CourtSettings extends React.Component<any, any> {
 			options={this.state.courtTypes}
 			defaultValue={this.state.selectedValue}
 			onChange={(i: any) => this.setState({selectedValue: i}) }
-			name={"courtsAdd"} />
+			name="courtsAdd" />
 		</div>
 
 		<div className="col-6">
-		<button className="interaction-style">Add a court</button>
+		<button className="interaction-style" onClick={() => this.addCourt(this.state.selectedValue)}>Add a court</button>
 		</div>
 
 		</div>

@@ -40,7 +40,7 @@ class SelectArea extends React.Component<SelectAreaProps, {}> {
                 <input className='select-hidden' 
                     key={idx} id={this.props.name+idx} 
                     value={option.value} name={this.props.name} type='radio'
-                    onChange={this.props.onChange} />
+                    onChange={(target: any) => this.props.onChange(option.value, this.props.name+idx)} />
                   <label className="select-label" key={idx*-1-1} 
                       htmlFor={this.props.name+idx}>{option.display}</label>
                 </>
@@ -83,10 +83,10 @@ export class Select extends React.Component<SelectProps, SelectState> {
     }
 
     _decideInitialStatus(): string {
-        if (this.props.defaultValue) {
+        if (this.props.defaultValue !== undefined) {
             const value = this.props.options.find((option: Option) =>
                 option.value === this.props.defaultValue);
-            if (!value) {
+            if (value === undefined) {
                 return "";
             } else {
                 return value.display;
@@ -178,17 +178,16 @@ export class Select extends React.Component<SelectProps, SelectState> {
         }
     }
 
-	change(event: any) {
-        const target = event.target as HTMLInputElement;
+	change(value: any, id:any) {
 		if (this.props.onChange) {
-			this.props.onChange(target.value);
+			this.props.onChange(value);
 		}
 
         if (this._scrollCondition()) {
             return;
         } else {
             // Cool trick to get the label for the input
-            const elem = document.querySelector('label[for="' + target.id + '"]');
+            const elem = document.querySelector('label[for="' + id + '"]');
             this.setState({
                 status: elem.innerHTML,
             });

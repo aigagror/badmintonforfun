@@ -2299,7 +2299,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function objectToFormData(obj) {
     const data = new FormData();
     for (let key of Object.keys(obj)) {
-        data.append(key, obj[key]);
+        var serial = obj[key];
+        if (typeof serial === 'object') {
+            serial = JSON.stringify(obj[key]);
+        }
+        data.append(key, serial);
     }
     return data;
 }
@@ -2566,10 +2570,7 @@ class MemberSettings extends React.Component {
     }
     alterMember(idx, toRole) {
         const toEdit = this.state.members[idx];
-        toEdit.status = toRole;
-        axios_1.default.post(member_url, {
-            members: [toEdit]
-        })
+        axios_1.default.post(member_url, Utils_1.objectToFormData({ member_id: toEdit.member_id, status: toRole }))
             .then((res) => {
             console.log(res);
             this.performRequest();
@@ -2612,15 +2613,18 @@ class CourtSettings extends React.Component {
             courts: null,
         };
         this.performRequest = this.performRequest.bind(this);
+        this.deleteCourt = this.deleteCourt.bind(this);
+        this.addCourt = this.addCourt.bind(this);
     }
     performRequest() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const res = yield axios_1.default.get(this.courts_url);
                 const options = res.data.court_types.map((court) => new Select_1.Option(court.value, court.display));
+                const adjustedOptions = [...options, new Select_1.Option(null, "Free Play")];
                 this.setState({
                     courts: res.data.courts,
-                    courtTypes: options,
+                    courtTypes: adjustedOptions,
                     selectedValue: options[0].value,
                 });
             }
@@ -2631,6 +2635,32 @@ class CourtSettings extends React.Component {
     }
     componentDidMount() {
         this.performRequest();
+    }
+    deleteCourt(court_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const datum = yield axios_1.default.delete(courts_url, {
+                    data: JSON.stringify({ courts: [{ court_id: court_id }] })
+                });
+                console.log(datum.data);
+                this.performRequest();
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
+    addCourt(queue_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const datum = yield axios_1.default.post(courts_url, Utils_1.objectToFormData({ courts: [{ queue_id: queue_id }] }));
+                console.log(datum.data);
+                this.performRequest();
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
     }
     render() {
         if (this.state.courts === null) {
@@ -2643,15 +2673,15 @@ class CourtSettings extends React.Component {
                     React.createElement("div", { className: "col-5 col-es-12" },
                         React.createElement("h4", null, court.name)),
                     React.createElement("div", { className: "col-4 col-es-12" },
-                        React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: court.type, onChange: (i) => { console.log(i); }, name: "courts" + idx })),
+                        React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: court.court_type, onChange: (i) => { console.log(i); }, name: "courts" + idx })),
                     React.createElement("div", { className: "col-3 col-es-12" },
-                        React.createElement("button", { className: "interaction-style" }, "Delete")));
+                        React.createElement("button", { className: "interaction-style", onClick: () => this.deleteCourt(court.court_id) }, "Delete")));
             }),
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col-6" },
                     React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: this.state.selectedValue, onChange: (i) => this.setState({ selectedValue: i }), name: "courtsAdd" })),
                 React.createElement("div", { className: "col-6" },
-                    React.createElement("button", { className: "interaction-style" }, "Add a court"))));
+                    React.createElement("button", { className: "interaction-style", onClick: () => this.addCourt(this.state.selectedValue) }, "Add a court"))));
     }
 }
 class BoardSettings extends React.Component {
@@ -3519,7 +3549,7 @@ class SelectArea extends React.Component {
     render() {
         return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
             return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: this.props.onChange }),
+                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.onChange(option.value, this.props.name + idx) }),
                 React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
         }));
     }
@@ -3544,9 +3574,9 @@ class Select extends React.Component {
         return this.state.width < 500 || this.props.override;
     }
     _decideInitialStatus() {
-        if (this.props.defaultValue) {
+        if (this.props.defaultValue !== undefined) {
             const value = this.props.options.find((option) => option.value === this.props.defaultValue);
-            if (!value) {
+            if (value === undefined) {
                 return "";
             }
             else {
@@ -3624,17 +3654,16 @@ class Select extends React.Component {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
     }
-    change(event) {
-        const target = event.target;
+    change(value, id) {
         if (this.props.onChange) {
-            this.props.onChange(target.value);
+            this.props.onChange(value);
         }
         if (this._scrollCondition()) {
             return;
         }
         else {
             // Cool trick to get the label for the input
-            const elem = document.querySelector('label[for="' + target.id + '"]');
+            const elem = document.querySelector('label[for="' + id + '"]');
             this.setState({
                 status: elem.innerHTML,
             });
