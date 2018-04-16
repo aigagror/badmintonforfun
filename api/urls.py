@@ -101,8 +101,7 @@ party_paths = [
 tournament_paths = [
     re_path(r'create/?$', tournament_router.create_tournament_router, name='create_tournament'),
     re_path(r'bracket_node/?$', tournament_router.get_bracket_node, name='get_tournament_bracket_node'),
-
-    # This api should really only be called on the leaf nodes of the tree
+    
     re_path(r'add/match/?$', tournament_router.add_match, name='add_match_to_tournament'),
     re_path(r'finish/?$', tournament_router.finish_tournament_router, name='finish_tournament'),
     re_path(r'^$', tournament_router.get_tournament, name='get_tournament'),

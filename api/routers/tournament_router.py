@@ -109,5 +109,6 @@ def add_match(request):
 
     bracket_node = nodes[0]
 
-    response = run_connection("UPDATE api_bracketnode SET match_id = %s WHERE id = %s", match.id, bracket_node.id)
+    response = run_connection("UPDATE api_match SET bracket_node_id = %s WHERE id = %s", bracket_node.id, match.id)
+
     return response

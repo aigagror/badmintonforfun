@@ -39,7 +39,7 @@ def create_announcement(request):
         return http_response(message='Missing parameters')
     title = dict_post[_title_key]
     entry = dict_post[_entry_key]
-    response = run_connection("INSERT INTO api_announcement(date, title, entry) VALUES(%s, %s, %s)", serializeDateTime(datetime.datetime.now()), title, entry)
+    response = run_connection("INSERT INTO api_announcement(date, title, entry) VALUES(%s, %s, %s)", serializeDate(datetime.date.today()), title, entry)
     return response
 
 @restrictRouter(allowed=["POST"])
