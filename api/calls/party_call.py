@@ -169,4 +169,4 @@ def get_free_members_call(member_id):
             'free_members': results
         }
 
-        return http_response(context)
+        return HttpResponse(json.dumps(results), content_type='application/json')

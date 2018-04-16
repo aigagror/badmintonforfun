@@ -192,7 +192,7 @@ def find_current_match_by_member(id):
                                             "scoreB": result["scoreB"], "teamA": teamA, "teamB": teamB}}
             return http_response(match_json)
         else:
-            return http_response({'status':'idle'}, message="Couldn't find a current match for this member. Are you sure this member is in a match?", code=400)
+            return http_response({'status':'idle'}, message="Couldn't find a current match for this member. Are you sure this member is in a match?", code=204)
 
 
 def _get_winners(match):
