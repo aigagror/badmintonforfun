@@ -136,6 +136,7 @@ class MatchTest(CustomTestCase):
         playedin = list(playedin)
         self.assertEquals(playedin, [])
 
+
     @run(path_name='leave_match', email=EDDIE, method=POST, args={'match_id': 1})
     def test_bad_leave_match(self):
         response = self.response
@@ -168,6 +169,7 @@ class MatchTest(CustomTestCase):
 
         playedin = len(list(PlayedIn.objects.all()))
         self.assertEqual(playedin, self.original_number_of_playedins - 1)
+        self.assertEqual(len(list(Match.objects.all())), self.original_number_of_matches)
 
 
     @run(path_name='current_match', email=GRACE, method=GET, args={})

@@ -31,7 +31,7 @@ def _file_or_error(file_name, ret_type=str):
     else:
         raise TypeError("ret_type can onlt be str or bytes")
     try:
-        with open(file_name, read_type) as f:
+        with open(file_name, read_type, encoding="utf8") as f:
             return f.read()
 
     except FileNotFoundError:

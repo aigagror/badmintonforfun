@@ -18,18 +18,35 @@ def cast_vote(request):
     :param job:
     :return:
     """
-    dict_post = dict(request.POST.items())
-    validate_keys("campaign_id", dict_post)
-
     voter_id = get_member_id_from_email(request.user.email)
 
-    # @TODO need to add vote updating to this depending on the campaign job
+    dict_post = dict(request.POST.items())
+    if not validate_keys(["campaign_id"], dict_post):
+        return http_response(message='Missing campaign_id', code=400)
+
+    campaign_id = int(dict_post['campaign_id'])
+
+    campaign_query = Campaign.objects.raw("SELECT * FROM api_campaign WHERE id = %s", [campaign_id])
+    if len(list(campaign_query)) == 0:
+        return http_response(message='Campaign does not exist')
+
+    campaign = campaign_query[0]
+
+    this_job = campaign.job
+
+    my_votes = Vote.objects.raw("SELECT * FROM api_vote WHERE voter_id = %s", [voter_id])
+
+    for vote in my_votes:
+        if vote.campaign.job == this_job:
+            # Already voted for a campaign with the same job, must update
+            response = run_connection("UPDATE api_vote SET campaign_id = %s WHERE voter_id = %s", campaign.id, voter_id)
+            return response
 
     # add the vote
     query = """
             INSERT INTO api_vote(voter_id, campaign_id) VALUES(%s, %s)
             """
-    response = run_connection(query, voter_id, dict_post["campaign_id"])
+    response = run_connection(query, voter_id, campaign.id)
     return response
 
 

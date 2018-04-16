@@ -141,6 +141,8 @@ class CustomTestCase(TestCase):
         self.original_votes = Vote.objects.all()
         self.original_number_of_votes = len(list(self.original_votes))
 
+        self.original_number_of_announcements = len(list(Announcement.objects.all()))
+
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
@@ -513,10 +515,6 @@ class CustomTestCase(TestCase):
                      Campaign(job='President', campaigner=campaigners[2], election=election, pitch='I am Grace'),
                      Campaign(job='Treasurer', campaigner=campaigners[3], election=election, pitch='I am Dan')]
 
-        # hardcoded one vote currently for Bhuvan's campaign by Member
-        vote = Vote(campaign_id=2, voter_id=2)
-        vote.save()
-
         print("Election ID and dates:")
         print(str(election.id) + ", " + str(election))
         index = 0
@@ -525,5 +523,10 @@ class CustomTestCase(TestCase):
             print("Campaign " + str(campaign.id))
             print("{}: {}".format(campaigners[index], campaign))
             index += 1
+
+
+        # hardcoded one vote currently for Bhuvan's campaign by Member
+        vote = Vote(campaign_id=2, voter_id=2)
+        vote.save()
 
 
