@@ -1521,7 +1521,7 @@ module.exports = function spread(callback) {
 
 /***/ }),
 
-/***/ 34:
+/***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1619,14 +1619,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 4:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-
-/***/ 40:
+/***/ 39:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1638,7 +1631,7 @@ module.exports = ReactDOM;
  * in of themselves.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var Cookies = __webpack_require__(44);
+var Cookies = __webpack_require__(41);
 /**
  * Mappings from imported classes to random strings.
  */
@@ -1694,7 +1687,14 @@ exports.xsrfHeaderName = xsrfHeaderName;
 
 /***/ }),
 
-/***/ 44:
+/***/ 4:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+
+/***/ 41:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1704,7 +1704,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Cookies = __webpack_require__(45);
+var _Cookies = __webpack_require__(42);
 
 var _Cookies2 = _interopRequireDefault(_Cookies);
 
@@ -1715,7 +1715,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 45:
+/***/ 42:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1729,15 +1729,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _cookie = __webpack_require__(46);
+var _cookie = __webpack_require__(43);
 
 var _cookie2 = _interopRequireDefault(_cookie);
 
-var _objectAssign = __webpack_require__(34);
+var _objectAssign = __webpack_require__(33);
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-var _utils = __webpack_require__(47);
+var _utils = __webpack_require__(44);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1862,7 +1862,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 46:
+/***/ 43:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2065,7 +2065,7 @@ function tryDecode(str, decode) {
 
 /***/ }),
 
-/***/ 47:
+/***/ 44:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2093,6 +2093,28 @@ function cleanCookies() {
     document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
   });
 }
+
+/***/ }),
+
+/***/ 45:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function objectToFormData(obj) {
+    const data = new FormData();
+    for (let key of Object.keys(obj)) {
+        var serial = obj[key];
+        if (typeof serial === 'object') {
+            serial = JSON.stringify(obj[key]);
+        }
+        data.append(key, serial);
+    }
+    return data;
+}
+exports.objectToFormData = objectToFormData;
+
 
 /***/ }),
 
@@ -2126,9 +2148,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(13);
-const LocalResourceResolver_1 = __webpack_require__(40);
-const Select_1 = __webpack_require__(53);
-const Utils_1 = __webpack_require__(49);
+const LocalResourceResolver_1 = __webpack_require__(39);
+const Select_1 = __webpack_require__(49);
+const Utils_1 = __webpack_require__(45);
 const Popup_1 = __webpack_require__(60);
 axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
 axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
@@ -2254,28 +2276,6 @@ exports.MailView = MailView;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-function objectToFormData(obj) {
-    const data = new FormData();
-    for (let key of Object.keys(obj)) {
-        var serial = obj[key];
-        if (typeof serial === 'object') {
-            serial = JSON.stringify(obj[key]);
-        }
-        data.append(key, serial);
-    }
-    return data;
-}
-exports.objectToFormData = objectToFormData;
-
-
-/***/ }),
-
-/***/ 53:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 class Option {
     constructor(val, displ) {
@@ -2289,7 +2289,7 @@ class SelectArea extends React.Component {
     render() {
         return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
             return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.onChange(option.value, this.props.name + idx) }),
+                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.change(option.value, this.props.name + idx) }),
                 React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
         }));
     }
@@ -2412,7 +2412,7 @@ class Select extends React.Component {
     }
     render() {
         if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", onChange: this.change }, this.props.options.map((option, idx) => {
+            return React.createElement("select", { className: "interaction-style", onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
                 return React.createElement(React.Fragment, null,
                     React.createElement("option", { value: option.value }, option.display));
             }));
@@ -2424,7 +2424,7 @@ class Select extends React.Component {
                 React.createElement("b", { className: 'select-arrow' })),
             React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
                 React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
-                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, onChange: this.change }),
+                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
                     React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
     }
 }

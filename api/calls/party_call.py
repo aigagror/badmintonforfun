@@ -63,15 +63,31 @@ def edit_party(party_id, queue_id=None, add_members=None, remove_members=None):
 
     return http_response({},message="OK")
 
+def party_for_member(member_id):
+    qs = (Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT party_id FROM api_member WHERE interested_ptr_id=%s)", [member_id]))
+    if len(list(qs)) == 0:
+        return None
+    else:
+        return qs[0]
 
 def get_member_party(member_id):
-    query_set = (Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT party_id FROM api_member WHERE interested_ptr_id=%s)", [member_id]))
-    if len(list(query_set)) == 0:
+    party = party_for_member(member_id)
+    if party is None:
         return http_response({'status': 'partyless'}, message="This member is not part of a party")
-    party = query_set[0]
+    with connection.cursor() as cursor:
+        query = """
+        SELECT id, first_name, last_name
+        FROM api_member 
+        JOIN api_interested ON api_member.interested_ptr_id = api_interested.id 
+        WHERE party_id = %s AND api_interested.id != %s
+        """
+        cursor.execute(query, [party.id, member_id])
+        def join(res): return {'id': res['id'], 'name': (res['first_name'] + ' ' + res['last_name'])}
+        members = list(map(join, dictfetchall(cursor)))
     context = {
         "party_id": party.id,
-        "queue_id": party.queue.type
+        "queue_id": party.queue.type,
+        "members": members,
     }
     return http_response(dict=context)
 

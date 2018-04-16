@@ -2497,6 +2497,11 @@ input[type="text"] {
   left: 50%;
   border-left: 2px solid #000000;
   transform: translate(-50%); }
+
+.queue-party-div {
+  background-color: gray;
+  corner-radius: 5px;
+  margin-bottom: 10px; }
 /* The container */
 .radio-container {
   display: block;

@@ -1528,7 +1528,7 @@ module.exports = ReactDOM;
 
 /***/ }),
 
-/***/ 49:
+/***/ 45:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1546,6 +1546,169 @@ function objectToFormData(obj) {
     return data;
 }
 exports.objectToFormData = objectToFormData;
+
+
+/***/ }),
+
+/***/ 49:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+class Option {
+    constructor(val, displ) {
+        this.value = val;
+        this.display = displ;
+    }
+}
+exports.Option = Option;
+const selectFadeOutClassName = 'select-check-fade-out';
+class SelectArea extends React.Component {
+    render() {
+        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.change(option.value, this.props.name + idx) }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
+        }));
+    }
+}
+class Select extends React.Component {
+    constructor(props) {
+        super(props);
+        this.change = this.change.bind(this);
+        this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
+        this._decideInitialStatus = this._decideInitialStatus.bind(this);
+        this._scrollCondition = this._scrollCondition.bind(this);
+        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
+        const status = this._decideInitialStatus();
+        this.state = {
+            status: status,
+            width: document.documentElement.clientWidth,
+        };
+        this.scrollDiv = null;
+    }
+    _scrollCondition() {
+        return this.state.width < 500 || this.props.override;
+    }
+    _decideInitialStatus() {
+        if (this.props.defaultValue !== undefined) {
+            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            if (value === undefined) {
+                return "";
+            }
+            else {
+                return value.display;
+            }
+        }
+        else {
+            return this.props.options[0].display;
+        }
+    }
+    documentResizeUpdate() {
+        this.setState({
+            width: document.documentElement.clientWidth
+        });
+    }
+    componentDidMount() {
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
+        document.addEventListener('mousedown', this.handleClickOutside);
+        const defaultHeight = 30;
+        this.scrollDiv.style.height = defaultHeight + "px";
+        this.interval = setInterval(() => {
+            const movableArea = this.innerDiv.scrollTop /
+                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            this.scrollDiv.style.top = "" + offset + "px";
+        }, 20);
+        const divMove = (e) => {
+            const boundingRect = this.selectDiv.getBoundingClientRect();
+            const fuzz = .2;
+            const height = boundingRect.bottom - boundingRect.top;
+            const bottom = boundingRect.bottom - fuzz * height;
+            const top = boundingRect.top + fuzz * height;
+            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            const percentage = (adjusted - top) / (bottom - top);
+            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        };
+        function mouseUp() {
+            window.removeEventListener('mousemove', divMove, true);
+        }
+        function mouseDown() {
+            window.addEventListener('mousemove', divMove, true);
+        }
+        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
+        window.addEventListener('mouseup', mouseUp, false);
+    }
+    componentWillUnmount() {
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.removeEventListener('mousedown', this.handleClickOutside);
+        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
+        clearInterval(this.interval);
+    }
+    /**
+     * Uncheck the input if clicked outside
+     * Best to leave the typing generic because typescript does _not_
+     * like non-generics with dom.
+     */
+    handleClickOutside(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
+        if (this.inputDiv && !this.wrapper.contains(event.target)) {
+            this.inputDiv.checked = false;
+        }
+    }
+    lazyAnimationAdder(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
+        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
+            this.selectDiv.classList.add(selectFadeOutClassName);
+        }
+    }
+    change(value, id) {
+        if (this.props.onChange) {
+            this.props.onChange(value);
+        }
+        if (this._scrollCondition()) {
+            return;
+        }
+        else {
+            // Cool trick to get the label for the input
+            const elem = document.querySelector('label[for="' + id + '"]');
+            this.setState({
+                status: elem.innerHTML,
+            });
+            this.inputDiv.checked = false;
+        }
+    }
+    render() {
+        if (this._scrollCondition()) {
+            return React.createElement("select", { className: "interaction-style", onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
+                return React.createElement(React.Fragment, null,
+                    React.createElement("option", { value: option.value }, option.display));
+            }));
+        }
+        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
+                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("b", { className: 'select-arrow' })),
+            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
+                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
+                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
+    }
+}
+exports.Select = Select;
 
 
 /***/ }),
@@ -1589,8 +1752,8 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(13);
-const Select_1 = __webpack_require__(53);
-const Utils_1 = __webpack_require__(49);
+const Select_1 = __webpack_require__(49);
+const Utils_1 = __webpack_require__(45);
 const tourney_url = '/api/tournament/';
 const columnWidth = 160;
 const rowHeight = 40;
@@ -1819,169 +1982,6 @@ class TournamentView extends React.Component {
     }
 }
 exports.TournamentView = TournamentView;
-
-
-/***/ }),
-
-/***/ 53:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class Option {
-    constructor(val, displ) {
-        this.value = val;
-        this.display = displ;
-    }
-}
-exports.Option = Option;
-const selectFadeOutClassName = 'select-check-fade-out';
-class SelectArea extends React.Component {
-    render() {
-        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
-            return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.onChange(option.value, this.props.name + idx) }),
-                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
-        }));
-    }
-}
-class Select extends React.Component {
-    constructor(props) {
-        super(props);
-        this.change = this.change.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
-        this._decideInitialStatus = this._decideInitialStatus.bind(this);
-        this._scrollCondition = this._scrollCondition.bind(this);
-        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
-        const status = this._decideInitialStatus();
-        this.state = {
-            status: status,
-            width: document.documentElement.clientWidth,
-        };
-        this.scrollDiv = null;
-    }
-    _scrollCondition() {
-        return this.state.width < 500 || this.props.override;
-    }
-    _decideInitialStatus() {
-        if (this.props.defaultValue !== undefined) {
-            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
-            if (value === undefined) {
-                return "";
-            }
-            else {
-                return value.display;
-            }
-        }
-        else {
-            return this.props.options[0].display;
-        }
-    }
-    documentResizeUpdate() {
-        this.setState({
-            width: document.documentElement.clientWidth
-        });
-    }
-    componentDidMount() {
-        if (this._scrollCondition()) {
-            return;
-        }
-        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
-        document.addEventListener('mousedown', this.handleClickOutside);
-        const defaultHeight = 30;
-        this.scrollDiv.style.height = defaultHeight + "px";
-        this.interval = setInterval(() => {
-            const movableArea = this.innerDiv.scrollTop /
-                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
-            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
-            this.scrollDiv.style.top = "" + offset + "px";
-        }, 20);
-        const divMove = (e) => {
-            const boundingRect = this.selectDiv.getBoundingClientRect();
-            const fuzz = .2;
-            const height = boundingRect.bottom - boundingRect.top;
-            const bottom = boundingRect.bottom - fuzz * height;
-            const top = boundingRect.top + fuzz * height;
-            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
-            const percentage = (adjusted - top) / (bottom - top);
-            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
-        };
-        function mouseUp() {
-            window.removeEventListener('mousemove', divMove, true);
-        }
-        function mouseDown() {
-            window.addEventListener('mousemove', divMove, true);
-        }
-        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
-        window.addEventListener('mouseup', mouseUp, false);
-    }
-    componentWillUnmount() {
-        if (this._scrollCondition()) {
-            return;
-        }
-        document.removeEventListener('mousedown', this.handleClickOutside);
-        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
-        clearInterval(this.interval);
-    }
-    /**
-     * Uncheck the input if clicked outside
-     * Best to leave the typing generic because typescript does _not_
-     * like non-generics with dom.
-     */
-    handleClickOutside(event) {
-        if (this._scrollCondition()) {
-            return;
-        }
-        if (this.inputDiv && !this.wrapper.contains(event.target)) {
-            this.inputDiv.checked = false;
-        }
-    }
-    lazyAnimationAdder(event) {
-        if (this._scrollCondition()) {
-            return;
-        }
-        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
-            this.selectDiv.classList.add(selectFadeOutClassName);
-        }
-    }
-    change(value, id) {
-        if (this.props.onChange) {
-            this.props.onChange(value);
-        }
-        if (this._scrollCondition()) {
-            return;
-        }
-        else {
-            // Cool trick to get the label for the input
-            const elem = document.querySelector('label[for="' + id + '"]');
-            this.setState({
-                status: elem.innerHTML,
-            });
-            this.inputDiv.checked = false;
-        }
-    }
-    render() {
-        if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", onChange: this.change }, this.props.options.map((option, idx) => {
-                return React.createElement(React.Fragment, null,
-                    React.createElement("option", { value: option.value }, option.display));
-            }));
-        }
-        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
-            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
-            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
-                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
-                React.createElement("b", { className: 'select-arrow' })),
-            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
-                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
-                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, onChange: this.change }),
-                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
-    }
-}
-exports.Select = Select;
 
 
 /***/ }),

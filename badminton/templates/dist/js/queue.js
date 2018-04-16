@@ -1648,62 +1648,6 @@ module.exports = function spread(callback) {
 /***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-  Copyright (c) 2016 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
-*/
-/* global define */
-
-(function () {
-	'use strict';
-
-	var hasOwn = {}.hasOwnProperty;
-
-	function classNames () {
-		var classes = [];
-
-		for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i];
-			if (!arg) continue;
-
-			var argType = typeof arg;
-
-			if (argType === 'string' || argType === 'number') {
-				classes.push(arg);
-			} else if (Array.isArray(arg)) {
-				classes.push(classNames.apply(null, arg));
-			} else if (argType === 'object') {
-				for (var key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-						classes.push(key);
-					}
-				}
-			}
-		}
-
-		return classes.join(' ');
-	}
-
-	if (typeof module !== 'undefined' && module.exports) {
-		module.exports = classNames;
-	} else if (true) {
-		// register as 'classnames', consistent with npm package name
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
-			return classNames;
-		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else {
-		window.classNames = classNames;
-	}
-}());
-
-
-/***/ }),
-
-/***/ 34:
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 /*
 object-assign
@@ -1799,6 +1743,62 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
+/***/ 34:
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2016 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg)) {
+				classes.push(classNames.apply(null, arg));
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
+
+/***/ }),
+
 /***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1889,10 +1889,502 @@ module.exports = ReactPropTypesSecret;
 
 /***/ }),
 
+/***/ 39:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * This class serves as a resource resolver for classes.
+ * This manages local storage so none of the classes conflict
+ * The classes only need to make sure that their resources are unique
+ * in of themselves.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+var Cookies = __webpack_require__(41);
+/**
+ * Mappings from imported classes to random strings.
+ */
+const obfuscationMappings = {
+    'MailView': 'ysjiUtKPV7',
+};
+/**
+ * Generates key pattern from an instance and an arg
+ * arg being the requested key
+ */
+function _generateKey(instance, arg) {
+    const name = instance.constructor.name;
+    const obf = obfuscationMappings[name];
+    return name + obf;
+}
+/**
+ * Returns a string given the class and the key <arg>
+ */
+function getResource(instance, arg) {
+    const key = _generateKey(instance, arg);
+    return localStorage.getItem(key);
+    ;
+}
+exports.getResource = getResource;
+/**
+ * Sets the requested key <arg> of class <instance> to <value>
+ */
+function setResource(instance, arg, value) {
+    const key = _generateKey(instance, arg);
+    localStorage.setItem(key, value);
+}
+exports.setResource = setResource;
+const cookies = new Cookies();
+function isBoardMember() {
+    const ret = cookies.get('is_board_member');
+    return ret == 'true';
+}
+exports.isBoardMember = isBoardMember;
+function getMemberId() {
+    const ret = cookies.get('member_id');
+    return parseInt(ret);
+}
+exports.getMemberId = getMemberId;
+function xsrfCookieName() {
+    return "csrftoken";
+}
+exports.xsrfCookieName = xsrfCookieName;
+function xsrfHeaderName() {
+    return "X-CSRFToken";
+}
+exports.xsrfHeaderName = xsrfHeaderName;
+
+
+/***/ }),
+
 /***/ 4:
 /***/ (function(module, exports) {
 
 module.exports = ReactDOM;
+
+/***/ }),
+
+/***/ 41:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Cookies = __webpack_require__(42);
+
+var _Cookies2 = _interopRequireDefault(_Cookies);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _Cookies2.default;
+module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 42:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cookie = __webpack_require__(43);
+
+var _cookie2 = _interopRequireDefault(_cookie);
+
+var _objectAssign = __webpack_require__(33);
+
+var _objectAssign2 = _interopRequireDefault(_objectAssign);
+
+var _utils = __webpack_require__(44);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Cookies = function () {
+  function Cookies(cookies, hooks) {
+    _classCallCheck(this, Cookies);
+
+    this.cookies = parseCookies(cookies);
+    this.hooks = hooks;
+    this.HAS_DOCUMENT_COOKIE = (0, _utils.hasDocumentCookie)();
+  }
+
+  _createClass(Cookies, [{
+    key: '_updateBrowserValues',
+    value: function _updateBrowserValues() {
+      if (!this.HAS_DOCUMENT_COOKIE) {
+        return;
+      }
+
+      this.cookies = _cookie2.default.parse(document.cookie);
+    }
+  }, {
+    key: 'get',
+    value: function get(name) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      this._updateBrowserValues();
+      return readCookie(this.cookies[name], options);
+    }
+  }, {
+    key: 'getAll',
+    value: function getAll() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      this._updateBrowserValues();
+      var result = {};
+
+      for (var name in this.cookies) {
+        result[name] = readCookie(this.cookies[name], options);
+      }
+
+      return result;
+    }
+  }, {
+    key: 'set',
+    value: function set(name, value, options) {
+      if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+        value = JSON.stringify(value);
+      }
+
+      if (this.hooks && this.hooks.onSet) {
+        this.hooks.onSet(name, value, options);
+      }
+
+      this.cookies[name] = value;
+
+      if (this.HAS_DOCUMENT_COOKIE) {
+        document.cookie = _cookie2.default.serialize(name, value, options);
+      }
+    }
+  }, {
+    key: 'remove',
+    value: function remove(name, options) {
+      var finalOptions = options = (0, _objectAssign2.default)({}, options, {
+        expires: new Date(1970, 1, 1, 0, 0, 1),
+        maxAge: 0
+      });
+
+      if (this.hooks && this.hooks.onRemove) {
+        this.hooks.onRemove(name, finalOptions);
+      }
+
+      delete this.cookies[name];
+
+      if (this.HAS_DOCUMENT_COOKIE) {
+        document.cookie = _cookie2.default.serialize(name, '', finalOptions);
+      }
+    }
+  }]);
+
+  return Cookies;
+}();
+
+exports.default = Cookies;
+
+
+function parseCookies(cookies) {
+  if (typeof cookies === 'string') {
+    return _cookie2.default.parse(cookies);
+  } else if ((typeof cookies === 'undefined' ? 'undefined' : _typeof(cookies)) === 'object' && cookies !== null) {
+    return cookies;
+  } else {
+    return {};
+  }
+}
+
+function isParsingCookie(value, doNotParse) {
+  if (typeof doNotParse === 'undefined') {
+    // We guess if the cookie start with { or [, it has been serialized
+    doNotParse = !value || value[0] !== '{' && value[0] !== '[' && value[0] !== '"';
+  }
+
+  return !doNotParse;
+}
+
+function readCookie(value) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (isParsingCookie(value, options.doNotParse)) {
+    try {
+      return JSON.parse(value);
+    } catch (e) {
+      // At least we tried
+    }
+  }
+
+  return value;
+}
+module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 43:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*!
+ * cookie
+ * Copyright(c) 2012-2014 Roman Shtylman
+ * Copyright(c) 2015 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+
+
+
+/**
+ * Module exports.
+ * @public
+ */
+
+exports.parse = parse;
+exports.serialize = serialize;
+
+/**
+ * Module variables.
+ * @private
+ */
+
+var decode = decodeURIComponent;
+var encode = encodeURIComponent;
+var pairSplitRegExp = /; */;
+
+/**
+ * RegExp to match field-content in RFC 7230 sec 3.2
+ *
+ * field-content = field-vchar [ 1*( SP / HTAB ) field-vchar ]
+ * field-vchar   = VCHAR / obs-text
+ * obs-text      = %x80-FF
+ */
+
+var fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/;
+
+/**
+ * Parse a cookie header.
+ *
+ * Parse the given cookie header string into an object
+ * The object has the various cookies as keys(names) => values
+ *
+ * @param {string} str
+ * @param {object} [options]
+ * @return {object}
+ * @public
+ */
+
+function parse(str, options) {
+  if (typeof str !== 'string') {
+    throw new TypeError('argument str must be a string');
+  }
+
+  var obj = {}
+  var opt = options || {};
+  var pairs = str.split(pairSplitRegExp);
+  var dec = opt.decode || decode;
+
+  for (var i = 0; i < pairs.length; i++) {
+    var pair = pairs[i];
+    var eq_idx = pair.indexOf('=');
+
+    // skip things that don't look like key=value
+    if (eq_idx < 0) {
+      continue;
+    }
+
+    var key = pair.substr(0, eq_idx).trim()
+    var val = pair.substr(++eq_idx, pair.length).trim();
+
+    // quoted values
+    if ('"' == val[0]) {
+      val = val.slice(1, -1);
+    }
+
+    // only assign once
+    if (undefined == obj[key]) {
+      obj[key] = tryDecode(val, dec);
+    }
+  }
+
+  return obj;
+}
+
+/**
+ * Serialize data into a cookie header.
+ *
+ * Serialize the a name value pair into a cookie string suitable for
+ * http headers. An optional options object specified cookie parameters.
+ *
+ * serialize('foo', 'bar', { httpOnly: true })
+ *   => "foo=bar; httpOnly"
+ *
+ * @param {string} name
+ * @param {string} val
+ * @param {object} [options]
+ * @return {string}
+ * @public
+ */
+
+function serialize(name, val, options) {
+  var opt = options || {};
+  var enc = opt.encode || encode;
+
+  if (typeof enc !== 'function') {
+    throw new TypeError('option encode is invalid');
+  }
+
+  if (!fieldContentRegExp.test(name)) {
+    throw new TypeError('argument name is invalid');
+  }
+
+  var value = enc(val);
+
+  if (value && !fieldContentRegExp.test(value)) {
+    throw new TypeError('argument val is invalid');
+  }
+
+  var str = name + '=' + value;
+
+  if (null != opt.maxAge) {
+    var maxAge = opt.maxAge - 0;
+    if (isNaN(maxAge)) throw new Error('maxAge should be a Number');
+    str += '; Max-Age=' + Math.floor(maxAge);
+  }
+
+  if (opt.domain) {
+    if (!fieldContentRegExp.test(opt.domain)) {
+      throw new TypeError('option domain is invalid');
+    }
+
+    str += '; Domain=' + opt.domain;
+  }
+
+  if (opt.path) {
+    if (!fieldContentRegExp.test(opt.path)) {
+      throw new TypeError('option path is invalid');
+    }
+
+    str += '; Path=' + opt.path;
+  }
+
+  if (opt.expires) {
+    if (typeof opt.expires.toUTCString !== 'function') {
+      throw new TypeError('option expires is invalid');
+    }
+
+    str += '; Expires=' + opt.expires.toUTCString();
+  }
+
+  if (opt.httpOnly) {
+    str += '; HttpOnly';
+  }
+
+  if (opt.secure) {
+    str += '; Secure';
+  }
+
+  if (opt.sameSite) {
+    var sameSite = typeof opt.sameSite === 'string'
+      ? opt.sameSite.toLowerCase() : opt.sameSite;
+
+    switch (sameSite) {
+      case true:
+        str += '; SameSite=Strict';
+        break;
+      case 'lax':
+        str += '; SameSite=Lax';
+        break;
+      case 'strict':
+        str += '; SameSite=Strict';
+        break;
+      default:
+        throw new TypeError('option sameSite is invalid');
+    }
+  }
+
+  return str;
+}
+
+/**
+ * Try decoding a string using a decoding function.
+ *
+ * @param {string} str
+ * @param {function} decode
+ * @private
+ */
+
+function tryDecode(str, decode) {
+  try {
+    return decode(str);
+  } catch (e) {
+    return str;
+  }
+}
+
+
+/***/ }),
+
+/***/ 44:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.hasDocumentCookie = hasDocumentCookie;
+exports.cleanCookies = cleanCookies;
+// Can we get/set cookies on document.cookie?
+
+function hasDocumentCookie() {
+  return (typeof document === 'undefined' ? 'undefined' : _typeof(document)) === 'object' && typeof document.cookie === 'string';
+}
+
+//backwards compatibility
+var HAS_DOCUMENT_COOKIE = exports.HAS_DOCUMENT_COOKIE = hasDocumentCookie();
+
+function cleanCookies() {
+  document.cookie.split(';').forEach(function (c) {
+    document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+  });
+}
+
+/***/ }),
+
+/***/ 45:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function objectToFormData(obj) {
+    const data = new FormData();
+    for (let key of Object.keys(obj)) {
+        var serial = obj[key];
+        if (typeof serial === 'object') {
+            serial = JSON.stringify(obj[key]);
+        }
+        data.append(key, serial);
+    }
+    return data;
+}
+exports.objectToFormData = objectToFormData;
+
 
 /***/ }),
 
@@ -1927,6 +2419,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(13);
 const ReactTooltip = __webpack_require__(490);
+const Select_1 = __webpack_require__(49);
+const Utils_1 = __webpack_require__(45);
+const LocalResourceResolver_1 = __webpack_require__(39);
+axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
+axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
 const queueUrl = '/api/queue/';
 const matchUrl = '/api/match/get/';
 const courtStatuses = '/api/courts/';
@@ -1934,12 +2431,10 @@ const freeMemberUrl = '/api/party/free_members/';
 const partyGetUrl = '/api/party/get/';
 class QueuedPartyView extends React.Component {
     render() {
-        return React.createElement("div", null,
-            React.createElement("h3", null, "Party"),
-            this.props.party.members.map((member, idx) => {
-                return React.createElement("div", { key: idx },
-                    React.createElement("p", null, member.first_name + ' ' + member.last_name));
-            }));
+        return React.createElement("div", { className: 'queue-party-div' }, this.props.party.members.map((member, idx) => {
+            return React.createElement("div", { key: idx },
+                React.createElement("p", null, member.first_name + ' ' + member.last_name));
+        }));
     }
 }
 class SpecificQueueView extends React.Component {
@@ -1970,6 +2465,15 @@ class MyPartyView extends React.Component {
             loaded: false
         };
         this.refreshParty = this.refreshParty.bind(this);
+        this.createParty = this.createParty.bind(this);
+        this.kickParty = this.kickParty.bind(this);
+        this.leaveParty = this.leaveParty.bind(this);
+        this.addMember = this.addMember.bind(this);
+        this.refresh = this.refresh.bind(this);
+    }
+    refresh() {
+        this.refreshParty();
+        this.props.refresh();
     }
     refreshParty() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1978,6 +2482,7 @@ class MyPartyView extends React.Component {
                 this.setState({
                     loaded: true,
                     freeMembers: free.data,
+                    selectedQueue: this.props.queueTypes[0].value,
                 });
             }
             catch (err) {
@@ -1985,24 +2490,99 @@ class MyPartyView extends React.Component {
             }
         });
     }
+    getSelectedMemberIds() {
+        const inputs = document.querySelectorAll('.queue-party-input');
+        const out = [];
+        for (let i = 0; i < inputs.length; ++i) {
+            let input = inputs[i];
+            if (input.checked) {
+                out.push(input.value);
+            }
+        }
+        return out;
+    }
+    createParty() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const out = this.getSelectedMemberIds();
+            const joined = out.join(',');
+            const queue = this.state.selectedQueue;
+            try {
+                const data = yield axios_1.default.post('/api/party/create', Utils_1.objectToFormData({ queue_id: queue, member_ids: joined }));
+                this.refresh();
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
+    kickParty(member_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const res = yield axios_1.default.post('/api/party/remove_member/', Utils_1.objectToFormData({ member_id: member_id }));
+                console.log(res);
+                this.refresh();
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
+    leaveParty() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const res = yield axios_1.default.post('api/party/leave/');
+                console.log(res);
+                this.refresh();
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
+    addMember() {
+        const out = this.getSelectedMemberIds();
+        const requests = out.map((member_id) => {
+            axios_1.default.post('/api/party/add_member/', Utils_1.objectToFormData({ 'member_id': member_id }));
+        });
+        axios_1.default.all(requests).then(() => {
+            this.refresh();
+        });
+    }
     componentDidMount() {
         this.refreshParty();
     }
     render() {
-        if (this.props.party) {
-            return React.createElement("p", null, "In a Party");
-        }
-        else if (!this.state.loaded) {
+        if (!this.state.loaded) {
             return React.createElement("p", null, "Loading");
         }
-        return React.createElement("div", { className: "row" },
-            React.createElement("div", { style: { height: '200px', overflowY: 'scroll', overflowX: 'hidden' } }, this.state.freeMembers.map((member, idx) => {
+        const members = React.createElement("div", { style: { height: '200px', overflowY: 'scroll', overflowX: 'hidden' } },
+            " ",
+            this.state.freeMembers.map((member, idx) => {
                 const member_ident = "member" + member.id;
                 return React.createElement("div", { className: "row", key: idx },
-                    React.createElement("input", { type: "checkbox", id: member_ident, className: "interaction-style" }),
+                    React.createElement("input", { type: "checkbox", id: member_ident, value: member.id, className: "interaction-style queue-party-input" }),
                     React.createElement("label", { htmlFor: member_ident }, member.first_name + ' ' + member.last_name));
-            })),
-            React.createElement("button", { className: "interaction-style" }, "Create Party"));
+            }),
+            " ");
+        if (this.props.party) {
+            return React.createElement("div", null,
+                React.createElement("h4", null, "Current Party"),
+                this.props.party.members.map((member, idx) => {
+                    return React.createElement("div", { key: idx, className: "row" },
+                        React.createElement("div", { className: "col-6" },
+                            React.createElement("h4", null, member.name)),
+                        React.createElement("div", { className: "col-6" },
+                            React.createElement("button", { onClick: () => this.kickParty(member.id), className: "interaction-style" }, "Kick")));
+                }),
+                React.createElement("button", { className: "interaction-style", onClick: this.leaveParty }, "Leave"),
+                members,
+                React.createElement("button", { className: "interaction-style", onClick: this.addMember }, "Add"));
+        }
+        return React.createElement("div", { className: "row" },
+            members,
+            React.createElement("div", { className: "row-offset-1" },
+                React.createElement(Select_1.Select, { options: this.props.queueTypes, name: "party_picker", defaultValue: this.state.selectedQueue, onChange: (val) => this.setState({ selectedQueue: val }) })),
+            React.createElement("button", { className: "interaction-style", onClick: this.createParty }, "Create Party"));
     }
 }
 class Queue extends React.Component {
@@ -2022,11 +2602,14 @@ class Queue extends React.Component {
                     const [queueData, courtData, isParty] = [yield axios_1.default.get(queueUrl),
                         yield axios_1.default.get(courtStatuses),
                         yield axios_1.default.get(partyGetUrl)];
+                    const queues = queueData.data.queues;
+                    const queueTypes = queues.map((queue) => new Select_1.Option(queue.id, queue.type));
                     this.setState({
                         memberState: 'idle',
                         queues: queueData.data.queues,
+                        queueTypes: queueTypes,
                         courtData: courtData.data.courts,
-                        party: isParty.data.status === 'partyless' ? null : isParty,
+                        party: isParty.data.status === 'partyless' ? null : isParty.data,
                     });
                 }
                 else {
@@ -2052,13 +2635,176 @@ class Queue extends React.Component {
             React.createElement("div", { className: "row" }, this.state.courtData.map((court, idx) => {
                 return React.createElement(CourtView, { key: idx, court: court });
             })),
-            React.createElement(MyPartyView, { party: this.state.party }),
+            React.createElement(MyPartyView, { party: this.state.party, queueTypes: this.state.queueTypes, refresh: this.refreshQueue }),
             React.createElement("div", { className: "row" }, this.state.queues.map((queue, idx) => {
                 return React.createElement(SpecificQueueView, { parties: queue.parties, type: queue.type, key: idx });
             })));
     }
 }
 exports.Queue = Queue;
+
+
+/***/ }),
+
+/***/ 49:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+class Option {
+    constructor(val, displ) {
+        this.value = val;
+        this.display = displ;
+    }
+}
+exports.Option = Option;
+const selectFadeOutClassName = 'select-check-fade-out';
+class SelectArea extends React.Component {
+    render() {
+        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.change(option.value, this.props.name + idx) }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
+        }));
+    }
+}
+class Select extends React.Component {
+    constructor(props) {
+        super(props);
+        this.change = this.change.bind(this);
+        this.handleClickOutside = this.handleClickOutside.bind(this);
+        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
+        this._decideInitialStatus = this._decideInitialStatus.bind(this);
+        this._scrollCondition = this._scrollCondition.bind(this);
+        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
+        const status = this._decideInitialStatus();
+        this.state = {
+            status: status,
+            width: document.documentElement.clientWidth,
+        };
+        this.scrollDiv = null;
+    }
+    _scrollCondition() {
+        return this.state.width < 500 || this.props.override;
+    }
+    _decideInitialStatus() {
+        if (this.props.defaultValue !== undefined) {
+            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            if (value === undefined) {
+                return "";
+            }
+            else {
+                return value.display;
+            }
+        }
+        else {
+            return this.props.options[0].display;
+        }
+    }
+    documentResizeUpdate() {
+        this.setState({
+            width: document.documentElement.clientWidth
+        });
+    }
+    componentDidMount() {
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
+        document.addEventListener('mousedown', this.handleClickOutside);
+        const defaultHeight = 30;
+        this.scrollDiv.style.height = defaultHeight + "px";
+        this.interval = setInterval(() => {
+            const movableArea = this.innerDiv.scrollTop /
+                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            this.scrollDiv.style.top = "" + offset + "px";
+        }, 20);
+        const divMove = (e) => {
+            const boundingRect = this.selectDiv.getBoundingClientRect();
+            const fuzz = .2;
+            const height = boundingRect.bottom - boundingRect.top;
+            const bottom = boundingRect.bottom - fuzz * height;
+            const top = boundingRect.top + fuzz * height;
+            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            const percentage = (adjusted - top) / (bottom - top);
+            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        };
+        function mouseUp() {
+            window.removeEventListener('mousemove', divMove, true);
+        }
+        function mouseDown() {
+            window.addEventListener('mousemove', divMove, true);
+        }
+        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
+        window.addEventListener('mouseup', mouseUp, false);
+    }
+    componentWillUnmount() {
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.removeEventListener('mousedown', this.handleClickOutside);
+        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
+        clearInterval(this.interval);
+    }
+    /**
+     * Uncheck the input if clicked outside
+     * Best to leave the typing generic because typescript does _not_
+     * like non-generics with dom.
+     */
+    handleClickOutside(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
+        if (this.inputDiv && !this.wrapper.contains(event.target)) {
+            this.inputDiv.checked = false;
+        }
+    }
+    lazyAnimationAdder(event) {
+        if (this._scrollCondition()) {
+            return;
+        }
+        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
+            this.selectDiv.classList.add(selectFadeOutClassName);
+        }
+    }
+    change(value, id) {
+        if (this.props.onChange) {
+            this.props.onChange(value);
+        }
+        if (this._scrollCondition()) {
+            return;
+        }
+        else {
+            // Cool trick to get the label for the input
+            const elem = document.querySelector('label[for="' + id + '"]');
+            this.setState({
+                status: elem.innerHTML,
+            });
+            this.inputDiv.checked = false;
+        }
+    }
+    render() {
+        if (this._scrollCondition()) {
+            return React.createElement("select", { className: "interaction-style", onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
+                return React.createElement(React.Fragment, null,
+                    React.createElement("option", { value: option.value }, option.display));
+            }));
+        }
+        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
+                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("b", { className: 'select-arrow' })),
+            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
+                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
+                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
+    }
+}
+exports.Select = Select;
 
 
 /***/ }),
@@ -2096,7 +2842,7 @@ var _reactDom = __webpack_require__(4);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _classnames = __webpack_require__(33);
+var _classnames = __webpack_require__(34);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -3510,7 +4256,7 @@ exports.default = '.__react_component_tooltip{border-radius:3px;display:inline-b
 var emptyFunction = __webpack_require__(14);
 var invariant = __webpack_require__(12);
 var warning = __webpack_require__(36);
-var assign = __webpack_require__(34);
+var assign = __webpack_require__(33);
 
 var ReactPropTypesSecret = __webpack_require__(37);
 var checkPropTypes = __webpack_require__(55);

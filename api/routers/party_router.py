@@ -20,20 +20,20 @@ def create_party(request):
     :param request:
     :return:
     """
-
     post_dict = dict(request.POST.items())
-    if not validate_keys(['queue_type', 'member_ids'], post_dict):
+    print(post_dict)
+    if not validate_keys(['queue_id', 'member_ids'], post_dict):
         return http_response({}, message="Keys not found", code=400)
 
-    queue_type = post_dict['queue_type']
-    queues = Queue.objects.raw("SELECT * FROM api_queue WHERE type = %s", [queue_type])
+    queue_type = post_dict['queue_id']
+    queues = Queue.objects.raw("SELECT * FROM api_queue WHERE id = %s", [queue_type])
     if len(list(queues)) <= 0:
         return http_response(message='Queue does not exist', code=400)
 
     queue = queues[0]
 
     queue_id = queue.id
-    user_id = user.id
+    user_id = id_for_member(request.user.email)
     member_ids = post_dict['member_ids']
     member_ids = member_ids.split(",")  # list of ids to add to the party
     if user_id not in member_ids:
@@ -102,21 +102,15 @@ def add_member(request):
         :param request:
         :return:
     """
-    session_email = request.user.username
-    if not request.user.is_authenticated:
-        return http_response({}, message="You are not logged in", code=302)
-
-    try:
-        user = Member.objects.get(email=session_email)
-    except Member.DoesNotExist:
-        return http_response({}, message="You do not have the required permissions", code=403)
 
     post_dict = dict(request.POST.items())
     if not validate_keys(['member_id'], post_dict):
         return http_response({}, message="Keys not found", code=400)
 
-    member_id = int(post_dict['member_id'])
-    party_id = user.party_id
+    member_id = post_dict['member_id']
+    my_id = id_for_member(request.user.email)
+    party = party_for_member(my_id)
+    party_id = party.id
 
     rawquery = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND party_id NOT NULL", [member_id])
     member_is_in_party = len(list(rawquery)) > 0
@@ -149,7 +143,7 @@ def remove_member(request):
     if party is None:
         return http_response(message='You are not part of a party', code=400)
 
-    party_id = user.party_id
+    party_id = party.id
     member_id = int(post_dict['member_id'])
     member = Member.objects.get(id=member_id)
     if member.party_id != party_id:
@@ -225,16 +219,10 @@ def join_party(request):
 @restrictRouter(allowed=["POST"])
 def leave_party(request):
     session_email = request.user.username
-    if not request.user.is_authenticated:
-        return http_response({}, message="You are not logged in", code=302)
 
-    try:
-        user = Member.objects.get(email=session_email)
-    except Member.DoesNotExist:
-        return http_response({}, message="You do not have the required permissions", code=403)
-
-    member_id = user.id
-    party_id = user.party_id
+    member_id = id_for_member(request.user.email)
+    party = party_for_member(member_id)
+    party_id = party.id
 
     return party_remove_member(party_id, member_id)
 

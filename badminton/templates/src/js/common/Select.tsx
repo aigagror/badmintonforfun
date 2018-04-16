@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 export class Option {
-    public value: string;
+    public value: any;
     public display: string;
 
     constructor(val: string, displ: string) {
@@ -11,8 +11,8 @@ export class Option {
 }
 
 export interface SelectProps {
-    defaultValue?: string,
-    onChange: (value: string) => void,
+    defaultValue?: any,
+    onChange: (value: any) => void,
     options: Array<Option>,
     name: string,
     override?: boolean,
@@ -25,13 +25,8 @@ interface SelectState {
 
 const selectFadeOutClassName = 'select-check-fade-out';
 
-export interface SelectAreaProps {
-    name: string;
-    onChange: (event: React.FormEvent<HTMLInputElement>) => void;
-    options: Option[];
-}
 
-class SelectArea extends React.Component<SelectAreaProps, {}> {
+class SelectArea extends React.Component<any, any> {
     render() {
         return <span className='select'>
         {
@@ -40,7 +35,7 @@ class SelectArea extends React.Component<SelectAreaProps, {}> {
                 <input className='select-hidden' 
                     key={idx} id={this.props.name+idx} 
                     value={option.value} name={this.props.name} type='radio'
-                    onChange={(target: any) => this.props.onChange(option.value, this.props.name+idx)} />
+                    onChange={(target: any) => this.props.change(option.value, this.props.name+idx)} />
                   <label className="select-label" key={idx*-1-1} 
                       htmlFor={this.props.name+idx}>{option.display}</label>
                 </>
@@ -197,7 +192,7 @@ export class Select extends React.Component<SelectProps, SelectState> {
 
 	render() {
         if (this._scrollCondition()) {
-            return <select className="interaction-style" onChange={this.change}>
+            return <select className="interaction-style" onChange={(ev: any) => this.change(ev.target.value, null)}>
                 {
                     this.props.options.map((option: Option, idx: number) => {
                         return <>
@@ -227,7 +222,7 @@ export class Select extends React.Component<SelectProps, SelectState> {
         <SelectArea 
             options={this.props.options}
             name={this.props.name}
-            onChange={this.change}/>
+            change={this.change}/>
         <div className="select-scroll" ref={(input) => this.scrollDiv = input}></div>
         </div>
       </div>
