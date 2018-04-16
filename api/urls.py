@@ -31,7 +31,9 @@ announcements_paths = [
 ]
 
 members_paths = [
-    re_path(r'profile/?$', member_router.get_profile)
+    re_path(r'all/?$', member_router.get_members, name='get_members'),
+    re_path(r'profile/?$', member_router.get_profile, name='get_profile'),
+    re_path(r'view_member_profile/?$', member_router.view_member_profile, name='view_member_profile'),
 ]
 
 election_paths = [
@@ -68,7 +70,7 @@ match_paths = [
     re_path(r'finish/?$', match_router.finish_match, name='finish_match'),
     re_path(r'join/?$', match_router.join_match, name='join_match'),
     re_path(r'leave/?$', match_router.leave_match, name='leave_match'),
-    re_path(r'create/?$', match_router.create_match, name='create_match'),
+    re_path(r'create/?$', match_router.start_match, name='start_match'),
     re_path(r'delete/?$', match_router.delete_match, name='delete_match'),
     re_path(r'get/?$', match_router.current_match, name='current_match'),
     re_path(r'all_matches_from_member/?$', match_router.all_matches_from_member, name='all_matches_from_member'),
@@ -81,6 +83,7 @@ queue_paths = [
     path('', queue_router.get_queues, name='get_queues'),
 
     re_path(r'create/?', queue_router.create_queue, name='create_queue'),
+    re_path(r'refresh/?', queue_router.refresh_queues, name='refresh_queues'),
 ]
 
 party_paths = [
@@ -99,8 +102,7 @@ party_paths = [
 tournament_paths = [
     re_path(r'create/?$', tournament_router.create_tournament_router, name='create_tournament'),
     re_path(r'bracket_node/?$', tournament_router.get_bracket_node, name='get_tournament_bracket_node'),
-
-    # This api should really only be called on the leaf nodes of the tree
+    
     re_path(r'add/match/?$', tournament_router.add_match, name='add_match_to_tournament'),
     re_path(r'finish/?$', tournament_router.finish_tournament_router, name='finish_tournament'),
     re_path(r'^$', tournament_router.get_tournament, name='get_tournament'),

@@ -54,7 +54,8 @@ def finish_match(request):
     member_id = get_member_id_from_email(request.user.email)
     match_id = get_match_from_member_id(member_id)
     dict_post = dict(request.POST.items())
-    validate_keys(["scoreA", "scoreB"], dict_post)
+    if not validate_keys(["scoreA", "scoreB"], dict_post):
+        return http_response(message='missing keys', code=400)
 
     return get_finish_match(match_id, dict_post["scoreA"], dict_post["scoreB"])
 
@@ -93,7 +94,7 @@ def leave_match(request):
 
 @login_required
 @restrictRouter(allowed=["POST"])
-def create_match(request):
+def start_match(request):
     """
     POST -- create a match
         PLEASE PASS IN AS RAW DATA.
@@ -105,8 +106,9 @@ def create_match(request):
 
     dict_post = json.loads(request.body.decode('utf8').replace("'", '"'))
     # write something to make sure a_players and b_players are lists
-    validate_keys(["score_A", "score_B", "a_players", "b_players"], dict_post)
-    return get_create_match(dict_post["score_A"], dict_post["score_B"], dict_post["a_players"], 
+    if not validate_keys(["a_players", "b_players", 'court_id'], dict_post):
+        return http_response(message='missing keys', code=400)
+    return get_create_match(dict_post["a_players"],
         dict_post["b_players"], dict_post["court_id"])
 
 
@@ -192,23 +194,26 @@ def all_matches_from_member(request):
     if member_id is None:
         return http_response({}, message="Please pass in a member id", code=400)
 
-    with connection.cursor() as cursor:
-        query = """
-        SELECT 
-            (CASE WHEN 
-                (api_playedin.team = 'A') THEN api_match.scoreA 
-                ELSE api_match.scoreB END) AS my_score,
-            (CASE WHEN 
-                (api_playedin.team = 'B') THEN api_match.scoreA 
-                ELSE api_match.scoreB END) AS their_score,
-            api_match.endDateTime,
-            api_match.startDateTime
-        FROM api_member
-        JOIN api_playedin ON api_member.interested_ptr_id = api_playedin.member_id
-        JOIN api_match ON api_match.id = api_playedin.match_id
-        WHERE api_member.interested_ptr_id = %s
-        """
+    playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE member_id = %s", [member_id])
 
-        cursor.execute(query, [member_id])
-        results = serializeDict(dictfetchall(cursor))
-    return HttpResponse(json.dumps(results), content_type="application/json")
+    matches = [p.match for p in playedins]
+    ret = []
+    for match in matches:
+        playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s", [match.id])
+        teamA = []
+        teamB = []
+        for playedin in playedins:
+            member = playedin.member
+            serealized_member = serializeModel(member)
+            if playedin.team == 'A':
+                teamA.append(serealized_member)
+            else:
+                teamB.append(serealized_member)
+        dict = {
+            'match': serializeModel(match),
+            'team_A': teamA,
+            'team_B': teamB,
+        }
+
+        ret.append(dict)
+    return HttpResponse(json.dumps(ret), content_type="application/json")

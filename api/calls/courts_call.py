@@ -1,4 +1,4 @@
-from api.calls.queue_call import get_queue_type
+from api.calls.queue_call import get_queue_type, refresh_all_queues
 from api.models import Court, Match, PlayedIn, TEAMS
 from api.cursor_api import http_response
 
@@ -30,12 +30,11 @@ def get_courts_call():
         queue_type = get_queue_type(court.queue_id)
         curr_court_dict["queue_type"] = queue_type
 
-        matches_on_this_court = Match.objects.raw("SELECT * FROM api_match WHERE court_id=%s AND endDateTime IS NULL", [court.id])
-        assert(len(list(matches_on_this_court)) <= 1)
-        if len(list(matches_on_this_court)) == 0:
+        match_on_this_court = court.match
+        if match_on_this_court is None:
             curr_court_dict["match"] = None
         else:
-            match = matches_on_this_court[0]
+            match = match_on_this_court
             plays = PlayedIn.objects.filter(match_id=match.id)
             team_a_members = []
             team_b_members = []
@@ -52,5 +51,7 @@ def get_courts_call():
             curr_court_dict["match"] = match_dict
         courts_dict.append(curr_court_dict)
     ret["courts"] = courts_dict
+
+    refresh_all_queues()
 
     return http_response(dict=ret)

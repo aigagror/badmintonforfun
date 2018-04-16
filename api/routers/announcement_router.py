@@ -2,11 +2,14 @@ from api.routers.router import *
 from api.models import *
 from django.views.decorators.csrf import ensure_csrf_cookie
 
+from api.utils import MemberClass
+
 _id_key = "id"
 _title_key = "title"
 _entry_key = "entry"
 
 @restrictRouter(allowed=["GET"])
+@auth_decorator(allowed=MemberClass.INTERESTED)
 def get_announcements(request):
     """
     GET - Get the 3 latest announcements
@@ -16,7 +19,7 @@ def get_announcements(request):
     :param request:
     :return:
     """
-    announcements = Announcement.objects.raw("SELECT * FROM api_announcement ORDER BY date DESC LIMIT 3")
+    announcements = Announcement.objects.raw("SELECT * FROM api_announcement ORDER BY date DESC")
     announcements_list = serializeSetOfModels(announcements)
 
     context = {
@@ -25,6 +28,7 @@ def get_announcements(request):
     return http_response(context)
 
 @restrictRouter(allowed=["POST"])
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 def create_announcement(request):
     """
     POST - Creates an announcement
@@ -32,17 +36,16 @@ def create_announcement(request):
     :param request:
     :return:
     """
-    print(request)
     dict_post = dict(request.POST.items())
-    print(dict_post)
     if not validate_keys([_title_key, _entry_key], dict_post):
         return http_response(message='Missing parameters')
     title = dict_post[_title_key]
     entry = dict_post[_entry_key]
-    response = run_connection("INSERT INTO api_announcement(date, title, entry) VALUES(%s, %s, %s)", serializeDateTime(datetime.datetime.now()), title, entry)
+    response = run_connection("INSERT INTO api_announcement(date, title, entry) VALUES(%s, %s, %s)", serializeDate(datetime.date.today()), title, entry)
     return response
 
 @restrictRouter(allowed=["POST"])
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 def edit_announcement(request):
     """
         POST - Creates an announcement

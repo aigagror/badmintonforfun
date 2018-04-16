@@ -9,12 +9,12 @@ from ..models import *
 
 def get_status(id):
     """
-    Returns "Boardmember", "Member", or "Interested" (or "Not found" if not in db)
+    Returns "BoardMember", "Member", or "Interested" (or "Not found" if not in db)
     :param id:
     :return:
     """
     if is_board_member(id):
-        return "Boardmember"
+        return "BoardMember"
     elif is_member(id):
         return "Member"
     elif is_interested(id):
@@ -30,7 +30,7 @@ def is_member(id):
     """
     all = Member.objects.raw("SELECT * FROM api_member")
     foo = list(all)
-    members = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND interested_ptr_id NOT IN (SELECT member_ptr_id FROM api_boardmember)", [id])
+    members = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s AND interested_ptr_id NOT IN (SELECT member_ptr_id FROM api_boardmember)", [str(id)])
     return len(list(members)) > 0
 
 
@@ -42,7 +42,7 @@ def is_interested(id):
     """
     all = Interested.objects.raw("SELECT * FROM api_interested")
     foo = list(all)
-    interesteds = Interested.objects.raw('SELECT * FROM api_interested WHERE id=%s AND id NOT IN (SELECT interested_ptr_id FROM api_member)', [id])
+    interesteds = Interested.objects.raw('SELECT * FROM api_interested WHERE id=%s AND id NOT IN (SELECT interested_ptr_id FROM api_member)', [str(id)])
     return len(list(interesteds)) > 0
 
 def is_board_member(id):
@@ -53,7 +53,7 @@ def is_board_member(id):
     """
     all = BoardMember.objects.raw("SELECT * FROM api_boardmember")
     foo = list(all)
-    boards = BoardMember.objects.raw("SELECT * FROM api_boardmember WHERE member_ptr_id = %s", [id])
+    boards = BoardMember.objects.raw("SELECT * FROM api_boardmember WHERE member_ptr_id = %s", [str(id)])
     return len(list(boards)) > 0
 
 
@@ -143,7 +143,6 @@ def delete_from_member(id):
     run_connection("DELETE FROM api_vote WHERE voter_id=%s", id)
     run_connection("DELETE FROM api_campaign WHERE campaigner_id=%s", id)
     run_connection("DELETE FROM api_member WHERE interested_ptr_id=%s", id)
-    run_connection("DELETE FROM api_interested WHERE id=%s", id)
 
     return http_response(message="OK")
 
@@ -189,12 +188,14 @@ def remove_member(member_id):
     :param member_id: The id of the person we want to remove from the database
     :return:
     """
+    if get_status(member_id) == "Not found":
+        return http_response(message="Specified member_id " + member_id + " does not exist.", code=400)
+
     delete_from_boardmember(member_id)
     delete_from_member(member_id)
     delete_from_interested(member_id)
 
-    return HttpResponse(json.dumps({"message": "Successfully deleted member."}),
-                        content_type="application/json")
+    return http_response(message="OK")
 
 
 def add_interested(interested):
@@ -219,11 +220,13 @@ def promote_to_member(id):
     """
     today = datetime.date.today()
     query = '''
-            INSERT INTO api_member (interested_ptr_id, dateJoined, level, private, bio)
-            VALUES (%s, %s, 0, 0, '');
-            '''
+    INSERT INTO api_member (interested_ptr_id, dateJoined, level, private, bio)
+    VALUES (%s, %s, 0, 0, '');
+    '''
     s_today = serializeDate(today)
     return run_connection(query, id, s_today)
+    # m = Member(id=id, dateJoined=s_today, level=0, private=0, bio="")
+    # m.save()
 
 def promote_to_board_member(id, job):
     """
@@ -232,12 +235,14 @@ def promote_to_board_member(id, job):
     :param board_member: Object that contains job of a new board member
     :return:
     
-    """
+    # """
     query = '''
-            INSERT INTO api_boardmember (member_ptr_id, job)
-            VALUES (%s, %s);
-            '''
+    INSERT INTO api_boardmember (member_ptr_id, job)
+    VALUES (%s, %s);
+    '''
     return run_connection(query, id, job)
+    # b = BoardMember(id=id, job=job)
+    # b.save()
 
 def schedule_date_exists(date):
     """
@@ -603,10 +608,11 @@ def get_all_club_members():
             'first_name': boardmember.first_name,
             'last_name': boardmember.last_name,
             'email': boardmember.email,
-            'status': "Boardmember"
+            'status': "BoardMember"
         }
         ret_list.append(boardmember_dict)
 
+    # print("Member statuses -->" + str(ret_list))
     context = {'members': ret_list, 'memberTypes': ["Member", "BoardMember", "Interested"]}
 
     return http_response(dict=context, message="OK")
@@ -616,35 +622,54 @@ def get_all_club_members():
 def update_club_member_status(dict_post):
     """
     POST request for boardmembers. Alter the status of ONE member.
-    Assumes a list of members and a drop-down for each one with the choices (Interested, Member, Boardmember).
+    Assumes a list of members and a drop-down for each one with the choices (Interested, Member, BoardMember).
     :param dict_post:
     :return:
     """
 
-    member_id = dict_post["member_id"]
-
+    member_id = dict_post["member_id"][0]
+    print(member_id)
     curr_status = get_status(member_id)
-    new_status = dict_post["status"]
+    new_status = dict_post["status"][0]  # for some reason, dict_post["status"] -> ["some status"]
+    print(new_status)
+    print("curr: " + curr_status)
 
-    if new_status == "Boardmember":
+    if get_status(member_id) == "Not found":
+        return http_response(message="Invalid member_id: " + str(member_id), code=400)
+    if not _is_valid_status(new_status):
+        return http_response(message="Invalid proposed status: " + str(new_status), code=400)
+
+    if new_status == "BoardMember":
+        print("To BoardMember")
         if curr_status == "Member":
+            print("From Member")
             promote_to_board_member(member_id, "OFFICER")
         elif curr_status == "Interested":
+            print("From Interested")
             promote_to_member(member_id)
             promote_to_board_member(member_id, "OFFICER")
     elif new_status == "Member":
-        if curr_status == "Boardmember":
+        print("To Member")
+        if curr_status == "BoardMember":
+            print("From BoardMember")
             delete_from_boardmember(member_id)
         elif curr_status == "Interested":
+            print("From Interested")
             promote_to_member(member_id)
     elif new_status == "Interested":
-        if curr_status == "Boardmember":
+        print("To Interested")
+        if curr_status == "BoardMember":
+            print("From BoardMember")
             delete_from_boardmember(member_id)
             delete_from_member(member_id)
         elif curr_status == "Member":
+            print("From Member")
             delete_from_member(member_id)
 
     return http_response(message="OK")
+
+def _is_valid_status(proposed_status):
+    return proposed_status == "Interested" or proposed_status == "Member" or proposed_status == "BoardMember"
 
 def delete_club_member(dict_delete):
     """
@@ -653,9 +678,10 @@ def delete_club_member(dict_delete):
     :param dict_delete:
     :return:
     """
+    print(str(dict_delete))
     member_id = dict_delete['member_id']
-    remove_member(member_id)
-    return http_response(message="OK")
+    print("Deleting " + member_id)
+    return remove_member(member_id)
 
 def schedule_to_dict():
     """

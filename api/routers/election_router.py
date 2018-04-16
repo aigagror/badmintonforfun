@@ -21,34 +21,29 @@ def get_election(request):
     :param request:
     :return:
     """
-    with connection.cursor() as cursor:
-        query = """
-        SELECT * FROM api_election AS election
-        WHERE election.endDate IS NULL OR election.endDate >= %s
-        ORDER BY election.date DESC LIMIT 1
-        """
-        cursor.execute(query, [datetime.datetime.now().strftime("%Y%m%d")])
-        elections = dictfetchall(cursor)
 
-    print(elections)
-    if len(list(elections)) == 0:
+    election_query = Election.objects.raw("SELECT * FROM api_election WHERE endDate IS NULL OR endDate >= %s", [datetime.date.today()])
+
+    if len(list(election_query)) == 0:
         return HttpResponse(json.dumps({"message":"No current election available", "status": "down"}), content_type="application/json")
 
-    current_election = elections[0]
+    current_election = election_query[0]
 
-    with connection.cursor() as cursor:
-        query = """
-        SELECT * FROM api_campaign 
-        JOIN api_interested ON api_campaign.campaigner_id = api_interested.id
-        WHERE election_id = %s
-        """
-        cursor.execute(query, [current_election['id']])
-        campaigns = dictfetchall(cursor)
-        print(campaigns)
+    campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [current_election.id])
+    campaign_info = []
+    for campaign in campaigns:
+        # Get the number of votes
+        votes = Vote.objects.raw("SELECT * FROM api_vote WHERE campaign_id = %s", [campaign.id])
+        vote_count = len(list(votes))
+        context = {
+            'campaign': serializeModel(campaign),
+            'vote_count': vote_count
+        }
+        campaign_info.append(context)
 
     context = {
-        'election': (serializeDict(current_election)),
-        'campaigns': (serializeDict(campaigns)),
+        'election': (serializeModel(current_election)),
+        'campaigns': campaign_info,
         "order": list(map(lambda x: x[0], JOBS))
     }
     return http_response(context)

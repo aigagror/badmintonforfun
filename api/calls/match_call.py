@@ -3,7 +3,7 @@ from django.db import connection
 from django.http import HttpResponse
 from ..models import *
 import json
-from .queue_call import get_parties_by_playtime
+from .queue_call import get_parties_by_playtime, dequeue_party_to_court_call
 
 """
     FUNCTIONS: (*) = not sure if works, look at this later
@@ -12,7 +12,7 @@ from .queue_call import get_parties_by_playtime
     join_match(match_id, member_id, team) returns an http response
     leave_match(match_id, member_id) returns an http response
     delete_match(id) returns an http response
-    create_match(score_a, score_b, a_players, b_players, court_id) returns an http response
+    create_match(a_players, b_players, court_id) returns an http response
     find_current_match_by_member(id) returns an http response
     finish_match(id, scoreA, scoreB) returns an http response
     (* HAVEN'T TESTED PROPERLY YET) dequeue_next_party_to_court(queue_type, court_id) returns an http response
@@ -76,7 +76,7 @@ def leave_match(match_id, member_id):
     :param member_id:
     :return:
     """
-
+    match_id = int(match_id)
     #if there's only one player in the match
     players = list(_players(match_id))
     found = 0
@@ -119,11 +119,9 @@ def delete_match(id):
     return response
 
 
-def create_match(score_a, score_b, a_players, b_players, court_id):
+def create_match(a_players, b_players, court_id):
     """
         Create a new match! Should only be used by queues
-    :param score_a:
-    :param score_b:
     :param a_players:
     :param b_players:
     :param court_id:
@@ -137,18 +135,29 @@ def create_match(score_a, score_b, a_players, b_players, court_id):
         result = cursor.execute(query)
         newID = dictfetchall(cursor)[0]['newID']
 
+
     query = """
-    INSERT INTO api_match(id, startDateTime, scoreA, scoreB, court_id) VALUES (%s, %s, %s, %s, %s)
+    INSERT INTO api_match(id, startDateTime, scoreA, scoreB) VALUES (%s, %s, 0, 0)
     """
     today = datetime.datetime.now()
-    response = run_connection(query, newID, serializeDateTime(today), score_a, score_b, court_id)
+    response = run_connection(query, newID, serializeDateTime(today))
+
+    query = """
+    UPDATE api_court SET match_id = %s WHERE id = %s
+    """
+    response = run_connection(query, newID, court_id)
+
+
     for p in a_players:
+        # It seems to be passed as a list of int strings rather than just ints
+        p = int(p)
         query = """
         INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
         """
         response = run_connection(query, p, "A", newID)
 
     for p in b_players:
+        p = int(p)
         query = """
            INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
            """
@@ -192,7 +201,7 @@ def find_current_match_by_member(id):
                                             "scoreB": result["scoreB"], "teamA": teamA, "teamB": teamB}}
             return http_response(match_json)
         else:
-            return http_response({'status':'idle'}, message="Couldn't find a current match for this member. Are you sure this member is in a match?")
+            return http_response({'status':'idle'}, message="Couldn't find a current match for this member. Are you sure this member is in a match?", code=204)
 
 
 def _get_winners(match):
@@ -234,7 +243,13 @@ def finish_match(id, scoreA, scoreB):
         return http_response(message='There was an error updating your scores!', code=400)
 
     match = matches[0]
-    court_id = match.court_id
+    court_query = Court.objects.raw("SELECT * FROM api_court WHERE match_id = %s", [match.id])
+    if len(list(court_query)) > 0:
+        court = court_query[0]
+        court_id = court.id
+    else:
+        court_id = None
+
 
     #check to make sure match should actually be finished
     if not (abs(match.scoreA - match.scoreB) >= 2) and not((match.scoreB >= 21 or match.scoreA >= 21)):
@@ -247,7 +262,7 @@ def finish_match(id, scoreA, scoreB):
         winning_team = "A" if scoreA > scoreB else "B"
         _reward_winning_team(match.id, winning_team, 10)
 
-    query = "UPDATE api_match SET endDateTime=datetime('now'), court_id=NULL WHERE id=%s"
+    query = "UPDATE api_match SET endDateTime=datetime('now') WHERE id=%s"
 
     response = run_connection(query, id)
 
@@ -285,15 +300,17 @@ def finish_match(id, scoreA, scoreB):
                 # there's no sibling and it's not the 0 level, which shouldn't exist - return error
                 return http_response('Could not find a sibling for your match!', code=400)
 
+
     #put the next match on the court
-    court = Court.objects.raw("SELECT * FROM api_court WHERE id=%s AND queue_id IS NOT NULL", [court_id])
-    if len(list(court)) > 0:
-        court = court[0]
-        #that means it has a queue id
-        queue = Queue.objects.raw("SELECT * FROM api_queue WHERE id=%s", [court.queue_id])
-        if len(list(queue)) > 0:
-            queue = queue[0]
-            dequeue_resp = dequeue_next_party_to_court(queue.type, court.id)
+    if court_id is not None:
+        court = Court.objects.raw("SELECT * FROM api_court WHERE id = %s", [court_id])[0]
+        queue = court.queue
+
+        # Remove the finished match from the court before dequeueing
+        remove_match_response = run_connection("UPDATE api_court SET match_id = NULL WHERE id = %s", court_id)
+
+        if queue is not None:
+            dequeue_resp = dequeue_party_to_court_call(queue.type)
 
     return response
 
@@ -315,56 +332,6 @@ def _reward_winning_team(match_id, winning_team, points):
     WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=%s AND plin.team=%s)
     """
     return run_connection(query, points, match_id, winning_team)
-
-
-def dequeue_next_party_to_court(queue_type, court_id):
-
-    response = get_parties_by_playtime(queue_type)
-    my_json = json.loads(response.content.decode())
-    parties = my_json['parties']
-    if len(parties) == 0:
-        return http_response({}, message='No parties on this queue', code=400)
-
-    party_to_dequeue = parties[0]
-
-    party_id = party_to_dequeue['party_id']
-
-    queues = Queue.objects.raw("SELECT * FROM api_queue WHERE type = %s", [queue_type])
-    if len(list(queues)) == 0:
-        return http_response({}, message='No such queue found', code=400)
-
-    queue = queues[0]
-
-    # Get the members from the party
-    members = Member.objects.raw("SELECT * FROM api_member WHERE party_id = %s", [party_id])
-
-    # Remove party from queue
-    response = run_connection("DELETE FROM api_party WHERE id = %s", party_id)
-    if response.status_code != 200:
-        # Error
-        return response
-
-    # Update the members so they have party_id null
-    update = run_connection("UPDATE api_member SET party_id=NULL WHERE party_id=%s", party_id)
-    if update.status_code != 200:
-        return update
-
-    # Create match on court
-    a_players = []
-    b_players = []
-
-    # Assign teams
-    num_members = len(list(members))
-    for i in range(num_members):
-        team = "A" if i % 2 == 0 else "B"
-        member = members[i]
-        if team == "A":
-            a_players.append(member.id)
-        else:
-            b_players.append(member.id)
-
-    return create_match(score_a=0, score_b=0, a_players=a_players, b_players=b_players, court_id=court_id)
-
 
 def _get_parent_node(tournament_id, curr_level, index):
     parent_index = index // 2
@@ -472,17 +439,15 @@ def _is_tournament_match(id):
     :param id:
     :return:
     """
-    tournaments = Tournament.objects.raw("SELECT * FROM api_tournament WHERE endDate IS NULL")
-    if len(list(tournaments)) > 0:
-        tournament = tournaments[0]
-        bracket_nodes = BracketNode.objects.raw(
-            "SELECT * FROM api_bracketnode WHERE tournament_id = %s AND match_id IS NOT NULL AND match_id = %s",
-            [tournament.id, id])
-        if len(list(bracket_nodes)) > 0:
-            return tournament
-
+    match_query = Match.objects.raw("SELECT * FROM api_match WHERE id = %s", [id])
+    if len(list(match_query)) > 0:
+        match = match_query[0]
+        bracket_node = match.bracket_node
+        if bracket_node is None:
+            return None
+        tournament = bracket_node.tournament
+        return tournament
     return None
-
 
 def _is_ranked_match(id):
     """
@@ -492,8 +457,8 @@ def _is_ranked_match(id):
     """
     match_court = Match.objects.raw("SELECT * FROM api_match WHERE api_match.id=%s", [id])
     if len(list(match_court)) > 0:
-        court_id = match_court[0].court_id
-        courts = Court.objects.raw("SELECT * FROM api_court WHERE api_court.id=%s", [court_id])
+        match = match_court[0]
+        courts = Court.objects.raw("SELECT * FROM api_court WHERE match_id=%s", [match.id])
         if (len(list(courts))) > 0:
             court = courts[0]
             queues = Queue.objects.raw("SELECT * FROM api_queue WHERE api_queue.id=%s", [court.queue_id])

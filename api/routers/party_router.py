@@ -25,8 +25,8 @@ def create_party(request):
     if not validate_keys(['queue_id', 'member_ids'], post_dict):
         return http_response({}, message="Keys not found", code=400)
 
-    queue_type = post_dict['queue_id']
-    queues = Queue.objects.raw("SELECT * FROM api_queue WHERE id = %s", [queue_type])
+    queue_id = post_dict['queue_id']
+    queues = Queue.objects.raw("SELECT * FROM api_queue WHERE id = %s", [queue_id])
     if len(list(queues)) <= 0:
         return http_response(message='Queue does not exist', code=400)
 
@@ -74,7 +74,7 @@ def create_party(request):
                 else:
                     a_players.append(member_id)
 
-        create_match(score_a=0, score_b=0, a_players=a_players, b_players=b_players, court_id=open_court_id)
+        create_match(a_players=a_players, b_players=b_players, court_id=open_court_id)
         return http_response(message="OK", code=200)
     else:
         # Create party on the queue

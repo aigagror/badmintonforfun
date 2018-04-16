@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from api.calls.election_call import get_votes_from_member, get_all_votes
 from api.cursor_api import deserializeDate
 from api.utils import MemberClass
-from api.routers.router import restrictRouter, auth_decorator
+from api.routers.router import restrictRouter, auth_decorator, validate_keys, get_member_id_from_email
 from api.cursor_api import *
 from api.models import *
 
@@ -13,26 +13,40 @@ from api.models import *
 def cast_vote(request):
     """
     POST -- Casts/updates a vote for the current election
-        Required Keys: voter, campaign
+        Required Keys: campaign_id
     :param request:
     :param job:
     :return:
     """
+    voter_id = get_member_id_from_email(request.user.email)
+
     dict_post = dict(request.POST.items())
-    voterKey = "voter"
-    campaignKey = "campaign"
-    keys = [voterKey, campaignKey]
-    for key in keys:
-        if key not in dict_post:
-            return HttpResponse("Missing required param {}".format(key), status=400)
+    if not validate_keys(["campaign_id"], dict_post):
+        return http_response(message='Missing campaign_id', code=400)
 
-    voter_id = dict_post[voterKey]
-    campaign_id = int(dict_post[campaignKey])
+    campaign_id = int(dict_post['campaign_id'])
 
+    campaign_query = Campaign.objects.raw("SELECT * FROM api_campaign WHERE id = %s", [campaign_id])
+    if len(list(campaign_query)) == 0:
+        return http_response(message='Campaign does not exist')
+
+    campaign = campaign_query[0]
+
+    this_job = campaign.job
+
+    my_votes = Vote.objects.raw("SELECT * FROM api_vote WHERE voter_id = %s", [voter_id])
+
+    for vote in my_votes:
+        if vote.campaign.job == this_job:
+            # Already voted for a campaign with the same job, must update
+            response = run_connection("UPDATE api_vote SET campaign_id = %s WHERE voter_id = %s", campaign.id, voter_id)
+            return response
+
+    # add the vote
     query = """
             INSERT INTO api_vote(voter_id, campaign_id) VALUES(%s, %s)
             """
-    response = run_connection(query, voter_id, campaign_id)
+    response = run_connection(query, voter_id, campaign.id)
     return response
 
 
