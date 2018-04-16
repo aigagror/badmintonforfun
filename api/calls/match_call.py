@@ -76,7 +76,7 @@ def leave_match(match_id, member_id):
     :param member_id:
     :return:
     """
-
+    match_id = int(match_id)
     #if there's only one player in the match
     players = list(_players(match_id))
     found = 0
