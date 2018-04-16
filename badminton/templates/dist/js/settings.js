@@ -2719,7 +2719,7 @@ class MemberSettings extends React.Component {
     }
     deleteMember(idx) {
         return () => {
-            const toDelete = this.state.members[idx]["status"];
+            const toDelete = this.state.members[idx]["member_id"];
             axios_1.default.post(member_url_delete, Utils_1.objectToFormData({ member_id: toDelete }))
                 .then((res) => {
                 console.log(res);
