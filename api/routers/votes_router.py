@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from api.calls.election_call import get_votes_from_member, get_all_votes
 from api.cursor_api import deserializeDate
 from api.utils import MemberClass
-from api.routers.router import restrictRouter, auth_decorator
+from api.routers.router import restrictRouter, auth_decorator, validate_keys, get_member_id_from_email
 from api.cursor_api import *
 from api.models import *
 
@@ -13,26 +13,23 @@ from api.models import *
 def cast_vote(request):
     """
     POST -- Casts/updates a vote for the current election
-        Required Keys: voter, campaign
+        Required Keys: campaign_id
     :param request:
     :param job:
     :return:
     """
     dict_post = dict(request.POST.items())
-    voterKey = "voter"
-    campaignKey = "campaign"
-    keys = [voterKey, campaignKey]
-    for key in keys:
-        if key not in dict_post:
-            return HttpResponse("Missing required param {}".format(key), status=400)
+    validate_keys("campaign_id", dict_post)
 
-    voter_id = dict_post[voterKey]
-    campaign_id = int(dict_post[campaignKey])
+    voter_id = get_member_id_from_email(request.user.email)
 
+    # @TODO need to add vote updating to this depending on the campaign job
+
+    # add the vote
     query = """
             INSERT INTO api_vote(voter_id, campaign_id) VALUES(%s, %s)
             """
-    response = run_connection(query, voter_id, campaign_id)
+    response = run_connection(query, voter_id, dict_post["campaign_id"])
     return response
 
 

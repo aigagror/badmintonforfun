@@ -229,7 +229,6 @@ class MatchTest(CustomTestCase):
         # Grace's level should still be 0, since she's team A
         self.assertEqual(grace.level, 0)
 
-
     @run(path_name='finish_match', email=JOSHUA, method=POST, args={'scoreA': 21, 'scoreB': 19})
     def test_finish_ranked_match(self):
         """
