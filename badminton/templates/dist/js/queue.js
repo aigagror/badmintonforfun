@@ -2237,14 +2237,21 @@ const getSelectedMemberObj = () => {
 class CourtView extends React.Component {
     render() {
         const name = 'court' + this.props.court.id;
+        const match = this.props.court.match;
+        console.log(this.props.court.queue_type === null && !this.props.hasParty);
+        console.log(this.props.court.queue_type);
         return React.createElement("div", { className: "col-6" },
             React.createElement("div", { className: 'row' },
                 React.createElement("div", { className: "col-6" },
                     React.createElement("h4", null, this.props.court.queue_type === null ? "Free Play" : this.props.court.queue_type)),
                 (this.props.court.queue_type === null && !this.props.hasParty) &&
-                    React.createElement("div", { className: "col-6" },
-                        React.createElement("button", { onClick: () => this.props.onYes(this.props.court.court_id), className: 'interaction-style' }, "Start Match"))),
-            React.createElement("div", { className: "court-style", "data-tip": true, "data-event": 'click focus', "data-for": name }));
+                    (match !== null ? React.createElement("div", { className: "col-6" },
+                        React.createElement("button", { onClick: () => this.props.onJoin(match.match_id, match.teamA.length <= match.teamB.length ? 'A' : 'B'), className: 'interaction-style' }, "Join Match")) : React.createElement("div", { className: "col-6" },
+                        React.createElement("button", { onClick: () => this.props.onYes(this.props.court.court_id), className: 'interaction-style' }, "Start Match")))),
+            match !== null ? React.createElement("div", { className: "court-style" },
+                match.teamA.map((a, idx) => React.createElement("div", { className: "court-a-team team-" + (idx + 1) + "-" + match.teamA.length }, a)),
+                match.teamB.map((a, idx) => React.createElement("div", { className: "court-b-team team-" + (idx + 1) + "-" + match.teamB.length }, a))) :
+                React.createElement("div", { className: "court-style", "data-tip": true, "data-event": 'click focus', "data-for": name }));
     }
 }
 class MyPartyView extends React.Component {
@@ -2373,6 +2380,8 @@ class Queue extends React.Component {
         this.refreshQueue = this.refreshQueue.bind(this);
         this.startMatch = this.startMatch.bind(this);
         this.finishMatch = this.finishMatch.bind(this);
+        this.leaveMatch = this.leaveMatch.bind(this);
+        this.joinMatch = this.joinMatch.bind(this);
     }
     refreshQueue() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -2449,6 +2458,7 @@ class Queue extends React.Component {
             }
         };
         const onSwap = (id, event) => {
+            console.log(id);
             if (event.target.checked) {
                 deleteArr(left, id);
                 right.push(id);
@@ -2488,6 +2498,35 @@ class Queue extends React.Component {
             }
         });
     }
+    leaveMatch() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const res = yield axios_1.default.post('/api/match/leave/', Utils_1.objectToFormData({
+                    match_id: this.state.matchId,
+                }));
+                this.refreshQueue();
+                console.log(res);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
+    joinMatch(match_id, team) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const res = yield axios_1.default.post('/api/match/join/', Utils_1.objectToFormData({
+                    match_id: match_id,
+                    team: team,
+                }));
+                this.refreshQueue();
+                console.log(res);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
     render() {
         if (this.state.memberState === null) {
             return React.createElement("p", null, "Loading");
@@ -2501,19 +2540,25 @@ class Queue extends React.Component {
                     "vs Team B: ",
                     this.state.teamB.map((a) => a.name).join(','),
                     " "),
-                React.createElement("div", { className: "court-style" }),
+                React.createElement("div", { className: "court-style" },
+                    this.state.teamA.map((a, idx) => React.createElement("div", { className: "court-a a-team-" + (idx + 1) + "-" + this.state.teamA.length }, "a.name")),
+                    this.state.teamB.map((a, idx) => React.createElement("div", { className: "court-a a-team-" + (idx + 1) + "-" + this.state.teamB.length }, "a.name"))),
                 React.createElement("div", { className: "col-5" },
                     React.createElement("input", { value: this.state.aScore, className: 'interaction-style', onChange: (ev) => this.setState({ aScore: ev.target.value }) })),
                 React.createElement("div", { className: "col-2" }, "to"),
                 React.createElement("div", { className: "col-5" },
                     React.createElement("input", { value: this.state.bScore, className: 'interaction-style', onChange: (ev) => this.setState({ bScore: ev.target.value }) })),
-                React.createElement("button", { className: 'interaction-style', onClick: this.finishMatch }, "Finish Match"));
+                React.createElement("div", { className: "row" },
+                    React.createElement("div", { className: "col-6" },
+                        React.createElement("button", { className: 'interaction-style', onClick: this.finishMatch }, "Finish Match")),
+                    React.createElement("div", { className: "col-6" },
+                        React.createElement("button", { className: 'interaction-style', onClick: this.leaveMatch }, "Leave Match"))));
         }
         return React.createElement("div", null,
             React.createElement("div", { className: "row" },
                 this.state.popup && this.state.popup,
                 this.state.courtData.map((court, idx) => {
-                    return React.createElement(CourtView, { key: idx, court: court, hasParty: this.state.party !== null, onYes: this.startMatch });
+                    return React.createElement(CourtView, { key: idx, court: court, hasParty: this.state.party !== null, onYes: this.startMatch, onJoin: this.joinMatch });
                 })),
             React.createElement(MyPartyView, { party: this.state.party, queueTypes: this.state.queueTypes, refresh: this.refreshQueue }),
             React.createElement("div", { className: "row" }, this.state.queues.map((queue, idx) => {
