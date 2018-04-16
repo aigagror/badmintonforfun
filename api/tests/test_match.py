@@ -18,45 +18,45 @@ class MatchTest(CustomTestCase):
         self.assertEqual(matches + 1, len(list(Match.objects.all())))
         self.assertEqual(playedin + 4, len(list(PlayedIn.objects.all())))
 
-    @run(path_name='start_match', email=JARED, method=POST, args={'court_id': 6})
-    def test_start_match(self):
-        """
-        Can start a match on a court with no queue
-        :return:
-        """
-        response = self.response
-        self.assertGoodResponse(response)
-
-        self.assertEqual(self.original_number_of_matches + 1, self.number_of_matches_now)
-
-        jared = Member.objects.get(first_name='Jared')
-        playedin = PlayedIn.objects.get(member=jared)
-        self.assertIsNotNone(playedin)
-        match = playedin.match
-
-        # Should be an ongoing match
-        self.assertIsNone(match.endDateTime)
-
-        # Should be on this court
-        self.assertEqual(6, match.court_id)
-
-    @run(path_name='start_match', email=JARED, method=POST, args={'court_id': 5})
-    def test_start_bad_match(self):
-        """
-        Cannot start a match on a court that's associated with a queue
-        :return:
-        """
-        response = self.response
-        self.assertBadResponse(response)
-
-        self.assertEqual(self.original_number_of_matches, self.number_of_matches_now)
-
-        jared = Member.objects.get(first_name='Jared')
-        playedin = PlayedIn.objects.get(member=jared)
-        self.assertIsNone(playedin)
-
-        match_on_court = Match.objects.filter(court_id=5).exists()
-        self.assertFalse(match_on_court)
+    # @run(path_name='start_match', email=JARED, method=POST, args={'court_id': 6})
+    # def test_start_match(self):
+    #     """
+    #     Can start a match on a court with no queue
+    #     :return:
+    #     """
+    #     response = self.response
+    #     self.assertGoodResponse(response)
+    #
+    #     self.assertEqual(self.original_number_of_matches + 1, self.number_of_matches_now)
+    #
+    #     jared = Member.objects.get(first_name='Jared')
+    #     playedin = PlayedIn.objects.get(member=jared)
+    #     self.assertIsNotNone(playedin)
+    #     match = playedin.match
+    #
+    #     # Should be an ongoing match
+    #     self.assertIsNone(match.endDateTime)
+    #
+    #     # Should be on this court
+    #     self.assertEqual(6, match.court_id)
+    #
+    # @run(path_name='start_match', email=JARED, method=POST, args={'court_id': 5})
+    # def test_start_bad_match(self):
+    #     """
+    #     Cannot start a match on a court that's associated with a queue
+    #     :return:
+    #     """
+    #     response = self.response
+    #     self.assertBadResponse(response)
+    #
+    #     self.assertEqual(self.original_number_of_matches, self.number_of_matches_now)
+    #
+    #     jared = Member.objects.get(first_name='Jared')
+    #     playedin = PlayedIn.objects.get(member=jared)
+    #     self.assertIsNone(playedin)
+    #
+    #     match_on_court = Match.objects.filter(court_id=5).exists()
+    #     self.assertFalse(match_on_court)
 
     @run(path_name='join_match', email=JARED, method=POST, args={'match_id': 9, 'team': 'B'})
     def test_join_match_team_B(self):
