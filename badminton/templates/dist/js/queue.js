@@ -432,7 +432,7 @@ module.exports = __webpack_require__(13);
 var utils = __webpack_require__(1);
 var bind = __webpack_require__(7);
 var Axios = __webpack_require__(15);
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(4);
 
 /**
  * Create an instance of Axios
@@ -517,7 +517,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(4);
 var utils = __webpack_require__(1);
 var InterceptorManager = __webpack_require__(24);
 var dispatchRequest = __webpack_require__(25);
@@ -1064,6 +1064,41 @@ module.exports = InterceptorManager;
 
 /***/ }),
 
+/***/ 248:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+class Slider extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+        // Since checked is optional, use a double !!
+        // To get a boolean value
+        this.selected = !!this.props.checked;
+    }
+    componentDidMount() {
+        if (this.selected) {
+            this.inputElem.checked = true;
+        }
+    }
+    onChange(event) {
+        this.selected = !this.selected;
+        this.props.change(event);
+    }
+    render() {
+        return (React.createElement("label", { className: "switch" },
+            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: (input) => this.inputElem = input }),
+            React.createElement("span", { className: "slider round" })));
+    }
+}
+exports.Slider = Slider;
+
+
+/***/ }),
+
 /***/ 25:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1073,7 +1108,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(1);
 var transformData = __webpack_require__(26);
 var isCancel = __webpack_require__(10);
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(4);
 var isAbsoluteURL = __webpack_require__(27);
 var combineURLs = __webpack_require__(28);
 
@@ -1154,41 +1189,6 @@ module.exports = function dispatchRequest(config) {
     return Promise.reject(reason);
   });
 };
-
-
-/***/ }),
-
-/***/ 259:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class Slider extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onChange = this.onChange.bind(this);
-        // Since checked is optional, use a double !!
-        // To get a boolean value
-        this.selected = !!this.props.checked;
-    }
-    componentDidMount() {
-        if (this.selected) {
-            this.inputElem.checked = true;
-        }
-    }
-    onChange(event) {
-        this.selected = !this.selected;
-        this.props.change(event);
-    }
-    render() {
-        return (React.createElement("label", { className: "switch" },
-            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: (input) => this.inputElem = input }),
-            React.createElement("span", { className: "slider round" })));
-    }
-}
-exports.Slider = Slider;
 
 
 /***/ }),
@@ -1654,7 +1654,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 37:
+/***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1666,7 +1666,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
  * in of themselves.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var Cookies = __webpack_require__(40);
+var Cookies = __webpack_require__(39);
 /**
  * Mappings from imported classes to random strings.
  */
@@ -1722,10 +1722,129 @@ exports.xsrfHeaderName = xsrfHeaderName;
 
 /***/ }),
 
-/***/ 4:
-/***/ (function(module, exports) {
+/***/ 39:
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = ReactDOM;
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Cookies = __webpack_require__(40);
+
+var _Cookies2 = _interopRequireDefault(_Cookies);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _Cookies2.default;
+module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 4:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(1);
+var normalizeHeaderName = __webpack_require__(16);
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(8);
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(8);
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
 
@@ -1739,32 +1858,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Cookies = __webpack_require__(41);
-
-var _Cookies2 = _interopRequireDefault(_Cookies);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _Cookies2.default;
-module.exports = exports['default'];
-
-/***/ }),
-
-/***/ 41:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _cookie = __webpack_require__(42);
+var _cookie = __webpack_require__(41);
 
 var _cookie2 = _interopRequireDefault(_cookie);
 
@@ -1772,7 +1870,7 @@ var _objectAssign = __webpack_require__(32);
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-var _utils = __webpack_require__(43);
+var _utils = __webpack_require__(42);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1897,7 +1995,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 42:
+/***/ 41:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2100,7 +2198,7 @@ function tryDecode(str, decode) {
 
 /***/ }),
 
-/***/ 43:
+/***/ 42:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2131,7 +2229,7 @@ function cleanCookies() {
 
 /***/ }),
 
-/***/ 45:
+/***/ 44:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2160,7 +2258,7 @@ exports.objectToFormData = objectToFormData;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(4);
+const ReactDOM = __webpack_require__(5);
 const Queue_1 = __webpack_require__(489);
 ReactDOM.render(React.createElement(Queue_1.Queue, null), document.querySelector("queue-view"));
 
@@ -2184,10 +2282,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(2);
 const axios_1 = __webpack_require__(12);
 const Select_1 = __webpack_require__(49);
-const Utils_1 = __webpack_require__(45);
-const LocalResourceResolver_1 = __webpack_require__(37);
-const Popup_1 = __webpack_require__(52);
-const Slider_1 = __webpack_require__(259);
+const Utils_1 = __webpack_require__(44);
+const LocalResourceResolver_1 = __webpack_require__(36);
+const Popup_1 = __webpack_require__(51);
+const Slider_1 = __webpack_require__(248);
 axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
 axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
 const queueUrl = '/api/queue/';
@@ -2195,12 +2293,28 @@ const matchUrl = '/api/match/get/';
 const courtStatuses = '/api/courts/';
 const freeMemberUrl = '/api/party/free_members/';
 const partyGetUrl = '/api/party/get/';
+function round(number, precision) {
+    var shift = function (number, precision, reverseShift) {
+        if (reverseShift) {
+            precision = -precision;
+        }
+        var numArray = ("" + number).split("e");
+        return +(numArray[0] + "e" + (numArray[1] ? (+numArray[1] + precision) : precision));
+    };
+    return shift(Math.round(shift(number, precision, false)), precision, true);
+}
 class QueuedPartyView extends React.Component {
     render() {
-        return React.createElement("div", { className: 'queue-party-div' }, this.props.party.members.map((member, idx) => {
-            return React.createElement("div", { key: idx },
-                React.createElement("p", null, member.first_name + ' ' + member.last_name));
-        }));
+        return React.createElement("div", { className: "row" },
+            React.createElement("div", { className: 'queue-party-div' },
+                this.props.party.members.map((member, idx) => {
+                    return React.createElement("div", { key: idx },
+                        React.createElement("p", null, member.first_name + ' ' + member.last_name));
+                }),
+                React.createElement("h4", null,
+                    "Average Playtime: ",
+                    round(this.props.party.average_play_time, 2),
+                    " minutes")));
     }
 }
 class SpecificQueueView extends React.Component {
@@ -2238,8 +2352,6 @@ class CourtView extends React.Component {
     render() {
         const name = 'court' + this.props.court.id;
         const match = this.props.court.match;
-        console.log(this.props.court.queue_type === null && !this.props.hasParty);
-        console.log(this.props.court.queue_type);
         return React.createElement("div", { className: "col-6" },
             React.createElement("div", { className: 'row' },
                 React.createElement("div", { className: "col-6" },
@@ -2366,8 +2478,11 @@ class MyPartyView extends React.Component {
         return React.createElement("div", { className: "row" },
             members,
             React.createElement("div", { className: "row-offset-1" },
-                React.createElement(Select_1.Select, { options: this.props.queueTypes, name: "party_picker", defaultValue: this.state.selectedQueue, onChange: (val) => this.setState({ selectedQueue: val }) })),
-            React.createElement("button", { className: "interaction-style", onClick: this.createParty }, "Create Party"));
+                React.createElement("div", { className: "row" },
+                    React.createElement("div", { className: "col-6" },
+                        React.createElement(Select_1.Select, { options: this.props.queueTypes, name: "party_picker", defaultValue: this.state.selectedQueue, onChange: (val) => this.setState({ selectedQueue: val }) })),
+                    React.createElement("div", { className: "col-6" },
+                        React.createElement("button", { className: "interaction-style", onClick: this.createParty }, "Create Party")))));
     }
 }
 class Queue extends React.Component {
@@ -2458,7 +2573,6 @@ class Queue extends React.Component {
             }
         };
         const onSwap = (id, event) => {
-            console.log(id);
             if (event.target.checked) {
                 deleteArr(left, id);
                 right.push(id);
@@ -2735,111 +2849,13 @@ exports.Select = Select;
 /***/ }),
 
 /***/ 5:
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var utils = __webpack_require__(1);
-var normalizeHeaderName = __webpack_require__(16);
-
-var DEFAULT_CONTENT_TYPE = {
-  'Content-Type': 'application/x-www-form-urlencoded'
-};
-
-function setContentTypeIfUnset(headers, value) {
-  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
-    headers['Content-Type'] = value;
-  }
-}
-
-function getDefaultAdapter() {
-  var adapter;
-  if (typeof XMLHttpRequest !== 'undefined') {
-    // For browsers use XHR adapter
-    adapter = __webpack_require__(8);
-  } else if (typeof process !== 'undefined') {
-    // For node use HTTP adapter
-    adapter = __webpack_require__(8);
-  }
-  return adapter;
-}
-
-var defaults = {
-  adapter: getDefaultAdapter(),
-
-  transformRequest: [function transformRequest(data, headers) {
-    normalizeHeaderName(headers, 'Content-Type');
-    if (utils.isFormData(data) ||
-      utils.isArrayBuffer(data) ||
-      utils.isBuffer(data) ||
-      utils.isStream(data) ||
-      utils.isFile(data) ||
-      utils.isBlob(data)
-    ) {
-      return data;
-    }
-    if (utils.isArrayBufferView(data)) {
-      return data.buffer;
-    }
-    if (utils.isURLSearchParams(data)) {
-      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-      return data.toString();
-    }
-    if (utils.isObject(data)) {
-      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
-    }
-    return data;
-  }],
-
-  transformResponse: [function transformResponse(data) {
-    /*eslint no-param-reassign:0*/
-    if (typeof data === 'string') {
-      try {
-        data = JSON.parse(data);
-      } catch (e) { /* Ignore */ }
-    }
-    return data;
-  }],
-
-  /**
-   * A timeout in milliseconds to abort a request. If set to 0 (default) a
-   * timeout is not created.
-   */
-  timeout: 0,
-
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-
-  maxContentLength: -1,
-
-  validateStatus: function validateStatus(status) {
-    return status >= 200 && status < 300;
-  }
-};
-
-defaults.headers = {
-  common: {
-    'Accept': 'application/json, text/plain, */*'
-  }
-};
-
-utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-  defaults.headers[method] = {};
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
-});
-
-module.exports = defaults;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+module.exports = ReactDOM;
 
 /***/ }),
 
-/***/ 52:
+/***/ 51:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

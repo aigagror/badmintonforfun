@@ -320,11 +320,8 @@ export class HomeView extends React.Component<{}, any> {
 		if (this.state.stats === null) {
 			return null
 		}
-
-		return (<div className="home-view">
-			<AnnounceView stats={this.state.stats} />
-			<div className="row-offset-2">
-			<BigCalendar
+		/*<div className="row-offset-2">
+		<BigCalendar
 		      events={this.state.sched}
 		      views={["month"]}
 			  step={60}
@@ -340,8 +337,6 @@ export class HomeView extends React.Component<{}, any> {
 		        onChange={(date: any) => this.setState({addDate:date})}
 		        className="interaction-style"
 		    />
-		    </div>
-
 		    <div className="col-4">
 		    <input 
 		    	className="interaction-style" 
@@ -358,7 +353,10 @@ export class HomeView extends React.Component<{}, any> {
 		    	>Submit</button>
 		    </div>
 		    </div>
-		}
+		    </div>}*/
+
+		return (<div className="home-view">
+			<AnnounceView stats={this.state.stats} />
 
 			<div className="row-offset-2">
 	    	<StatView stats={this.state.stats} />
@@ -367,7 +365,6 @@ export class HomeView extends React.Component<{}, any> {
 	    	<div className="row-offset-2">
 	    	<h2>Profile</h2>
 	    	<ProfileView member_id={getMemberId()} />
-	    	</div>
 	    	</div>
 	    	</div>);
 	}

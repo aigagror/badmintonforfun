@@ -432,7 +432,7 @@ module.exports = __webpack_require__(13);
 var utils = __webpack_require__(1);
 var bind = __webpack_require__(7);
 var Axios = __webpack_require__(15);
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(4);
 
 /**
  * Create an instance of Axios
@@ -517,7 +517,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(4);
 var utils = __webpack_require__(1);
 var InterceptorManager = __webpack_require__(24);
 var dispatchRequest = __webpack_require__(25);
@@ -1073,7 +1073,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(1);
 var transformData = __webpack_require__(26);
 var isCancel = __webpack_require__(10);
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(4);
 var isAbsoluteURL = __webpack_require__(27);
 var combineURLs = __webpack_require__(28);
 
@@ -1522,83 +1522,6 @@ module.exports = function spread(callback) {
 /***/ }),
 
 /***/ 4:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-
-/***/ 484:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(4);
-const MemberView_1 = __webpack_require__(485);
-ReactDOM.render(React.createElement(MemberView_1.MemberView, null), document.querySelector("member-view"));
-
-
-/***/ }),
-
-/***/ 485:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const url = '/api/settings/members/all/';
-class Member extends React.Component {
-    render() {
-        return React.createElement("a", { href: "/profile.html?member_id=" + this.props.id }, this.props.name);
-    }
-}
-class MemberView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            members: []
-        };
-    }
-    componentDidMount() {
-        axios_1.default.get(url)
-            .then((res) => {
-            const sorted = res.data.members.sort((a, b) => {
-                const cmp = a.first_name.localeCompare(b.first_name);
-                if (cmp === 0) {
-                    return a.last_name.localeCompare(b.last_name);
-                }
-                return cmp;
-            });
-            this.setState({
-                members: sorted
-            });
-        })
-            .catch((res) => {
-            console.log(res);
-        });
-    }
-    render() {
-        if (this.state.members.length === 0) {
-            return React.createElement("p", null, "Loading");
-        }
-        else {
-            return React.createElement("ul", { className: "member-list" }, this.state.members.map((member, idx) => {
-                return React.createElement("li", { key: idx },
-                    React.createElement(Member, { name: member.first_name + ' ' + member.last_name, id: member.member_id, key: idx }));
-            }));
-        }
-    }
-}
-exports.MemberView = MemberView;
-
-
-/***/ }),
-
-/***/ 5:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1700,6 +1623,83 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ }),
+
+/***/ 484:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+const ReactDOM = __webpack_require__(5);
+const MemberView_1 = __webpack_require__(485);
+ReactDOM.render(React.createElement(MemberView_1.MemberView, null), document.querySelector("member-view"));
+
+
+/***/ }),
+
+/***/ 485:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(2);
+const axios_1 = __webpack_require__(12);
+const url = '/api/settings/members/all/';
+class Member extends React.Component {
+    render() {
+        return React.createElement("a", { href: "/profile.html?member_id=" + this.props.id }, this.props.name);
+    }
+}
+class MemberView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            members: []
+        };
+    }
+    componentDidMount() {
+        axios_1.default.get(url)
+            .then((res) => {
+            const sorted = res.data.members.sort((a, b) => {
+                const cmp = a.first_name.localeCompare(b.first_name);
+                if (cmp === 0) {
+                    return a.last_name.localeCompare(b.last_name);
+                }
+                return cmp;
+            });
+            this.setState({
+                members: sorted
+            });
+        })
+            .catch((res) => {
+            console.log(res);
+        });
+    }
+    render() {
+        if (this.state.members.length === 0) {
+            return React.createElement("p", null, "Loading");
+        }
+        else {
+            return React.createElement("ul", { className: "member-list" }, this.state.members.map((member, idx) => {
+                return React.createElement("li", { key: idx },
+                    React.createElement(Member, { name: member.first_name + ' ' + member.last_name, id: member.member_id, key: idx }));
+            }));
+        }
+    }
+}
+exports.MemberView = MemberView;
+
+
+/***/ }),
+
+/***/ 5:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
 
 /***/ }),
 
