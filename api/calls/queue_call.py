@@ -101,6 +101,7 @@ def get_parties_by_playtime(queue_type):
                                     AND api_party.queue_id=api_queue.id) AND api_match.id=api_playedin.match_id
                                     GROUP BY api_playedin.member_id, api_match.id) AS party_members
                                     GROUP BY party_members.member_id
+                                    ORDER BY play_time ASC 
                                      '''
 
         cursor.execute(query_members_playtime, [queue_type])
