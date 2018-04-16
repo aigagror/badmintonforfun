@@ -32,7 +32,8 @@ announcements_paths = [
 
 members_paths = [
     re_path(r'all/?$', member_router.get_members, name='get_members'),
-    re_path(r'profile/?$', member_router.get_profile)
+    re_path(r'profile/?$', member_router.get_profile, name='get_profile'),
+    re_path(r'view_member_profile/?$', member_router.view_member_profile, name='view_member_profile'),
 ]
 
 election_paths = [
