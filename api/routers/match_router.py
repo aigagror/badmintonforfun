@@ -142,18 +142,19 @@ def current_match(request):
 
 
 @auth_decorator(allowed=MemberClass.MEMBER)
-@restrictRouter(allowed=["POST"])
+@restrictRouter(allowed=["GET"])
 def get_match(request):
     """
-        POST -- Get the current match id of the match a specific member id is playing
-            Required Keys: member_id
+        GET -- Get the current match id of the match a specific member id is playing
+            needs an ?id=some_member_id
     :param request:
     :return:
     """
 
-    dict_post = dict(request.POST.items())
-    validate_keys("member_id", dict_post)
-    return find_current_match_by_member(dict_post["member_id"])
+    member_id = request.GET.get('id', None)
+    if member_id is None:
+        return http_response({}, message="Please pass in an id", code=400)
+    return find_current_match_by_member(member_id)
 
 
 @restrictRouter(allowed=["GET"])
