@@ -54,7 +54,8 @@ def finish_match(request):
     member_id = get_member_id_from_email(request.user.email)
     match_id = get_match_from_member_id(member_id)
     dict_post = dict(request.POST.items())
-    validate_keys(["scoreA", "scoreB"], dict_post)
+    if not validate_keys(["scoreA", "scoreB"], dict_post):
+        return http_response(message='missing keys', code=400)
 
     return get_finish_match(match_id, dict_post["scoreA"], dict_post["scoreB"])
 
@@ -104,8 +105,9 @@ def start_match(request):
 
     dict_post = json.loads(request.body.decode('utf8').replace("'", '"'))
     # write something to make sure a_players and b_players are lists
-    validate_keys(["score_A", "score_B", "a_players", "b_players"], dict_post)
-    return get_create_match(dict_post["score_A"], dict_post["score_B"], dict_post["a_players"], 
+    if not validate_keys(["a_players", "b_players", 'court_id'], dict_post):
+        return http_response(message='missing keys', code=400)
+    return get_create_match(dict_post["a_players"],
         dict_post["b_players"], dict_post["court_id"])
 
 

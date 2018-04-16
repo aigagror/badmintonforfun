@@ -149,12 +149,15 @@ def create_match(a_players, b_players, court_id):
 
 
     for p in a_players:
+        # It seems to be passed as a list of int strings rather than just ints
+        p = int(p)
         query = """
         INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
         """
         response = run_connection(query, p, "A", newID)
 
     for p in b_players:
+        p = int(p)
         query = """
            INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
            """
@@ -305,7 +308,8 @@ def finish_match(id, scoreA, scoreB):
         # Remove the finished match from the court before dequeueing
         remove_match_response = run_connection("UPDATE api_court SET match_id = NULL WHERE id = %s", court_id)
 
-        dequeue_resp = dequeue_party_to_court_call(queue.type)
+        if queue is not None:
+            dequeue_resp = dequeue_party_to_court_call(queue.type)
 
     return response
 
