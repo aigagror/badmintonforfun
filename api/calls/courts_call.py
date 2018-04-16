@@ -1,4 +1,4 @@
-from api.calls.queue_call import get_queue_type
+from api.calls.queue_call import get_queue_type, refresh_all_queues
 from api.models import Court, Match, PlayedIn, TEAMS
 from api.cursor_api import http_response
 
@@ -51,5 +51,7 @@ def get_courts_call():
             curr_court_dict["match"] = match_dict
         courts_dict.append(curr_court_dict)
     ret["courts"] = courts_dict
+
+    refresh_all_queues()
 
     return http_response(dict=ret)

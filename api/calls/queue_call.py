@@ -264,3 +264,18 @@ def dequeue_party_to_court_call(queue_type):
         return response
     else:
         return http_response(message="No available courts", code=400)
+
+
+def refresh_all_queues():
+    """
+    Returns a string of all queues refreshed
+    :return:
+    """
+    queues = Queue.objects.raw("SELECT * FROM api_queue")
+    queues_string = ''
+    for queue in queues:
+        queues_string += '{} '.format(queue.type)
+        response = dequeue_party_to_court_call(queue.type)
+        while response.status_code == 200:
+            response = dequeue_party_to_court_call(queue.type)
+    return queues_string

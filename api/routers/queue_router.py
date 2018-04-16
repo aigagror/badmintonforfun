@@ -1,9 +1,8 @@
 from api.calls.queue_call import get_parties_by_playtime, create_queue as call_create_queue, \
-    get_queues as call_get_queues, dequeue_party_to_court_call
+    get_queues as call_get_queues, dequeue_party_to_court_call, refresh_all_queues
 from api.routers.router import restrictRouter, validate_keys, auth_decorator
 from ..cursor_api import *
 from api.utils import MemberClass
-from api.models import Queue
 
 QUEUES = ("CASUAL", "RANKED", "KOTH")
 
@@ -47,14 +46,9 @@ def refresh_queues(request):
     :param request:
     :return:
     """
-    queues = Queue.objects.raw("SELECT * FROM api_queue")
-    queues_string = ''
-    for queue in queues:
-        queues_string += '{} '.format(queue.type)
-        response = dequeue_party_to_court_call(queue.type)
-        while response.status_code == 200:
-            response = dequeue_party_to_court_call(queue.type)
+    queues_string = refresh_all_queues()
     return http_response(message='Finished refreshing queues: {}'.format(queues_string))
+
 
 @restrictRouter(allowed=["POST"])
 def dequeue_next_party_to_court(request):

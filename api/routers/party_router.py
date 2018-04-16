@@ -22,11 +22,11 @@ def create_party(request):
     """
     post_dict = dict(request.POST.items())
     print(post_dict)
-    if not validate_keys(['queue_type', 'member_ids'], post_dict):
+    if not validate_keys(['queue_id', 'member_ids'], post_dict):
         return http_response({}, message="Keys not found", code=400)
 
-    queue_type = post_dict['queue_type']
-    queues = Queue.objects.raw("SELECT * FROM api_queue WHERE type = %s", [queue_type])
+    queue_id = post_dict['queue_id']
+    queues = Queue.objects.raw("SELECT * FROM api_queue WHERE id = %s", [queue_id])
     if len(list(queues)) <= 0:
         return http_response(message='Queue does not exist', code=400)
 
