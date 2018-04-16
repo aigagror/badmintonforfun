@@ -52,7 +52,8 @@ settings_paths = [
     re_path(r'members/all/?$', settings_router.settingsAllMembersRouter, name='all_members'),
     re_path(r'members/all/delete/?$', settings_router.delete_member, name='delete_member'),
     re_path(r'interested/add/?$', settings_router.settingsInterestedCreateRouter, name='add_interested'),
-    re_path(r'schedule/?$', settings_router.settingsSchedulesRouter, name='schedule'),
+    re_path(r'schedule/get/?$', settings_router.get_schedule, name='get_schedule'),
+    re_path(r'schedule/edit/?$', settings_router.settingsSchedulesRouter, name='edit_schedule'),
     re_path(r'courts/?$', settings_router.settingsCourtRouter, name='court_settings'),
     re_path(r'queues/?$', settings_router.settingsQueueRouter, name='queue_settings'),
 ]

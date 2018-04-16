@@ -26370,7 +26370,7 @@ class HomeView extends React.Component {
     }
     performRequest(url) {
         const req1 = axios_1.default.get(url + "?id=" + LocalResourceResolver_1.getMemberId());
-        const req2 = axios_1.default.get('/api/settings/schedule');
+        const req2 = axios_1.default.get('/api/settings/schedule/get');
         axios_1.default.all([req1, req2]).then(axios_1.default.spread((res, res2) => {
             const events = res2.data.schedule.map((ev) => {
                 return {
@@ -26399,7 +26399,7 @@ class HomeView extends React.Component {
                         number_of_courts: this.state.numCourts
                     }
                 };
-                const data = yield axios_1.default.post('/api/settings/schedule', {
+                const data = yield axios_1.default.post('/api/settings/schedule/edit', {
                     schedule: [{
                             date: this.state.addDate.format(dateFormat),
                             number_of_courts: this.state.numCourts
