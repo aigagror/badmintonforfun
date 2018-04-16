@@ -2719,7 +2719,7 @@ class MemberSettings extends React.Component {
     }
     deleteMember(idx) {
         return () => {
-            const toDelete = this.state.members[idx];
+            const toDelete = this.state.members[idx]["member_id"];
             axios_1.default.post(member_url_delete, Utils_1.objectToFormData({ member_id: toDelete }))
                 .then((res) => {
                 console.log(res);
@@ -2761,7 +2761,7 @@ class MemberSettings extends React.Component {
                             " ",
                             member.last_name)),
                     React.createElement("div", { className: "col-4 col-es-12" },
-                        React.createElement(Select_1.Select, { options: this.state.memberTypes, defaultValue: member.type, onChange: (role) => { this.alterMember(idx, role); }, name: member.member_id, override: true })),
+                        React.createElement(Select_1.Select, { options: this.state.memberTypes, defaultValue: member.status, onChange: (role) => { this.alterMember(idx, role); }, name: member.member_id, override: true })),
                     React.createElement("div", { className: "col-3 col-es-12" },
                         React.createElement("button", { onClick: this.deleteMember(idx), className: "interaction-style" }, "Delete")));
             }));
