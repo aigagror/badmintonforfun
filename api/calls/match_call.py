@@ -300,6 +300,7 @@ def finish_match(id, scoreA, scoreB):
                 # there's no sibling and it's not the 0 level, which shouldn't exist - return error
                 return http_response('Could not find a sibling for your match!', code=400)
 
+
     #put the next match on the court
     if court_id is not None:
         court = Court.objects.raw("SELECT * FROM api_court WHERE id = %s", [court_id])[0]
