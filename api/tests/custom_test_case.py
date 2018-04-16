@@ -513,10 +513,6 @@ class CustomTestCase(TestCase):
                      Campaign(job='President', campaigner=campaigners[2], election=election, pitch='I am Grace'),
                      Campaign(job='Treasurer', campaigner=campaigners[3], election=election, pitch='I am Dan')]
 
-        # hardcoded one vote currently for Bhuvan's campaign by Member
-        vote = Vote(campaign_id=2, voter_id=2)
-        vote.save()
-
         print("Election ID and dates:")
         print(str(election.id) + ", " + str(election))
         index = 0
@@ -525,5 +521,10 @@ class CustomTestCase(TestCase):
             print("Campaign " + str(campaign.id))
             print("{}: {}".format(campaigners[index], campaign))
             index += 1
+
+
+        # hardcoded one vote currently for Bhuvan's campaign by Member
+        vote = Vote(campaign_id=2, voter_id=2)
+        vote.save()
 
 
