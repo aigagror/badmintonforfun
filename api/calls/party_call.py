@@ -165,4 +165,8 @@ def get_free_members_call(member_id):
         """
         cursor.execute(query, [member_id])
         results = dictfetchall(cursor)
-        return HttpResponse(json.dumps(results), content_type='application/json', status=200)
+        context = {
+            'free_members': results
+        }
+
+        return http_response(context)

@@ -12,7 +12,7 @@ from .queue_call import get_parties_by_playtime
     join_match(match_id, member_id, team) returns an http response
     leave_match(match_id, member_id) returns an http response
     delete_match(id) returns an http response
-    create_match(score_a, score_b, a_players, b_players, court_id) returns an http response
+    create_match(a_players, b_players, court_id) returns an http response
     find_current_match_by_member(id) returns an http response
     finish_match(id, scoreA, scoreB) returns an http response
     (* HAVEN'T TESTED PROPERLY YET) dequeue_next_party_to_court(queue_type, court_id) returns an http response
@@ -119,11 +119,9 @@ def delete_match(id):
     return response
 
 
-def create_match(score_a, score_b, a_players, b_players, court_id):
+def create_match(a_players, b_players, court_id):
     """
         Create a new match! Should only be used by queues
-    :param score_a:
-    :param score_b:
     :param a_players:
     :param b_players:
     :param court_id:
@@ -142,10 +140,10 @@ def create_match(score_a, score_b, a_players, b_players, court_id):
 
 
     query = """
-    INSERT INTO api_match(id, startDateTime, scoreA, scoreB, court_id) VALUES (%s, %s, %s, %s, %s)
+    INSERT INTO api_match(id, startDateTime, scoreA, scoreB, court_id) VALUES (%s, %s, 0, 0, %s)
     """
     today = datetime.datetime.now()
-    response = run_connection(query, newID, serializeDateTime(today), score_a, score_b, court_id)
+    response = run_connection(query, newID, serializeDateTime(today), court_id)
     for p in a_players:
         query = """
         INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
@@ -365,7 +363,7 @@ def dequeue_next_party_to_court(queue_type, court_id):
         else:
             b_players.append(member.id)
 
-    return create_match(score_a=0, score_b=0, a_players=a_players, b_players=b_players, court_id=court_id)
+    return create_match(a_players=a_players, b_players=b_players, court_id=court_id)
 
 
 def _get_parent_node(tournament_id, curr_level, index):
