@@ -81,6 +81,7 @@ queue_paths = [
     path('', queue_router.get_queues, name='get_queues'),
 
     re_path(r'create/?', queue_router.create_queue, name='create_queue'),
+    re_path(r'refresh/?', queue_router.refresh_queues, name='refresh_queues'),
 ]
 
 party_paths = [

@@ -3,6 +3,7 @@ from api.calls.queue_call import get_parties_by_playtime, create_queue as call_c
 from api.routers.router import restrictRouter, validate_keys, auth_decorator
 from ..cursor_api import *
 from api.utils import MemberClass
+from api.models import Queue
 
 QUEUES = ("CASUAL", "RANKED", "KOTH")
 
@@ -36,6 +37,22 @@ def next_on_queue(request):
 
     return get_parties_by_playtime(queue_type)
 
+
+@restrictRouter(allowed=["POST"])
+def refresh_queues(request):
+    """
+    Performs a hard refresh on the queues and courts.
+    In case any courts that are associated with queues are empty,
+    but there still are parties on the queue
+    :param request:
+    :return:
+    """
+    queues = Queue.objects.raw("SELECT * FROM api_queue")
+    for queue in queues:
+        response = dequeue_party_to_court_call()
+        while response.status_code == 200:
+            response = dequeue_party_to_court_call()
+    return http_response(message='Finished refreshing queues')
 
 @restrictRouter(allowed=["POST"])
 def dequeue_next_party_to_court(request):
