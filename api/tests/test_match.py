@@ -58,7 +58,7 @@ class MatchTest(CustomTestCase):
         self.assertBadResponse(response)
 
         json = response.json()
-        self.assertEqual(json['message'], 'Cannot join a finished match')
+        self.assertEqual('Cannot join a finished match', json['message'])
 
         match = Match.objects.get(id=1)
         jared = Member.objects.get(first_name='Jared')
