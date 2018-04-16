@@ -72,7 +72,8 @@ match_paths = [
     re_path(r'leave/?$', match_router.leave_match, name='leave_match'),
     re_path(r'create/?$', match_router.start_match, name='start_match'),
     re_path(r'delete/?$', match_router.delete_match, name='delete_match'),
-    re_path(r'get/?$', match_router.current_match, name='current_match'),
+    re_path(r'get/?$', match_router.get_match, name='get_match'),
+    re_path(r'current/?$', match_router.current_match, name='current_match'),
     re_path(r'all_matches_from_member/?$', match_router.all_matches_from_member, name='all_matches_from_member'),
     re_path(r'all/?$', match_router.all_matches, name='all_matches'),
 ]
