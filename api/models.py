@@ -48,6 +48,10 @@ class Party(models.Model):
 
 class Court(models.Model):
     queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
+    match = models.ForeignKey('Match', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return 'Queue: {}, Match: {}'.format(self.queue, self.match)
 
 class Tournament(models.Model):
     date = models.DateField('date of tournament', unique=True)
@@ -123,7 +127,6 @@ class Match(models.Model):
     startDateTime = models.DateTimeField('date time started')
     scoreA = models.IntegerField(default=0, blank=True)
     scoreB = models.IntegerField(default=0, blank=True)
-    court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True, blank=True)
 
     endDateTime = models.DateTimeField('date time ended', null=True, blank=True)
 

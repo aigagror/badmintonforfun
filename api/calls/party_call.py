@@ -135,8 +135,7 @@ def queue_is_empty_with_open_court(queue_id):
         raw_query = Court.objects.raw("SELECT * FROM api_court WHERE queue_id=%s", [queue_id])
         courts = list(raw_query)
         for court in courts:
-            raw_query = Match.objects.raw("SELECT * FROM api_match WHERE court_id=%s AND endDateTime IS NULL", [court.id])
-            court_is_free = len(list(raw_query)) == 0
+            court_is_free = court.match is None
             if court_is_free:
                 return court.id
         return None
@@ -169,4 +168,4 @@ def get_free_members_call(member_id):
             'free_members': results
         }
 
-        return http_response(context)
+        return HttpResponse(json.dumps(results), content_type='application/json')
