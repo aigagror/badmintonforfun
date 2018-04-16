@@ -33,7 +33,6 @@ def edit_match(request):
     :param request:
     :return:
     """
-    check_login_status(request)
 
     dict_post = dict(request.POST.items())
     validate_keys(["score_A", "score_B", "id"], dict_post)
@@ -146,15 +145,19 @@ def current_match(request):
 def get_match(request):
     """
         GET -- Get the current match id of the match a specific member id is playing
-            needs an ?id=some_member_id
+            Required keys: id (id of member you want the match of)
     :param request:
     :return:
     """
 
-    member_id = request.GET.get('id', None)
-    if member_id is None:
-        return http_response({}, message="Please pass in an id", code=400)
-    return find_current_match_by_member(member_id)
+    # member_id = request.GET.get('id', None)
+    # if member_id is None:
+    #     return http_response({}, message="Please pass in an id", code=400)
+
+    dict_get = dict(request.GET.items())
+    validate_keys("id", dict_get)
+
+    return find_current_match_by_member(dict_get["id"])
 
 
 @restrictRouter(allowed=["GET"])
