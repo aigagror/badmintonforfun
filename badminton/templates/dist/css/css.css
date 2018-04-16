@@ -2500,7 +2500,9 @@ input[type="text"] {
 .queue-party-div {
   background-color: gray;
   corner-radius: 5px;
-  margin-bottom: 10px; }
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px; }
 
 .court-a-team {
   position: absolute;

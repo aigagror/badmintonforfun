@@ -1,154 +1,80 @@
-# import datetime
-#
-# from django.test import TestCase
-# from django.urls import reverse
-#
-# from api import cursor_api
-# from api.models import *
-# from .custom_test_case import *
-# import api.datetime_extension
-#
-# class TournamentTest(CustomTestCase):
-#
-#     @run(path_name='get_tournament', email=MEMBER, method=GET, args={})
-#     def test_get_tournament(self):
-#         response = self.response
-#         self.assertGoodResponse(response)
-#
-#         json = response.json()
-#         self.assertTrue('tournament' in json)
-#         tournament = json['tournament']
-#         self.assertTrue('bracket_nodes' in tournament)
-#         bracket_nodes = tournament['bracket_nodes']
-#         for node in bracket_nodes:
-#             self.assertTrue('matches' in node)
-#             matches = node['matches']
-#             for match in matches:
-#                 self.assertTrue('team_A' in match)
-#                 self.assertTrue('team_B' in match)
-#
-#     @run(path_name='create_tournament', email=BOARD_MEMBER, method=POST, args={'num_players': 4, 'tournament_type': 'DOUBLES', 'elimination_type': 'SINGLE'})
-#     def test_create_tournament(self):
-#         response = self.response
-#         self.assertGoodResponse(response)
-#
-#
-#         self.assertEqual(tournament.date, today)
-#
-#     def test_finish_tournament(self):
-#         today = datetime.date.today()
-#         response = self.client.post(reverse('api:create_tournament'), {'num_players': 4, 'tournament_type': 'Doubles'})
-#         self.assertGoodResponse(response)
-#         tournament = Tournament.objects.get(id=0)
-#         self.assertEqual(tournament.endDate, None)
-#
-#         response = self.client.post(reverse("api:finish_tournament"), {"tournament_id": 0})
-#         self.assertGoodResponse(response)
-#         tournament = Tournament.objects.get(id=0)
-#         self.assertEqual(tournament.endDate, today)
-#
-#     def test_get_match_in_bracket_node(self):
-#         self.create_example_data()
-#
-#         today = datetime.date.today()
-#         tournament = Tournament.objects.get(date=today)
-#
-#         response = self.client.get(reverse('api:get_tournament_bracket_node'), {'tournament_id': tournament.id, 'level': 3, 'index': 0})
-#         self.assertGoodResponse(response)
-#
-#         json = response.json()
-#         self.assertTrue('bracket_node' in json)
-#         self.assertTrue('match' in json['bracket_node'])
-#
-#     def test_get_no_match_in_bracket_node(self):
-#         self.create_example_data()
-#
-#         today = datetime.date.today()
-#         tournament = Tournament.objects.get(date=today)
-#
-#         response = self.client.get(reverse('api:get_tournament_bracket_node'),
-#                                    {'tournament_id': tournament.id, 'level': 2, 'index': 0})
-#         self.assertGoodResponse(response)
-#
-#         json = response.json()
-#         self.assertTrue('bracket_node' in json)
-#         self.assertTrue('match' in json['bracket_node'])
-#         self.assertIsNone(json['bracket_node']['match'])
-#
-#     def test_get_bad_bracket_node(self):
-#         self.create_example_data()
-#
-#         today = datetime.date.today()
-#         tournament = Tournament.objects.get(date=today)
-#
-#         response = self.client.get(reverse('api:get_tournament_bracket_node'),
-#                                    {'tournament_id': tournament.id, 'level': 5, 'index': 0})
-#         self.assertBadResponse(response)
-#
-#         response = self.client.get(reverse('api:get_tournament_bracket_node'),
-#                                    {'tournament_id': tournament.id, 'level': 2, 'index': 9})
-#         self.assertBadResponse(response)
-#
-#     def test_add_match_to_tournament_bracket(self):
-#         self.create_example_data()
-#
-#         today = datetime.date.today()
-#         tournament = Tournament.objects.get(date=today)
-#
-#         bracket_node = BracketNode.objects.get(tournament=tournament, level=2, sibling_index=0)
-#         self.assertIsNone(bracket_node.match)
-#
-#         now = datetime.datetime.now(tz=api.datetime_extension.utc)
-#         new_tournament_match = Match(startDateTime=now + datetime.timedelta(minutes=-10), scoreB=0, scoreA=0)
-#         new_tournament_match.save()
-#
-#         response = self.client.post(reverse('api:add_match_to_tournament'), {'tournament_id': tournament.id,
-#                                                                              'match_id': new_tournament_match.id,
-#                                                                              'level': 2, 'index': 0})
-#         self.assertGoodResponse(response)
-#
-#         bracket_node = BracketNode.objects.get(tournament=tournament, level=2, sibling_index=0)
-#
-#         self.assertIsNotNone(bracket_node.match)
-#
-#     def test_finish_tournament_match(self):
-#         """
-#         If a match that is finished is associated with a tournament. There should be a check to see if we can add a new match up the bracket.
-#         For example consider the case where there is a tournament bracket shaped as a perfect tree of height 1
-#         with the left and right child having ongoing matches. If the left child's match was finished first, nothing should happen.
-#         However, when the right child's match finishes, the tournament should automatically have added a match to the root node
-#         where the members involved are those who have won the matches from that of the left and right childs' matches respectively
-#         :return:
-#         """
-#
-#         self.create_example_data()
-#
-#         today = datetime.date.today()
-#         tournament = Tournament.objects.get(date=today)
-#
-#         bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=0)
-#         self.assertIsNotNone(bracket_node.match)
-#         matchA = bracket_node.match
-#
-#         matchA.scoreA = 21
-#         matchA.scoreB = 19
-#
-#         bracket_node = BracketNode.objects.get(tournament=tournament, level=3, sibling_index=1)
-#         self.assertIsNotNone(bracket_node.match)
-#         matchB = bracket_node.match
-#
-#         matchB.scoreA = 21
-#         matchB.scoreB = 19
-#
-#         matchA.save()
-#         matchB.save()
-#
-#         response = self.client.post(reverse('api:finish_match'), {'id': matchA.id})
-#
-#         bracket_node = BracketNode.objects.get(tournament=tournament, level=2, sibling_index=0)
-#         self.assertIsNone(bracket_node.match)
-#
-#         response = self.client.post(reverse('api:finish_match'), {'id': matchB.id})
-#
-#         bracket_node = BracketNode.objects.get(tournament=tournament, level=2, sibling_index=0)
-#         self.assertIsNotNone(bracket_node.match)
+import datetime
+
+from django.test import TestCase
+from django.urls import reverse
+
+from api import cursor_api
+from api.models import *
+from .custom_test_case import *
+import api.datetime_extension
+
+class TournamentTest(CustomTestCase):
+
+    @run(path_name='get_tournament', email=MEMBER, method=GET, args={})
+    def test_get_tournament(self):
+        response = self.response
+        self.assertGoodResponse(response)
+
+        json = response.json()
+        self.assertTrue('tournament' in json)
+        tournament = json['tournament']
+        self.assertTrue('bracket_nodes' in tournament)
+        bracket_nodes = tournament['bracket_nodes']
+        for node in bracket_nodes:
+            self.assertTrue('matches' in node)
+            matches = node['matches']
+            for match in matches:
+                self.assertTrue('team_A' in match)
+                self.assertTrue('team_B' in match)
+
+    @run(path_name='create_tournament', email=BOARD_MEMBER, method=POST, args={'num_players': 4, 'tournament_type': 'DOUBLES', 'elimination_type': 'SINGLE'})
+    def test_create_tournament(self):
+        response = self.response
+        self.assertGoodResponse(response)
+
+
+        self.assertEqual(tournament.date, today)
+
+    @run(path_name='finish_tournament', email=BOARD_MEMBER, method=POST, args={"tournament_id": 1})
+    def test_finish_tournament(self):
+        today = datetime.date.today()
+        response = self.response
+        self.assertGoodResponse(response)
+
+        tournament = Tournament.objects.get()
+        self.assertEqual(tournament.endDate, today)
+
+    @run(path_name='get_tournament_bracket_node', email=MEMBER, method=GET, args={'tournament_id': 1, 'level': 3, 'index': 0})
+    def test_get_bracket_node(self):
+        response = self.response
+        self.assertGoodResponse(response)
+
+        json = response.json()
+        self.assertTrue('bracket_node' in json)
+        self.assertTrue('matches' in json['bracket_node'])
+
+
+    @run(path_name='get_tournament_bracket_node', email=MEMBER, method=GET,
+         args={'tournament_id': 1, 'level': 5, 'index': 0})
+    def test_get_bad_bracket_node(self):
+        response = self.response
+        self.assertBadResponse(response)
+
+    @run(path_name='get_tournament_bracket_node', email=MEMBER, method=GET,
+         args={'tournament_id': 1, 'level': 2, 'index': 9})
+    def test_get_bad_bracket_node_2(self):
+        response = self.response
+        self.assertBadResponse(response)
+
+
+    @run(path_name='add_match_to_bracket_node', email=MEMBER, method=POST,
+         args={'bracket_node_id': 5, 'team_A': '1,2', 'team_B': '3,4'})
+    def test_add_match_to_bracket_node(self):
+        """
+        Start a new match on bracket node with given players
+        :return:
+        """
+        response = self.response
+        self.assertGoodResponse(response)
+        all_matches = Match.objects.all()
+        self.assertEqual(self.original_number_of_matches + 1, len(list(all_matches)))

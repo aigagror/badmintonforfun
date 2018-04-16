@@ -13,12 +13,23 @@ const queueUrl = '/api/queue/';
 const matchUrl = '/api/match/get/';
 const courtStatuses = '/api/courts/';
 const freeMemberUrl = '/api/party/free_members/';
-
 const partyGetUrl = '/api/party/get/';
+
+function round(number: number, precision: number) {
+  var shift = function (number: number, precision: number, reverseShift: boolean) {
+    if (reverseShift) {
+      precision = -precision;
+    }  
+    var numArray = ("" + number).split("e");
+    return +(numArray[0] + "e" + (numArray[1] ? (+numArray[1] + precision) : precision));
+  };
+  return shift(Math.round(shift(number, precision, false)), precision, true);
+}
 
 class QueuedPartyView extends React.Component<any, any> {
 	render() {
-		return <div className='queue-party-div'>
+		return <div className="row">
+		<div className='queue-party-div'>
 			{
 				this.props.party.members.map((member: any, idx: number) => {
 					return <div key={idx}>
@@ -26,6 +37,8 @@ class QueuedPartyView extends React.Component<any, any> {
 					</div>
 				})
 			}
+			<h4>Average Playtime: {round(this.props.party.average_play_time, 2)} minutes</h4>
+		</div>
 		</div>
 	}
 }
@@ -72,8 +85,6 @@ class CourtView extends React.Component<any, any> {
 	render() {
 		const name = 'court'+this.props.court.id;
 		const match = this.props.court.match;
-		console.log(this.props.court.queue_type === null && !this.props.hasParty);
-		console.log(this.props.court.queue_type);
 		return <div className="col-6">
 				<div className='row'>
 				<div className="col-6">
@@ -225,6 +236,8 @@ class MyPartyView extends React.Component<any, any> {
 				members
 			}
 			<div className="row-offset-1">
+			<div className="row">
+			<div className="col-6">
 			<Select
 				options={this.props.queueTypes} 
 				name="party_picker"
@@ -232,8 +245,13 @@ class MyPartyView extends React.Component<any, any> {
 				onChange={(val: any) => this.setState({selectedQueue: val})}
 				/>
 			</div>
+			<div className="col-6">
 			<button className="interaction-style" onClick={this.createParty} >Create Party</button>
 			</div>
+			</div>
+			</div>
+			</div>
+
 	}
 }
 
@@ -325,7 +343,6 @@ export class Queue extends React.Component<any, any> {
 			}
 		}
 		const onSwap = (id: any, event: any) => {
-			console.log(id);
 			if (event.target.checked) {
 				deleteArr(left, id);
 				right.push(id);
