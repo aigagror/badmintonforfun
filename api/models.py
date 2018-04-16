@@ -95,14 +95,6 @@ class Member(Interested):
     bio = models.CharField(max_length=500, default='', blank=True)
     picture = models.TextField(null=True, blank=True)
 
-    def clean(self):
-        if self.party is not None:
-            leader = self.party.leader
-            other_party_members = Member.objects.filter(party=self.party)
-            if leader == self:
-                raise ValidationError('Cannot assign member to party that he/she is the party\'s leader')
-            if other_party_members.count() == 3:
-                raise ValidationError('Party is full')
 
 
 class BoardMember(Member):

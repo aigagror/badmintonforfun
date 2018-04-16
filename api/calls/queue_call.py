@@ -218,7 +218,12 @@ def dequeue_party_to_court_call(queue_type):
             found_available_court = True
 
             # Get the members from the party
-            members = Member.objects.raw("SELECT * FROM api_member WHERE party_id = %s", [party_id])
+            members_query = Member.objects.raw("SELECT * FROM api_member WHERE party_id = %s", [party_id])
+            members = []
+            for member in members_query:
+                member.party = None
+                member.save()
+                members.append(member)
 
             # Remove party from queue
             response = run_connection("DELETE FROM api_party WHERE id = %s", party_id)
@@ -241,7 +246,7 @@ def dequeue_party_to_court_call(queue_type):
                 return response
 
             # Assign teams
-            num_members = len(list(members))
+            num_members = len(members)
             for i in range(num_members):
                 team = "A" if i % 2 == 0 else "B"
                 member = members[i]
