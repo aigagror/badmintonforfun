@@ -10,7 +10,7 @@ class SettingsTest(CustomTestCase):
 
     @run(path_name="all_members", email=BOARD_MEMBER, method=GET, args={})
     def test_board_member_settings(self):
-        # Boardmember trying to get info on all members. Should be valid
+        # BoardMember trying to get info on all members. Should be valid
         response = self.response
         self.assertGoodResponse(response)
         json = response.json()
@@ -26,7 +26,7 @@ class SettingsTest(CustomTestCase):
             self.assertTrue("status" in first_member)
 
     @run(path_name="all_members", email=BOARD_MEMBER, method=POST,
-         args={"member_id": 5, "status": "Interested"})
+         args={"member_id": 5, "status": str("Interested")})
     def test_demote_member_status(self):
         # Have a boardmember change the the Daniel from a Member to an Interested
         response = self.response
@@ -48,9 +48,9 @@ class SettingsTest(CustomTestCase):
         self.assertEqual(played_in, 0)
 
     @run(path_name="all_members", email=BOARD_MEMBER, method=POST,
-         args={"member_id": 5, "status": "Boardmember"})
+         args={"member_id": 5, "status": str("BoardMember")})
     def test_promote_member_status(self):
-        # Have a boardmember change the the Daniel from a Member to an Boardmember
+        # Have a boardmember change the the Daniel from a Member to an BoardMember
         response = self.response
         self.assertGoodResponse(response)
 
@@ -72,7 +72,7 @@ class SettingsTest(CustomTestCase):
         response = self.response
         self.assertGoodResponse(response)
 
-        # Assert Jared isn't an Interested or a Member or a Boardmember
+        # Assert Jared isn't an Interested or a Member or a BoardMember
         jared_member_count = Member.objects.filter(pk=6).count()
         self.assertEqual(jared_member_count, 0)
         jared_interested_count = Interested.objects.filter(pk=6).count()
