@@ -39,7 +39,6 @@ def get_queues():
             content = response.content.decode()
             content = json.loads(content)
 
-
             for party in parties:
                 party_dict = serializeModel(party)
 

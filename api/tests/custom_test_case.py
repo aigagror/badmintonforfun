@@ -84,6 +84,9 @@ def run(path_name, email, method, args):
 
             self.playedins_now = PlayedIn.objects.all()
             self.number_of_playedins_now = len(list(self.playedins_now))
+
+            self.votes_now = Vote.objects.all()
+            self.number_of_votes_now = len(list(self.votes_now))
             # Run the test case
             test_func(self)
 
@@ -131,6 +134,9 @@ class CustomTestCase(TestCase):
 
         self.original_playedins = PlayedIn.objects.all()
         self.original_number_of_playedins = len(list(self.original_playedins))
+
+        self.original_votes = Vote.objects.all()
+        self.original_number_of_votes = len(list(self.original_votes))
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
@@ -479,6 +485,11 @@ class CustomTestCase(TestCase):
 
 
     def _create_election_and_campaigns(self):
+        """
+            Creates an election object with start date today
+            Campaigners are Eddie, Bhuvan, Grace, and Daniel, who each have campaigns.
+        :return:
+        """
         election = Election(date=datetime.date.today())
         election.save()
 
@@ -490,14 +501,18 @@ class CustomTestCase(TestCase):
         campaigns = [Campaign(job='President', campaigner=campaigners[0], election=election, pitch='I am Eddie'),
                      Campaign(job='President', campaigner=campaigners[1], election=election, pitch='I am Bhuvan'),
                      Campaign(job='President', campaigner=campaigners[2], election=election, pitch='I am Grace'),
-                     Campaign(job='President', campaigner=campaigners[3], election=election, pitch='I am Dan')]
+                     Campaign(job='Treasurer', campaigner=campaigners[3], election=election, pitch='I am Dan')]
 
+        # hardcoded one vote currently for Bhuvan's campaign by Member
+        vote = Vote(campaign_id=2, voter_id=2)
+        vote.save()
 
         print("Election ID and dates:")
         print(str(election.id) + ", " + str(election))
         index = 0
         for campaign in campaigns:
             campaign.save()
+            print("Campaign " + str(campaign.id))
             print("{}: {}".format(campaigners[index], campaign))
             index += 1
 
