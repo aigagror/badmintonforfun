@@ -158,3 +158,25 @@ def unregister_member_from_tournament_play(request):
         return http_response(message="Specified member does not exist", code=400)
 
     return run_connection("UPDATE api_member SET in_tournament=0 WHERE interested_ptr_id=%s", member_id)
+
+
+@auth_decorator(allowed=MemberClass.MEMBER)
+@restrictRouter(allowed=["GET"])
+def get_tournament_members(request):
+    """
+    GET -- get all the members that are participating in a tournament by checking their 'in_tournament'
+    attribute
+    :param request:
+    :return:
+    """
+    tournament_members = Member.objects.raw("SELECT * FROM api_member WHERE in_tournament=1")
+    tournament_members_array = []
+    for member in list(tournament_members):
+        member_dict = {
+            "member_id": member.id,
+            "first_name": member.first_name,
+            "last_name": member.last_name
+        }
+        tournament_members_array.append(member_dict)
+    context = {"tournament_members": tournament_members_array}
+    return http_response(dict=context)
