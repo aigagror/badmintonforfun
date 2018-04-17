@@ -288,6 +288,7 @@ export class Queue extends React.Component<any, any> {
 				})
 			} else {
 				const match = await axios.get('/api/match/get/');
+				console.log(match);
 				const matchData = match.data.match;
 				this.setState({
 					memberState: 'playing',

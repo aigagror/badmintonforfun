@@ -2518,6 +2518,7 @@ class Queue extends React.Component {
                 }
                 else {
                     const match = yield axios_1.default.get('/api/match/get/');
+                    console.log(match);
                     const matchData = match.data.match;
                     this.setState({
                         memberState: 'playing',
