@@ -82,7 +82,7 @@ def get_bracket_node(request):
         return http_response(message='No such bracket node', code=400)
 
 
-@auth_decorator(allowed=MemberClass.MEMBER)
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST"])
 def add_match(request):
     """

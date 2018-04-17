@@ -77,7 +77,7 @@ class TournamentTest(CustomTestCase):
         self.assertBadResponse(response)
 
 
-    @run(path_name='add_match_to_bracket_node', email=MEMBER, method=POST,
+    @run(path_name='add_match_to_bracket_node', email=BOARD_MEMBER, method=POST,
          args={'bracket_node_id': 5, 'team_A': '1,2', 'team_B': '3,4'})
     def test_add_match_to_bracket_node(self):
         """
