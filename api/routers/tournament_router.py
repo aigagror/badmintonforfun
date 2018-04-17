@@ -3,9 +3,11 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 
 from api.calls.tournament_call import *
-from api.routers.router import restrictRouter, validate_keys
+from api.routers.router import restrictRouter, validate_keys, auth_decorator
 from api.models import *
 from api.cursor_api import *
+from api.utils import MemberClass
+
 
 @csrf_exempt
 @restrictRouter(allowed=["GET"])
@@ -31,7 +33,8 @@ def create_tournament_router(request):
                      content_type='application/json', status=400)
     return create_tournament(post_dict)
 
-@csrf_exempt
+
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST"])
 def finish_tournament_router(request):
     """
@@ -79,36 +82,29 @@ def get_bracket_node(request):
         return http_response(message='No such bracket node', code=400)
 
 
-@csrf_exempt
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["POST"])
 def add_match(request):
+    """
+    Start a NEW match and associate it with the specified bracket node.
+    'team_A' and 'team_B' are both strings of comma-separated member_id's
+    Ex: ("2,3")
+    :param request:
+    :return:
+    """
     post_dict = dict(request.POST.items())
-    validate_keys(['tournament_id', 'match_id', 'level', 'index'], post_dict)
+    validate_keys(['bracket_node_id', 'team_A', 'team_B'], post_dict)
 
-    tournament_id = int(post_dict['tournament_id'])
-    match_id = int(post_dict['match_id'])
-    level = int(post_dict['level'])
-    index = int(post_dict['index'])
+    bracket_node_id = int(post_dict['bracket_node_id'])
+    team_A_str = post_dict['team_A']
+    team_A = team_A_str.split(',')
+    team_B_str = post_dict['team_B']
+    team_B = team_B_str.split(',')
 
-    # Assert tournament exists
-    tournaments = Tournament.objects.raw("SELECT * FROM api_tournament WHERE id = %s", [tournament_id])
-    if len(list(tournaments)) <= 0:
-        return http_response(message='Tournament does not exist', code=400)
-
-    # Assert match exists
-    matches = Tournament.objects.raw("SELECT * FROM api_match WHERE id = %s", [match_id])
-    if len(list(matches)) <= 0:
-        return http_response(message='Match does not exist', code=400)
-
-    match = matches[0]
 
     # Assert bracket node exists
-    nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE tournament_id = %s AND level = %s AND sibling_index = %s", [tournament_id, level, index])
+    nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE id=%s", [bracket_node_id])
     if len(list(nodes)) <= 0:
-        return http_response(message='Tournament has no such bracket node', code=400)
+        return http_response(message='Invalid bracket_node_id', code=400)
 
-    bracket_node = nodes[0]
-
-    response = run_connection("UPDATE api_match SET bracket_node_id = %s WHERE id = %s", bracket_node.id, match.id)
-
-    return response
+    return add_match_call(bracket_node_id, team_A, team_B)
