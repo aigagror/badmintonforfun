@@ -105,18 +105,20 @@ def create_tournament(dict_post):
     date = serializeDate(today)
     num_players = int(dict_post["num_players"])
     tournament_type = dict_post["tournament_type"]
-    if tournament_type == "Doubles":
+    elimination_type = dict_post["elimination_type"]
+
+    if tournament_type == "DOUBLES":
         assert num_players % 4 == 0
-    elif tournament_type == "Singles":
+    elif tournament_type == "SINGLES":
         assert num_players % 2 == 0
     else:
         return http_response(message="Invalid tournament type", code=400)
 
-    num_leaf_matches = int(num_players/2) if tournament_type == "Singles" else int(num_players/4)
+    num_leaf_matches = int(num_players/2) if tournament_type == "SINGLES" else int(num_players/4)
 
     # Add tournament
     new_tournament_id = _get_next_tournament_id()  # We need this for creating the bracket nodes
-    _add_tournament(new_tournament_id, date)
+    resp = _add_tournament(new_tournament_id, date, tournament_type, elimination_type)
 
     # Add empty bracket nodes associated with this new tournament
     # Determine max level
@@ -124,7 +126,7 @@ def create_tournament(dict_post):
     # Add bracket nodes
     _add_bracket_nodes(new_tournament_id, max_level, num_leaf_matches)
 
-    return http_response({}, message="OK")
+    return http_response({})
 
 
 def _add_bracket_nodes(tournament_id, max_level, num_leaf_matches):
@@ -167,12 +169,12 @@ def _get_next_tournament_id():
     return max_id
 
 
-def _add_tournament(new_tournament_id, date):
+def _add_tournament(new_tournament_id, date, tournament_type, elimination_type):
     query = '''
-    INSERT INTO api_tournament (id, date)
-    VALUES (%s, %s);
+    INSERT INTO api_tournament (id, date, match_type, elimination_type)
+    VALUES (%s, %s, %s, %s);
     '''
-    return run_connection(query, new_tournament_id, date)
+    return run_connection(query, new_tournament_id, date, tournament_type, elimination_type)
 
 
 def finish_tournament(dict_post):

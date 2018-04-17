@@ -27,13 +27,23 @@ class TournamentTest(CustomTestCase):
                 self.assertTrue('team_A' in match)
                 self.assertTrue('team_B' in match)
 
-    @run(path_name='create_tournament', email=BOARD_MEMBER, method=POST, args={'num_players': 4, 'tournament_type': 'DOUBLES', 'elimination_type': 'SINGLE'})
+    @run(path_name='create_tournament', email=BOARD_MEMBER, method=POST, args={'num_players': 4,
+                                                                               'tournament_type': 'DOUBLES',
+                                                                               'elimination_type': 'SINGLE'})
     def test_create_tournament(self):
+        today = datetime.date.today()
         response = self.response
         self.assertGoodResponse(response)
 
+        tournament = Tournament.objects.get(id=2)
 
+        # make sure tournament was added
         self.assertEqual(tournament.date, today)
+        self.assertEqual(tournament.match_type, "DOUBLES")
+        self.assertEqual(len(list(Tournament.objects.all())), self.original_number_of_tournaments + 1)
+
+        # make sure bracket nodes were added
+        self.assertEqual(len(list(BracketNode.objects.all())), self.original_number_of_bracket_nodes + 1)
 
     @run(path_name='finish_tournament', email=BOARD_MEMBER, method=POST, args={"tournament_id": 1})
     def test_finish_tournament(self):
