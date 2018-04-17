@@ -92,6 +92,9 @@ class Member(Interested):
     private = models.BooleanField(default=False)
     dateJoined = models.DateField('date joined')
     party = models.ForeignKey(Party, on_delete=models.SET_NULL, null=True, blank=True)
+
+    in_tournament = models.BooleanField(default=False)
+
     bio = models.CharField(max_length=500, default='', blank=True)
     picture = models.TextField(null=True, blank=True)
 

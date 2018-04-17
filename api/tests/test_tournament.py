@@ -88,3 +88,12 @@ class TournamentTest(CustomTestCase):
         self.assertGoodResponse(response)
         all_matches = Match.objects.all()
         self.assertEqual(self.original_number_of_matches + 1, len(list(all_matches)))
+
+    @run(path_name='add_member_to_tournament', email=BOARD_MEMBER, method=POST,
+         args={'member_id': 1})
+    def test_add_member_to_tournament(self):
+        response = self.response
+        self.assertGoodResponse(response)
+
+        member = Member.objects.get(id=1)
+        self.assertTrue(member.in_tournament)
