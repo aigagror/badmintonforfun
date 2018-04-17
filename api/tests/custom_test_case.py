@@ -405,6 +405,11 @@ class CustomTestCase(TestCase):
         foo = 0
 
     def _create_people(self):
+        """
+        Only Eddie is registered for the tournament
+        :return:
+        """
+
         # Create some interesteds
         interesteds = []
         interesteds.append(Interested(first_name='Interested', last_name='Guy', email='interested@illinois.edu'))
@@ -414,7 +419,7 @@ class CustomTestCase(TestCase):
         members.append(Member(first_name="Member", last_name="Guy", dateJoined=datetime.date.today(),
                               email="member@illinois.edu", bio="I'm a member"))
         members.append(Member(first_name="Eddie", last_name="Huang", dateJoined=datetime.date.today(),
-                              email="ezhuang2@illinois.edu", bio="Hi my name is Eddie. I like badminton"))
+                              email="ezhuang2@illinois.edu", bio="Hi my name is Eddie. I like badminton", in_tournament=True))
         members.append(Member(first_name="Bhuvan", last_name="Venkatesh", dateJoined=datetime.date.today(),
                               email="bhuvan2@illinois.edu"))
         members.append(Member(first_name="Daniel", last_name="Rong", dateJoined=datetime.date.today(),

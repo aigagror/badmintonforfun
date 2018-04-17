@@ -90,10 +90,69 @@ class TournamentTest(CustomTestCase):
         self.assertEqual(self.original_number_of_matches + 1, len(list(all_matches)))
 
     @run(path_name='add_member_to_tournament', email=BOARD_MEMBER, method=POST,
-         args={'member_id': 1})
+         args={'member_id': 2})
     def test_add_member_to_tournament(self):
         response = self.response
         self.assertGoodResponse(response)
 
-        member = Member.objects.get(id=1)
+        member = Member.objects.get(id=2)
         self.assertTrue(member.in_tournament)
+
+    @run(path_name='add_member_to_tournament', email=BOARD_MEMBER, method=POST,
+         args={'member_id': 3})
+    def test_add_bad_member_to_tournament(self):
+        """
+        Eddie is already in a tournament
+        :return:
+        """
+        response = self.response
+        self.assertBadResponse(response)
+
+        member = Member.objects.get(id=3)
+        self.assertTrue(member.in_tournament)
+
+        json = response.json()
+        self.assertEqual(json['message'], 'Member is already in a tournament')
+
+    @run(path_name='remove_member_from_tournament', email=BOARD_MEMBER, method=POST,
+         args={'member_id': 3})
+    def test_remove_member_from_tournament(self):
+        response = self.response
+        self.assertGoodResponse(response)
+
+        member = Member.objects.get(id=3)
+        self.assertFalse(member.in_tournament)
+
+    @run(path_name='remove_member_from_tournament', email=BOARD_MEMBER, method=POST,
+         args={'member_id': 2})
+    def test_remove_bad_member_from_tournament(self):
+        """
+        Member (2) was never in a tournament
+        :return:
+        """
+        response = self.response
+        self.assertBadResponse(response)
+
+        member = Member.objects.get(id=2)
+        self.assertFalse(member.in_tournament)
+
+        json = response.json()
+        self.assertEqual(json['message'], 'Member was not in a tournament to begin with')
+
+
+    @run(path_name='get_tournament_members', email=MEMBER, method=GET, args={})
+    def test_get_tournament_members(self):
+        response = self.response
+
+        self.assertGoodResponse(response)
+
+        json = response.json()
+        self.assertTrue('tournament_members' in json)
+        tournament_members = json['tournament_members']
+        self.assertGreaterEqual(len(tournament_members), 0)
+
+        first_tournament_member = tournament_members[0]
+
+        self.assertTrue('member_id' in first_tournament_member)
+        self.assertTrue('first_name' in first_tournament_member)
+        self.assertTrue('last_name' in first_tournament_member)
