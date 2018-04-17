@@ -167,10 +167,10 @@ def settingsInterestedCreateRouter(request):
 
 
 @auth_decorator(allowed=MemberClass.BOARD_MEMBER)
-@restrictRouter(allowed=["GET", "POST", "DELETE"])
+@restrictRouter(allowed=["POST", "DELETE"])
 def settingsSchedulesRouter(request):
     """
-    Allows board members to get the whole schedule and add to/edit/delete from schedule
+    POST/DELETE -- Allows board members to get the whole schedule and add to/edit/delete from schedule
     Expect input/output dictionary to be of the form
     {
         'schedule': [
@@ -188,9 +188,7 @@ def settingsSchedulesRouter(request):
     if not is_board_member(session_id):
         return HttpResponse(json.dumps({"message": "You are not a board member."}),
                             content_type="application/json")
-    if request.method == "GET":
-        return schedule_to_dict()
-    elif request.method == "POST":
+    if request.method == "POST":
         # INSERT or UPDATE
         # dict_post = dict(request.POST.items())
         print(request.body)
@@ -207,6 +205,27 @@ def settingsSchedulesRouter(request):
             HttpResponse(json.dumps({'message': 'Missing parameter schedule'}),
                          content_type='application/json', status=400)
         return delete_multiple_from_schedule(dict_delete)
+
+
+@auth_decorator(allowed=MemberClass.MEMBER)
+@restrictRouter(allowed=["GET"])
+def get_schedule(request):
+    """
+       GET -- Allows members to get the whole schedule
+       Expect output dictionary to be of the form
+       {
+           'schedule': [
+               {
+                   'date': _,
+                   'number_of_courts': _
+               },
+               ...
+           ]
+       }
+       :param request:
+       :return:
+       """
+    return schedule_to_dict()
 
 
 @auth_decorator(allowed=MemberClass.BOARD_MEMBER)

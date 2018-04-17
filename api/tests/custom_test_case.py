@@ -143,6 +143,9 @@ class CustomTestCase(TestCase):
 
         self.original_number_of_announcements = len(list(Announcement.objects.all()))
 
+        self.original_bracket_nodes = BracketNode.objects.all()
+        self.original_number_of_bracket_nodes = len(list(self.original_bracket_nodes))
+
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
@@ -208,8 +211,9 @@ class CustomTestCase(TestCase):
 
 
         # Create a tournament bracket with all of the children having a match
-        tournament = Tournament(date=datetime.date.today())
+        tournament = Tournament(date="2018-03-20")
         tournament.save()
+
         # Create a full tree of height 3
         for level in range(4):
             for sibling_index in range(2 ** level):
@@ -220,6 +224,13 @@ class CustomTestCase(TestCase):
             # Create an empty match
             match = Match(startDateTime=now, scoreA=0, scoreB=0, bracket_node=bracket_node)
             match.save()
+
+        # add Member to a match
+        playedin_a = PlayedIn(team="A", match_id=18, member_id=2)
+        playedin_a.save()
+
+        playedin_b = PlayedIn(team="B", match_id=18, member_id=10)
+        playedin_b.save()
 
     def _create_parties(self):
         """
@@ -394,6 +405,11 @@ class CustomTestCase(TestCase):
         foo = 0
 
     def _create_people(self):
+        """
+        Only Eddie is registered for the tournament
+        :return:
+        """
+
         # Create some interesteds
         interesteds = []
         interesteds.append(Interested(first_name='Interested', last_name='Guy', email='interested@illinois.edu'))
@@ -403,7 +419,7 @@ class CustomTestCase(TestCase):
         members.append(Member(first_name="Member", last_name="Guy", dateJoined=datetime.date.today(),
                               email="member@illinois.edu", bio="I'm a member"))
         members.append(Member(first_name="Eddie", last_name="Huang", dateJoined=datetime.date.today(),
-                              email="ezhuang2@illinois.edu", bio="Hi my name is Eddie. I like badminton"))
+                              email="ezhuang2@illinois.edu", bio="Hi my name is Eddie. I like badminton", in_tournament=True))
         members.append(Member(first_name="Bhuvan", last_name="Venkatesh", dateJoined=datetime.date.today(),
                               email="bhuvan2@illinois.edu"))
         members.append(Member(first_name="Daniel", last_name="Rong", dateJoined=datetime.date.today(),

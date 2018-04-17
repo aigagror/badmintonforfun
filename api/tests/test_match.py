@@ -18,6 +18,16 @@ class MatchTest(CustomTestCase):
         self.assertEqual(matches + 1, len(list(Match.objects.all())))
         self.assertEqual(playedin + 4, len(list(PlayedIn.objects.all())))
 
+    @run(path_name='get_match', email=GRACE, method=GET, args={'id': 6})
+    def test_get_match(self):
+        response = self.response
+        self.assertGoodResponse(response)
+
+        json = response.json()
+
+        self.assertEqual(json["status"], "playing")
+        self.assertEqual(json["match"]["match_id"], 9)
+
     # @run(path_name='start_match', email=JARED, method=POST, args={'court_id': 6})
     # def test_start_match(self):
     #     """
@@ -136,6 +146,7 @@ class MatchTest(CustomTestCase):
         playedin = list(playedin)
         self.assertEquals(playedin, [])
 
+
     @run(path_name='leave_match', email=EDDIE, method=POST, args={'match_id': 1})
     def test_bad_leave_match(self):
         response = self.response
@@ -168,6 +179,7 @@ class MatchTest(CustomTestCase):
 
         playedin = len(list(PlayedIn.objects.all()))
         self.assertEqual(playedin, self.original_number_of_playedins - 1)
+        self.assertEqual(len(list(Match.objects.all())), self.original_number_of_matches)
 
 
     @run(path_name='current_match', email=GRACE, method=GET, args={})

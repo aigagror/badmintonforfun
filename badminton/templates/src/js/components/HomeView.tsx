@@ -270,7 +270,7 @@ export class HomeView extends React.Component<{}, any> {
 
 	performRequest(url: string) {
 		const req1 = axios.get(url + "?id=" + getMemberId())
-		const req2 = axios.get('/api/settings/schedule')
+		const req2 = axios.get('/api/settings/schedule/get')
 		axios.all([req1, req2]).then(axios.spread((res: any, res2: any) => {
 			const events = res2.data.schedule.map((ev: any) => {
 				    return {
@@ -300,7 +300,7 @@ export class HomeView extends React.Component<{}, any> {
 					number_of_courts: this.state.numCourts
 				}
 			}
-			const data = await axios.post('/api/settings/schedule', {
+			const data = await axios.post('/api/settings/schedule/edit', {
 				schedule: [{
 					date: this.state.addDate.format(dateFormat), 
 					number_of_courts: this.state.numCourts

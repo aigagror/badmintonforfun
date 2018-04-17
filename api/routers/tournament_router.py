@@ -3,39 +3,44 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 
 from api.calls.tournament_call import *
-from api.routers.router import restrictRouter, validate_keys
+from api.routers.router import restrictRouter, validate_keys, auth_decorator
 from api.models import *
 from api.cursor_api import *
+from api.utils import MemberClass
 
-@csrf_exempt
+
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_tournament(request):
     return get_most_recent_tournament()
 
-@csrf_exempt
+
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST"])
 def create_tournament_router(request):
     """
     POST function to create a new tournament entry.
     Expect the input dictionary to be
     {
-        "num_players": _,
-        "tournament_type": _ (Doubles, Singles)
+        "num_players": _
+        "tournament_type": _ (DOUBLES, SINGLES)
+        "elimination_type": _ (SINGLE)
     }
     :param request:
     :return:
     """
     post_dict = dict(request.POST.items())
-    if not validate_keys(["num_players", "tournament_type"], post_dict):
+    if not validate_keys(["num_players", "tournament_type", "elimination_type"], post_dict):
         HttpResponse(json.dumps({'message': 'Missing parameters num_players or tournament_type'}),
                      content_type='application/json', status=400)
     return create_tournament(post_dict)
 
-@csrf_exempt
+
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST"])
 def finish_tournament_router(request):
     """
-    Finish a tournament.
+        Finish a tournament on this date.
     Expect the dictionary to be
     {
         "tournament_id": _
@@ -48,7 +53,7 @@ def finish_tournament_router(request):
         http_response(message="Missing parameter tournament_id", code=400)
     return finish_tournament(post_dict)
 
-@csrf_exempt
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_bracket_node(request):
     dict_get = dict(request.GET.items())
@@ -62,15 +67,15 @@ def get_bracket_node(request):
     if len(list(nodes)) > 0:
         node = nodes[0]
         node_dict = serializeModel(node)
-
-        # See if there's a match
-        if node.match is not None:
-            matches = Match.objects.raw("SELECT * FROM api_match WHERE id = %s", [node.match.id])
-            if len(list(matches)) > 0:
-                match = matches[0]
-                match_dict = serializeModel(match)
-                node_dict['match'] = match_dict
-
+        matches_array = []
+        # Get the matches associated with this bracket node
+        node_matches = Match.objects.raw("SELECT * FROM api_match WHERE bracket_node_id=%s", [node.id])
+        if len(list(node_matches)) > 0:
+            for node_match in list(node_matches):
+                node_match_dict = serializeModel(node_match)
+                matches_array.append(node_match_dict)
+        node_dict["matches"] = matches_array
+        print("BRACKET NODE DICT: " + str(node_dict))
         context = {
             'bracket_node': node_dict
         }
@@ -79,36 +84,29 @@ def get_bracket_node(request):
         return http_response(message='No such bracket node', code=400)
 
 
-@csrf_exempt
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST"])
 def add_match(request):
+    """
+    Start a NEW match and associate it with the specified bracket node.
+    'team_A' and 'team_B' are both strings of comma-separated member_id's
+    Ex: ("2,3")
+    :param request:
+    :return:
+    """
     post_dict = dict(request.POST.items())
-    validate_keys(['tournament_id', 'match_id', 'level', 'index'], post_dict)
+    validate_keys(['bracket_node_id', 'team_A', 'team_B'], post_dict)
 
-    tournament_id = int(post_dict['tournament_id'])
-    match_id = int(post_dict['match_id'])
-    level = int(post_dict['level'])
-    index = int(post_dict['index'])
+    bracket_node_id = int(post_dict['bracket_node_id'])
+    team_A_str = post_dict['team_A']
+    team_A = team_A_str.split(',')
+    team_B_str = post_dict['team_B']
+    team_B = team_B_str.split(',')
 
-    # Assert tournament exists
-    tournaments = Tournament.objects.raw("SELECT * FROM api_tournament WHERE id = %s", [tournament_id])
-    if len(list(tournaments)) <= 0:
-        return http_response(message='Tournament does not exist', code=400)
-
-    # Assert match exists
-    matches = Tournament.objects.raw("SELECT * FROM api_match WHERE id = %s", [match_id])
-    if len(list(matches)) <= 0:
-        return http_response(message='Match does not exist', code=400)
-
-    match = matches[0]
 
     # Assert bracket node exists
-    nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE tournament_id = %s AND level = %s AND sibling_index = %s", [tournament_id, level, index])
+    nodes = BracketNode.objects.raw("SELECT * FROM api_bracketnode WHERE id=%s", [bracket_node_id])
     if len(list(nodes)) <= 0:
-        return http_response(message='Tournament has no such bracket node', code=400)
+        return http_response(message='Invalid bracket_node_id', code=400)
 
-    bracket_node = nodes[0]
-
-    response = run_connection("UPDATE api_match SET bracket_node_id = %s WHERE id = %s", bracket_node.id, match.id)
-
-    return response
+    return add_match_call(bracket_node_id, team_A, team_B)

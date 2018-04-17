@@ -52,7 +52,8 @@ settings_paths = [
     re_path(r'members/all/?$', settings_router.settingsAllMembersRouter, name='all_members'),
     re_path(r'members/all/delete/?$', settings_router.delete_member, name='delete_member'),
     re_path(r'interested/add/?$', settings_router.settingsInterestedCreateRouter, name='add_interested'),
-    re_path(r'schedule/?$', settings_router.settingsSchedulesRouter, name='schedule'),
+    re_path(r'schedule/get/?$', settings_router.get_schedule, name='get_schedule'),
+    re_path(r'schedule/edit/?$', settings_router.settingsSchedulesRouter, name='edit_schedule'),
     re_path(r'courts/?$', settings_router.settingsCourtRouter, name='court_settings'),
     re_path(r'queues/?$', settings_router.settingsQueueRouter, name='queue_settings'),
 ]
@@ -72,7 +73,8 @@ match_paths = [
     re_path(r'leave/?$', match_router.leave_match, name='leave_match'),
     re_path(r'create/?$', match_router.start_match, name='start_match'),
     re_path(r'delete/?$', match_router.delete_match, name='delete_match'),
-    re_path(r'get/?$', match_router.current_match, name='current_match'),
+    re_path(r'get/?$', match_router.get_match, name='get_match'),
+    re_path(r'current/?$', match_router.current_match, name='current_match'),
     re_path(r'all_matches_from_member/?$', match_router.all_matches_from_member, name='all_matches_from_member'),
     re_path(r'all/?$', match_router.all_matches, name='all_matches'),
 ]
@@ -103,7 +105,7 @@ tournament_paths = [
     re_path(r'create/?$', tournament_router.create_tournament_router, name='create_tournament'),
     re_path(r'bracket_node/?$', tournament_router.get_bracket_node, name='get_tournament_bracket_node'),
     
-    re_path(r'add/match/?$', tournament_router.add_match, name='add_match_to_tournament'),
+    re_path(r'add/match/?$', tournament_router.add_match, name='add_match_to_bracket_node'),
     re_path(r'finish/?$', tournament_router.finish_tournament_router, name='finish_tournament'),
     re_path(r'^$', tournament_router.get_tournament, name='get_tournament'),
 ]
