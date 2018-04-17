@@ -153,7 +153,6 @@ def get_match(request):
     # member_id = request.GET.get('id', None)
     # if member_id is None:
     #     return http_response({}, message="Please pass in an id", code=400)
-
     dict_get = dict(request.GET.items())
     validate_keys("id", dict_get)
 

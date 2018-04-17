@@ -10,7 +10,7 @@ axios.defaults.xsrfCookieName = xsrfCookieName();
 axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 const queueUrl = '/api/queue/';
-const matchUrl = '/api/match/get/';
+const matchUrl = '/api/match/current/';
 const courtStatuses = '/api/courts/';
 const freeMemberUrl = '/api/party/free_members/';
 const partyGetUrl = '/api/party/get/';
@@ -287,7 +287,7 @@ export class Queue extends React.Component<any, any> {
 					party: isParty.data.status === 'partyless' ? null : isParty.data,
 				})
 			} else {
-				const match = await axios.get('/api/match/get/');
+				const match = await axios.get('/api/match/current/');
 				const matchData = match.data.match;
 				this.setState({
 					memberState: 'playing',

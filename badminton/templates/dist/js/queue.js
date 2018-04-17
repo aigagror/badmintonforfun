@@ -2289,7 +2289,7 @@ const Slider_1 = __webpack_require__(248);
 axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
 axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
 const queueUrl = '/api/queue/';
-const matchUrl = '/api/match/get/';
+const matchUrl = '/api/match/current/';
 const courtStatuses = '/api/courts/';
 const freeMemberUrl = '/api/party/free_members/';
 const partyGetUrl = '/api/party/get/';
@@ -2517,7 +2517,7 @@ class Queue extends React.Component {
                     });
                 }
                 else {
-                    const match = yield axios_1.default.get('/api/match/get/');
+                    const match = yield axios_1.default.get('/api/match/current/');
                     const matchData = match.data.match;
                     this.setState({
                         memberState: 'playing',
