@@ -241,3 +241,44 @@ def finish_tournament(dict_post):
     WHERE id=%s;
     '''
     return run_connection(query, endDate, tournament_id)
+
+def add_match_call(bracket_node_id, team_A, team_B):
+    """
+    Create a new match for the specified bracket node.
+    Inserts into Match and PlayedIn.
+    :param bracket_node_id:
+    :param team_A: list of strings representing member ids
+    :param team_B:
+    :return:
+    """
+    # Get the next match id to be used
+    with connection.cursor() as cursor:
+        query = """
+        SELECT COALESCE(MAX(id)+1, 0) AS newID
+        FROM api_match
+        """
+        result = cursor.execute(query)
+        newID = dictfetchall(cursor)[0]['newID']
+
+    query = """
+        INSERT INTO api_match(id, startDateTime, scoreA, scoreB, bracket_node_id) VALUES (%s, %s, 0, 0, %s)
+        """
+    today = datetime.datetime.now()
+    response = run_connection(query, newID, serializeDateTime(today), bracket_node_id)
+
+    for p in team_A:
+        # It seems to be passed as a list of int strings rather than just ints
+        p = int(p)
+        query = """
+           INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
+           """
+        response = run_connection(query, p, "A", newID)
+
+    for p in team_B:
+        p = int(p)
+        query = """
+          INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
+          """
+        response = run_connection(query, p, "B", newID)
+
+    return http_response(message="OK", code=200)
