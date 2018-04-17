@@ -26,7 +26,7 @@ def get_most_recent_tournament():
 
         max_level = row[0]
 
-    bracket_nodes = _build_bracket_dictionary(tournament_bracket_nodes, max_level, 0, 0)
+    bracket_nodes = _build_bracket_dictionary_it(tournament_bracket_nodes, max_level)
 
     tournament_dict = {
         "tournament": {
@@ -63,26 +63,80 @@ def _build_bracket_dictionary(bracket_nodes, max_level, curr_level, curr_sibling
     right_node = _build_bracket_dictionary(bracket_nodes, max_level, curr_level + 1, 2*curr_sibling_index + 1)
 
     # Form current node information
-    match = curr_bracket_node.match
-    if not match:
+
+    matches = Match.objects.raw("SELECT * FROM api_match WHERE bracket_node_id=%s", [curr_bracket_node.id])
+    if not matches:
         match_info = {}
     else:
-        match_info = {
-            "startDateTime": serializeDateTime(match.startDateTime),
-            "scoreA": match.scoreA,
-            "scoreB": match.scoreB,
-            "court": match.court,
-            "endDateTime": serializeDateTime(match.endDateTime) if match.endDateTime is not None else "None"
-        }
+        match_info = []
+        for match in matches:
+            match_dict = {
+                "match_id": match.id,
+                "startDateTime": serializeDateTime(match.startDateTime),
+                "scoreA": match.scoreA,
+                "scoreB": match.scoreB,
+                "endDateTime": serializeDateTime(match.endDateTime) if match.endDateTime is not None else "None"
+            }
+            match_info.append(match_dict)
 
     ret = {
         "left_node": left_node,
         "right_node": right_node,
-        "match_info": match_info,
+        "matches": match_info,
         "level": curr_level,
         "sibling_index": curr_sibling_index
     }
     return ret
+
+def _build_bracket_dictionary_it(bracket_nodes, max_level):
+    """
+        Start from root, traverse level by level (left -> right)
+
+    :param bracket_nodes:
+    :param max_level:
+    :return:
+    """
+    bracket_node_id = bracket_nodes[0].id
+
+    bracket_list = []
+    for i in range(0, max_level + 1):
+        num_range = 2 ** i
+        for j in range(0, num_range):
+            bracket_dict = {"bracket_node_id": bracket_node_id}
+            matches = Match.objects.raw("SELECT * FROM api_match WHERE bracket_node_id=%s", [bracket_node_id])
+            match_info = []
+            for match in matches:
+                team_a = []
+                a_players = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id=%s AND team=%s",
+                                                 [match.id, "A"])
+                if len(list(a_players)) > 0:
+                    for player in a_players:
+                        team_a.append(player.member_id)
+
+                team_b = []
+                b_players = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id=%s AND team=%s",
+                                                 [match.id, "B"])
+
+                if len(list(b_players)) > 0:
+                    for player in b_players:
+                        team_b.append(player.member_id)
+
+                match_dict = {
+                    "match_id": match.id,
+                    "startDateTime": serializeDateTime(match.startDateTime),
+                    "scoreA": match.scoreA,
+                    "scoreB": match.scoreB,
+                    "endDateTime": serializeDateTime(match.endDateTime) if match.endDateTime is not None else "None",
+                    "team_A": team_a,
+                    "team_B": team_b
+                }
+                match_info.append(match_dict)
+            bracket_dict["matches"] = match_info
+            bracket_dict["level"] = i
+            bracket_dict["sibling_index"] = j
+            bracket_list.append(bracket_dict)
+            bracket_node_id += 1
+    return bracket_list
 
 
 def _get_bracket_node(bracket_nodes, level, sibling_index):

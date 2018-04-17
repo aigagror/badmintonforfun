@@ -225,6 +225,13 @@ class CustomTestCase(TestCase):
             match = Match(startDateTime=now, scoreA=0, scoreB=0, bracket_node=bracket_node)
             match.save()
 
+        # add Member to a match
+        playedin_a = PlayedIn(team="A", match_id=18, member_id=2)
+        playedin_a.save()
+
+        playedin_b = PlayedIn(team="B", match_id=18, member_id=10)
+        playedin_b.save()
+
     def _create_parties(self):
         """
         Member is on the casual queue as a party of 1

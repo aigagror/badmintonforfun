@@ -8,10 +8,12 @@ from api.models import *
 from api.cursor_api import *
 from api.utils import MemberClass
 
-@csrf_exempt
+
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_tournament(request):
     return get_most_recent_tournament()
+
 
 @auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST"])
