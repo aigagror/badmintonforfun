@@ -8,27 +8,27 @@ from api.models import *
 from api.cursor_api import *
 from api.utils import MemberClass
 
-
 @csrf_exempt
 @restrictRouter(allowed=["GET"])
 def get_tournament(request):
     return get_most_recent_tournament()
 
-@csrf_exempt
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST"])
 def create_tournament_router(request):
     """
     POST function to create a new tournament entry.
     Expect the input dictionary to be
     {
-        "num_players": _,
-        "tournament_type": _ (Doubles, Singles)
+        "num_players": _
+        "tournament_type": _ (DOUBLES, SINGLES)
+        "elimination_type": _ (SINGLE)
     }
     :param request:
     :return:
     """
     post_dict = dict(request.POST.items())
-    if not validate_keys(["num_players", "tournament_type"], post_dict):
+    if not validate_keys(["num_players", "tournament_type", "elimination_type"], post_dict):
         HttpResponse(json.dumps({'message': 'Missing parameters num_players or tournament_type'}),
                      content_type='application/json', status=400)
     return create_tournament(post_dict)
@@ -38,7 +38,7 @@ def create_tournament_router(request):
 @restrictRouter(allowed=["POST"])
 def finish_tournament_router(request):
     """
-    Finish a tournament.
+        Finish a tournament on this date.
     Expect the dictionary to be
     {
         "tournament_id": _

@@ -143,6 +143,9 @@ class CustomTestCase(TestCase):
 
         self.original_number_of_announcements = len(list(Announcement.objects.all()))
 
+        self.original_bracket_nodes = BracketNode.objects.all()
+        self.original_number_of_bracket_nodes = len(list(self.original_bracket_nodes))
+
 
     def assertGoodResponse(self, response):
         self.assertEqual(response.status_code, 200)
@@ -208,8 +211,9 @@ class CustomTestCase(TestCase):
 
 
         # Create a tournament bracket with all of the children having a match
-        tournament = Tournament(date=datetime.date.today())
+        tournament = Tournament(date="2018-03-20")
         tournament.save()
+
         # Create a full tree of height 3
         for level in range(4):
             for sibling_index in range(2 ** level):
