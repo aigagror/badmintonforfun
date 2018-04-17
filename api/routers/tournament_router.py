@@ -110,3 +110,51 @@ def add_match(request):
         return http_response(message='Invalid bracket_node_id', code=400)
 
     return add_match_call(bracket_node_id, team_A, team_B)
+
+
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
+@restrictRouter(allowed=["POST"])
+def register_member_for_tournament_play(request):
+    """
+    POST -- Given a member_id, mark the member as participating in a tournament.
+    :param request:
+    :return:
+    """
+    post_dict = dict(request.POST.items())
+    validate_keys(["member_id"], post_dict)
+    member_id = post_dict["member_id"]
+
+    # Check if member is already participating in a tournament
+    rawquery = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s", [member_id])
+    if len(list(rawquery)) > 0:
+        member = rawquery[0]
+        if member.in_tournament == 1:
+            return http_response(message="Member is already in a tournament", code=400)
+    else:
+        return http_response(message="Specified member does not exist", code=400)
+
+    return run_connection("UPDATE api_member SET in_tournament=1 WHERE interested_ptr_id=%s", member_id)
+
+
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
+@restrictRouter(allowed=["POST"])
+def unregister_member_from_tournament_play(request):
+    """
+    POST -- Given a member_id, mark member as not participating in tournament
+    :param request:
+    :return:
+    """
+    post_dict = dict(request.POST.items())
+    validate_keys(["member_id"], post_dict)
+    member_id = post_dict["member_id"]
+
+    # Check if member is even participating in a tournament in the first place
+    rawquery = Member.objects.raw("SELECT * FROM api_member WHERE interested_ptr_id=%s", [member_id])
+    if len(list(rawquery)) > 0:
+        member = rawquery[0]
+        if member.in_tournament == 0:
+            return http_response(message="Member was not in a tournament to begin with", code=400)
+    else:
+        return http_response(message="Specified member does not exist", code=400)
+
+    return run_connection("UPDATE api_member SET in_tournament=0 WHERE interested_ptr_id=%s", member_id)

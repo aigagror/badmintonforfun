@@ -107,7 +107,12 @@ tournament_paths = [
     
     re_path(r'add/match/?$', tournament_router.add_match, name='add_match_to_bracket_node'),
     re_path(r'finish/?$', tournament_router.finish_tournament_router, name='finish_tournament'),
+    re_path(r'member/register/?$', tournament_router.register_member_for_tournament_play,
+            name='register_member_for_tournament_play'),
+    re_path(r'member/unregister/?$', tournament_router.unregister_member_from_tournament_play,
+            name='unregister_member_from_tournament_play'),
     re_path(r'^$', tournament_router.get_tournament, name='get_tournament'),
+
 ]
 
 rankings_paths = [
