@@ -51,7 +51,7 @@ def finish_tournament_router(request):
         http_response(message="Missing parameter tournament_id", code=400)
     return finish_tournament(post_dict)
 
-@csrf_exempt
+@auth_decorator(allowed=MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_bracket_node(request):
     dict_get = dict(request.GET.items())
@@ -65,15 +65,15 @@ def get_bracket_node(request):
     if len(list(nodes)) > 0:
         node = nodes[0]
         node_dict = serializeModel(node)
-
-        # See if there's a match
-        if node.match is not None:
-            matches = Match.objects.raw("SELECT * FROM api_match WHERE id = %s", [node.match.id])
-            if len(list(matches)) > 0:
-                match = matches[0]
-                match_dict = serializeModel(match)
-                node_dict['match'] = match_dict
-
+        matches_array = []
+        # Get the matches associated with this bracket node
+        node_matches = Match.objects.raw("SELECT * FROM api_match WHERE bracket_node_id=%s", [node.id])
+        if len(list(node_matches)) > 0:
+            for node_match in list(node_matches):
+                node_match_dict = serializeModel(node_match)
+                matches_array.append(node_match_dict)
+        node_dict["matches"] = matches_array
+        print("BRACKET NODE DICT: " + str(node_dict))
         context = {
             'bracket_node': node_dict
         }
