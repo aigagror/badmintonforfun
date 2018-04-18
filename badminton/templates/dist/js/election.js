@@ -6615,7 +6615,7 @@ var Cookies = __webpack_require__(39);
 /**
  * Mappings from imported classes to random strings.
  */
-const obfuscationMappings = {
+var obfuscationMappings = {
     'MailView': 'ysjiUtKPV7',
 };
 /**
@@ -6623,15 +6623,15 @@ const obfuscationMappings = {
  * arg being the requested key
  */
 function _generateKey(instance, arg) {
-    const name = instance.constructor.name;
-    const obf = obfuscationMappings[name];
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
     return name + obf;
 }
 /**
  * Returns a string given the class and the key <arg>
  */
 function getResource(instance, arg) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     return localStorage.getItem(key);
     ;
 }
@@ -6640,18 +6640,18 @@ exports.getResource = getResource;
  * Sets the requested key <arg> of class <instance> to <value>
  */
 function setResource(instance, arg, value) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     localStorage.setItem(key, value);
 }
 exports.setResource = setResource;
-const cookies = new Cookies();
+var cookies = new Cookies();
 function isBoardMember() {
-    const ret = cookies.get('is_board_member');
+    var ret = cookies.get('is_board_member');
     return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    const ret = cookies.get('member_id');
+    var ret = cookies.get('member_id');
     return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
@@ -7133,8 +7133,9 @@ module.exports = ReactPropTypesSecret;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 function objectToFormData(obj) {
-    const data = new FormData();
-    for (let key of Object.keys(obj)) {
+    var data = new FormData();
+    for (var _i = 0, _a = Object.keys(obj); _i < _a.length; _i++) {
+        var key = _a[_i];
         var serial = obj[key];
         if (typeof serial === 'object') {
             serial = JSON.stringify(obj[key]);
@@ -7224,49 +7225,71 @@ module.exports = warning;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class Option {
-    constructor(val, displ) {
+var React = __webpack_require__(2);
+var Option = /** @class */ (function () {
+    function Option(val, displ) {
         this.value = val;
         this.display = displ;
     }
-}
+    return Option;
+}());
 exports.Option = Option;
-const selectFadeOutClassName = 'select-check-fade-out';
-class SelectArea extends React.Component {
-    render() {
-        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
-            return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.change(option.value, this.props.name + idx) }),
-                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
-        }));
+var selectFadeOutClassName = 'select-check-fade-out';
+var SelectArea = /** @class */ (function (_super) {
+    __extends(SelectArea, _super);
+    function SelectArea() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class Select extends React.Component {
-    constructor(props) {
-        super(props);
-        this.change = this.change.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
-        this._decideInitialStatus = this._decideInitialStatus.bind(this);
-        this._scrollCondition = this._scrollCondition.bind(this);
-        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
-        const status = this._decideInitialStatus();
-        const value = this.props.defaultValue !== undefined ? this.props.defaultValue : this.props.options[0].value;
-        this.state = {
+    SelectArea.prototype.render = function () {
+        var _this = this;
+        return React.createElement("span", { className: 'select' }, this.props.options.map(function (option, idx) {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: _this.props.name + idx, value: option.value, name: _this.props.name, type: 'radio', onChange: function (target) { return _this.props.change(option.value, _this.props.name + idx); } }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: _this.props.name + idx }, option.display));
+        }));
+    };
+    return SelectArea;
+}(React.Component));
+var Select = /** @class */ (function (_super) {
+    __extends(Select, _super);
+    function Select(props) {
+        var _this = _super.call(this, props) || this;
+        _this.change = _this.change.bind(_this);
+        _this.handleClickOutside = _this.handleClickOutside.bind(_this);
+        _this.lazyAnimationAdder = _this.lazyAnimationAdder.bind(_this);
+        _this._decideInitialStatus = _this._decideInitialStatus.bind(_this);
+        _this._scrollCondition = _this._scrollCondition.bind(_this);
+        _this.documentResizeUpdate = _this.documentResizeUpdate.bind(_this);
+        var status = _this._decideInitialStatus();
+        var value = _this.props.defaultValue !== undefined ? _this.props.defaultValue : _this.props.options[0].value;
+        _this.state = {
             status: status,
             width: document.documentElement.clientWidth,
             value: value,
         };
-        this.scrollDiv = null;
+        _this.scrollDiv = null;
+        return _this;
     }
-    _scrollCondition() {
+    Select.prototype._scrollCondition = function () {
         return this.state.width < 500 || this.props.override;
-    }
-    _decideInitialStatus() {
+    };
+    Select.prototype._decideInitialStatus = function () {
+        var _this = this;
         if (this.props.defaultValue !== undefined) {
-            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            var value = this.props.options.find(function (option) {
+                return option.value === _this.props.defaultValue;
+            });
             if (value === undefined) {
                 return this.props.options[0].display;
             }
@@ -7277,35 +7300,36 @@ class Select extends React.Component {
         else {
             return this.props.options[0].display;
         }
-    }
-    documentResizeUpdate() {
+    };
+    Select.prototype.documentResizeUpdate = function () {
         this.setState({
             width: document.documentElement.clientWidth
         });
-    }
-    componentDidMount() {
+    };
+    Select.prototype.componentDidMount = function () {
+        var _this = this;
         if (this._scrollCondition()) {
             return;
         }
         document.documentElement.addEventListener('resize', this.documentResizeUpdate);
         document.addEventListener('mousedown', this.handleClickOutside);
-        const defaultHeight = 30;
+        var defaultHeight = 30;
         this.scrollDiv.style.height = defaultHeight + "px";
-        this.interval = setInterval(() => {
-            const movableArea = this.innerDiv.scrollTop /
-                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
-            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
-            this.scrollDiv.style.top = "" + offset + "px";
+        this.interval = setInterval(function () {
+            var movableArea = _this.innerDiv.scrollTop /
+                (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
+            var offset = _this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            _this.scrollDiv.style.top = "" + offset + "px";
         }, 20);
-        const divMove = (e) => {
-            const boundingRect = this.selectDiv.getBoundingClientRect();
-            const fuzz = .2;
-            const height = boundingRect.bottom - boundingRect.top;
-            const bottom = boundingRect.bottom - fuzz * height;
-            const top = boundingRect.top + fuzz * height;
-            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
-            const percentage = (adjusted - top) / (bottom - top);
-            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        var divMove = function (e) {
+            var boundingRect = _this.selectDiv.getBoundingClientRect();
+            var fuzz = .2;
+            var height = boundingRect.bottom - boundingRect.top;
+            var bottom = boundingRect.bottom - fuzz * height;
+            var top = boundingRect.top + fuzz * height;
+            var adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            var percentage = (adjusted - top) / (bottom - top);
+            _this.innerDiv.scrollTop = percentage * (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
         };
         function mouseUp() {
             window.removeEventListener('mousemove', divMove, true);
@@ -7315,37 +7339,37 @@ class Select extends React.Component {
         }
         this.scrollDiv.addEventListener('mousedown', mouseDown, false);
         window.addEventListener('mouseup', mouseUp, false);
-    }
-    componentWillUnmount() {
+    };
+    Select.prototype.componentWillUnmount = function () {
         if (this._scrollCondition()) {
             return;
         }
         document.removeEventListener('mousedown', this.handleClickOutside);
         document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
         clearInterval(this.interval);
-    }
+    };
     /**
      * Uncheck the input if clicked outside
      * Best to leave the typing generic because typescript does _not_
      * like non-generics with dom.
      */
-    handleClickOutside(event) {
+    Select.prototype.handleClickOutside = function (event) {
         if (this._scrollCondition()) {
             return;
         }
         if (this.inputDiv && !this.wrapper.contains(event.target)) {
             this.inputDiv.checked = false;
         }
-    }
-    lazyAnimationAdder(event) {
+    };
+    Select.prototype.lazyAnimationAdder = function (event) {
         if (this._scrollCondition()) {
             return;
         }
         if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
-    }
-    change(value, id) {
+    };
+    Select.prototype.change = function (value, id) {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
@@ -7357,31 +7381,33 @@ class Select extends React.Component {
         }
         else {
             // Cool trick to get the label for the input
-            const elem = document.querySelector('label[for="' + id + '"]');
+            var elem = document.querySelector('label[for="' + id + '"]');
             this.setState({
                 status: elem.innerHTML,
             });
             this.inputDiv.checked = false;
         }
-    }
-    render() {
+    };
+    Select.prototype.render = function () {
+        var _this = this;
         if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
+            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: function (ev) { return _this.change(ev.target.value, null); } }, this.props.options.map(function (option, idx) {
                 return React.createElement(React.Fragment, null,
                     React.createElement("option", { value: option.value }, option.display));
             }));
         }
-        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
-            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+        return React.createElement("div", { className: "select-wrapper-div", ref: function (input) { return _this.wrapper = input; } },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: function (input) { return _this.inputDiv = input; } }),
             React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
-                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("span", { ref: function (input) { return _this.titleSpan = input; }, className: "select-title-text" }, this.state.status),
                 React.createElement("b", { className: 'select-arrow' })),
-            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
-                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+            React.createElement("div", { className: "select-div", ref: function (input) { return _this.selectDiv = input; } },
+                React.createElement("div", { className: "inner-select-div", ref: function (input) { return _this.innerDiv = input; } },
                     React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
-                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
-    }
-}
+                    React.createElement("div", { className: "select-scroll", ref: function (input) { return _this.scrollDiv = input; } }))));
+    };
+    return Select;
+}(React.Component));
 exports.Select = Select;
 
 
@@ -7397,45 +7423,64 @@ exports.Select = Select;
  * To work. Appears in the middle of the screen and darkens
  * The body.
  */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const popupDisabledClass = "popup-disabled";
-const popupScreenFadeClass = 'popup-screen-fade';
-const popupFadeClass = 'popup-fade';
-class PopupProps {
-}
-exports.PopupProps = PopupProps;
-class PopupState {
-}
-class Popup extends React.Component {
-    constructor(props) {
-        super(props);
-        this.close = this.close.bind(this);
+var React = __webpack_require__(2);
+var popupDisabledClass = "popup-disabled";
+var popupScreenFadeClass = 'popup-screen-fade';
+var popupFadeClass = 'popup-fade';
+var PopupProps = /** @class */ (function () {
+    function PopupProps() {
     }
-    componentDidMount() {
+    return PopupProps;
+}());
+exports.PopupProps = PopupProps;
+var PopupState = /** @class */ (function () {
+    function PopupState() {
+    }
+    return PopupState;
+}());
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
+        var _this = _super.call(this, props) || this;
+        _this.close = _this.close.bind(_this);
+        return _this;
+    }
+    Popup.prototype.componentDidMount = function () {
         /* Programatically create a div to overlay everything and animate it in
             Also force the body not to scroll */
         this.screenDiv = document.createElement('div');
         this.screenDiv.className = 'popup-screen';
-        const body = document.querySelector('body');
+        var body = document.querySelector('body');
         body.appendChild(this.screenDiv);
         body.classList.add(popupDisabledClass);
-    }
-    componentWillUnmount() {
+    };
+    Popup.prototype.componentWillUnmount = function () {
         /* Remove the programatic div and let the body scroll */
-        const body = document.querySelector('body');
+        var body = document.querySelector('body');
         body.removeChild(this.screenDiv);
         body.classList.remove(popupDisabledClass);
-    }
-    close() {
+    };
+    Popup.prototype.close = function () {
         /* Animate everything in */
+        var _this = this;
         this.wrapperDiv.classList.add(popupFadeClass);
         this.screenDiv.classList.add(popupScreenFadeClass);
         /* Cool so we can seperate concerns */
-        const refCounter = { count: 0 };
-        const callback = () => {
+        var refCounter = { count: 0 };
+        var callback = function () {
             if (refCounter.count == 1) {
-                this.props.callback();
+                _this.props.callback();
             }
             else {
                 refCounter.count += 1;
@@ -7448,9 +7493,10 @@ class Popup extends React.Component {
          */
         this.wrapperDiv.addEventListener('animationend', callback);
         this.screenDiv.addEventListener('animationend', callback);
-    }
-    render() {
-        return (React.createElement("div", { className: "popup-div", ref: (input) => this.wrapperDiv = input },
+    };
+    Popup.prototype.render = function () {
+        var _this = this;
+        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
             React.createElement("div", { className: "grid row" },
                 React.createElement("div", { className: "row-1" },
                     React.createElement("div", { className: "col-11 popup-title-div" },
@@ -7462,8 +7508,9 @@ class Popup extends React.Component {
                 React.createElement("div", { className: "row-offset-10" },
                     React.createElement("div", { className: "popup-check-button" },
                         React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
-    }
-}
+    };
+    return Popup;
+}(React.Component));
 exports.Popup = Popup;
 
 
@@ -20096,43 +20143,57 @@ if (process.env.NODE_ENV !== 'production') {
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class EditableTextarea extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+var React = __webpack_require__(2);
+var EditableTextarea = /** @class */ (function (_super) {
+    __extends(EditableTextarea, _super);
+    function EditableTextarea(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             readonly: true,
-            textValue: this.props.initValue,
+            textValue: _this.props.initValue,
         };
-        this.saveEdits = this.saveEdits.bind(this);
+        _this.saveEdits = _this.saveEdits.bind(_this);
+        return _this;
     }
-    saveEdits() {
+    EditableTextarea.prototype.saveEdits = function () {
         this.props.onSave(this.state.textValue);
         this.setState({
             readonly: true,
         });
-    }
-    render() {
+    };
+    EditableTextarea.prototype.render = function () {
+        var _this = this;
         return React.createElement("div", { className: "editable-textarea-div" },
             React.createElement("textarea", { className: "editable-textarea interaction-style " + (this.state.readonly ?
-                    "editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : "")), value: this.state.textValue, onChange: (ev) => {
-                    const target = ev.target;
+                    "editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : "")), value: this.state.textValue, onChange: function (ev) {
+                    var target = ev.target;
                     target.style.height = target.scrollHeight + 'px';
-                    this.setState({ textValue: target.value });
-                }, ref: (ta) => this.textarea = ta, readOnly: this.state.readonly }),
+                    _this.setState({ textValue: target.value });
+                }, ref: function (ta) { return _this.textarea = ta; }, readOnly: this.state.readonly }),
             !this.props.editableOverride &&
                 React.createElement(React.Fragment, null,
                     this.props.onDelete && React.createElement("button", { className: "editable-textarea-delete-button interaction-style", onClick: this.props.onDelete }, "X"),
                     this.state.readonly ?
-                        React.createElement("button", { onClick: () => {
-                                this.textarea.style.height = '1px';
-                                this.textarea.style.height = this.textarea.scrollHeight + 'px';
-                                this.setState({ readonly: false });
+                        React.createElement("button", { onClick: function () {
+                                _this.textarea.style.height = '1px';
+                                _this.textarea.style.height = _this.textarea.scrollHeight + 'px';
+                                _this.setState({ readonly: false });
                             }, className: "editable-textarea-edit-button interaction-style" }, "\u270E") :
                         React.createElement("button", { onClick: this.saveEdits, className: "editable-textarea-edit-button interaction-style" }, "\uD83D\uDCBE")));
-    }
-}
+    };
+    return EditableTextarea;
+}(React.Component));
 exports.EditableTextarea = EditableTextarea;
 
 
@@ -20539,9 +20600,9 @@ module.exports = g;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const ElectionView_1 = __webpack_require__(300);
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var ElectionView_1 = __webpack_require__(300);
 ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
 
 
@@ -20551,6 +20612,16 @@ ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -20559,23 +20630,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const Popup_1 = __webpack_require__(51);
-const axios_1 = __webpack_require__(12);
-const RegisterElection_1 = __webpack_require__(301);
-const RadioButton_1 = __webpack_require__(302);
-const LocalResourceResolver_1 = __webpack_require__(36);
-const EditableTextarea_1 = __webpack_require__(213);
-const react_datepicker_1 = __webpack_require__(303);
-const Utils_1 = __webpack_require__(44);
-const moment = __webpack_require__(0);
-const election_url = '/api/election/get/';
-const election_edit_url = '/api/election/edit/';
-const campaign_url = '/api/campaign/';
-const election_create_url = '/api/election/create/';
-const cast_vote_url = '/api/election/vote/';
-const my_vote_url = '/api/election/vote/get/';
+var React = __webpack_require__(2);
+var Popup_1 = __webpack_require__(51);
+var axios_1 = __webpack_require__(12);
+var RegisterElection_1 = __webpack_require__(301);
+var RadioButton_1 = __webpack_require__(302);
+var LocalResourceResolver_1 = __webpack_require__(36);
+var EditableTextarea_1 = __webpack_require__(213);
+var react_datepicker_1 = __webpack_require__(303);
+var Utils_1 = __webpack_require__(44);
+var moment = __webpack_require__(0);
+var election_url = '/api/election/get/';
+var election_edit_url = '/api/election/edit/';
+var campaign_url = '/api/campaign/';
+var election_create_url = '/api/election/create/';
+var cast_vote_url = '/api/election/vote/';
+var my_vote_url = '/api/election/vote/get/';
 axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
 axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
 var LoadingState;
@@ -20586,133 +20684,193 @@ var LoadingState;
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
-class ElectionCandidate extends React.Component {
-    constructor(props) {
-        super(props);
-        this.deleteCandidate = this.deleteCandidate.bind(this);
-        this.updateCandidate = this.updateCandidate.bind(this);
-        this.state = {
-            pitch: this.props.person.pitch,
+var ElectionCandidate = /** @class */ (function (_super) {
+    __extends(ElectionCandidate, _super);
+    function ElectionCandidate(props) {
+        var _this = _super.call(this, props) || this;
+        _this.deleteCandidate = _this.deleteCandidate.bind(_this);
+        _this.updateCandidate = _this.updateCandidate.bind(_this);
+        _this.state = {
+            pitch: _this.props.person.pitch,
         };
+        return _this;
     }
-    deleteCandidate(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            axios_1.default.delete(campaign_url, {
-                headers: { 'Content-Type': 'text/plain' },
-                data: JSON.stringify({
-                    id: this.props.person.id,
-                    job: this.props.person.job,
-                    email: this.props.person.campaigner,
-                }),
-            })
-                .then((res) => {
-                this.props.refresh();
-            })
-                .catch((res) => {
-                console.log(res);
+    ElectionCandidate.prototype.deleteCandidate = function (event) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                axios_1.default.delete(campaign_url, {
+                    headers: { 'Content-Type': 'text/plain' },
+                    data: JSON.stringify({
+                        id: this.props.person.id,
+                        job: this.props.person.job,
+                        email: this.props.person.campaigner,
+                    }),
+                })
+                    .then(function (res) {
+                    _this.props.refresh();
+                })
+                    .catch(function (res) {
+                    console.log(res);
+                });
+                event.preventDefault();
+                return [2 /*return*/];
             });
-            event.preventDefault();
         });
-    }
-    updateCandidate(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const data = {
-                id: this.props.person.election,
-                job: this.props.person.job,
-                pitch: this.state.pitch,
-                email: this.props.person.campaigner,
-            };
-            try {
-                const res = yield axios_1.default.post(campaign_url, Utils_1.objectToFormData(data));
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    ElectionCandidate.prototype.updateCandidate = function (event) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, res, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        data = {
+                            id: this.props.person.election,
+                            job: this.props.person.job,
+                            pitch: this.state.pitch,
+                            email: this.props.person.campaigner,
+                        };
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, axios_1.default.post(campaign_url, Utils_1.objectToFormData(data))];
+                    case 2:
+                        res = _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
         });
-    }
-    render() {
+    };
+    ElectionCandidate.prototype.render = function () {
+        var _this = this;
         return (React.createElement("div", null,
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col-1 row-2" },
-                    React.createElement(RadioButton_1.RadioButton, { name: this.props.role, id: this.props.person.id, value: this.props.person.id, defaultChecked: this.props.voted.includes(this.props.person.id), onChange: (ev) => __awaiter(this, void 0, void 0, function* () {
-                            if (!ev.target.checked)
-                                return;
-                            let data = new FormData();
-                            data.append('voter', "" + LocalResourceResolver_1.getMemberId());
-                            data.append('campaign', ev.target.value);
-                            try {
-                                const res = yield axios_1.default.post(cast_vote_url, data);
-                            }
-                            catch (err) {
-                                console.log(err);
-                            }
-                        }) })),
+                    React.createElement(RadioButton_1.RadioButton, { name: this.props.role, id: this.props.person.id, value: this.props.person.id, defaultChecked: this.props.voted.includes(this.props.person.id), onChange: function (ev) { return __awaiter(_this, void 0, void 0, function () {
+                            var data, res, err_2;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        if (!ev.target.checked)
+                                            return [2 /*return*/];
+                                        data = new FormData();
+                                        data.append('voter', "" + LocalResourceResolver_1.getMemberId());
+                                        data.append('campaign', ev.target.value);
+                                        _a.label = 1;
+                                    case 1:
+                                        _a.trys.push([1, 3, , 4]);
+                                        return [4 /*yield*/, axios_1.default.post(cast_vote_url, data)];
+                                    case 2:
+                                        res = _a.sent();
+                                        return [3 /*break*/, 4];
+                                    case 3:
+                                        err_2 = _a.sent();
+                                        console.log(err_2);
+                                        return [3 /*break*/, 4];
+                                    case 4: return [2 /*return*/];
+                                }
+                            });
+                        }); } })),
                 React.createElement("div", { className: "col-8 row-2 election-label-div" },
                     React.createElement("label", { htmlFor: "" + this.props.person.id, className: "election-label" }, this.props.person.first_name + ' ' + this.props.person.last_name))),
             React.createElement("div", { className: "row col-offset-1 col-12" },
                 React.createElement(EditableTextarea_1.EditableTextarea, { initValue: this.state.pitch, onSave: this.updateCandidate, onDelete: this.deleteCandidate, editableOverride: LocalResourceResolver_1.isBoardMember() || (this.props.person.id !== LocalResourceResolver_1.getMemberId()) }))));
+    };
+    return ElectionCandidate;
+}(React.Component));
+var ElectionRole = /** @class */ (function (_super) {
+    __extends(ElectionRole, _super);
+    function ElectionRole(props) {
+        return _super.call(this, props) || this;
     }
-}
-class ElectionRole extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
+    ElectionRole.prototype.render = function () {
+        var _this = this;
         return (React.createElement("div", null,
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col-3" },
                     React.createElement("h3", null, this.props.role))),
-            this.props.candidates.map((key, idx) => {
-                return React.createElement(ElectionCandidate, { person: key, role: this.props.role, key: idx, refresh: this.props.refresh, voted: this.props.voted });
+            this.props.candidates.map(function (key, idx) {
+                return React.createElement(ElectionCandidate, { person: key, role: _this.props.role, key: idx, refresh: _this.props.refresh, voted: _this.props.voted });
             })));
-    }
-}
-class ElectionUpBoardEditable extends React.Component {
-    constructor(props) {
-        super(props);
-        let end = this.props.endDate === null ? moment() : moment(this.props.endDate);
-        this.state = {
-            startDate: moment(this.props.startDate),
+    };
+    return ElectionRole;
+}(React.Component));
+var ElectionUpBoardEditable = /** @class */ (function (_super) {
+    __extends(ElectionUpBoardEditable, _super);
+    function ElectionUpBoardEditable(props) {
+        var _this = _super.call(this, props) || this;
+        var end = _this.props.endDate === null ? moment() : moment(_this.props.endDate);
+        _this.state = {
+            startDate: moment(_this.props.startDate),
             endDate: end,
-            voted: this.props.voted,
+            voted: _this.props.voted,
         };
-        this.deleteElection = this.deleteElection.bind(this);
+        _this.deleteElection = _this.deleteElection.bind(_this);
+        return _this;
     }
-    deleteElection() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                let res = yield axios_1.default({
-                    method: 'DELETE',
-                    url: election_edit_url,
-                    data: { id: this.props.id }
-                });
-                window.location.reload(true);
-            }
-            catch (err) {
-                console.log(err);
-            }
+    ElectionUpBoardEditable.prototype.deleteElection = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default({
+                                method: 'DELETE',
+                                url: election_edit_url,
+                                data: { id: this.props.id }
+                            })];
+                    case 1:
+                        res = _a.sent();
+                        window.location.reload(true);
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        console.log(err_3);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-    }
-    updateElection(attr) {
-        return (date) => __awaiter(this, void 0, void 0, function* () {
-            const setter = Object.assign({}, this.state);
-            setter[attr] = date;
-            this.setState(setter);
-            const dateFormat = "YYYY-MM-DD";
-            try {
-                let res = yield axios_1.default.post(election_edit_url, Utils_1.objectToFormData({
-                    id: this.props.id,
-                    startDate: setter.startDate.format(dateFormat),
-                    endDate: setter.endDate.format(dateFormat),
-                }));
-                window.location.reload(true);
-            }
-            catch (err) {
-                console.log(err);
-            }
-        });
-    }
-    render() {
+    };
+    ElectionUpBoardEditable.prototype.updateElection = function (attr) {
+        var _this = this;
+        return function (date) { return __awaiter(_this, void 0, void 0, function () {
+            var setter, dateFormat, res, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        setter = Object.assign({}, this.state);
+                        setter[attr] = date;
+                        this.setState(setter);
+                        dateFormat = "YYYY-MM-DD";
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, axios_1.default.post(election_edit_url, Utils_1.objectToFormData({
+                                id: this.props.id,
+                                startDate: setter.startDate.format(dateFormat),
+                                endDate: setter.endDate.format(dateFormat),
+                            }))];
+                    case 2:
+                        res = _a.sent();
+                        window.location.reload(true);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_4 = _a.sent();
+                        console.log(err_4);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        }); };
+    };
+    ElectionUpBoardEditable.prototype.render = function () {
         return React.createElement("div", { className: "row" },
             React.createElement("h4", null, "Members Only!"),
             React.createElement("div", { className: "col-4" },
@@ -20724,50 +20882,56 @@ class ElectionUpBoardEditable extends React.Component {
             React.createElement("div", { className: "col-4" },
                 React.createElement("h5", null, "Warning: Deletes all Votes"),
                 React.createElement("button", { className: "interaction-style", onClick: this.deleteElection }, "Delete Election")));
-    }
-}
-class ElectionUp extends React.Component {
-    constructor(props) {
-        super(props);
-        const campaigns = [];
-        for (let key in this.props.order) {
-            let elem = this.props.order[key];
-            campaigns.push([elem, this.props.campaigns[elem]]);
+    };
+    return ElectionUpBoardEditable;
+}(React.Component));
+var ElectionUp = /** @class */ (function (_super) {
+    __extends(ElectionUp, _super);
+    function ElectionUp(props) {
+        var _this = _super.call(this, props) || this;
+        var campaigns = [];
+        for (var key in _this.props.order) {
+            var elem = _this.props.order[key];
+            campaigns.push([elem, _this.props.campaigns[elem]]);
         }
-        this.state = {
+        _this.state = {
             popup: null,
             campaigns: campaigns,
         };
-        this.submitVotes = this.submitVotes.bind(this);
+        _this.submitVotes = _this.submitVotes.bind(_this);
+        return _this;
     }
-    submitVotes(event) {
+    ElectionUp.prototype.submitVotes = function (event) {
+        var _this = this;
         event.preventDefault();
-        for (let key in this.props.order) {
-            let elem = this.props.order[key];
+        for (var key in this.props.order) {
+            var elem = this.props.order[key];
             console.log("For: " + elem + " Userid: " + event.target[elem].value);
         }
         this.setState({
-            popup: React.createElement(Popup_1.Popup, { title: "Submitted!", message: "Submit as many times as you want before the deadline", callback: () => {
-                    this.setState({ popup: null });
+            popup: React.createElement(Popup_1.Popup, { title: "Submitted!", message: "Submit as many times as you want before the deadline", callback: function () {
+                    _this.setState({ popup: null });
                 } })
         });
-    }
-    render() {
+    };
+    ElectionUp.prototype.render = function () {
+        var _this = this;
         return (React.createElement(React.Fragment, null,
             React.createElement("div", { className: "grid row-offset-1" },
                 LocalResourceResolver_1.isBoardMember() && React.createElement(ElectionUpBoardEditable, { refresh: this.props.refresh, id: this.props.id, startDate: this.props.startDate, endDate: this.props.endDate }),
                 React.createElement("form", { onSubmit: this.submitVotes },
-                    this.state.campaigns.map((campaign, idx) => {
-                        return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx, refresh: this.props.refresh, voted: this.props.voted });
+                    this.state.campaigns.map(function (campaign, idx) {
+                        return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx, refresh: _this.props.refresh, voted: _this.props.voted });
                     }),
                     React.createElement("div", { className: "row row-offset-2" },
                         React.createElement("button", { className: "interaction-style", type: "submit" }, "Submit Votes"))),
                 this.state.popup !== null && this.state.popup),
             React.createElement(RegisterElection_1.RegisterElectionView, { roles: this.props.order })));
-    }
-}
+    };
+    return ElectionUp;
+}(React.Component));
 function dateNow() {
-    const d = new Date();
+    var d = new Date();
     var month = '' + (d.getMonth() + 1);
     var day = '' + d.getDate();
     var year = d.getFullYear();
@@ -20777,120 +20941,149 @@ function dateNow() {
         day = '0' + day;
     return [year, month, day].join('-');
 }
-class ElectionDown extends React.Component {
-    constructor(props) {
-        super(props);
-        this.createElection = this.createElection.bind(this);
+var ElectionDown = /** @class */ (function (_super) {
+    __extends(ElectionDown, _super);
+    function ElectionDown(props) {
+        var _this = _super.call(this, props) || this;
+        _this.createElection = _this.createElection.bind(_this);
+        return _this;
     }
-    createElection() {
-        let data = new FormData();
+    ElectionDown.prototype.createElection = function () {
+        var _this = this;
+        var data = new FormData();
         data.append('startDate', dateNow());
         axios_1.default.post(election_create_url, data, {
             headers: { "Content-Type": "multipart/form-data" }
         })
-            .then((res) => {
-            this.props.refresh();
-        }).catch((res) => {
+            .then(function (res) {
+            _this.props.refresh();
+        }).catch(function (res) {
             console.log(res);
         });
-    }
-    render() {
+    };
+    ElectionDown.prototype.render = function () {
         return (React.createElement(React.Fragment, null,
             React.createElement("p", null, this.props.message),
             " ",
             React.createElement("button", { className: "interaction-style", onClick: this.createElection }, "Create")));
+    };
+    return ElectionDown;
+}(React.Component));
+var ElectionResults = /** @class */ (function (_super) {
+    __extends(ElectionResults, _super);
+    function ElectionResults(props) {
+        return _super.call(this, props) || this;
     }
-}
-class ElectionResults extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return React.createElement("div", null, this.props.results.map((role, idx) => {
+    ElectionResults.prototype.render = function () {
+        return React.createElement("div", null, this.props.results.map(function (role, idx) {
             return React.createElement("div", { key: idx },
                 React.createElement("h4", null, role.role),
-                role.votes.map((person, idx2) => {
+                role.votes.map(function (person, idx2) {
                     return React.createElement("div", { key: idx2 },
                         person.name,
                         ":",
                         person.num_votes);
                 }));
         }));
+    };
+    return ElectionResults;
+}(React.Component));
+var Campaign = /** @class */ (function () {
+    function Campaign() {
     }
-}
-class Campaign {
-}
-class CampaignResponse {
-}
-const convertResponseToHierarchy = (res) => {
+    return Campaign;
+}());
+var CampaignResponse = /** @class */ (function () {
+    function CampaignResponse() {
+    }
+    return CampaignResponse;
+}());
+var convertResponseToHierarchy = function (res) {
     console.log(res);
-    const ret = {};
-    const order = res.order;
-    for (var i of order) {
+    var ret = {};
+    var order = res.order;
+    for (var _i = 0, order_1 = order; _i < order_1.length; _i++) {
+        var i = order_1[_i];
         ret[i] = [];
     }
-    for (var j of res.campaigns) {
-        let temp = j;
+    for (var _a = 0, _b = res.campaigns; _a < _b.length; _a++) {
+        var j = _b[_a];
+        var temp = j;
         ret[temp.campaign.job].push(temp.campaign);
     }
     ret.order = order;
     return ret;
 };
-class ElectionView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+var ElectionView = /** @class */ (function (_super) {
+    __extends(ElectionView, _super);
+    function ElectionView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             election: LoadingState.Loading,
             error: null,
         };
-        this.performRequest = this.performRequest.bind(this);
-        this.componentDidMount = this.componentDidMount.bind(this);
+        _this.performRequest = _this.performRequest.bind(_this);
+        _this.componentDidMount = _this.componentDidMount.bind(_this);
+        return _this;
     }
-    performRequest() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.get(election_url);
-                const status = res.data.status;
-                var pack;
-                if (status === "up") {
-                    const hierarchy = convertResponseToHierarchy(res.data);
-                    const res2 = yield axios_1.default.get(my_vote_url + LocalResourceResolver_1.getMemberId());
-                    const selected = res2.data.votes.filter((e) => e.id !== LocalResourceResolver_1.getMemberId())
-                        .map((e) => e.campaign);
-                    const pack = React.createElement(ElectionUp, { order: res.data.order, id: res.data.election.id, startDate: res.data.election.date, endDate: res.data.election.endDate, campaigns: hierarchy, roles: hierarchy.order, voted: selected, refresh: this.performRequest });
-                    this.setState({
-                        election_data: pack,
-                        election: LoadingState.Loaded,
-                        up: status
-                    });
+    ElectionView.prototype.performRequest = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, status_1, pack, hierarchy, res2, selected, pack_1, res_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, axios_1.default.get(election_url)];
+                    case 1:
+                        res = _a.sent();
+                        status_1 = res.data.status;
+                        if (!(status_1 === "up")) return [3 /*break*/, 3];
+                        hierarchy = convertResponseToHierarchy(res.data);
+                        return [4 /*yield*/, axios_1.default.get(my_vote_url + LocalResourceResolver_1.getMemberId())];
+                    case 2:
+                        res2 = _a.sent();
+                        selected = res2.data.votes.filter(function (e) { return e.id !== LocalResourceResolver_1.getMemberId(); })
+                            .map(function (e) { return e.campaign; });
+                        pack_1 = React.createElement(ElectionUp, { order: res.data.order, id: res.data.election.id, startDate: res.data.election.date, endDate: res.data.election.endDate, campaigns: hierarchy, roles: hierarchy.order, voted: selected, refresh: this.performRequest });
+                        this.setState({
+                            election_data: pack_1,
+                            election: LoadingState.Loaded,
+                            up: status_1
+                        });
+                        return [3 /*break*/, 4];
+                    case 3:
+                        if (status_1 === "down") {
+                            this.setState({
+                                election_data: React.createElement(ElectionDown, { message: res.data.message || "Not Up", refresh: this.performRequest }),
+                                election: LoadingState.Loaded,
+                                up: status_1
+                            });
+                        }
+                        else {
+                            this.setState({
+                                election_data: React.createElement(ElectionResults, { results: res.data.election_data }),
+                                election: LoadingState.Loaded,
+                                up: status_1
+                            });
+                        }
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        res_1 = _a.sent();
+                        console.log(res_1);
+                        this.setState({
+                            error: res_1,
+                        });
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
-                else if (status === "down") {
-                    this.setState({
-                        election_data: React.createElement(ElectionDown, { message: res.data.message || "Not Up", refresh: this.performRequest }),
-                        election: LoadingState.Loaded,
-                        up: status
-                    });
-                }
-                else {
-                    this.setState({
-                        election_data: React.createElement(ElectionResults, { results: res.data.election_data }),
-                        election: LoadingState.Loaded,
-                        up: status
-                    });
-                }
-            }
-            catch (res) {
-                console.log(res);
-                this.setState({
-                    error: res,
-                });
-            }
+            });
         });
-    }
-    componentDidMount() {
+    };
+    ElectionView.prototype.componentDidMount = function () {
         this.performRequest();
-    }
-    render() {
+    };
+    ElectionView.prototype.render = function () {
         if (this.state.error !== null) {
             return React.createElement("p", null,
                 " An error has occurred \"",
@@ -20901,8 +21094,9 @@ class ElectionView extends React.Component {
             React.createElement("div", { className: "col-offset-2 col-8" }, this.state.election === LoadingState.Loading ?
                 React.createElement("p", null, " Loading ") :
                 this.state.election_data)));
-    }
-}
+    };
+    return ElectionView;
+}(React.Component));
 exports.ElectionView = ElectionView;
 
 
@@ -20912,6 +21106,16 @@ exports.ElectionView = ElectionView;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -20920,76 +21124,118 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const Select_1 = __webpack_require__(49);
-const Popup_1 = __webpack_require__(51);
-const axios_1 = __webpack_require__(12);
-const LocalResourceResolver_1 = __webpack_require__(36);
-const campaignCreate = '/api/campaign/create';
-class RegisterElectionView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.change = this.change.bind(this);
-        this.close = this.close.bind(this);
-        this.submit = this.submit.bind(this);
-        this._animationListener = this._animationListener.bind(this);
-        this.state = {
+var React = __webpack_require__(2);
+var Select_1 = __webpack_require__(49);
+var Popup_1 = __webpack_require__(51);
+var axios_1 = __webpack_require__(12);
+var LocalResourceResolver_1 = __webpack_require__(36);
+var campaignCreate = '/api/campaign/create';
+var RegisterElectionView = /** @class */ (function (_super) {
+    __extends(RegisterElectionView, _super);
+    function RegisterElectionView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.change = _this.change.bind(_this);
+        _this.close = _this.close.bind(_this);
+        _this.submit = _this.submit.bind(_this);
+        _this._animationListener = _this._animationListener.bind(_this);
+        _this.state = {
             clicked: false,
             pitchValue: ''
         };
-        this.campaignType = this.props.roles[0];
+        _this.campaignType = _this.props.roles[0];
+        return _this;
     }
-    componentDidUpdate() {
+    RegisterElectionView.prototype.componentDidUpdate = function () {
         if (this.openDiv) {
             //this.openDiv.addEventListener('animationend', () => 
             //	this.openDiv.scrollIntoView({behavior:"smooth"}));
         }
-    }
-    change() {
+    };
+    RegisterElectionView.prototype.change = function () {
         this.setState({
             clicked: !this.state.clicked
         });
-    }
-    _animationListener() {
+    };
+    RegisterElectionView.prototype._animationListener = function () {
         this.openDiv.classList.remove('register-div-close');
         this.openDiv.removeEventListener('animationend', this._animationListener);
         this.change();
-    }
-    close() {
+    };
+    RegisterElectionView.prototype.close = function () {
         this.openDiv.classList.add('register-div-close');
         this.openDiv.addEventListener('animationend', this._animationListener);
-    }
-    submit() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let data = new FormData();
-            data.append('pitch', this.state.pitchValue);
-            data.append('job', this.campaignType);
-            data.append('campaigner_id', "" + LocalResourceResolver_1.getMemberId());
-            try {
-                let res = yield axios_1.default.post(campaignCreate, data);
-                this.setState({
-                    popup: React.createElement(Popup_1.Popup, { title: "Campaign Submitted", message: "Election Campaign has been submitted", callback: () => window.location.reload(true) })
-                });
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    RegisterElectionView.prototype.submit = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, res, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        data = new FormData();
+                        data.append('pitch', this.state.pitchValue);
+                        data.append('job', this.campaignType);
+                        data.append('campaigner_id', "" + LocalResourceResolver_1.getMemberId());
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, axios_1.default.post(campaignCreate, data)];
+                    case 2:
+                        res = _a.sent();
+                        this.setState({
+                            popup: React.createElement(Popup_1.Popup, { title: "Campaign Submitted", message: "Election Campaign has been submitted", callback: function () { return window.location.reload(true); } })
+                        });
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
         });
-    }
-    render() {
+    };
+    RegisterElectionView.prototype.render = function () {
+        var _this = this;
         if (!this.state.clicked) {
             return React.createElement("div", null,
                 React.createElement("button", { className: "row-offset-2 interaction-style", onClick: this.change }, "Want to run? Click here!"));
         }
         else {
-            const options = this.props.roles.map((role, idx) => new Select_1.Option(role, role));
+            var options = this.props.roles.map(function (role, idx) { return new Select_1.Option(role, role); });
             return React.createElement("div", null,
-                React.createElement("div", { className: "row-offset-2 register-div", ref: (input) => this.openDiv = input },
+                React.createElement("div", { className: "row-offset-2 register-div", ref: function (input) { return _this.openDiv = input; } },
                     React.createElement("h3", null, "Register Election"),
-                    React.createElement("textarea", { className: "interaction-style", placeholder: "Your pitch goes here...", value: this.state.pitchValue, onChange: (ev) => this.setState({ pitchValue: ev.target.value }) }),
+                    React.createElement("textarea", { className: "interaction-style", placeholder: "Your pitch goes here...", value: this.state.pitchValue, onChange: function (ev) { return _this.setState({ pitchValue: ev.target.value }); } }),
                     React.createElement("div", { className: "row-offset-1" },
-                        React.createElement(Select_1.Select, { name: 'registerElection', onChange: (op) => { this.campaignType = op; }, options: options })),
+                        React.createElement(Select_1.Select, { name: 'registerElection', onChange: function (op) { _this.campaignType = op; }, options: options })),
                     React.createElement("div", { className: "row-offset-1" },
                         React.createElement("div", { className: "col-6" },
                             React.createElement("button", { className: "interaction-style", onClick: this.close }, "Close")),
@@ -20997,8 +21243,9 @@ class RegisterElectionView extends React.Component {
                             React.createElement("button", { className: "interaction-style", onClick: this.submit }, "Submit")))),
                 this.state.popup && this.state.popup);
         }
-    }
-}
+    };
+    return RegisterElectionView;
+}(React.Component));
 exports.RegisterElectionView = RegisterElectionView;
 
 
@@ -21012,49 +21259,74 @@ exports.RegisterElectionView = RegisterElectionView;
  * Acts as a this wrapper around radio button so that
  * Styles, animation, and consistency is maintained
  */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const reverseSwirlClass = "radio-swirl-back";
-class RadioButtonState {
-}
+var React = __webpack_require__(2);
+var reverseSwirlClass = "radio-swirl-back";
+var RadioButtonState = /** @class */ (function () {
+    function RadioButtonState() {
+    }
+    return RadioButtonState;
+}());
 // Typescript doesn't support variadic types so the props have to be any
 // To forward to the standard input field
-class RadioButton extends React.Component {
-    constructor(props) {
-        super(props);
-        this.clicked = this.clicked.bind(this);
-        this.hover = this.hover.bind(this);
+var RadioButton = /** @class */ (function (_super) {
+    __extends(RadioButton, _super);
+    function RadioButton(props) {
+        var _this = _super.call(this, props) || this;
+        _this.clicked = _this.clicked.bind(_this);
+        _this.hover = _this.hover.bind(_this);
+        return _this;
     }
-    hover(event) {
+    RadioButton.prototype.hover = function (event) {
         // Must remove or after :hover disappears the
         // Animation will trigger again
         // No op to remove a class that does not exist
         if (event.animationName.includes('reverse')) {
             this.spanElem.classList.remove(reverseSwirlClass);
         }
-    }
-    componentDidMount() {
+    };
+    RadioButton.prototype.componentDidMount = function () {
         // Make sure that the class has the reverse if checked for the first time
         this.spanElem.addEventListener('animationend', this.hover);
         this.clicked();
-    }
-    componentWillUnmount() {
+    };
+    RadioButton.prototype.componentWillUnmount = function () {
         this.spanElem.removeEventListener('animationend', this.hover);
-    }
-    clicked() {
+    };
+    RadioButton.prototype.clicked = function () {
         if (this.inputElem.checked) {
             // We are checking it
             this.spanElem.classList.add(reverseSwirlClass);
         }
-    }
-    render() {
+    };
+    RadioButton.prototype.render = function () {
         /* Forward all props using ... to the input field since this is supposed
          * to be a thin wrapper around it */
+        var _this = this;
         return React.createElement("label", { className: "radio-container" },
-            React.createElement("input", Object.assign({}, this.props, { type: "radio", onClick: this.clicked, ref: (input) => this.inputElem = input })),
-            React.createElement("span", { className: "radio-checkmark", ref: (input) => this.spanElem = input }));
-    }
-}
+            React.createElement("input", __assign({}, this.props, { type: "radio", onClick: this.clicked, ref: function (input) { return _this.inputElem = input; } })),
+            React.createElement("span", { className: "radio-checkmark", ref: function (input) { return _this.spanElem = input; } }));
+    };
+    return RadioButton;
+}(React.Component));
 exports.RadioButton = RadioButton;
 
 

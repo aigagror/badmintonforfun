@@ -1635,7 +1635,7 @@ var Cookies = __webpack_require__(39);
 /**
  * Mappings from imported classes to random strings.
  */
-const obfuscationMappings = {
+var obfuscationMappings = {
     'MailView': 'ysjiUtKPV7',
 };
 /**
@@ -1643,15 +1643,15 @@ const obfuscationMappings = {
  * arg being the requested key
  */
 function _generateKey(instance, arg) {
-    const name = instance.constructor.name;
-    const obf = obfuscationMappings[name];
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
     return name + obf;
 }
 /**
  * Returns a string given the class and the key <arg>
  */
 function getResource(instance, arg) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     return localStorage.getItem(key);
     ;
 }
@@ -1660,18 +1660,18 @@ exports.getResource = getResource;
  * Sets the requested key <arg> of class <instance> to <value>
  */
 function setResource(instance, arg, value) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     localStorage.setItem(key, value);
 }
 exports.setResource = setResource;
-const cookies = new Cookies();
+var cookies = new Cookies();
 function isBoardMember() {
-    const ret = cookies.get('is_board_member');
+    var ret = cookies.get('is_board_member');
     return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    const ret = cookies.get('member_id');
+    var ret = cookies.get('member_id');
     return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
@@ -2201,8 +2201,9 @@ function cleanCookies() {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 function objectToFormData(obj) {
-    const data = new FormData();
-    for (let key of Object.keys(obj)) {
+    var data = new FormData();
+    for (var _i = 0, _a = Object.keys(obj); _i < _a.length; _i++) {
+        var key = _a[_i];
         var serial = obj[key];
         if (typeof serial === 'object') {
             serial = JSON.stringify(obj[key]);
@@ -2222,9 +2223,9 @@ exports.objectToFormData = objectToFormData;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const MailView_1 = __webpack_require__(487);
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var MailView_1 = __webpack_require__(487);
 ReactDOM.render(React.createElement(MailView_1.MailView, null), document.querySelector("mail-form"));
 
 
@@ -2235,6 +2236,16 @@ ReactDOM.render(React.createElement(MailView_1.MailView, null), document.querySe
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -2243,103 +2254,156 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const LocalResourceResolver_1 = __webpack_require__(36);
-const Select_1 = __webpack_require__(49);
-const Utils_1 = __webpack_require__(44);
-const Popup_1 = __webpack_require__(51);
+var React = __webpack_require__(2);
+var axios_1 = __webpack_require__(12);
+var LocalResourceResolver_1 = __webpack_require__(36);
+var Select_1 = __webpack_require__(49);
+var Utils_1 = __webpack_require__(44);
+var Popup_1 = __webpack_require__(51);
 axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
 axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
-const mail_list_url = '/api/mail/';
-const mail_data_location = 'mailData';
-class MailView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+var mail_list_url = '/api/mail/';
+var mail_data_location = 'mailData';
+var MailView = /** @class */ (function (_super) {
+    __extends(MailView, _super);
+    function MailView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             lists: null,
             bodyText: "",
             titleText: "",
             mailingList: "",
             popup: null,
         };
-        this.sendMail = this.sendMail.bind(this);
-        this.scoopData = this.scoopData.bind(this);
-        this.setData = this.setData.bind(this);
-        this.switch = this.switch.bind(this);
-        this.resetState = this.resetState.bind(this);
+        _this.sendMail = _this.sendMail.bind(_this);
+        _this.scoopData = _this.scoopData.bind(_this);
+        _this.setData = _this.setData.bind(_this);
+        _this.switch = _this.switch.bind(_this);
+        _this.resetState = _this.resetState.bind(_this);
+        return _this;
     }
-    componentDidMount() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.get(mail_list_url);
-                this.setState({
-                    lists: res.data,
-                    mailingList: res.data[0].value,
-                });
-                const item = LocalResourceResolver_1.getResource(this, mail_data_location);
-                if (item !== null) {
-                    this.setData(JSON.parse(item));
+    MailView.prototype.componentDidMount = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var res, item, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.get(mail_list_url)];
+                    case 1:
+                        res = _a.sent();
+                        this.setState({
+                            lists: res.data,
+                            mailingList: res.data[0].value,
+                        });
+                        item = LocalResourceResolver_1.getResource(this, mail_data_location);
+                        if (item !== null) {
+                            this.setData(JSON.parse(item));
+                        }
+                        window.setInterval(function () {
+                            LocalResourceResolver_1.setResource(_this, mail_data_location, JSON.stringify(_this.scoopData()));
+                        }, 5000);
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
-                window.setInterval(() => {
-                    LocalResourceResolver_1.setResource(this, mail_data_location, JSON.stringify(this.scoopData()));
-                }, 5000);
-            }
-            catch (err) {
-                console.log(err);
-            }
+            });
         });
-    }
-    switch(value) {
+    };
+    MailView.prototype.switch = function (value) {
         this.setState({
             mailingList: value
         });
-    }
-    scoopData() {
-        const data = {
+    };
+    MailView.prototype.scoopData = function () {
+        var data = {
             mailing_list: this.state.mailingList,
             title: this.state.titleText,
             body: this.state.bodyText
         };
         return data;
-    }
-    setData(data) {
+    };
+    MailView.prototype.setData = function (data) {
         this.setState({
             titleText: data.title,
             bodyText: data.body,
             mailingList: data.list,
         });
-    }
-    resetState() {
+    };
+    MailView.prototype.resetState = function () {
         this.setState({
             popup: null
         });
-    }
-    sendMail(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            event.preventDefault();
-            const data = this.scoopData();
-            try {
-                yield axios_1.default.post(mail_list_url, Utils_1.objectToFormData(data));
-                this.setState({
-                    titleText: "",
-                    bodyText: "",
-                    popup: React.createElement(Popup_1.Popup, { title: "Success", message: "Massmail will be incrementally sent", callback: this.resetState }),
-                });
-            }
-            catch (err) {
-                this.setState({
-                    popup: React.createElement(Popup_1.Popup, { title: "Sorry!", message: "There was an error on our end, please check back soon", callback: this.resetState }),
-                });
-            }
+    };
+    MailView.prototype.sendMail = function (event) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        event.preventDefault();
+                        data = this.scoopData();
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, axios_1.default.post(mail_list_url, Utils_1.objectToFormData(data))];
+                    case 2:
+                        _a.sent();
+                        this.setState({
+                            titleText: "",
+                            bodyText: "",
+                            popup: React.createElement(Popup_1.Popup, { title: "Success", message: "Massmail will be incrementally sent", callback: this.resetState }),
+                        });
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_2 = _a.sent();
+                        this.setState({
+                            popup: React.createElement(Popup_1.Popup, { title: "Sorry!", message: "There was an error on our end, please check back soon", callback: this.resetState }),
+                        });
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
         });
-    }
-    render() {
+    };
+    MailView.prototype.render = function () {
+        var _this = this;
         if (this.state.lists === null) {
             return React.createElement("p", null, "Loading");
         }
-        const selectData = this.state.lists.map((list, idx) => {
+        var selectData = this.state.lists.map(function (list, idx) {
             return {
                 value: list.key,
                 display: list.name
@@ -2353,16 +2417,17 @@ class MailView extends React.Component {
                     React.createElement(Select_1.Select, { options: selectData, onChange: this.switch, name: "mailState" }))),
             React.createElement("div", { className: "row row-offset-1" },
                 React.createElement("div", { className: "col-8" },
-                    React.createElement("input", { type: "text", placeholder: "Title", value: this.state.titleText, onChange: (ev) => this.setState({ titleText: ev.target.value }), className: "mail-title interaction-style" }))),
+                    React.createElement("input", { type: "text", placeholder: "Title", value: this.state.titleText, onChange: function (ev) { return _this.setState({ titleText: ev.target.value }); }, className: "mail-title interaction-style" }))),
             React.createElement("div", { className: "row row-offset-1" },
                 React.createElement("div", { className: "col-12" },
-                    React.createElement("textarea", { placeholder: "Body", value: this.state.bodyText, onChange: (ev) => this.setState({ bodyText: ev.target.value }), className: "mail-body interaction-style" }))),
+                    React.createElement("textarea", { placeholder: "Body", value: this.state.bodyText, onChange: function (ev) { return _this.setState({ bodyText: ev.target.value }); }, className: "mail-body interaction-style" }))),
             React.createElement("div", { className: "row row-offset-1" },
                 React.createElement("div", { className: "col-4" },
                     React.createElement("button", { type: "submit", onClick: this.sendMail, className: "interaction-style" }, "Submit"))),
             this.state.popup !== null && this.state.popup));
-    }
-}
+    };
+    return MailView;
+}(React.Component));
 exports.MailView = MailView;
 
 
@@ -2373,49 +2438,71 @@ exports.MailView = MailView;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class Option {
-    constructor(val, displ) {
+var React = __webpack_require__(2);
+var Option = /** @class */ (function () {
+    function Option(val, displ) {
         this.value = val;
         this.display = displ;
     }
-}
+    return Option;
+}());
 exports.Option = Option;
-const selectFadeOutClassName = 'select-check-fade-out';
-class SelectArea extends React.Component {
-    render() {
-        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
-            return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.change(option.value, this.props.name + idx) }),
-                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
-        }));
+var selectFadeOutClassName = 'select-check-fade-out';
+var SelectArea = /** @class */ (function (_super) {
+    __extends(SelectArea, _super);
+    function SelectArea() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class Select extends React.Component {
-    constructor(props) {
-        super(props);
-        this.change = this.change.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
-        this._decideInitialStatus = this._decideInitialStatus.bind(this);
-        this._scrollCondition = this._scrollCondition.bind(this);
-        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
-        const status = this._decideInitialStatus();
-        const value = this.props.defaultValue !== undefined ? this.props.defaultValue : this.props.options[0].value;
-        this.state = {
+    SelectArea.prototype.render = function () {
+        var _this = this;
+        return React.createElement("span", { className: 'select' }, this.props.options.map(function (option, idx) {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: _this.props.name + idx, value: option.value, name: _this.props.name, type: 'radio', onChange: function (target) { return _this.props.change(option.value, _this.props.name + idx); } }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: _this.props.name + idx }, option.display));
+        }));
+    };
+    return SelectArea;
+}(React.Component));
+var Select = /** @class */ (function (_super) {
+    __extends(Select, _super);
+    function Select(props) {
+        var _this = _super.call(this, props) || this;
+        _this.change = _this.change.bind(_this);
+        _this.handleClickOutside = _this.handleClickOutside.bind(_this);
+        _this.lazyAnimationAdder = _this.lazyAnimationAdder.bind(_this);
+        _this._decideInitialStatus = _this._decideInitialStatus.bind(_this);
+        _this._scrollCondition = _this._scrollCondition.bind(_this);
+        _this.documentResizeUpdate = _this.documentResizeUpdate.bind(_this);
+        var status = _this._decideInitialStatus();
+        var value = _this.props.defaultValue !== undefined ? _this.props.defaultValue : _this.props.options[0].value;
+        _this.state = {
             status: status,
             width: document.documentElement.clientWidth,
             value: value,
         };
-        this.scrollDiv = null;
+        _this.scrollDiv = null;
+        return _this;
     }
-    _scrollCondition() {
+    Select.prototype._scrollCondition = function () {
         return this.state.width < 500 || this.props.override;
-    }
-    _decideInitialStatus() {
+    };
+    Select.prototype._decideInitialStatus = function () {
+        var _this = this;
         if (this.props.defaultValue !== undefined) {
-            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            var value = this.props.options.find(function (option) {
+                return option.value === _this.props.defaultValue;
+            });
             if (value === undefined) {
                 return this.props.options[0].display;
             }
@@ -2426,35 +2513,36 @@ class Select extends React.Component {
         else {
             return this.props.options[0].display;
         }
-    }
-    documentResizeUpdate() {
+    };
+    Select.prototype.documentResizeUpdate = function () {
         this.setState({
             width: document.documentElement.clientWidth
         });
-    }
-    componentDidMount() {
+    };
+    Select.prototype.componentDidMount = function () {
+        var _this = this;
         if (this._scrollCondition()) {
             return;
         }
         document.documentElement.addEventListener('resize', this.documentResizeUpdate);
         document.addEventListener('mousedown', this.handleClickOutside);
-        const defaultHeight = 30;
+        var defaultHeight = 30;
         this.scrollDiv.style.height = defaultHeight + "px";
-        this.interval = setInterval(() => {
-            const movableArea = this.innerDiv.scrollTop /
-                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
-            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
-            this.scrollDiv.style.top = "" + offset + "px";
+        this.interval = setInterval(function () {
+            var movableArea = _this.innerDiv.scrollTop /
+                (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
+            var offset = _this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            _this.scrollDiv.style.top = "" + offset + "px";
         }, 20);
-        const divMove = (e) => {
-            const boundingRect = this.selectDiv.getBoundingClientRect();
-            const fuzz = .2;
-            const height = boundingRect.bottom - boundingRect.top;
-            const bottom = boundingRect.bottom - fuzz * height;
-            const top = boundingRect.top + fuzz * height;
-            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
-            const percentage = (adjusted - top) / (bottom - top);
-            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        var divMove = function (e) {
+            var boundingRect = _this.selectDiv.getBoundingClientRect();
+            var fuzz = .2;
+            var height = boundingRect.bottom - boundingRect.top;
+            var bottom = boundingRect.bottom - fuzz * height;
+            var top = boundingRect.top + fuzz * height;
+            var adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            var percentage = (adjusted - top) / (bottom - top);
+            _this.innerDiv.scrollTop = percentage * (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
         };
         function mouseUp() {
             window.removeEventListener('mousemove', divMove, true);
@@ -2464,37 +2552,37 @@ class Select extends React.Component {
         }
         this.scrollDiv.addEventListener('mousedown', mouseDown, false);
         window.addEventListener('mouseup', mouseUp, false);
-    }
-    componentWillUnmount() {
+    };
+    Select.prototype.componentWillUnmount = function () {
         if (this._scrollCondition()) {
             return;
         }
         document.removeEventListener('mousedown', this.handleClickOutside);
         document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
         clearInterval(this.interval);
-    }
+    };
     /**
      * Uncheck the input if clicked outside
      * Best to leave the typing generic because typescript does _not_
      * like non-generics with dom.
      */
-    handleClickOutside(event) {
+    Select.prototype.handleClickOutside = function (event) {
         if (this._scrollCondition()) {
             return;
         }
         if (this.inputDiv && !this.wrapper.contains(event.target)) {
             this.inputDiv.checked = false;
         }
-    }
-    lazyAnimationAdder(event) {
+    };
+    Select.prototype.lazyAnimationAdder = function (event) {
         if (this._scrollCondition()) {
             return;
         }
         if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
-    }
-    change(value, id) {
+    };
+    Select.prototype.change = function (value, id) {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
@@ -2506,31 +2594,33 @@ class Select extends React.Component {
         }
         else {
             // Cool trick to get the label for the input
-            const elem = document.querySelector('label[for="' + id + '"]');
+            var elem = document.querySelector('label[for="' + id + '"]');
             this.setState({
                 status: elem.innerHTML,
             });
             this.inputDiv.checked = false;
         }
-    }
-    render() {
+    };
+    Select.prototype.render = function () {
+        var _this = this;
         if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
+            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: function (ev) { return _this.change(ev.target.value, null); } }, this.props.options.map(function (option, idx) {
                 return React.createElement(React.Fragment, null,
                     React.createElement("option", { value: option.value }, option.display));
             }));
         }
-        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
-            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+        return React.createElement("div", { className: "select-wrapper-div", ref: function (input) { return _this.wrapper = input; } },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: function (input) { return _this.inputDiv = input; } }),
             React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
-                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("span", { ref: function (input) { return _this.titleSpan = input; }, className: "select-title-text" }, this.state.status),
                 React.createElement("b", { className: 'select-arrow' })),
-            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
-                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+            React.createElement("div", { className: "select-div", ref: function (input) { return _this.selectDiv = input; } },
+                React.createElement("div", { className: "inner-select-div", ref: function (input) { return _this.innerDiv = input; } },
                     React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
-                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
-    }
-}
+                    React.createElement("div", { className: "select-scroll", ref: function (input) { return _this.scrollDiv = input; } }))));
+    };
+    return Select;
+}(React.Component));
 exports.Select = Select;
 
 
@@ -2553,45 +2643,64 @@ module.exports = ReactDOM;
  * To work. Appears in the middle of the screen and darkens
  * The body.
  */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const popupDisabledClass = "popup-disabled";
-const popupScreenFadeClass = 'popup-screen-fade';
-const popupFadeClass = 'popup-fade';
-class PopupProps {
-}
-exports.PopupProps = PopupProps;
-class PopupState {
-}
-class Popup extends React.Component {
-    constructor(props) {
-        super(props);
-        this.close = this.close.bind(this);
+var React = __webpack_require__(2);
+var popupDisabledClass = "popup-disabled";
+var popupScreenFadeClass = 'popup-screen-fade';
+var popupFadeClass = 'popup-fade';
+var PopupProps = /** @class */ (function () {
+    function PopupProps() {
     }
-    componentDidMount() {
+    return PopupProps;
+}());
+exports.PopupProps = PopupProps;
+var PopupState = /** @class */ (function () {
+    function PopupState() {
+    }
+    return PopupState;
+}());
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
+        var _this = _super.call(this, props) || this;
+        _this.close = _this.close.bind(_this);
+        return _this;
+    }
+    Popup.prototype.componentDidMount = function () {
         /* Programatically create a div to overlay everything and animate it in
             Also force the body not to scroll */
         this.screenDiv = document.createElement('div');
         this.screenDiv.className = 'popup-screen';
-        const body = document.querySelector('body');
+        var body = document.querySelector('body');
         body.appendChild(this.screenDiv);
         body.classList.add(popupDisabledClass);
-    }
-    componentWillUnmount() {
+    };
+    Popup.prototype.componentWillUnmount = function () {
         /* Remove the programatic div and let the body scroll */
-        const body = document.querySelector('body');
+        var body = document.querySelector('body');
         body.removeChild(this.screenDiv);
         body.classList.remove(popupDisabledClass);
-    }
-    close() {
+    };
+    Popup.prototype.close = function () {
         /* Animate everything in */
+        var _this = this;
         this.wrapperDiv.classList.add(popupFadeClass);
         this.screenDiv.classList.add(popupScreenFadeClass);
         /* Cool so we can seperate concerns */
-        const refCounter = { count: 0 };
-        const callback = () => {
+        var refCounter = { count: 0 };
+        var callback = function () {
             if (refCounter.count == 1) {
-                this.props.callback();
+                _this.props.callback();
             }
             else {
                 refCounter.count += 1;
@@ -2604,9 +2713,10 @@ class Popup extends React.Component {
          */
         this.wrapperDiv.addEventListener('animationend', callback);
         this.screenDiv.addEventListener('animationend', callback);
-    }
-    render() {
-        return (React.createElement("div", { className: "popup-div", ref: (input) => this.wrapperDiv = input },
+    };
+    Popup.prototype.render = function () {
+        var _this = this;
+        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
             React.createElement("div", { className: "grid row" },
                 React.createElement("div", { className: "row-1" },
                     React.createElement("div", { className: "col-11 popup-title-div" },
@@ -2618,8 +2728,9 @@ class Popup extends React.Component {
                 React.createElement("div", { className: "row-offset-10" },
                     React.createElement("div", { className: "popup-check-button" },
                         React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
-    }
-}
+    };
+    return Popup;
+}(React.Component));
 exports.Popup = Popup;
 
 

@@ -2,6 +2,7 @@ import * as React from "react";
 import axios from 'axios';
 import {Select, Option} from '../common/Select';
 import {objectToFormData} from '../common/Utils';
+import {Popup} from '../common/Popup';
 const tourney_url = '/api/tournament/';
 
 const columnWidth = 160;
@@ -25,16 +26,10 @@ const calcY = (col: number, row: number, maxCols: number): number => {
 
 class Matchup extends React.Component<any, any> {
 
-
 	render() {
-
 		var extra;
 		const opts = {
-			stroke: "white",
-			fill: "white",
-			fontFamily: "Arial",
-			fontSize: "16px",
-			cursor: "pointer",
+
 		}
 		const startingX = this.props.x;
 		const startingY = this.props.y+15;
@@ -88,8 +83,10 @@ class Matchup extends React.Component<any, any> {
 			width={columnWidth}
 			height={rowHeight}
 			style={rectStyle}
+			className="tournament-bracket-node"
 			rx={""+3}
 			ry={""+3}
+			onClick={()=>this.props.change(this.props.data)}
 		  />
 		  {extra}
 		  </>
@@ -152,7 +149,7 @@ class TournamentCell extends React.Component<any, any> {
 		let {left_node, right_node, ...rest} = data;
 		const x = calcX(col);
 		const y = calcY(col, row, maxCols);
-		var elems = [<Matchup x={x} y={y} data={rest}/>];
+		var elems = [<Matchup x={x} y={y} data={rest} change={this.props.change}/>];
 		const entry = y + rowHeight / 2;
 
 		if (data.left_node !== null) {
@@ -257,6 +254,7 @@ export class TournamentView extends React.Component<any, any> {
 		}
 		this.refresh = this.refresh.bind(this);
 		this.finishTournament = this.finishTournament.bind(this);
+		this.changeMatch = this.changeMatch.bind(this);
 	}
 
 	async finishTournament() {
@@ -294,6 +292,10 @@ export class TournamentView extends React.Component<any, any> {
 		}
 	}
 
+	changeMatch(matchObj: any) {
+		console.log(matchObj);
+	}
+
 	componentDidMount() {
 		this.refresh();
 	}
@@ -306,7 +308,8 @@ export class TournamentView extends React.Component<any, any> {
 		}
 		return (
 			<div className="tournament-div">
-			<TournamentCell matches={this.state.matches} />
+			{this.state.popup && this.state.popup}
+			<TournamentCell matches={this.state.matches} change={this.changeMatch} />
 			<button onClick={this.finishTournament} className="interaction-style">Finish</button>
 			</div>);
 	}

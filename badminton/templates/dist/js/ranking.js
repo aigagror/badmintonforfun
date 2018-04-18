@@ -1635,7 +1635,7 @@ var Cookies = __webpack_require__(39);
 /**
  * Mappings from imported classes to random strings.
  */
-const obfuscationMappings = {
+var obfuscationMappings = {
     'MailView': 'ysjiUtKPV7',
 };
 /**
@@ -1643,15 +1643,15 @@ const obfuscationMappings = {
  * arg being the requested key
  */
 function _generateKey(instance, arg) {
-    const name = instance.constructor.name;
-    const obf = obfuscationMappings[name];
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
     return name + obf;
 }
 /**
  * Returns a string given the class and the key <arg>
  */
 function getResource(instance, arg) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     return localStorage.getItem(key);
     ;
 }
@@ -1660,18 +1660,18 @@ exports.getResource = getResource;
  * Sets the requested key <arg> of class <instance> to <value>
  */
 function setResource(instance, arg, value) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     localStorage.setItem(key, value);
 }
 exports.setResource = setResource;
-const cookies = new Cookies();
+var cookies = new Cookies();
 function isBoardMember() {
-    const ret = cookies.get('is_board_member');
+    var ret = cookies.get('is_board_member');
     return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    const ret = cookies.get('member_id');
+    var ret = cookies.get('member_id');
     return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
@@ -2200,9 +2200,9 @@ function cleanCookies() {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const RankingView_1 = __webpack_require__(497);
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var RankingView_1 = __webpack_require__(497);
 ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.querySelector("ranking-view"));
 
 
@@ -2213,6 +2213,16 @@ ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.q
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -2221,14 +2231,45 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const LocalResourceResolver_1 = __webpack_require__(36);
-const ranking_url = '/api/rankings/winratio/';
-const ranking_level = '/api/rankings/level/';
-class RanksTableWL extends React.Component {
-    render() {
+var React = __webpack_require__(2);
+var axios_1 = __webpack_require__(12);
+var LocalResourceResolver_1 = __webpack_require__(36);
+var ranking_url = '/api/rankings/winratio/';
+var ranking_level = '/api/rankings/level/';
+var RanksTableWL = /** @class */ (function (_super) {
+    __extends(RanksTableWL, _super);
+    function RanksTableWL() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RanksTableWL.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("h4", null, this.props.title),
             React.createElement("table", { className: "stats-table row-offset-1" },
@@ -2238,7 +2279,7 @@ class RanksTableWL extends React.Component {
                         React.createElement("th", { className: "col-3 col-es-6" }, "Name"),
                         React.createElement("th", { className: "col-3 col-es-6" }, "Wins"),
                         React.createElement("th", { className: "col-3 col-es-6" }, "Total"))),
-                React.createElement("tbody", null, this.props.ranks.map((rank, idx) => {
+                React.createElement("tbody", null, this.props.ranks.map(function (rank, idx) {
                     return (React.createElement("tr", { key: idx, className: (LocalResourceResolver_1.getMemberId() === rank.id ? "my-rank " : "") + "row-2" },
                         React.createElement("td", { className: "col-3 col-es-6" }, idx + 1),
                         React.createElement("td", { className: "col-3 col-es-6" },
@@ -2248,10 +2289,15 @@ class RanksTableWL extends React.Component {
                         React.createElement("td", { className: "col-3 col-es-6" }, rank.wins),
                         React.createElement("td", { className: "col-3 col-es-6" }, rank.total_games)));
                 }))));
+    };
+    return RanksTableWL;
+}(React.Component));
+var RanksTableLevel = /** @class */ (function (_super) {
+    __extends(RanksTableLevel, _super);
+    function RanksTableLevel() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class RanksTableLevel extends React.Component {
-    render() {
+    RanksTableLevel.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("h4", null, this.props.title),
             React.createElement("table", { className: "stats-table row-offset-1" },
@@ -2260,7 +2306,7 @@ class RanksTableLevel extends React.Component {
                         React.createElement("th", { className: "col-3 col-es-6" }, "Rank"),
                         React.createElement("th", { className: "col-3 col-es-6" }, "Name"),
                         React.createElement("th", { className: "col-3 col-es-6" }, "Level"))),
-                React.createElement("tbody", null, this.props.ranks.map((rank, idx) => {
+                React.createElement("tbody", null, this.props.ranks.map(function (rank, idx) {
                     return (React.createElement("tr", { key: idx, className: (LocalResourceResolver_1.getMemberId() === rank.id ? "my-rank " : "") + "row-2" },
                         React.createElement("td", { className: "col-3 col-es-6" }, idx + 1),
                         React.createElement("td", { className: "col-3 col-es-6" },
@@ -2269,37 +2315,55 @@ class RanksTableLevel extends React.Component {
                             rank.last_name),
                         React.createElement("td", { className: "col-3 col-es-6" }, rank.level)));
                 }))));
-    }
-}
-class RankingView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+    };
+    return RanksTableLevel;
+}(React.Component));
+var RankingView = /** @class */ (function (_super) {
+    __extends(RankingView, _super);
+    function RankingView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             ranks: null,
             loading: true,
         };
+        return _this;
     }
-    componentDidMount() {
+    RankingView.prototype.componentDidMount = function () {
         this.performRequest();
-    }
-    performRequest() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const regular = this.state.regular;
-            var url = ranking_url;
-            try {
-                const [res, level] = [yield axios_1.default.get(url), yield axios_1.default.get(ranking_level)];
-                this.setState({
-                    ranks: res.data.rankings,
-                    level: level.data.rankings,
-                    loading: false,
-                });
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    RankingView.prototype.performRequest = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var regular, url, _a, res, level, _b, err_1;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        regular = this.state.regular;
+                        url = ranking_url;
+                        _c.label = 1;
+                    case 1:
+                        _c.trys.push([1, 4, , 5]);
+                        return [4 /*yield*/, axios_1.default.get(url)];
+                    case 2:
+                        _b = [_c.sent()];
+                        return [4 /*yield*/, axios_1.default.get(ranking_level)];
+                    case 3:
+                        _a = _b.concat([_c.sent()]), res = _a[0], level = _a[1];
+                        this.setState({
+                            ranks: res.data.rankings,
+                            level: level.data.rankings,
+                            loading: false,
+                        });
+                        return [3 /*break*/, 5];
+                    case 4:
+                        err_1 = _c.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
+                }
+            });
         });
-    }
-    render() {
+    };
+    RankingView.prototype.render = function () {
         if (this.state.loading === true) {
             return React.createElement("p", null, "Loading");
         }
@@ -2308,8 +2372,9 @@ class RankingView extends React.Component {
         return React.createElement(React.Fragment, null,
             React.createElement(RanksTableWL, { ranks: this.state.ranks, myRank: this.state.myRanks, title: "Rankings by Win/Loss" }),
             React.createElement(RanksTableLevel, { ranks: this.state.level, myRank: this.state.myRanks, title: "Rankings by Level" }));
-    }
-}
+    };
+    return RankingView;
+}(React.Component));
 exports.RankingView = RankingView;
 
 

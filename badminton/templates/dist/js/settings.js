@@ -1069,31 +1069,45 @@ module.exports = InterceptorManager;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class Slider extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onChange = this.onChange.bind(this);
+var React = __webpack_require__(2);
+var Slider = /** @class */ (function (_super) {
+    __extends(Slider, _super);
+    function Slider(props) {
+        var _this = _super.call(this, props) || this;
+        _this.onChange = _this.onChange.bind(_this);
         // Since checked is optional, use a double !!
         // To get a boolean value
-        this.selected = !!this.props.checked;
+        _this.selected = !!_this.props.checked;
+        return _this;
     }
-    componentDidMount() {
+    Slider.prototype.componentDidMount = function () {
         if (this.selected) {
             this.inputElem.checked = true;
         }
-    }
-    onChange(event) {
+    };
+    Slider.prototype.onChange = function (event) {
         this.selected = !this.selected;
         this.props.change(event);
-    }
-    render() {
+    };
+    Slider.prototype.render = function () {
+        var _this = this;
         return (React.createElement("label", { className: "switch" },
-            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: (input) => this.inputElem = input }),
+            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: function (input) { return _this.inputElem = input; } }),
             React.createElement("span", { className: "slider round" })));
-    }
-}
+    };
+    return Slider;
+}(React.Component));
 exports.Slider = Slider;
 
 
@@ -1731,7 +1745,7 @@ var Cookies = __webpack_require__(39);
 /**
  * Mappings from imported classes to random strings.
  */
-const obfuscationMappings = {
+var obfuscationMappings = {
     'MailView': 'ysjiUtKPV7',
 };
 /**
@@ -1739,15 +1753,15 @@ const obfuscationMappings = {
  * arg being the requested key
  */
 function _generateKey(instance, arg) {
-    const name = instance.constructor.name;
-    const obf = obfuscationMappings[name];
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
     return name + obf;
 }
 /**
  * Returns a string given the class and the key <arg>
  */
 function getResource(instance, arg) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     return localStorage.getItem(key);
     ;
 }
@@ -1756,18 +1770,18 @@ exports.getResource = getResource;
  * Sets the requested key <arg> of class <instance> to <value>
  */
 function setResource(instance, arg, value) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     localStorage.setItem(key, value);
 }
 exports.setResource = setResource;
-const cookies = new Cookies();
+var cookies = new Cookies();
 function isBoardMember() {
-    const ret = cookies.get('is_board_member');
+    var ret = cookies.get('is_board_member');
     return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    const ret = cookies.get('member_id');
+    var ret = cookies.get('member_id');
     return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
@@ -2360,8 +2374,9 @@ module.exports = ReactPropTypesSecret;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 function objectToFormData(obj) {
-    const data = new FormData();
-    for (let key of Object.keys(obj)) {
+    var data = new FormData();
+    for (var _i = 0, _a = Object.keys(obj); _i < _a.length; _i++) {
+        var key = _a[_i];
         var serial = obj[key];
         if (typeof serial === 'object') {
             serial = JSON.stringify(obj[key]);
@@ -2450,49 +2465,71 @@ module.exports = warning;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class Option {
-    constructor(val, displ) {
+var React = __webpack_require__(2);
+var Option = /** @class */ (function () {
+    function Option(val, displ) {
         this.value = val;
         this.display = displ;
     }
-}
+    return Option;
+}());
 exports.Option = Option;
-const selectFadeOutClassName = 'select-check-fade-out';
-class SelectArea extends React.Component {
-    render() {
-        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
-            return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.change(option.value, this.props.name + idx) }),
-                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
-        }));
+var selectFadeOutClassName = 'select-check-fade-out';
+var SelectArea = /** @class */ (function (_super) {
+    __extends(SelectArea, _super);
+    function SelectArea() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class Select extends React.Component {
-    constructor(props) {
-        super(props);
-        this.change = this.change.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
-        this._decideInitialStatus = this._decideInitialStatus.bind(this);
-        this._scrollCondition = this._scrollCondition.bind(this);
-        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
-        const status = this._decideInitialStatus();
-        const value = this.props.defaultValue !== undefined ? this.props.defaultValue : this.props.options[0].value;
-        this.state = {
+    SelectArea.prototype.render = function () {
+        var _this = this;
+        return React.createElement("span", { className: 'select' }, this.props.options.map(function (option, idx) {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: _this.props.name + idx, value: option.value, name: _this.props.name, type: 'radio', onChange: function (target) { return _this.props.change(option.value, _this.props.name + idx); } }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: _this.props.name + idx }, option.display));
+        }));
+    };
+    return SelectArea;
+}(React.Component));
+var Select = /** @class */ (function (_super) {
+    __extends(Select, _super);
+    function Select(props) {
+        var _this = _super.call(this, props) || this;
+        _this.change = _this.change.bind(_this);
+        _this.handleClickOutside = _this.handleClickOutside.bind(_this);
+        _this.lazyAnimationAdder = _this.lazyAnimationAdder.bind(_this);
+        _this._decideInitialStatus = _this._decideInitialStatus.bind(_this);
+        _this._scrollCondition = _this._scrollCondition.bind(_this);
+        _this.documentResizeUpdate = _this.documentResizeUpdate.bind(_this);
+        var status = _this._decideInitialStatus();
+        var value = _this.props.defaultValue !== undefined ? _this.props.defaultValue : _this.props.options[0].value;
+        _this.state = {
             status: status,
             width: document.documentElement.clientWidth,
             value: value,
         };
-        this.scrollDiv = null;
+        _this.scrollDiv = null;
+        return _this;
     }
-    _scrollCondition() {
+    Select.prototype._scrollCondition = function () {
         return this.state.width < 500 || this.props.override;
-    }
-    _decideInitialStatus() {
+    };
+    Select.prototype._decideInitialStatus = function () {
+        var _this = this;
         if (this.props.defaultValue !== undefined) {
-            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            var value = this.props.options.find(function (option) {
+                return option.value === _this.props.defaultValue;
+            });
             if (value === undefined) {
                 return this.props.options[0].display;
             }
@@ -2503,35 +2540,36 @@ class Select extends React.Component {
         else {
             return this.props.options[0].display;
         }
-    }
-    documentResizeUpdate() {
+    };
+    Select.prototype.documentResizeUpdate = function () {
         this.setState({
             width: document.documentElement.clientWidth
         });
-    }
-    componentDidMount() {
+    };
+    Select.prototype.componentDidMount = function () {
+        var _this = this;
         if (this._scrollCondition()) {
             return;
         }
         document.documentElement.addEventListener('resize', this.documentResizeUpdate);
         document.addEventListener('mousedown', this.handleClickOutside);
-        const defaultHeight = 30;
+        var defaultHeight = 30;
         this.scrollDiv.style.height = defaultHeight + "px";
-        this.interval = setInterval(() => {
-            const movableArea = this.innerDiv.scrollTop /
-                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
-            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
-            this.scrollDiv.style.top = "" + offset + "px";
+        this.interval = setInterval(function () {
+            var movableArea = _this.innerDiv.scrollTop /
+                (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
+            var offset = _this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            _this.scrollDiv.style.top = "" + offset + "px";
         }, 20);
-        const divMove = (e) => {
-            const boundingRect = this.selectDiv.getBoundingClientRect();
-            const fuzz = .2;
-            const height = boundingRect.bottom - boundingRect.top;
-            const bottom = boundingRect.bottom - fuzz * height;
-            const top = boundingRect.top + fuzz * height;
-            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
-            const percentage = (adjusted - top) / (bottom - top);
-            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        var divMove = function (e) {
+            var boundingRect = _this.selectDiv.getBoundingClientRect();
+            var fuzz = .2;
+            var height = boundingRect.bottom - boundingRect.top;
+            var bottom = boundingRect.bottom - fuzz * height;
+            var top = boundingRect.top + fuzz * height;
+            var adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            var percentage = (adjusted - top) / (bottom - top);
+            _this.innerDiv.scrollTop = percentage * (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
         };
         function mouseUp() {
             window.removeEventListener('mousemove', divMove, true);
@@ -2541,37 +2579,37 @@ class Select extends React.Component {
         }
         this.scrollDiv.addEventListener('mousedown', mouseDown, false);
         window.addEventListener('mouseup', mouseUp, false);
-    }
-    componentWillUnmount() {
+    };
+    Select.prototype.componentWillUnmount = function () {
         if (this._scrollCondition()) {
             return;
         }
         document.removeEventListener('mousedown', this.handleClickOutside);
         document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
         clearInterval(this.interval);
-    }
+    };
     /**
      * Uncheck the input if clicked outside
      * Best to leave the typing generic because typescript does _not_
      * like non-generics with dom.
      */
-    handleClickOutside(event) {
+    Select.prototype.handleClickOutside = function (event) {
         if (this._scrollCondition()) {
             return;
         }
         if (this.inputDiv && !this.wrapper.contains(event.target)) {
             this.inputDiv.checked = false;
         }
-    }
-    lazyAnimationAdder(event) {
+    };
+    Select.prototype.lazyAnimationAdder = function (event) {
         if (this._scrollCondition()) {
             return;
         }
         if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
-    }
-    change(value, id) {
+    };
+    Select.prototype.change = function (value, id) {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
@@ -2583,31 +2621,33 @@ class Select extends React.Component {
         }
         else {
             // Cool trick to get the label for the input
-            const elem = document.querySelector('label[for="' + id + '"]');
+            var elem = document.querySelector('label[for="' + id + '"]');
             this.setState({
                 status: elem.innerHTML,
             });
             this.inputDiv.checked = false;
         }
-    }
-    render() {
+    };
+    Select.prototype.render = function () {
+        var _this = this;
         if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
+            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: function (ev) { return _this.change(ev.target.value, null); } }, this.props.options.map(function (option, idx) {
                 return React.createElement(React.Fragment, null,
                     React.createElement("option", { value: option.value }, option.display));
             }));
         }
-        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
-            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+        return React.createElement("div", { className: "select-wrapper-div", ref: function (input) { return _this.wrapper = input; } },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: function (input) { return _this.inputDiv = input; } }),
             React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
-                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("span", { ref: function (input) { return _this.titleSpan = input; }, className: "select-title-text" }, this.state.status),
                 React.createElement("b", { className: 'select-arrow' })),
-            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
-                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+            React.createElement("div", { className: "select-div", ref: function (input) { return _this.selectDiv = input; } },
+                React.createElement("div", { className: "inner-select-div", ref: function (input) { return _this.innerDiv = input; } },
                     React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
-                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
-    }
-}
+                    React.createElement("div", { className: "select-scroll", ref: function (input) { return _this.scrollDiv = input; } }))));
+    };
+    return Select;
+}(React.Component));
 exports.Select = Select;
 
 
@@ -2619,9 +2659,9 @@ exports.Select = Select;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const SettingsView_1 = __webpack_require__(491);
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var SettingsView_1 = __webpack_require__(491);
 ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document.querySelector("settings-view"));
 
 
@@ -2632,6 +2672,16 @@ ReactDOM.render(React.createElement(SettingsView_1.SettingsView, null), document
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -2640,16 +2690,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const Slider_1 = __webpack_require__(248);
-const Popup_1 = __webpack_require__(51);
-const Select_1 = __webpack_require__(49);
-const LocalResourceResolver_1 = __webpack_require__(36);
-const LocalResourceResolver_2 = __webpack_require__(36);
-const Utils_1 = __webpack_require__(44);
-const react_dropzone_1 = __webpack_require__(492);
+var React = __webpack_require__(2);
+var axios_1 = __webpack_require__(12);
+var Slider_1 = __webpack_require__(248);
+var Popup_1 = __webpack_require__(51);
+var Select_1 = __webpack_require__(49);
+var LocalResourceResolver_1 = __webpack_require__(36);
+var LocalResourceResolver_2 = __webpack_require__(36);
+var Utils_1 = __webpack_require__(44);
+var react_dropzone_1 = __webpack_require__(492);
 axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_2.xsrfCookieName();
 axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_2.xsrfHeaderName();
 var LoadingState;
@@ -2657,117 +2734,177 @@ var LoadingState;
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
     LoadingState[LoadingState["Loaded"] = 1] = "Loaded";
 })(LoadingState || (LoadingState = {}));
-const reg_url = '/api/settings/member/';
-const member_url = '/api/settings/members/all/';
-const member_url_delete = '/api/settings/members/all/delete/';
-const courts_url = '/api/settings/courts/';
-class OptionSetting extends React.Component {
-    render() {
-        const options = this.props.data.options.map((option, idx) => new Select_1.Option(option.value, option.name));
+var reg_url = '/api/settings/member/';
+var member_url = '/api/settings/members/all/';
+var member_url_delete = '/api/settings/members/all/delete/';
+var courts_url = '/api/settings/courts/';
+var OptionSetting = /** @class */ (function (_super) {
+    __extends(OptionSetting, _super);
+    function OptionSetting() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    OptionSetting.prototype.render = function () {
+        var options = this.props.data.options.map(function (option, idx) {
+            return new Select_1.Option(option.value, option.name);
+        });
         return React.createElement(Select_1.Select, { name: this.props.data.name, defaultValue: this.props.data.value, onChange: this.props.change, options: options });
+    };
+    return OptionSetting;
+}(React.Component));
+var BoolSetting = /** @class */ (function (_super) {
+    __extends(BoolSetting, _super);
+    function BoolSetting() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class BoolSetting extends React.Component {
-    render() {
-        return React.createElement(Slider_1.Slider, { change: (e) => {
-                this.props.change(e.target.checked ? 1 : 0);
+    BoolSetting.prototype.render = function () {
+        var _this = this;
+        return React.createElement(Slider_1.Slider, { change: function (e) {
+                _this.props.change(e.target.checked ? 1 : 0);
             }, checked: this.props.data.value });
+    };
+    return BoolSetting;
+}(React.Component));
+var TextSetting = /** @class */ (function (_super) {
+    __extends(TextSetting, _super);
+    function TextSetting() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class TextSetting extends React.Component {
-    render() {
-        return React.createElement("input", { className: "interaction-style", type: "text", name: this.props.data.name, onChange: (e) => this.props.change(e.target.value), defaultValue: this.props.data.value });
+    TextSetting.prototype.render = function () {
+        var _this = this;
+        return React.createElement("input", { className: "interaction-style", type: "text", name: this.props.data.name, onChange: function (e) { return _this.props.change(e.target.value); }, defaultValue: this.props.data.value });
+    };
+    return TextSetting;
+}(React.Component));
+var LongTextSetting = /** @class */ (function (_super) {
+    __extends(LongTextSetting, _super);
+    function LongTextSetting() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class LongTextSetting extends React.Component {
-    render() {
-        return React.createElement("textarea", { className: "interaction-style", name: this.props.data.name, onChange: (e) => this.props.change(e.target.value), defaultValue: this.props.data.value });
-    }
-}
-const maxFileSize = 1024 * 1024 * 128;
-class FileSetting extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+    LongTextSetting.prototype.render = function () {
+        var _this = this;
+        return React.createElement("textarea", { className: "interaction-style", name: this.props.data.name, onChange: function (e) { return _this.props.change(e.target.value); }, defaultValue: this.props.data.value });
+    };
+    return LongTextSetting;
+}(React.Component));
+var maxFileSize = 1024 * 1024 * 128;
+var FileSetting = /** @class */ (function (_super) {
+    __extends(FileSetting, _super);
+    function FileSetting(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             popup: null
         };
-        this.decideFile = this.decideFile.bind(this);
-        this.getBase64 = this.getBase64.bind(this);
+        _this.decideFile = _this.decideFile.bind(_this);
+        _this.getBase64 = _this.getBase64.bind(_this);
+        return _this;
     }
-    getBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
+    FileSetting.prototype.getBase64 = function (file) {
+        return new Promise(function (resolve, reject) {
+            var reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
+            reader.onload = function () { return resolve(reader.result); };
+            reader.onerror = function (error) { return reject(error); };
         });
-    }
-    decideFile(files) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const reset = () => this.setState({ popup: null });
-            if (files.length !== 1) {
-                this.setState({
-                    popup: React.createElement(Popup_1.Popup, { title: "One file", message: "Please only select on file", callback: reset })
-                });
-                return;
-            }
-            const file = files[0];
-            try {
-                const encoded = yield this.getBase64(file);
-                this.props.change(encoded);
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    FileSetting.prototype.decideFile = function (files) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var reset, file, encoded, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        reset = function () { return _this.setState({ popup: null }); };
+                        if (files.length !== 1) {
+                            this.setState({
+                                popup: React.createElement(Popup_1.Popup, { title: "One file", message: "Please only select on file", callback: reset })
+                            });
+                            return [2 /*return*/];
+                        }
+                        file = files[0];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, this.getBase64(file)];
+                    case 2:
+                        encoded = _a.sent();
+                        this.props.change(encoded);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
         });
-    }
-    render() {
+    };
+    FileSetting.prototype.render = function () {
+        var _this = this;
         return React.createElement(React.Fragment, null,
-            React.createElement(react_dropzone_1.default, { onDrop: (files) => this.decideFile(files), multiple: false, maxSize: maxFileSize, className: "dropzone-style" },
+            React.createElement(react_dropzone_1.default, { onDrop: function (files) { return _this.decideFile(files); }, multiple: false, maxSize: maxFileSize, className: "dropzone-style" },
                 React.createElement("p", null, "Click to add a picture")),
             this.state.popup && this.state.popup);
-    }
-}
-class StandardSettings extends React.Component {
-    constructor(props) {
-        super(props);
-        this.decideComponent = this.decideComponent.bind(this);
-        const params = {};
-        for (let setting of this.props.data) {
+    };
+    return FileSetting;
+}(React.Component));
+var StandardSettings = /** @class */ (function (_super) {
+    __extends(StandardSettings, _super);
+    function StandardSettings(props) {
+        var _this = _super.call(this, props) || this;
+        _this.decideComponent = _this.decideComponent.bind(_this);
+        var params = {};
+        for (var _i = 0, _a = _this.props.data; _i < _a.length; _i++) {
+            var setting = _a[_i];
             params[setting.name] = setting.value;
         }
-        this.state = {
+        _this.state = {
             popup: null,
             settings: params
         };
-        this.previousTimeout = null;
-        this.repost = this.repost.bind(this);
+        _this.previousTimeout = null;
+        _this.repost = _this.repost.bind(_this);
+        return _this;
     }
-    repost() {
+    StandardSettings.prototype.repost = function () {
+        var _this = this;
         if (this.previousTimeout !== null) {
             clearTimeout(this.previousTimeout);
             this.previousTimeout = null;
         }
-        this.previousTimeout = setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-            let data = new FormData();
-            for (let key of Object.keys(this.state.settings)) {
-                data.append(key, this.state.settings[key]);
-            }
-            try {
-                let res = yield axios_1.default.post(reg_url, data);
-                console.log(res);
-            }
-            catch (res) {
-                console.log(res);
-            }
-        }), 1000);
-    }
-    decideComponent(setting, key) {
-        const updateFunctor = (val) => {
-            const swap = Object.assign({}, this.state.settings);
+        this.previousTimeout = setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
+            var data, _i, _a, key, res, res_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        data = new FormData();
+                        for (_i = 0, _a = Object.keys(this.state.settings); _i < _a.length; _i++) {
+                            key = _a[_i];
+                            data.append(key, this.state.settings[key]);
+                        }
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, axios_1.default.post(reg_url, data)];
+                    case 2:
+                        res = _b.sent();
+                        console.log(res);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        res_1 = _b.sent();
+                        console.log(res_1);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        }); }, 1000);
+    };
+    StandardSettings.prototype.decideComponent = function (setting, key) {
+        var _this = this;
+        var updateFunctor = function (val) {
+            var swap = Object.assign({}, _this.state.settings);
             swap[setting.name] = val;
-            this.setState({ settings: swap });
-            this.repost();
+            _this.setState({ settings: swap });
+            _this.repost();
         };
         if (setting.type === "bool") {
             return React.createElement(BoolSetting, { data: setting, key: key, change: updateFunctor });
@@ -2784,79 +2921,87 @@ class StandardSettings extends React.Component {
         else if (setting.type === "file") {
             return React.createElement(FileSetting, { data: setting, key: key, change: updateFunctor });
         }
-    }
-    render() {
+    };
+    StandardSettings.prototype.render = function () {
+        var _this = this;
         return React.createElement(React.Fragment, null,
-            React.createElement("div", { className: "grid" }, this.props.data.map((setting, idx) => {
+            React.createElement("div", { className: "grid" }, this.props.data.map(function (setting, idx) {
                 return React.createElement("div", { className: "row", key: idx },
                     React.createElement("div", { className: "col-6 col-es-12" },
                         React.createElement("h2", null, setting.display_name)),
-                    React.createElement("div", { className: "col-6 col-es-12" }, this.decideComponent(setting, idx)));
+                    React.createElement("div", { className: "col-6 col-es-12" }, _this.decideComponent(setting, idx)));
             })),
             this.state.popup && this.state.popup);
-    }
-}
-class MemberSettings extends React.Component {
-    constructor(props) {
-        super(props);
-        this.deleteMember = this.deleteMember.bind(this);
-        this.performRequest = this.performRequest.bind(this);
-        this.state = {
+    };
+    return StandardSettings;
+}(React.Component));
+var MemberSettings = /** @class */ (function (_super) {
+    __extends(MemberSettings, _super);
+    function MemberSettings(props) {
+        var _this = _super.call(this, props) || this;
+        _this.deleteMember = _this.deleteMember.bind(_this);
+        _this.performRequest = _this.performRequest.bind(_this);
+        _this.state = {
             members: null,
         };
+        return _this;
     }
-    performRequest() {
+    MemberSettings.prototype.performRequest = function () {
+        var _this = this;
         axios_1.default.get(member_url)
-            .then((res) => {
-            this.setState({
+            .then(function (res) {
+            _this.setState({
                 members: res.data.members,
-                memberTypes: res.data.memberTypes.map((role) => new Select_1.Option(role, role)),
+                memberTypes: res.data.memberTypes.map(function (role) { return new Select_1.Option(role, role); }),
             });
         })
-            .catch((res) => {
+            .catch(function (res) {
             console.log(res);
         });
-    }
-    componentDidMount() {
+    };
+    MemberSettings.prototype.componentDidMount = function () {
         this.performRequest();
-    }
-    deleteMember(idx) {
-        return () => {
-            const toDelete = this.state.members[idx];
+    };
+    MemberSettings.prototype.deleteMember = function (idx) {
+        var _this = this;
+        return function () {
+            var toDelete = _this.state.members[idx];
             axios_1.default.post(member_url_delete, Utils_1.objectToFormData({ member_id: toDelete.member_id }))
-                .then((res) => {
+                .then(function (res) {
                 console.log(res);
-                this.performRequest();
+                _this.performRequest();
             })
-                .catch((res) => {
+                .catch(function (res) {
                 console.log(res);
             });
         };
-    }
-    alterMember(idx, toRole) {
-        const toEdit = this.state.members[idx];
+    };
+    MemberSettings.prototype.alterMember = function (idx, toRole) {
+        var _this = this;
+        var toEdit = this.state.members[idx];
         axios_1.default.post(member_url, Utils_1.objectToFormData({ member_id: toEdit.member_id, status: toRole }))
-            .then((res) => {
+            .then(function (res) {
             console.log(res);
-            this.performRequest();
+            _this.performRequest();
         })
-            .catch((res) => {
+            .catch(function (res) {
             console.log(res);
         });
-    }
-    render() {
+    };
+    MemberSettings.prototype.render = function () {
+        var _this = this;
         if (this.state.members === null) {
             return React.createElement("p", null, "Loading");
         }
         return React.createElement("div", { style: { overflowY: 'scroll', height: '500px' } },
             React.createElement("h3", null, "Members"),
-            this.state.members.sort((a, b) => {
-                const cmp = a.first_name.localeCompare(b.first_name);
+            this.state.members.sort(function (a, b) {
+                var cmp = a.first_name.localeCompare(b.first_name);
                 if (cmp === 0) {
                     return a.last_name.localeCompare(b.last_name);
                 }
                 return cmp;
-            }).map((member, idx) => {
+            }).map(function (member, idx) {
                 return React.createElement("div", { key: idx, className: "row" },
                     React.createElement("div", { className: "col-5 col-es-12" },
                         React.createElement("h4", null,
@@ -2864,143 +3009,187 @@ class MemberSettings extends React.Component {
                             " ",
                             member.last_name)),
                     React.createElement("div", { className: "col-4 col-es-12" },
-                        React.createElement(Select_1.Select, { options: this.state.memberTypes, defaultValue: member.status, onChange: (role) => { this.alterMember(idx, role); }, name: member.member_id, override: true })),
+                        React.createElement(Select_1.Select, { options: _this.state.memberTypes, defaultValue: member.status, onChange: function (role) { _this.alterMember(idx, role); }, name: member.member_id, override: true })),
                     React.createElement("div", { className: "col-3 col-es-12" },
-                        React.createElement("button", { onClick: this.deleteMember(idx), className: "interaction-style" }, "Delete")));
+                        React.createElement("button", { onClick: _this.deleteMember(idx), className: "interaction-style delete-button" }, "Delete")));
             }));
-    }
-}
-class CourtSettings extends React.Component {
-    constructor(props) {
-        super(props);
-        this.courts_url = '/api/settings/courts';
-        this.state = {
+    };
+    return MemberSettings;
+}(React.Component));
+var CourtSettings = /** @class */ (function (_super) {
+    __extends(CourtSettings, _super);
+    function CourtSettings(props) {
+        var _this = _super.call(this, props) || this;
+        _this.courts_url = '/api/settings/courts';
+        _this.state = {
             courts: null,
         };
-        this.performRequest = this.performRequest.bind(this);
-        this.deleteCourt = this.deleteCourt.bind(this);
-        this.addCourt = this.addCourt.bind(this);
+        _this.performRequest = _this.performRequest.bind(_this);
+        _this.deleteCourt = _this.deleteCourt.bind(_this);
+        _this.addCourt = _this.addCourt.bind(_this);
+        return _this;
     }
-    performRequest() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.get(this.courts_url);
-                const options = res.data.court_types.map((court) => new Select_1.Option(court.value, court.display));
-                const adjustedOptions = [...options, new Select_1.Option(null, "Free Play")];
-                this.setState({
-                    courts: res.data.courts,
-                    courtTypes: adjustedOptions,
-                    selectedValue: options[0].value,
-                });
-            }
-            catch (ex) {
-                console.log(ex);
-            }
+    CourtSettings.prototype.performRequest = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, options, adjustedOptions, ex_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.get(this.courts_url)];
+                    case 1:
+                        res = _a.sent();
+                        options = res.data.court_types.map(function (court) { return new Select_1.Option(court.value, court.display); });
+                        adjustedOptions = options.concat([new Select_1.Option(null, "Free Play")]);
+                        this.setState({
+                            courts: res.data.courts,
+                            courtTypes: adjustedOptions,
+                            selectedValue: options[0].value,
+                        });
+                        return [3 /*break*/, 3];
+                    case 2:
+                        ex_1 = _a.sent();
+                        console.log(ex_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-    }
-    componentDidMount() {
+    };
+    CourtSettings.prototype.componentDidMount = function () {
         this.performRequest();
-    }
-    deleteCourt(court_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const datum = yield axios_1.default.delete(courts_url, {
-                    data: JSON.stringify({ courts: [{ court_id: court_id }] })
-                });
-                console.log(datum.data);
-                this.performRequest();
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    CourtSettings.prototype.deleteCourt = function (court_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var datum, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.delete(courts_url, {
+                                data: JSON.stringify({ courts: [{ court_id: court_id }] })
+                            })];
+                    case 1:
+                        datum = _a.sent();
+                        console.log(datum.data);
+                        this.performRequest();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        console.log(err_2);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-    }
-    addCourt(queue_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const datum = yield axios_1.default.post(courts_url, Utils_1.objectToFormData({ courts: [{ queue_id: queue_id }] }));
-                console.log(datum.data);
-                this.performRequest();
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    CourtSettings.prototype.addCourt = function (queue_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var datum, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.post(courts_url, Utils_1.objectToFormData({ courts: [{ queue_id: queue_id }] }))];
+                    case 1:
+                        datum = _a.sent();
+                        console.log(datum.data);
+                        this.performRequest();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        console.log(err_3);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-    }
-    render() {
+    };
+    CourtSettings.prototype.render = function () {
+        var _this = this;
         if (this.state.courts === null) {
             return null;
         }
         return React.createElement("div", null,
             React.createElement("h3", null, "Courts"),
-            this.state.courts.map((court, idx) => {
+            this.state.courts.map(function (court, idx) {
                 console.log(court);
                 return React.createElement("div", { key: idx, className: "row" },
                     React.createElement("div", { className: "col-6 col-es-12" },
-                        React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: court.court_type, onChange: (i) => { console.log(i); }, name: "courts" + idx })),
+                        React.createElement(Select_1.Select, { options: _this.state.courtTypes, defaultValue: court.court_type, onChange: function (i) { console.log(i); }, name: "courts" + idx })),
                     React.createElement("div", { className: "col-6 col-es-12" },
-                        React.createElement("button", { className: "interaction-style", onClick: () => this.deleteCourt(court.court_id) }, "Delete")));
+                        React.createElement("button", { className: "interaction-style delete-button", onClick: function () { return _this.deleteCourt(court.court_id); } }, "Delete")));
             }),
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col-6" },
-                    React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: this.state.selectedValue, onChange: (i) => this.setState({ selectedValue: i }), name: "courtsAdd" })),
+                    React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: this.state.selectedValue, onChange: function (i) { return _this.setState({ selectedValue: i }); }, name: "courtsAdd" })),
                 React.createElement("div", { className: "col-6" },
-                    React.createElement("button", { className: "interaction-style", onClick: () => this.addCourt(this.state.selectedValue) }, "Add a court"))));
+                    React.createElement("button", { className: "interaction-style", onClick: function () { return _this.addCourt(_this.state.selectedValue); } }, "Add a court"))));
+    };
+    return CourtSettings;
+}(React.Component));
+var BoardSettings = /** @class */ (function (_super) {
+    __extends(BoardSettings, _super);
+    function BoardSettings() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class BoardSettings extends React.Component {
-    render() {
+    BoardSettings.prototype.render = function () {
         return React.createElement("div", { className: "grid" },
             React.createElement("h2", null, "Board Member Options"),
             React.createElement(MemberSettings, null),
             React.createElement(CourtSettings, null));
-    }
-}
+    };
+    return BoardSettings;
+}(React.Component));
 /*
 
 */
-class SettingsView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.switch = this.switch.bind(this);
-        this.performRequest = this.performRequest.bind(this);
-        this.state = {
+var SettingsView = /** @class */ (function (_super) {
+    __extends(SettingsView, _super);
+    function SettingsView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.switch = _this.switch.bind(_this);
+        _this.performRequest = _this.performRequest.bind(_this);
+        _this.state = {
             regular_settings: null,
             board_settings: null,
             loading: true,
         };
+        return _this;
     }
-    performRequest() {
+    SettingsView.prototype.performRequest = function () {
+        var _this = this;
         axios_1.default.get(reg_url)
-            .then((res) => {
-            this.setState({
+            .then(function (res) {
+            _this.setState({
                 loading: false,
                 regular_settings: React.createElement(StandardSettings, { data: res.data }),
                 board_settings: null
             });
         })
-            .catch((res) => {
+            .catch(function (res) {
             console.log(res);
         });
-    }
-    componentDidMount() {
+    };
+    SettingsView.prototype.componentDidMount = function () {
         this.performRequest();
-    }
-    switch(event) {
+    };
+    SettingsView.prototype.switch = function (event) {
         if (this.state.loading === true) {
             return;
         }
         else {
             this.performRequest();
         }
-    }
-    render() {
+    };
+    SettingsView.prototype.render = function () {
         return React.createElement("div", { className: "election-view" },
             this.state.regular_settings !== null &&
                 this.state.regular_settings,
             LocalResourceResolver_1.isBoardMember() && React.createElement(BoardSettings, null));
-    }
-}
+    };
+    return SettingsView;
+}(React.Component));
 exports.SettingsView = SettingsView;
 
 
@@ -3776,45 +3965,64 @@ module.exports = ReactDOM;
  * To work. Appears in the middle of the screen and darkens
  * The body.
  */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const popupDisabledClass = "popup-disabled";
-const popupScreenFadeClass = 'popup-screen-fade';
-const popupFadeClass = 'popup-fade';
-class PopupProps {
-}
-exports.PopupProps = PopupProps;
-class PopupState {
-}
-class Popup extends React.Component {
-    constructor(props) {
-        super(props);
-        this.close = this.close.bind(this);
+var React = __webpack_require__(2);
+var popupDisabledClass = "popup-disabled";
+var popupScreenFadeClass = 'popup-screen-fade';
+var popupFadeClass = 'popup-fade';
+var PopupProps = /** @class */ (function () {
+    function PopupProps() {
     }
-    componentDidMount() {
+    return PopupProps;
+}());
+exports.PopupProps = PopupProps;
+var PopupState = /** @class */ (function () {
+    function PopupState() {
+    }
+    return PopupState;
+}());
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
+        var _this = _super.call(this, props) || this;
+        _this.close = _this.close.bind(_this);
+        return _this;
+    }
+    Popup.prototype.componentDidMount = function () {
         /* Programatically create a div to overlay everything and animate it in
             Also force the body not to scroll */
         this.screenDiv = document.createElement('div');
         this.screenDiv.className = 'popup-screen';
-        const body = document.querySelector('body');
+        var body = document.querySelector('body');
         body.appendChild(this.screenDiv);
         body.classList.add(popupDisabledClass);
-    }
-    componentWillUnmount() {
+    };
+    Popup.prototype.componentWillUnmount = function () {
         /* Remove the programatic div and let the body scroll */
-        const body = document.querySelector('body');
+        var body = document.querySelector('body');
         body.removeChild(this.screenDiv);
         body.classList.remove(popupDisabledClass);
-    }
-    close() {
+    };
+    Popup.prototype.close = function () {
         /* Animate everything in */
+        var _this = this;
         this.wrapperDiv.classList.add(popupFadeClass);
         this.screenDiv.classList.add(popupScreenFadeClass);
         /* Cool so we can seperate concerns */
-        const refCounter = { count: 0 };
-        const callback = () => {
+        var refCounter = { count: 0 };
+        var callback = function () {
             if (refCounter.count == 1) {
-                this.props.callback();
+                _this.props.callback();
             }
             else {
                 refCounter.count += 1;
@@ -3827,9 +4035,10 @@ class Popup extends React.Component {
          */
         this.wrapperDiv.addEventListener('animationend', callback);
         this.screenDiv.addEventListener('animationend', callback);
-    }
-    render() {
-        return (React.createElement("div", { className: "popup-div", ref: (input) => this.wrapperDiv = input },
+    };
+    Popup.prototype.render = function () {
+        var _this = this;
+        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
             React.createElement("div", { className: "grid row" },
                 React.createElement("div", { className: "row-1" },
                     React.createElement("div", { className: "col-11 popup-title-div" },
@@ -3841,8 +4050,9 @@ class Popup extends React.Component {
                 React.createElement("div", { className: "row-offset-10" },
                     React.createElement("div", { className: "popup-check-button" },
                         React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
-    }
-}
+    };
+    return Popup;
+}(React.Component));
 exports.Popup = Popup;
 
 

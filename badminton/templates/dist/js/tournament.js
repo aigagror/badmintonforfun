@@ -1633,8 +1633,9 @@ module.exports = defaults;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 function objectToFormData(obj) {
-    const data = new FormData();
-    for (let key of Object.keys(obj)) {
+    var data = new FormData();
+    for (var _i = 0, _a = Object.keys(obj); _i < _a.length; _i++) {
+        var key = _a[_i];
         var serial = obj[key];
         if (typeof serial === 'object') {
             serial = JSON.stringify(obj[key]);
@@ -1653,49 +1654,71 @@ exports.objectToFormData = objectToFormData;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class Option {
-    constructor(val, displ) {
+var React = __webpack_require__(2);
+var Option = /** @class */ (function () {
+    function Option(val, displ) {
         this.value = val;
         this.display = displ;
     }
-}
+    return Option;
+}());
 exports.Option = Option;
-const selectFadeOutClassName = 'select-check-fade-out';
-class SelectArea extends React.Component {
-    render() {
-        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
-            return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.change(option.value, this.props.name + idx) }),
-                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
-        }));
+var selectFadeOutClassName = 'select-check-fade-out';
+var SelectArea = /** @class */ (function (_super) {
+    __extends(SelectArea, _super);
+    function SelectArea() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class Select extends React.Component {
-    constructor(props) {
-        super(props);
-        this.change = this.change.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
-        this._decideInitialStatus = this._decideInitialStatus.bind(this);
-        this._scrollCondition = this._scrollCondition.bind(this);
-        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
-        const status = this._decideInitialStatus();
-        const value = this.props.defaultValue !== undefined ? this.props.defaultValue : this.props.options[0].value;
-        this.state = {
+    SelectArea.prototype.render = function () {
+        var _this = this;
+        return React.createElement("span", { className: 'select' }, this.props.options.map(function (option, idx) {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: _this.props.name + idx, value: option.value, name: _this.props.name, type: 'radio', onChange: function (target) { return _this.props.change(option.value, _this.props.name + idx); } }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: _this.props.name + idx }, option.display));
+        }));
+    };
+    return SelectArea;
+}(React.Component));
+var Select = /** @class */ (function (_super) {
+    __extends(Select, _super);
+    function Select(props) {
+        var _this = _super.call(this, props) || this;
+        _this.change = _this.change.bind(_this);
+        _this.handleClickOutside = _this.handleClickOutside.bind(_this);
+        _this.lazyAnimationAdder = _this.lazyAnimationAdder.bind(_this);
+        _this._decideInitialStatus = _this._decideInitialStatus.bind(_this);
+        _this._scrollCondition = _this._scrollCondition.bind(_this);
+        _this.documentResizeUpdate = _this.documentResizeUpdate.bind(_this);
+        var status = _this._decideInitialStatus();
+        var value = _this.props.defaultValue !== undefined ? _this.props.defaultValue : _this.props.options[0].value;
+        _this.state = {
             status: status,
             width: document.documentElement.clientWidth,
             value: value,
         };
-        this.scrollDiv = null;
+        _this.scrollDiv = null;
+        return _this;
     }
-    _scrollCondition() {
+    Select.prototype._scrollCondition = function () {
         return this.state.width < 500 || this.props.override;
-    }
-    _decideInitialStatus() {
+    };
+    Select.prototype._decideInitialStatus = function () {
+        var _this = this;
         if (this.props.defaultValue !== undefined) {
-            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            var value = this.props.options.find(function (option) {
+                return option.value === _this.props.defaultValue;
+            });
             if (value === undefined) {
                 return this.props.options[0].display;
             }
@@ -1706,35 +1729,36 @@ class Select extends React.Component {
         else {
             return this.props.options[0].display;
         }
-    }
-    documentResizeUpdate() {
+    };
+    Select.prototype.documentResizeUpdate = function () {
         this.setState({
             width: document.documentElement.clientWidth
         });
-    }
-    componentDidMount() {
+    };
+    Select.prototype.componentDidMount = function () {
+        var _this = this;
         if (this._scrollCondition()) {
             return;
         }
         document.documentElement.addEventListener('resize', this.documentResizeUpdate);
         document.addEventListener('mousedown', this.handleClickOutside);
-        const defaultHeight = 30;
+        var defaultHeight = 30;
         this.scrollDiv.style.height = defaultHeight + "px";
-        this.interval = setInterval(() => {
-            const movableArea = this.innerDiv.scrollTop /
-                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
-            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
-            this.scrollDiv.style.top = "" + offset + "px";
+        this.interval = setInterval(function () {
+            var movableArea = _this.innerDiv.scrollTop /
+                (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
+            var offset = _this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            _this.scrollDiv.style.top = "" + offset + "px";
         }, 20);
-        const divMove = (e) => {
-            const boundingRect = this.selectDiv.getBoundingClientRect();
-            const fuzz = .2;
-            const height = boundingRect.bottom - boundingRect.top;
-            const bottom = boundingRect.bottom - fuzz * height;
-            const top = boundingRect.top + fuzz * height;
-            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
-            const percentage = (adjusted - top) / (bottom - top);
-            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        var divMove = function (e) {
+            var boundingRect = _this.selectDiv.getBoundingClientRect();
+            var fuzz = .2;
+            var height = boundingRect.bottom - boundingRect.top;
+            var bottom = boundingRect.bottom - fuzz * height;
+            var top = boundingRect.top + fuzz * height;
+            var adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            var percentage = (adjusted - top) / (bottom - top);
+            _this.innerDiv.scrollTop = percentage * (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
         };
         function mouseUp() {
             window.removeEventListener('mousemove', divMove, true);
@@ -1744,37 +1768,37 @@ class Select extends React.Component {
         }
         this.scrollDiv.addEventListener('mousedown', mouseDown, false);
         window.addEventListener('mouseup', mouseUp, false);
-    }
-    componentWillUnmount() {
+    };
+    Select.prototype.componentWillUnmount = function () {
         if (this._scrollCondition()) {
             return;
         }
         document.removeEventListener('mousedown', this.handleClickOutside);
         document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
         clearInterval(this.interval);
-    }
+    };
     /**
      * Uncheck the input if clicked outside
      * Best to leave the typing generic because typescript does _not_
      * like non-generics with dom.
      */
-    handleClickOutside(event) {
+    Select.prototype.handleClickOutside = function (event) {
         if (this._scrollCondition()) {
             return;
         }
         if (this.inputDiv && !this.wrapper.contains(event.target)) {
             this.inputDiv.checked = false;
         }
-    }
-    lazyAnimationAdder(event) {
+    };
+    Select.prototype.lazyAnimationAdder = function (event) {
         if (this._scrollCondition()) {
             return;
         }
         if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
-    }
-    change(value, id) {
+    };
+    Select.prototype.change = function (value, id) {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
@@ -1786,31 +1810,33 @@ class Select extends React.Component {
         }
         else {
             // Cool trick to get the label for the input
-            const elem = document.querySelector('label[for="' + id + '"]');
+            var elem = document.querySelector('label[for="' + id + '"]');
             this.setState({
                 status: elem.innerHTML,
             });
             this.inputDiv.checked = false;
         }
-    }
-    render() {
+    };
+    Select.prototype.render = function () {
+        var _this = this;
         if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
+            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: function (ev) { return _this.change(ev.target.value, null); } }, this.props.options.map(function (option, idx) {
                 return React.createElement(React.Fragment, null,
                     React.createElement("option", { value: option.value }, option.display));
             }));
         }
-        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
-            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+        return React.createElement("div", { className: "select-wrapper-div", ref: function (input) { return _this.wrapper = input; } },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: function (input) { return _this.inputDiv = input; } }),
             React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
-                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("span", { ref: function (input) { return _this.titleSpan = input; }, className: "select-title-text" }, this.state.status),
                 React.createElement("b", { className: 'select-arrow' })),
-            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
-                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+            React.createElement("div", { className: "select-div", ref: function (input) { return _this.selectDiv = input; } },
+                React.createElement("div", { className: "inner-select-div", ref: function (input) { return _this.innerDiv = input; } },
                     React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
-                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
-    }
-}
+                    React.createElement("div", { className: "select-scroll", ref: function (input) { return _this.scrollDiv = input; } }))));
+    };
+    return Select;
+}(React.Component));
 exports.Select = Select;
 
 
@@ -1822,9 +1848,9 @@ exports.Select = Select;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const TournamentView_1 = __webpack_require__(499);
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var TournamentView_1 = __webpack_require__(499);
 ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), document.querySelector("tournament-view"));
 
 
@@ -1835,6 +1861,24 @@ ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), docu
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -1842,6 +1886,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
 };
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
@@ -1853,39 +1924,38 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const Select_1 = __webpack_require__(49);
-const Utils_1 = __webpack_require__(44);
-const tourney_url = '/api/tournament/';
-const columnWidth = 160;
-const rowHeight = 40;
-const rowSpacing = 10;
-const colSpacing = 50;
-const lazyHack = 10000000;
-const svgOffset = 20;
-const calcX = (col) => (columnWidth + colSpacing) * col + svgOffset;
-const calcY = (col, row, maxCols) => {
+var React = __webpack_require__(2);
+var axios_1 = __webpack_require__(12);
+var Select_1 = __webpack_require__(49);
+var Utils_1 = __webpack_require__(44);
+var tourney_url = '/api/tournament/';
+var columnWidth = 160;
+var rowHeight = 40;
+var rowSpacing = 10;
+var colSpacing = 50;
+var lazyHack = 10000000;
+var svgOffset = 20;
+var calcX = function (col) { return (columnWidth + colSpacing) * col + svgOffset; };
+var calcY = function (col, row, maxCols) {
     if (col === 0) {
         return (rowHeight + rowSpacing) * row + col * ((rowHeight + rowSpacing) / 2) + svgOffset;
     }
-    const numBlocksCenter = Math.pow(2, col);
-    const ytop = calcY(0, row * numBlocksCenter, maxCols);
-    const ybot = calcY(0, (row + 1) * numBlocksCenter - 1, maxCols) + rowHeight;
+    var numBlocksCenter = Math.pow(2, col);
+    var ytop = calcY(0, row * numBlocksCenter, maxCols);
+    var ybot = calcY(0, (row + 1) * numBlocksCenter - 1, maxCols) + rowHeight;
     return (ytop + ybot - rowHeight) / 2;
 };
-class Matchup extends React.Component {
-    render() {
+var Matchup = /** @class */ (function (_super) {
+    __extends(Matchup, _super);
+    function Matchup() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Matchup.prototype.render = function () {
+        var _this = this;
         var extra;
-        const opts = {
-            stroke: "white",
-            fill: "white",
-            fontFamily: "Arial",
-            fontSize: "16px",
-            cursor: "pointer",
-        };
-        const startingX = this.props.x;
-        const startingY = this.props.y + 15;
+        var opts = {};
+        var startingX = this.props.x;
+        var startingY = this.props.y + 15;
         if (this.props.data.state === "undecided") {
             extra = React.createElement("text", { style: opts, x: startingX, y: startingY, height: rowHeight, width: columnWidth }, "TBA");
         }
@@ -1895,7 +1965,7 @@ class Matchup extends React.Component {
                 React.createElement("text", { style: opts, x: startingX, y: startingY + rowHeight / 2 }, this.props.data.team2));
         }
         else {
-            const convert = (num) => {
+            var convert = function (num) {
                 if (num < 10) {
                     return "0" + num;
                 }
@@ -1907,185 +1977,218 @@ class Matchup extends React.Component {
                 React.createElement("text", { style: opts, x: startingX + columnWidth - 25, y: startingY }, this.props.data.team1_score),
                 React.createElement("text", { style: opts, x: startingX + columnWidth - 25, y: startingY + rowHeight / 2 }, this.props.data.team2_score));
         }
-        const rectStyle = {
+        var rectStyle = {
             fill: 'black',
             stroke: 'black',
             strokeWidth: 5,
         };
         return (React.createElement(React.Fragment, null,
-            React.createElement("rect", { x: this.props.x, y: this.props.y, width: columnWidth, height: rowHeight, style: rectStyle, rx: "" + 3, ry: "" + 3 }),
+            React.createElement("rect", { x: this.props.x, y: this.props.y, width: columnWidth, height: rowHeight, style: rectStyle, className: "tournament-bracket-node", rx: "" + 3, ry: "" + 3, onClick: function () { return _this.props.change(_this.props.data); } }),
             extra));
-    }
-}
+    };
+    return Matchup;
+}(React.Component));
 function height(matchups) {
     if (matchups === null || Object.keys(matchups).length === 0) {
         return 0;
     }
-    let hgt = Math.max(height(matchups.left_node), height(matchups.right_node)) + 1;
+    var hgt = Math.max(height(matchups.left_node), height(matchups.right_node)) + 1;
     return hgt;
 }
-class TournamentCell extends React.Component {
-    constructor(props) {
-        super(props);
-        this.agglomerateData = this.agglomerateData.bind(this);
-        this._merge = this._merge.bind(this);
+var TournamentCell = /** @class */ (function (_super) {
+    __extends(TournamentCell, _super);
+    function TournamentCell(props) {
+        var _this = _super.call(this, props) || this;
+        _this.agglomerateData = _this.agglomerateData.bind(_this);
+        _this._merge = _this._merge.bind(_this);
+        return _this;
     }
-    _merge(aggCall, toX, toY) {
+    TournamentCell.prototype._merge = function (aggCall, toX, toY) {
         if (aggCall.length === 0) {
             return [];
         }
-        let [othElems, [othX, othY]] = aggCall;
-        const offsetX = 6;
-        const midX = othX + columnWidth + offsetX;
+        var othElems = aggCall[0], _a = aggCall[1], othX = _a[0], othY = _a[1];
+        var offsetX = 6;
+        var midX = othX + columnWidth + offsetX;
         var midY = othY + rowHeight / 2;
-        const halfX = midX + colSpacing / 2;
-        const offsetY = 9;
+        var halfX = midX + colSpacing / 2;
+        var offsetY = 9;
         if (toY < midY) {
             toY += offsetY;
         }
         else {
             toY -= offsetY;
         }
-        const lineOpts = {
+        var lineOpts = {
             stroke: "black",
             strokeWidth: 1.5,
         };
-        return [React.createElement("line", Object.assign({}, lineOpts, { x1: "" + midX, y1: "" + midY, x2: "" + halfX, y2: "" + midY })),
-            React.createElement("line", Object.assign({}, lineOpts, { x1: "" + halfX, y1: "" + midY, x2: "" + halfX, y2: "" + toY })),
-            React.createElement("line", Object.assign({}, lineOpts, { x1: "" + halfX, y1: "" + toY, x2: "" + (toX - offsetX), y2: "" + toY })),
-            ...othElems];
-    }
-    agglomerateData(data, row, col, maxCols) {
+        return [React.createElement("line", __assign({}, lineOpts, { x1: "" + midX, y1: "" + midY, x2: "" + halfX, y2: "" + midY })),
+            React.createElement("line", __assign({}, lineOpts, { x1: "" + halfX, y1: "" + midY, x2: "" + halfX, y2: "" + toY })),
+            React.createElement("line", __assign({}, lineOpts, { x1: "" + halfX, y1: "" + toY, x2: "" + (toX - offsetX), y2: "" + toY }))].concat(othElems);
+    };
+    TournamentCell.prototype.agglomerateData = function (data, row, col, maxCols) {
         //elements, root
         if (data === null || Object.keys(data).length === 0) {
             return [];
         }
-        let { left_node, right_node } = data, rest = __rest(data, ["left_node", "right_node"]);
-        const x = calcX(col);
-        const y = calcY(col, row, maxCols);
-        var elems = [React.createElement(Matchup, { x: x, y: y, data: rest })];
-        const entry = y + rowHeight / 2;
+        var left_node = data.left_node, right_node = data.right_node, rest = __rest(data, ["left_node", "right_node"]);
+        var x = calcX(col);
+        var y = calcY(col, row, maxCols);
+        var elems = [React.createElement(Matchup, { x: x, y: y, data: rest, change: this.props.change })];
+        var entry = y + rowHeight / 2;
         if (data.left_node !== null) {
-            const accumulated = this._merge(this.agglomerateData(data.left_node, row * 2, col - 1, maxCols), x, entry);
+            var accumulated = this._merge(this.agglomerateData(data.left_node, row * 2, col - 1, maxCols), x, entry);
             elems = elems.concat(accumulated);
         }
         if (data.right_node !== null) {
-            const accumulated = this._merge(this.agglomerateData(data.right_node, row * 2 + 1, col - 1, maxCols), x, entry);
+            var accumulated = this._merge(this.agglomerateData(data.right_node, row * 2 + 1, col - 1, maxCols), x, entry);
             elems = elems.concat(accumulated);
         }
         return [elems, [x, y]];
-    }
-    render() {
+    };
+    TournamentCell.prototype.render = function () {
         console.log(this.props.matches);
-        const maxHeight = height(this.props.matches);
-        let [elems, ...rest] = this.agglomerateData(this.props.matches, 0, maxHeight - 1, maxHeight);
+        var maxHeight = height(this.props.matches);
+        var _a = this.agglomerateData(this.props.matches, 0, maxHeight - 1, maxHeight), elems = _a[0], rest = _a.slice(1);
         return React.createElement("svg", { width: "" + window.innerWidth, height: "" + window.innerHeight },
             React.createElement("g", null, elems));
-    }
-}
-class TournamentDown extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+    };
+    return TournamentCell;
+}(React.Component));
+var TournamentDown = /** @class */ (function (_super) {
+    __extends(TournamentDown, _super);
+    function TournamentDown(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             players: "",
             type: 'Doubles'
         };
-        this.onSubmit = this.onSubmit.bind(this);
+        _this.onSubmit = _this.onSubmit.bind(_this);
+        return _this;
     }
-    onSubmit(ev) {
-        const data = {
+    TournamentDown.prototype.onSubmit = function (ev) {
+        var data = {
             num_players: this.state.players,
             tournament_type: this.state.type,
         };
         axios_1.default.post('/api/tournament/create', Utils_1.objectToFormData(data))
-            .then((res) => {
+            .then(function (res) {
             console.log(res);
         })
-            .catch((res) => {
+            .catch(function (res) {
             console.log(res);
         });
         ev.preventDefault();
-    }
-    render() {
-        const opts = [
+    };
+    TournamentDown.prototype.render = function () {
+        var _this = this;
+        var opts = [
             new Select_1.Option('Doubles', 'Doubles'),
             new Select_1.Option('Singles', 'Singles'),
         ];
         return React.createElement("form", { onSubmit: this.onSubmit },
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col-6" },
-                    React.createElement("input", { type: "text", className: "interaction-style", placeholder: "Number of players", value: this.state.players, onChange: (ev) => this.setState({ players: ev.target.value }) })),
+                    React.createElement("input", { type: "text", className: "interaction-style", placeholder: "Number of players", value: this.state.players, onChange: function (ev) { return _this.setState({ players: ev.target.value }); } })),
                 React.createElement("div", { className: "col-6" },
-                    React.createElement(Select_1.Select, { onChange: (val) => this.setState({ type: val }), options: opts, name: "emailName", defaultValue: this.state.type }))),
+                    React.createElement(Select_1.Select, { onChange: function (val) { return _this.setState({ type: val }); }, options: opts, name: "emailName", defaultValue: this.state.type }))),
             React.createElement("button", { type: "submit", className: "interaction-style" }, "Submit"));
-    }
-}
-const convertToDicts = (matches) => {
-    const _convertToDicts = (matches, idx) => {
+    };
+    return TournamentDown;
+}(React.Component));
+var convertToDicts = function (matches) {
+    var _convertToDicts = function (matches, idx) {
         if (idx > matches.length) {
             return null;
         }
-        const lhs = _convertToDicts(matches, idx * 2);
-        const rhs = _convertToDicts(matches, idx * 2 + 1);
-        const node = matches[idx - 1];
+        var lhs = _convertToDicts(matches, idx * 2);
+        var rhs = _convertToDicts(matches, idx * 2 + 1);
+        var node = matches[idx - 1];
         return { left_node: lhs, right_node: rhs, id: node.bracket_node_id, matches: node.matches };
     };
     return _convertToDicts(matches, 1);
 };
-class TournamentView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+var TournamentView = /** @class */ (function (_super) {
+    __extends(TournamentView, _super);
+    function TournamentView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             status: null,
             matches: null,
         };
-        this.refresh = this.refresh.bind(this);
-        this.finishTournament = this.finishTournament.bind(this);
+        _this.refresh = _this.refresh.bind(_this);
+        _this.finishTournament = _this.finishTournament.bind(_this);
+        _this.changeMatch = _this.changeMatch.bind(_this);
+        return _this;
     }
-    finishTournament() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const data = {
-                    tournament_id: this.state.id,
-                };
-                const res = yield axios_1.default.post(tourney_url + 'finish/', Utils_1.objectToFormData(data));
-                console.log(res);
-                this.refresh();
-            }
-            catch (err) {
-                console.log(err);
-            }
-        });
-    }
-    refresh() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.get(tourney_url);
-                const data = res.data;
-                if (data.status === "down") {
-                    this.setState({
-                        status: data.status,
-                        matches: res.data,
-                    });
+    TournamentView.prototype.finishTournament = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, res, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        data = {
+                            tournament_id: this.state.id,
+                        };
+                        return [4 /*yield*/, axios_1.default.post(tourney_url + 'finish/', Utils_1.objectToFormData(data))];
+                    case 1:
+                        res = _a.sent();
+                        console.log(res);
+                        this.refresh();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
-                else {
-                    const brackets = convertToDicts(data.tournament.bracket_nodes);
-                    this.setState({
-                        status: data.status,
-                        matches: brackets,
-                        id: data.tournament.tournament_id,
-                    });
-                }
-            }
-            catch (err) {
-                console.log(err);
-            }
+            });
         });
-    }
-    componentDidMount() {
+    };
+    TournamentView.prototype.refresh = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, data, brackets, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.get(tourney_url)];
+                    case 1:
+                        res = _a.sent();
+                        data = res.data;
+                        if (data.status === "down") {
+                            this.setState({
+                                status: data.status,
+                                matches: res.data,
+                            });
+                        }
+                        else {
+                            brackets = convertToDicts(data.tournament.bracket_nodes);
+                            this.setState({
+                                status: data.status,
+                                matches: brackets,
+                                id: data.tournament.tournament_id,
+                            });
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        console.log(err_2);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    TournamentView.prototype.changeMatch = function (matchObj) {
+        console.log(matchObj);
+    };
+    TournamentView.prototype.componentDidMount = function () {
         this.refresh();
-    }
-    render() {
+    };
+    TournamentView.prototype.render = function () {
         if (this.state.status === null) {
             return null;
         }
@@ -2093,10 +2196,12 @@ class TournamentView extends React.Component {
             return React.createElement(TournamentDown, { refresh: this.refresh });
         }
         return (React.createElement("div", { className: "tournament-div" },
-            React.createElement(TournamentCell, { matches: this.state.matches }),
+            this.state.popup && this.state.popup,
+            React.createElement(TournamentCell, { matches: this.state.matches, change: this.changeMatch }),
             React.createElement("button", { onClick: this.finishTournament, className: "interaction-style" }, "Finish")));
-    }
-}
+    };
+    return TournamentView;
+}(React.Component));
 exports.TournamentView = TournamentView;
 
 

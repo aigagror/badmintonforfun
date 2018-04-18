@@ -2540,6 +2540,13 @@ input[type="text"] {
 .delete-button {
   background-color: darkred;
   color: white; }
+
+.tournament-bracket-node {
+  stroke: white;
+  fill: white;
+  font-family: "Arial";
+  font-size: 16px;
+  cursor: pointer; }
 /* The container */
 .radio-container {
   display: block;

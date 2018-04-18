@@ -293,7 +293,7 @@ class MemberSettings extends React.Component<any, any> {
 				<div className="col-3 col-es-12">
 				<button 
 					onClick={this.deleteMember(idx)} 
-					className="interaction-style">
+					className="interaction-style delete-button">
 					Delete
 				</button>
 				</div>
@@ -379,7 +379,7 @@ class CourtSettings extends React.Component<any, any> {
 					name={"courts" + idx} />
 				</div>
 				<div className="col-6 col-es-12">
-				<button className="interaction-style" onClick={()=>this.deleteCourt(court.court_id)}>Delete</button>
+				<button className="interaction-style delete-button" onClick={()=>this.deleteCourt(court.court_id)}>Delete</button>
 				</div>
 				</div>
 			})

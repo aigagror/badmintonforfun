@@ -6866,7 +6866,7 @@ var Cookies = __webpack_require__(39);
 /**
  * Mappings from imported classes to random strings.
  */
-const obfuscationMappings = {
+var obfuscationMappings = {
     'MailView': 'ysjiUtKPV7',
 };
 /**
@@ -6874,15 +6874,15 @@ const obfuscationMappings = {
  * arg being the requested key
  */
 function _generateKey(instance, arg) {
-    const name = instance.constructor.name;
-    const obf = obfuscationMappings[name];
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
     return name + obf;
 }
 /**
  * Returns a string given the class and the key <arg>
  */
 function getResource(instance, arg) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     return localStorage.getItem(key);
     ;
 }
@@ -6891,18 +6891,18 @@ exports.getResource = getResource;
  * Sets the requested key <arg> of class <instance> to <value>
  */
 function setResource(instance, arg, value) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     localStorage.setItem(key, value);
 }
 exports.setResource = setResource;
-const cookies = new Cookies();
+var cookies = new Cookies();
 function isBoardMember() {
-    const ret = cookies.get('is_board_member');
+    var ret = cookies.get('is_board_member');
     return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    const ret = cookies.get('member_id');
+    var ret = cookies.get('member_id');
     return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
@@ -7483,8 +7483,9 @@ module.exports = ReactPropTypesSecret;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 function objectToFormData(obj) {
-    const data = new FormData();
-    for (let key of Object.keys(obj)) {
+    var data = new FormData();
+    for (var _i = 0, _a = Object.keys(obj); _i < _a.length; _i++) {
+        var key = _a[_i];
         var serial = obj[key];
         if (typeof serial === 'object') {
             serial = JSON.stringify(obj[key]);
@@ -21511,43 +21512,57 @@ module.exports = getPrototype;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class EditableTextarea extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+var React = __webpack_require__(2);
+var EditableTextarea = /** @class */ (function (_super) {
+    __extends(EditableTextarea, _super);
+    function EditableTextarea(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             readonly: true,
-            textValue: this.props.initValue,
+            textValue: _this.props.initValue,
         };
-        this.saveEdits = this.saveEdits.bind(this);
+        _this.saveEdits = _this.saveEdits.bind(_this);
+        return _this;
     }
-    saveEdits() {
+    EditableTextarea.prototype.saveEdits = function () {
         this.props.onSave(this.state.textValue);
         this.setState({
             readonly: true,
         });
-    }
-    render() {
+    };
+    EditableTextarea.prototype.render = function () {
+        var _this = this;
         return React.createElement("div", { className: "editable-textarea-div" },
             React.createElement("textarea", { className: "editable-textarea interaction-style " + (this.state.readonly ?
-                    "editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : "")), value: this.state.textValue, onChange: (ev) => {
-                    const target = ev.target;
+                    "editable-textarea-frozen" : (this.props.defaultClass ? this.props.defaultClass : "")), value: this.state.textValue, onChange: function (ev) {
+                    var target = ev.target;
                     target.style.height = target.scrollHeight + 'px';
-                    this.setState({ textValue: target.value });
-                }, ref: (ta) => this.textarea = ta, readOnly: this.state.readonly }),
+                    _this.setState({ textValue: target.value });
+                }, ref: function (ta) { return _this.textarea = ta; }, readOnly: this.state.readonly }),
             !this.props.editableOverride &&
                 React.createElement(React.Fragment, null,
                     this.props.onDelete && React.createElement("button", { className: "editable-textarea-delete-button interaction-style", onClick: this.props.onDelete }, "X"),
                     this.state.readonly ?
-                        React.createElement("button", { onClick: () => {
-                                this.textarea.style.height = '1px';
-                                this.textarea.style.height = this.textarea.scrollHeight + 'px';
-                                this.setState({ readonly: false });
+                        React.createElement("button", { onClick: function () {
+                                _this.textarea.style.height = '1px';
+                                _this.textarea.style.height = _this.textarea.scrollHeight + 'px';
+                                _this.setState({ readonly: false });
                             }, className: "editable-textarea-edit-button interaction-style" }, "\u270E") :
                         React.createElement("button", { onClick: this.saveEdits, className: "editable-textarea-edit-button interaction-style" }, "\uD83D\uDCBE")));
-    }
-}
+    };
+    return EditableTextarea;
+}(React.Component));
 exports.EditableTextarea = EditableTextarea;
 
 
@@ -21853,37 +21868,50 @@ module.exports = g;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const default_pic_url = "/assets/default_profile.png";
-const bio_url = '/api/members/profile/';
-class ProfileView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+var React = __webpack_require__(2);
+var axios_1 = __webpack_require__(12);
+var default_pic_url = "/assets/default_profile.png";
+var bio_url = '/api/members/profile/';
+var ProfileView = /** @class */ (function (_super) {
+    __extends(ProfileView, _super);
+    function ProfileView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             bio: null,
             name: null,
         };
+        return _this;
     }
-    componentDidMount() {
+    ProfileView.prototype.componentDidMount = function () {
+        var _this = this;
         axios_1.default.get(bio_url, {
             params: {
                 id: this.props.member_id
             }
         })
-            .then((res) => {
-            this.setState({
+            .then(function (res) {
+            _this.setState({
                 bio: res.data.bio,
                 name: res.data.first_name + ' ' + res.data.last_name,
                 url: res.data.picture,
             });
         })
-            .catch((res) => {
+            .catch(function (res) {
             console.log(res);
         });
-    }
-    render() {
+    };
+    ProfileView.prototype.render = function () {
         if (this.state.bio === null) {
             return null;
         }
@@ -21898,8 +21926,9 @@ class ProfileView extends React.Component {
                 React.createElement("div", { className: "col-6" },
                     React.createElement("h2", null, this.state.name),
                     React.createElement("p", null, this.state.bio.length === 0 ? React.createElement("i", null, "No description provided") : this.state.bio))));
-    }
-}
+    };
+    return ProfileView;
+}(React.Component));
 exports.ProfileView = ProfileView;
 
 
@@ -26145,9 +26174,9 @@ module.exports = baseCreate;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const HomeView_1 = __webpack_require__(315);
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var HomeView_1 = __webpack_require__(315);
 ReactDOM.render(React.createElement(HomeView_1.HomeView, null), document.querySelector("home-view"));
 
 
@@ -26157,6 +26186,16 @@ ReactDOM.render(React.createElement(HomeView_1.HomeView, null), document.querySe
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -26165,33 +26204,69 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const ProfileView_1 = __webpack_require__(217);
-const LocalResourceResolver_1 = __webpack_require__(36);
-const EditableTextarea_1 = __webpack_require__(213);
-const Utils_1 = __webpack_require__(44);
+var React = __webpack_require__(2);
+var axios_1 = __webpack_require__(12);
+var ProfileView_1 = __webpack_require__(217);
+var LocalResourceResolver_1 = __webpack_require__(36);
+var EditableTextarea_1 = __webpack_require__(213);
+var Utils_1 = __webpack_require__(44);
 axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
 axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
-const moment = __webpack_require__(0);
-const BigCalendar = __webpack_require__(316);
+var moment = __webpack_require__(0);
+var BigCalendar = __webpack_require__(316);
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
-const stat_urls = "/api/match/all_matches_from_member/";
-const announce_url = "/api/announcements/get/";
-const announce_create_url = "/api/announcements/create/";
-const announce_edit_url = "/api/announcements/edit/";
-const announce_delete_url = "/api/announcements/delete/";
-class GameView extends React.Component {
-    render() {
+var stat_urls = "/api/match/all_matches_from_member/";
+var announce_url = "/api/announcements/get/";
+var announce_create_url = "/api/announcements/create/";
+var announce_edit_url = "/api/announcements/edit/";
+var announce_delete_url = "/api/announcements/delete/";
+var GameView = /** @class */ (function (_super) {
+    __extends(GameView, _super);
+    function GameView() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    GameView.prototype.render = function () {
         return (React.createElement("tr", { className: "row-2" },
             React.createElement("td", { className: "col-3 col-es-6" }, this.props.myScore),
             React.createElement("td", { className: "col-3 col-es-6" }, this.props.theirScore),
             React.createElement("td", { className: "col-3 col-es-6" }, this.props.playtime)));
+    };
+    return GameView;
+}(React.Component));
+var StatView = /** @class */ (function (_super) {
+    __extends(StatView, _super);
+    function StatView() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class StatView extends React.Component {
-    render() {
+    StatView.prototype.render = function () {
         return (React.createElement("div", null,
             React.createElement("h2", null, "Most Recent Games"),
             React.createElement("table", { className: "stats-table" },
@@ -26200,51 +26275,56 @@ class StatView extends React.Component {
                         React.createElement("th", { className: "col-3 col-es-6" }, "Your Score"),
                         React.createElement("th", { className: "col-3 col-es-6" }, "My Score"),
                         React.createElement("th", { className: "col-3 col-es-6" }, "Play Time"))),
-                React.createElement("tbody", null, this.props.stats.map((game, idx) => {
-                    let playTime = "ongoing";
+                React.createElement("tbody", null, this.props.stats.map(function (game, idx) {
+                    var playTime = "ongoing";
                     if (game.endDateTime !== null) {
-                        const start = (new Date(game.startDateTime)).getTime();
-                        const end = (new Date(game.endDateTime)).getTime();
-                        const diff = (end - start) / 1000;
+                        var start = (new Date(game.startDateTime)).getTime();
+                        var end = (new Date(game.endDateTime)).getTime();
+                        var diff = (end - start) / 1000;
                         playTime = Math.floor((diff / 60)) + ":" + (diff % 60);
                     }
                     return React.createElement(GameView, { key: idx, myScore: game.my_score, theirScore: game.their_score, playtime: playTime });
                 })))));
-    }
-}
-class AnnounceCreator extends React.Component {
-    constructor(props) {
-        super(props);
-        this.initState = this.initState.bind(this);
-        this.state = this.initState();
-        this.state = {
+    };
+    return StatView;
+}(React.Component));
+var AnnounceCreator = /** @class */ (function (_super) {
+    __extends(AnnounceCreator, _super);
+    function AnnounceCreator(props) {
+        var _this = _super.call(this, props) || this;
+        _this.initState = _this.initState.bind(_this);
+        _this.state = _this.initState();
+        _this.state = {
             boardMember: LocalResourceResolver_1.isBoardMember(),
         };
-        this.sendAnnouncement = this.sendAnnouncement.bind(this);
+        _this.sendAnnouncement = _this.sendAnnouncement.bind(_this);
+        return _this;
     }
-    initState() {
+    AnnounceCreator.prototype.initState = function () {
         return JSON.parse(JSON.stringify({
             showCreator: false,
             announcementText: "",
             titleText: "",
         }));
-    }
-    sendAnnouncement(ev) {
-        const params = {
+    };
+    AnnounceCreator.prototype.sendAnnouncement = function (ev) {
+        var _this = this;
+        var params = {
             title: this.state.titleText,
             entry: this.state.annoucementText,
         };
         axios_1.default.post(announce_create_url, Utils_1.objectToFormData(params))
-            .then((res) => {
-            this.setState(this.initState());
-            this.props.refresh();
+            .then(function (res) {
+            _this.setState(_this.initState());
+            _this.props.refresh();
         })
-            .catch((res) => {
+            .catch(function (res) {
             console.log(res);
         });
         ev.preventDefault();
-    }
-    render() {
+    };
+    AnnounceCreator.prototype.render = function () {
+        var _this = this;
         if (!this.state.boardMember) {
             return null;
         }
@@ -26255,124 +26335,168 @@ class AnnounceCreator extends React.Component {
                     React.createElement("div", { className: "row" },
                         React.createElement("h4", null, "Members only! Add a practice"),
                         React.createElement("div", { className: "col-8" },
-                            React.createElement("input", { className: "interaction-style", placeholder: "Title", type: "text", onChange: (ev) => {
-                                    this.setState({ titleText: ev.target.value });
+                            React.createElement("input", { className: "interaction-style", placeholder: "Title", type: "text", onChange: function (ev) {
+                                    _this.setState({ titleText: ev.target.value });
                                 }, value: this.state.titleText }))),
                     React.createElement("div", { className: "row" },
                         React.createElement("div", { className: "col-12" },
-                            React.createElement("textarea", { placeholder: "Body", className: "row-offset-1 interaction-style", onChange: (ev) => this.setState({ announcementText: ev.target.value }), value: this.state.announcementText }))),
+                            React.createElement("textarea", { placeholder: "Body", className: "row-offset-1 interaction-style", onChange: function (ev) {
+                                    return _this.setState({ announcementText: ev.target.value });
+                                }, value: this.state.announcementText }))),
                     React.createElement("div", { className: "row row-offset-1" },
                         React.createElement("div", { className: "col-6" },
                             React.createElement("button", { type: "submit", className: "interaction-style" }, "Submit")),
                         React.createElement("div", { className: "col-6" },
-                            React.createElement("button", { onClick: () => this.setState({ showCreator: false }), className: "interaction-style" }, "Close")))));
+                            React.createElement("button", { onClick: function () { return _this.setState({ showCreator: false }); }, className: "interaction-style" }, "Close")))));
         }
         else {
-            return React.createElement("button", { onClick: () => this.setState({ showCreator: true }), className: "interaction-style" }, "Add an announcement");
+            return React.createElement("button", { onClick: function () { return _this.setState({ showCreator: true }); }, className: "interaction-style" }, "Add an announcement");
         }
-    }
-}
-class AnnounceView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+    };
+    return AnnounceCreator;
+}(React.Component));
+var AnnounceView = /** @class */ (function (_super) {
+    __extends(AnnounceView, _super);
+    function AnnounceView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             announcements: null,
             boardMember: LocalResourceResolver_1.isBoardMember(),
         };
-        this.performRequest = this.performRequest.bind(this);
-        this.performUpdate = this.performUpdate.bind(this);
-        this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
+        _this.performRequest = _this.performRequest.bind(_this);
+        _this.performUpdate = _this.performUpdate.bind(_this);
+        _this.deleteAnnouncement = _this.deleteAnnouncement.bind(_this);
+        return _this;
     }
-    performRequest() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.get(announce_url);
-                const announcements = res.data.announcements;
-                if (announcements.length === 0) {
-                    const fake = [{
-                            title: "No Announcements!",
-                            body: "More to come...",
-                        }];
-                    this.setState({
-                        announcements: fake,
-                    });
+    AnnounceView.prototype.performRequest = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, announcements, fake, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.get(announce_url)];
+                    case 1:
+                        res = _a.sent();
+                        announcements = res.data.announcements;
+                        if (announcements.length === 0) {
+                            fake = [{
+                                    title: "No Announcements!",
+                                    body: "More to come...",
+                                }];
+                            this.setState({
+                                announcements: fake,
+                            });
+                        }
+                        else {
+                            this.setState({
+                                announcements: announcements,
+                            });
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
-                else {
-                    this.setState({
-                        announcements: announcements,
-                    });
-                }
-            }
-            catch (err) {
-                console.log(err);
-            }
+            });
         });
-    }
-    componentDidMount() {
+    };
+    AnnounceView.prototype.componentDidMount = function () {
         this.performRequest();
-    }
-    performUpdate(idx) {
-        return (text) => __awaiter(this, void 0, void 0, function* () {
-            const announce = this.state.announcements[idx];
-            const data = new FormData();
-            data.append('title', announce.title);
-            data.append('entry', text);
-            data.append('id', announce.id);
-            try {
-                yield axios_1.default.post(announce_edit_url, data);
-                this.performRequest();
-            }
-            catch (res) {
-                console.log(res);
-            }
-        });
-    }
-    deleteAnnouncement(idx) {
-        return () => __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield axios_1.default.post(announce_delete_url, Utils_1.objectToFormData({ id: idx }));
-                this.performRequest();
-            }
-            catch (err) {
-                console.log(err);
-            }
-        });
-    }
-    render() {
+    };
+    AnnounceView.prototype.performUpdate = function (idx) {
+        var _this = this;
+        return function (text) { return __awaiter(_this, void 0, void 0, function () {
+            var announce, data, res_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        announce = this.state.announcements[idx];
+                        data = new FormData();
+                        data.append('title', announce.title);
+                        data.append('entry', text);
+                        data.append('id', announce.id);
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, axios_1.default.post(announce_edit_url, data)];
+                    case 2:
+                        _a.sent();
+                        this.performRequest();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        res_1 = _a.sent();
+                        console.log(res_1);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        }); };
+    };
+    AnnounceView.prototype.deleteAnnouncement = function (idx) {
+        var _this = this;
+        return function () { return __awaiter(_this, void 0, void 0, function () {
+            var err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.post(announce_delete_url, Utils_1.objectToFormData({ id: idx }))];
+                    case 1:
+                        _a.sent();
+                        this.performRequest();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        console.log(err_2);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        }); };
+    };
+    AnnounceView.prototype.render = function () {
+        var _this = this;
         if (this.state.announcements === null) {
             return React.createElement("p", null, "Loading Announcement");
         }
         return (React.createElement("div", { className: "announcement" },
             React.createElement("h2", null, "Recent Announcements"),
-            this.state.announcements.map((announce, idx) => {
+            this.state.announcements.map(function (announce, idx) {
                 return React.createElement("div", { key: idx },
                     React.createElement("h3", null, announce.title),
-                    React.createElement(EditableTextarea_1.EditableTextarea, { initValue: announce.entry, onSave: this.performUpdate(idx), onDelete: this.deleteAnnouncement(announce.id), editableOverride: !this.state.boardMember }));
+                    React.createElement(EditableTextarea_1.EditableTextarea, { initValue: announce.entry, onSave: _this.performUpdate(idx), onDelete: _this.deleteAnnouncement(announce.id), editableOverride: !_this.state.boardMember }));
             }),
             React.createElement(AnnounceCreator, { refresh: this.performRequest })));
-    }
-}
-class HomeView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+    };
+    return AnnounceView;
+}(React.Component));
+var HomeView = /** @class */ (function (_super) {
+    __extends(HomeView, _super);
+    function HomeView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             stats: null,
             board_member: false,
             sched: [],
             addDate: moment(),
             numCourts: "",
         };
-        this.performRequest = this.performRequest.bind(this);
-        this.sendSchedule = this.sendSchedule.bind(this);
+        _this.performRequest = _this.performRequest.bind(_this);
+        _this.sendSchedule = _this.sendSchedule.bind(_this);
+        return _this;
     }
-    componentDidMount() {
+    HomeView.prototype.componentDidMount = function () {
         this.performRequest(stat_urls);
-    }
-    performRequest(url) {
-        const req1 = axios_1.default.get(url + "?id=" + LocalResourceResolver_1.getMemberId());
-        const req2 = axios_1.default.get('/api/settings/schedule/get');
-        axios_1.default.all([req1, req2]).then(axios_1.default.spread((res, res2) => {
-            const events = res2.data.schedule.map((ev) => {
+    };
+    HomeView.prototype.performRequest = function (url) {
+        var _this = this;
+        var req1 = axios_1.default.get(url + "?id=" + LocalResourceResolver_1.getMemberId());
+        var req2 = axios_1.default.get('/api/settings/schedule/get');
+        axios_1.default.all([req1, req2]).then(axios_1.default.spread(function (res, res2) {
+            var events = res2.data.schedule.map(function (ev) {
                 return {
                     'title': ev.number_of_courts + ' courts',
                     'allDay': true,
@@ -26380,43 +26504,55 @@ class HomeView extends React.Component {
                     end: moment(ev.date),
                 };
             });
-            this.setState({
+            _this.setState({
                 stats: res.data,
                 sched: events,
                 board_member: res.data.board_member
             });
-        })).catch((res) => {
+        })).catch(function (res) {
             console.log(res);
         });
-    }
-    sendSchedule(ev) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const dateFormat = "YYYY-MM-DD";
-            try {
-                const body = {
-                    schedule: {
-                        date: this.state.addDate.format(dateFormat),
-                        number_of_courts: this.state.numCourts
-                    }
-                };
-                const data = yield axios_1.default.post('/api/settings/schedule/edit', {
-                    schedule: [{
-                            date: this.state.addDate.format(dateFormat),
-                            number_of_courts: this.state.numCourts
-                        }]
-                });
-                this.setState({
-                    date: moment(),
-                    number_of_courts: "",
-                });
-                this.performRequest(stat_urls);
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    HomeView.prototype.sendSchedule = function (ev) {
+        return __awaiter(this, void 0, void 0, function () {
+            var dateFormat, body, data, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dateFormat = "YYYY-MM-DD";
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        body = {
+                            schedule: {
+                                date: this.state.addDate.format(dateFormat),
+                                number_of_courts: this.state.numCourts
+                            }
+                        };
+                        return [4 /*yield*/, axios_1.default.post('/api/settings/schedule/edit', {
+                                schedule: [{
+                                        date: this.state.addDate.format(dateFormat),
+                                        number_of_courts: this.state.numCourts
+                                    }]
+                            })];
+                    case 2:
+                        data = _a.sent();
+                        this.setState({
+                            date: moment(),
+                            number_of_courts: "",
+                        });
+                        this.performRequest(stat_urls);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_3 = _a.sent();
+                        console.log(err_3);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
         });
-    }
-    render() {
+    };
+    HomeView.prototype.render = function () {
         if (this.state.stats === null) {
             return null;
         }
@@ -26461,8 +26597,9 @@ class HomeView extends React.Component {
             React.createElement("div", { className: "row-offset-2" },
                 React.createElement("h2", null, "Profile"),
                 React.createElement(ProfileView_1.ProfileView, { member_id: LocalResourceResolver_1.getMemberId() }))));
-    }
-}
+    };
+    return HomeView;
+}(React.Component));
 exports.HomeView = HomeView;
 
 

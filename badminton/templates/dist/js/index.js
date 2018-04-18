@@ -78,10 +78,10 @@ module.exports = React;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: () => { window.location.href = "/login"; } }, "Sign In"), document.querySelector("member-button"));
-ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: () => { window.location.href = "./interested.html"; } }, "Interested"), document.querySelector("interested-button"));
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: function () { window.location.href = "/login"; } }, "Sign In"), document.querySelector("member-button"));
+ReactDOM.render(React.createElement("button", { className: "interaction-style", onClick: function () { window.location.href = "./interested.html"; } }, "Interested"), document.querySelector("interested-button"));
 
 
 /***/ }),

@@ -1069,31 +1069,45 @@ module.exports = InterceptorManager;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class Slider extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onChange = this.onChange.bind(this);
+var React = __webpack_require__(2);
+var Slider = /** @class */ (function (_super) {
+    __extends(Slider, _super);
+    function Slider(props) {
+        var _this = _super.call(this, props) || this;
+        _this.onChange = _this.onChange.bind(_this);
         // Since checked is optional, use a double !!
         // To get a boolean value
-        this.selected = !!this.props.checked;
+        _this.selected = !!_this.props.checked;
+        return _this;
     }
-    componentDidMount() {
+    Slider.prototype.componentDidMount = function () {
         if (this.selected) {
             this.inputElem.checked = true;
         }
-    }
-    onChange(event) {
+    };
+    Slider.prototype.onChange = function (event) {
         this.selected = !this.selected;
         this.props.change(event);
-    }
-    render() {
+    };
+    Slider.prototype.render = function () {
+        var _this = this;
         return (React.createElement("label", { className: "switch" },
-            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: (input) => this.inputElem = input }),
+            React.createElement("input", { type: "checkbox", onChange: this.onChange, ref: function (input) { return _this.inputElem = input; } }),
             React.createElement("span", { className: "slider round" })));
-    }
-}
+    };
+    return Slider;
+}(React.Component));
 exports.Slider = Slider;
 
 
@@ -1670,7 +1684,7 @@ var Cookies = __webpack_require__(39);
 /**
  * Mappings from imported classes to random strings.
  */
-const obfuscationMappings = {
+var obfuscationMappings = {
     'MailView': 'ysjiUtKPV7',
 };
 /**
@@ -1678,15 +1692,15 @@ const obfuscationMappings = {
  * arg being the requested key
  */
 function _generateKey(instance, arg) {
-    const name = instance.constructor.name;
-    const obf = obfuscationMappings[name];
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
     return name + obf;
 }
 /**
  * Returns a string given the class and the key <arg>
  */
 function getResource(instance, arg) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     return localStorage.getItem(key);
     ;
 }
@@ -1695,18 +1709,18 @@ exports.getResource = getResource;
  * Sets the requested key <arg> of class <instance> to <value>
  */
 function setResource(instance, arg, value) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     localStorage.setItem(key, value);
 }
 exports.setResource = setResource;
-const cookies = new Cookies();
+var cookies = new Cookies();
 function isBoardMember() {
-    const ret = cookies.get('is_board_member');
+    var ret = cookies.get('is_board_member');
     return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    const ret = cookies.get('member_id');
+    var ret = cookies.get('member_id');
     return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
@@ -2236,8 +2250,9 @@ function cleanCookies() {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 function objectToFormData(obj) {
-    const data = new FormData();
-    for (let key of Object.keys(obj)) {
+    var data = new FormData();
+    for (var _i = 0, _a = Object.keys(obj); _i < _a.length; _i++) {
+        var key = _a[_i];
         var serial = obj[key];
         if (typeof serial === 'object') {
             serial = JSON.stringify(obj[key]);
@@ -2257,9 +2272,9 @@ exports.objectToFormData = objectToFormData;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const Queue_1 = __webpack_require__(489);
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var Queue_1 = __webpack_require__(489);
 ReactDOM.render(React.createElement(Queue_1.Queue, null), document.querySelector("queue-view"));
 
 
@@ -2270,6 +2285,16 @@ ReactDOM.render(React.createElement(Queue_1.Queue, null), document.querySelector
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -2278,21 +2303,48 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const Select_1 = __webpack_require__(49);
-const Utils_1 = __webpack_require__(44);
-const LocalResourceResolver_1 = __webpack_require__(36);
-const Popup_1 = __webpack_require__(51);
-const Slider_1 = __webpack_require__(248);
+var React = __webpack_require__(2);
+var axios_1 = __webpack_require__(12);
+var Select_1 = __webpack_require__(49);
+var Utils_1 = __webpack_require__(44);
+var LocalResourceResolver_1 = __webpack_require__(36);
+var Popup_1 = __webpack_require__(51);
+var Slider_1 = __webpack_require__(248);
 axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
 axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
-const queueUrl = '/api/queue/';
-const matchUrl = '/api/match/current/';
-const courtStatuses = '/api/courts/';
-const freeMemberUrl = '/api/party/free_members/';
-const partyGetUrl = '/api/party/get/';
+var queueUrl = '/api/queue/';
+var matchUrl = '/api/match/current/';
+var courtStatuses = '/api/courts/';
+var freeMemberUrl = '/api/party/free_members/';
+var partyGetUrl = '/api/party/get/';
 function round(number, precision) {
     var shift = function (number, precision, reverseShift) {
         if (reverseShift) {
@@ -2303,11 +2355,15 @@ function round(number, precision) {
     };
     return shift(Math.round(shift(number, precision, false)), precision, true);
 }
-class QueuedPartyView extends React.Component {
-    render() {
+var QueuedPartyView = /** @class */ (function (_super) {
+    __extends(QueuedPartyView, _super);
+    function QueuedPartyView() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    QueuedPartyView.prototype.render = function () {
         return React.createElement("div", { className: "row" },
             React.createElement("div", { className: 'queue-party-div' },
-                this.props.party.members.map((member, idx) => {
+                this.props.party.members.map(function (member, idx) {
                     return React.createElement("div", { key: idx },
                         React.createElement("p", null, member.first_name + ' ' + member.last_name));
                 }),
@@ -2315,147 +2371,209 @@ class QueuedPartyView extends React.Component {
                     "Average Playtime: ",
                     round(this.props.party.average_play_time, 2),
                     " minutes")));
+    };
+    return QueuedPartyView;
+}(React.Component));
+var SpecificQueueView = /** @class */ (function (_super) {
+    __extends(SpecificQueueView, _super);
+    function SpecificQueueView() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class SpecificQueueView extends React.Component {
-    render() {
+    SpecificQueueView.prototype.render = function () {
         return React.createElement("div", { className: "col-4" },
             React.createElement("h2", null, this.props.type),
-            this.props.parties.map((party, idx) => {
+            this.props.parties.map(function (party, idx) {
                 return React.createElement(QueuedPartyView, { party: party, idx: idx });
             }));
-    }
-}
-const getSelectedMemberIds = () => {
-    const inputs = document.querySelectorAll('.queue-party-input');
-    const out = [];
-    for (let i = 0; i < inputs.length; ++i) {
-        let input = inputs[i];
+    };
+    return SpecificQueueView;
+}(React.Component));
+var getSelectedMemberIds = function () {
+    var inputs = document.querySelectorAll('.queue-party-input');
+    var out = [];
+    for (var i = 0; i < inputs.length; ++i) {
+        var input = inputs[i];
         if (input.checked) {
             out.push(input.value);
         }
     }
     return out;
 };
-const getSelectedMemberObj = () => {
-    const inputs = document.querySelectorAll('.queue-party-input');
-    const out = [];
-    for (let i = 0; i < inputs.length; ++i) {
-        let input = inputs[i];
+var getSelectedMemberObj = function () {
+    var inputs = document.querySelectorAll('.queue-party-input');
+    var out = [];
+    for (var i = 0; i < inputs.length; ++i) {
+        var input = inputs[i];
         if (input.checked) {
             out.push({ 'id': input.value, 'name': input.name });
         }
     }
     return out;
 };
-class CourtView extends React.Component {
-    render() {
-        const name = 'court' + this.props.court.id;
-        const match = this.props.court.match;
+var CourtView = /** @class */ (function (_super) {
+    __extends(CourtView, _super);
+    function CourtView() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    CourtView.prototype.render = function () {
+        var _this = this;
+        var name = 'court' + this.props.court.id;
+        var match = this.props.court.match;
         return React.createElement("div", { className: "col-6" },
             React.createElement("div", { className: 'row' },
                 React.createElement("div", { className: "col-6" },
                     React.createElement("h4", null, this.props.court.queue_type === null ? "Free Play" : this.props.court.queue_type)),
                 (this.props.court.queue_type === null && !this.props.hasParty) &&
                     (match !== null ? React.createElement("div", { className: "col-6" },
-                        React.createElement("button", { onClick: () => this.props.onJoin(match.match_id, match.teamA.length <= match.teamB.length ? 'A' : 'B'), className: 'interaction-style' }, "Join Match")) : React.createElement("div", { className: "col-6" },
-                        React.createElement("button", { onClick: () => this.props.onYes(this.props.court.court_id), className: 'interaction-style' }, "Start Match")))),
+                        React.createElement("button", { onClick: function () { return _this.props.onJoin(match.match_id, match.teamA.length <= match.teamB.length ? 'A' : 'B'); }, className: 'interaction-style' }, "Join Match")) : React.createElement("div", { className: "col-6" },
+                        React.createElement("button", { onClick: function () { return _this.props.onYes(_this.props.court.court_id); }, className: 'interaction-style' }, "Start Match")))),
             match !== null ? React.createElement("div", { className: "court-style" },
-                match.teamA.map((a, idx) => React.createElement("div", { className: "court-a-team team-" + (idx + 1) + "-" + match.teamA.length }, a)),
-                match.teamB.map((a, idx) => React.createElement("div", { className: "court-b-team team-" + (idx + 1) + "-" + match.teamB.length }, a))) :
+                match.teamA.map(function (a, idx) {
+                    return React.createElement("div", { className: "court-a-team team-" + (idx + 1) + "-" + match.teamA.length }, a);
+                }),
+                match.teamB.map(function (a, idx) {
+                    return React.createElement("div", { className: "court-b-team team-" + (idx + 1) + "-" + match.teamB.length }, a);
+                })) :
                 React.createElement("div", { className: "court-style", "data-tip": true, "data-event": 'click focus', "data-for": name }));
-    }
-}
-class MyPartyView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+    };
+    return CourtView;
+}(React.Component));
+var MyPartyView = /** @class */ (function (_super) {
+    __extends(MyPartyView, _super);
+    function MyPartyView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             loaded: false
         };
-        this.refreshParty = this.refreshParty.bind(this);
-        this.createParty = this.createParty.bind(this);
-        this.kickParty = this.kickParty.bind(this);
-        this.leaveParty = this.leaveParty.bind(this);
-        this.addMember = this.addMember.bind(this);
-        this.refresh = this.refresh.bind(this);
+        _this.refreshParty = _this.refreshParty.bind(_this);
+        _this.createParty = _this.createParty.bind(_this);
+        _this.kickParty = _this.kickParty.bind(_this);
+        _this.leaveParty = _this.leaveParty.bind(_this);
+        _this.addMember = _this.addMember.bind(_this);
+        _this.refresh = _this.refresh.bind(_this);
+        return _this;
     }
-    refresh() {
+    MyPartyView.prototype.refresh = function () {
         this.refreshParty();
         this.props.refresh();
-    }
-    refreshParty() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const free = yield axios_1.default.get(freeMemberUrl);
-                this.setState({
-                    loaded: true,
-                    freeMembers: free.data,
-                    selectedQueue: this.props.queueTypes[0].value,
-                });
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    MyPartyView.prototype.refreshParty = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var free, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.get(freeMemberUrl)];
+                    case 1:
+                        free = _a.sent();
+                        this.setState({
+                            loaded: true,
+                            freeMembers: free.data,
+                            selectedQueue: this.props.queueTypes[0].value,
+                        });
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-    }
-    createParty() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const out = getSelectedMemberIds();
-            const joined = out.join(',');
-            const queue = this.state.selectedQueue;
-            try {
-                const data = yield axios_1.default.post('/api/party/create', Utils_1.objectToFormData({ queue_id: queue, member_ids: joined }));
-                this.refresh();
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    MyPartyView.prototype.createParty = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var out, joined, queue, data, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        out = getSelectedMemberIds();
+                        joined = out.join(',');
+                        queue = this.state.selectedQueue;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, axios_1.default.post('/api/party/create', Utils_1.objectToFormData({ queue_id: queue, member_ids: joined }))];
+                    case 2:
+                        data = _a.sent();
+                        this.refresh();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_2 = _a.sent();
+                        console.log(err_2);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
         });
-    }
-    kickParty(member_id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.post('/api/party/remove_member/', Utils_1.objectToFormData({ member_id: member_id }));
-                console.log(res);
-                this.refresh();
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    MyPartyView.prototype.kickParty = function (member_id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.post('/api/party/remove_member/', Utils_1.objectToFormData({ member_id: member_id }))];
+                    case 1:
+                        res = _a.sent();
+                        console.log(res);
+                        this.refresh();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        console.log(err_3);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-    }
-    leaveParty() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.post('api/party/leave/');
-                console.log(res);
-                this.refresh();
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    MyPartyView.prototype.leaveParty = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.post('api/party/leave/')];
+                    case 1:
+                        res = _a.sent();
+                        console.log(res);
+                        this.refresh();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_4 = _a.sent();
+                        console.log(err_4);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-    }
-    addMember() {
-        const out = getSelectedMemberIds();
-        const requests = out.map((member_id) => {
+    };
+    MyPartyView.prototype.addMember = function () {
+        var _this = this;
+        var out = getSelectedMemberIds();
+        var requests = out.map(function (member_id) {
             axios_1.default.post('/api/party/add_member/', Utils_1.objectToFormData({ 'member_id': member_id }));
         });
-        axios_1.default.all(requests).then(() => {
-            this.refresh();
+        axios_1.default.all(requests).then(function () {
+            _this.refresh();
         });
-    }
-    componentDidMount() {
+    };
+    MyPartyView.prototype.componentDidMount = function () {
         this.refreshParty();
-    }
-    render() {
+    };
+    MyPartyView.prototype.render = function () {
+        var _this = this;
         if (!this.state.loaded) {
             return React.createElement("p", null, "Loading");
         }
-        const members = React.createElement("div", { style: { height: '200px', overflowY: 'scroll', overflowX: 'hidden' } },
+        var members = React.createElement("div", { style: { height: '200px', overflowY: 'scroll', overflowX: 'hidden' } },
             " ",
-            this.state.freeMembers.map((member, idx) => {
-                const member_ident = "member" + member.id;
+            this.state.freeMembers.map(function (member, idx) {
+                var member_ident = "member" + member.id;
                 return React.createElement("div", { className: "row", key: idx },
                     React.createElement("input", { type: "checkbox", id: member_ident, value: member.id, name: member.first_name + ' ' + member.last_name, className: "interaction-style queue-party-input" }),
                     React.createElement("label", { htmlFor: member_ident }, member.first_name + ' ' + member.last_name));
@@ -2464,12 +2582,12 @@ class MyPartyView extends React.Component {
         if (this.props.party) {
             return React.createElement("div", null,
                 React.createElement("h4", null, "Current Party"),
-                this.props.party.members.map((member, idx) => {
+                this.props.party.members.map(function (member, idx) {
                     return React.createElement("div", { key: idx, className: "row" },
                         React.createElement("div", { className: "col-6" },
                             React.createElement("h4", null, member.name)),
                         React.createElement("div", { className: "col-6" },
-                            React.createElement("button", { onClick: () => this.kickParty(member.id), className: "interaction-style" }, "Kick")));
+                            React.createElement("button", { onClick: function () { return _this.kickParty(member.id); }, className: "interaction-style" }, "Kick")));
                 }),
                 React.createElement("button", { className: "interaction-style", onClick: this.leaveParty }, "Leave"),
                 members,
@@ -2480,99 +2598,130 @@ class MyPartyView extends React.Component {
             React.createElement("div", { className: "row-offset-1" },
                 React.createElement("div", { className: "row" },
                     React.createElement("div", { className: "col-6" },
-                        React.createElement(Select_1.Select, { options: this.props.queueTypes, name: "party_picker", defaultValue: this.state.selectedQueue, onChange: (val) => this.setState({ selectedQueue: val }) })),
+                        React.createElement(Select_1.Select, { options: this.props.queueTypes, name: "party_picker", defaultValue: this.state.selectedQueue, onChange: function (val) { return _this.setState({ selectedQueue: val }); } })),
                     React.createElement("div", { className: "col-6" },
                         React.createElement("button", { className: "interaction-style", onClick: this.createParty }, "Create Party")))));
-    }
-}
-class Queue extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+    };
+    return MyPartyView;
+}(React.Component));
+var Queue = /** @class */ (function (_super) {
+    __extends(Queue, _super);
+    function Queue(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             memberState: null,
             queues: null,
         };
-        this.refreshQueue = this.refreshQueue.bind(this);
-        this.startMatch = this.startMatch.bind(this);
-        this.finishMatch = this.finishMatch.bind(this);
-        this.leaveMatch = this.leaveMatch.bind(this);
-        this.joinMatch = this.joinMatch.bind(this);
+        _this.refreshQueue = _this.refreshQueue.bind(_this);
+        _this.startMatch = _this.startMatch.bind(_this);
+        _this.finishMatch = _this.finishMatch.bind(_this);
+        _this.leaveMatch = _this.leaveMatch.bind(_this);
+        _this.joinMatch = _this.joinMatch.bind(_this);
+        return _this;
     }
-    refreshQueue() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.get(matchUrl);
-                if (res.data.status === 'idle') {
-                    const [queueData, courtData, isParty] = [yield axios_1.default.get(queueUrl),
-                        yield axios_1.default.get(courtStatuses),
-                        yield axios_1.default.get(partyGetUrl)];
-                    const queues = queueData.data.queues;
-                    const queueTypes = queues.map((queue) => new Select_1.Option(queue.id, queue.type));
-                    this.setState({
-                        memberState: 'idle',
-                        queues: queueData.data.queues,
-                        queueTypes: queueTypes,
-                        courtData: courtData.data.courts,
-                        party: isParty.data.status === 'partyless' ? null : isParty.data,
-                    });
+    Queue.prototype.refreshQueue = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, _a, queueData, courtData, isParty, _b, queues, queueTypes, match, matchData, err_5;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _c.trys.push([0, 8, , 9]);
+                        return [4 /*yield*/, axios_1.default.get(matchUrl)];
+                    case 1:
+                        res = _c.sent();
+                        if (!(res.data.status === 'idle')) return [3 /*break*/, 5];
+                        return [4 /*yield*/, axios_1.default.get(queueUrl)];
+                    case 2:
+                        _b = [_c.sent()];
+                        return [4 /*yield*/, axios_1.default.get(courtStatuses)];
+                    case 3:
+                        _b = _b.concat([_c.sent()]);
+                        return [4 /*yield*/, axios_1.default.get(partyGetUrl)];
+                    case 4:
+                        _a = _b.concat([_c.sent()]), queueData = _a[0], courtData = _a[1], isParty = _a[2];
+                        queues = queueData.data.queues;
+                        queueTypes = queues.map(function (queue) { return new Select_1.Option(queue.id, queue.type); });
+                        this.setState({
+                            memberState: 'idle',
+                            queues: queueData.data.queues,
+                            queueTypes: queueTypes,
+                            courtData: courtData.data.courts,
+                            party: isParty.data.status === 'partyless' ? null : isParty.data,
+                        });
+                        return [3 /*break*/, 7];
+                    case 5: return [4 /*yield*/, axios_1.default.get('/api/match/current/')];
+                    case 6:
+                        match = _c.sent();
+                        matchData = match.data.match;
+                        this.setState({
+                            memberState: 'playing',
+                            matchId: matchData.match_id,
+                            teamA: matchData.teamA,
+                            teamB: matchData.teamB,
+                            aScore: matchData.scoreA,
+                            bScore: matchData.scoreB,
+                        });
+                        _c.label = 7;
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
+                        err_5 = _c.sent();
+                        console.log(err_5);
+                        return [3 /*break*/, 9];
+                    case 9: return [2 /*return*/];
                 }
-                else {
-                    const match = yield axios_1.default.get('/api/match/current/');
-                    const matchData = match.data.match;
-                    this.setState({
-                        memberState: 'playing',
-                        matchId: matchData.match_id,
-                        teamA: matchData.teamA,
-                        teamB: matchData.teamB,
-                        aScore: matchData.scoreA,
-                        bScore: matchData.scoreB,
-                    });
-                }
-            }
-            catch (err) {
-                console.log(err);
-            }
+            });
         });
-    }
-    componentDidMount() {
+    };
+    Queue.prototype.componentDidMount = function () {
         this.refreshQueue();
-    }
-    startMatch(court_id) {
-        const sel = getSelectedMemberObj();
+    };
+    Queue.prototype.startMatch = function (court_id) {
+        var _this = this;
+        var sel = getSelectedMemberObj();
         if (sel.length === 0) {
             this.setState({
-                popup: React.createElement(Popup_1.Popup, { title: "One Member", message: "Please pick at least one member", callback: () => this.setState({ popup: null }) })
+                popup: React.createElement(Popup_1.Popup, { title: "One Member", message: "Please pick at least one member", callback: function () { return _this.setState({ popup: null }); } })
             });
             return;
         }
-        const callback = (left, right) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.post('/api/match/create/', JSON.stringify({
-                    court_id: court_id,
-                    score_A: 0,
-                    score_B: 0,
-                    a_players: left,
-                    b_players: right,
-                }));
-                console.log(res.data);
-                this.setState({
-                    popup: null
-                });
-                this.refreshQueue();
-            }
-            catch (err) {
-                console.log(err);
-            }
-        });
-        const left = sel.map((e) => e.id);
-        const right = [];
-        const deleteArr = (arr, elem) => {
-            const idx = arr.findIndex((i) => i === elem);
+        var callback = function (left, right) { return __awaiter(_this, void 0, void 0, function () {
+            var res, err_6;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.post('/api/match/create/', JSON.stringify({
+                                court_id: court_id,
+                                score_A: 0,
+                                score_B: 0,
+                                a_players: left,
+                                b_players: right,
+                            }))];
+                    case 1:
+                        res = _a.sent();
+                        console.log(res.data);
+                        this.setState({
+                            popup: null
+                        });
+                        this.refreshQueue();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_6 = _a.sent();
+                        console.log(err_6);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        }); };
+        var left = sel.map(function (e) { return e.id; });
+        var right = [];
+        var deleteArr = function (arr, elem) {
+            var idx = arr.findIndex(function (i) { return i === elem; });
             if (idx != -1) {
                 arr.splice(idx, 1);
             }
         };
-        const onSwap = (id, event) => {
+        var onSwap = function (id, event) {
             if (event.target.checked) {
                 deleteArr(left, id);
                 right.push(id);
@@ -2582,66 +2731,97 @@ class Queue extends React.Component {
                 left.push(id);
             }
         };
-        const popup = React.createElement(Popup_1.Popup, { title: "Pick Sides - One Per side", callback: () => callback(left, right) },
+        var popup = React.createElement(Popup_1.Popup, { title: "Pick Sides - One Per side", callback: function () { return callback(left, right); } },
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col-6" }, "Me"),
                 React.createElement("div", { className: "col-6" },
-                    React.createElement(Slider_1.Slider, { change: (val) => onSwap(LocalResourceResolver_1.getMemberId(), val) }))),
-            sel.map((person, idx) => {
+                    React.createElement(Slider_1.Slider, { change: function (val) { return onSwap(LocalResourceResolver_1.getMemberId(), val); } }))),
+            sel.map(function (person, idx) {
                 return React.createElement("div", { className: "row" },
                     React.createElement("div", { className: "col-6" }, person.name),
                     React.createElement("div", { className: "col-6" },
-                        React.createElement(Slider_1.Slider, { change: (val) => onSwap(person.id, val) })));
+                        React.createElement(Slider_1.Slider, { change: function (val) { return onSwap(person.id, val); } })));
             }));
         this.setState({
             popup: popup
         });
-    }
-    finishMatch() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.post('/api/match/finish/', Utils_1.objectToFormData({
-                    scoreA: this.state.aScore,
-                    scoreB: this.state.bScore,
-                }));
-                this.refreshQueue();
-                console.log(res);
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    Queue.prototype.finishMatch = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, err_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.post('/api/match/finish/', Utils_1.objectToFormData({
+                                scoreA: this.state.aScore,
+                                scoreB: this.state.bScore,
+                            }))];
+                    case 1:
+                        res = _a.sent();
+                        this.refreshQueue();
+                        console.log(res);
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_7 = _a.sent();
+                        console.log(err_7);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-    }
-    leaveMatch() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.post('/api/match/leave/', Utils_1.objectToFormData({
-                    match_id: this.state.matchId,
-                }));
-                this.refreshQueue();
-                console.log(res);
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    Queue.prototype.leaveMatch = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, err_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.post('/api/match/leave/', Utils_1.objectToFormData({
+                                match_id: this.state.matchId,
+                            }))];
+                    case 1:
+                        res = _a.sent();
+                        this.refreshQueue();
+                        console.log(res);
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_8 = _a.sent();
+                        console.log(err_8);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-    }
-    joinMatch(match_id, team) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const res = yield axios_1.default.post('/api/match/join/', Utils_1.objectToFormData({
-                    match_id: match_id,
-                    team: team,
-                }));
-                this.refreshQueue();
-                console.log(res);
-            }
-            catch (err) {
-                console.log(err);
-            }
+    };
+    Queue.prototype.joinMatch = function (match_id, team) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, err_9;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.post('/api/match/join/', Utils_1.objectToFormData({
+                                match_id: match_id,
+                                team: team,
+                            }))];
+                    case 1:
+                        res = _a.sent();
+                        this.refreshQueue();
+                        console.log(res);
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_9 = _a.sent();
+                        console.log(err_9);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
         });
-    }
-    render() {
+    };
+    Queue.prototype.render = function () {
+        var _this = this;
         if (this.state.memberState === null) {
             return React.createElement("p", null, "Loading");
         }
@@ -2650,18 +2830,22 @@ class Queue extends React.Component {
                 this.state.popup && this.state.popup,
                 React.createElement("h4", null,
                     "Team A: ",
-                    this.state.teamA.map((a) => a.name).join(',') + " ",
+                    this.state.teamA.map(function (a) { return a.name; }).join(',') + " ",
                     "vs Team B: ",
-                    this.state.teamB.map((a) => a.name).join(','),
+                    this.state.teamB.map(function (a) { return a.name; }).join(','),
                     " "),
                 React.createElement("div", { className: "court-style" },
-                    this.state.teamA.map((a, idx) => React.createElement("div", { className: "court-a a-team-" + (idx + 1) + "-" + this.state.teamA.length }, "a.name")),
-                    this.state.teamB.map((a, idx) => React.createElement("div", { className: "court-a a-team-" + (idx + 1) + "-" + this.state.teamB.length }, "a.name"))),
+                    this.state.teamA.map(function (a, idx) {
+                        return React.createElement("div", { className: "court-a a-team-" + (idx + 1) + "-" + _this.state.teamA.length }, "a.name");
+                    }),
+                    this.state.teamB.map(function (a, idx) {
+                        return React.createElement("div", { className: "court-a a-team-" + (idx + 1) + "-" + _this.state.teamB.length }, "a.name");
+                    })),
                 React.createElement("div", { className: "col-5" },
-                    React.createElement("input", { value: this.state.aScore, className: 'interaction-style', onChange: (ev) => this.setState({ aScore: ev.target.value }) })),
+                    React.createElement("input", { value: this.state.aScore, className: 'interaction-style', onChange: function (ev) { return _this.setState({ aScore: ev.target.value }); } })),
                 React.createElement("div", { className: "col-2" }, "to"),
                 React.createElement("div", { className: "col-5" },
-                    React.createElement("input", { value: this.state.bScore, className: 'interaction-style', onChange: (ev) => this.setState({ bScore: ev.target.value }) })),
+                    React.createElement("input", { value: this.state.bScore, className: 'interaction-style', onChange: function (ev) { return _this.setState({ bScore: ev.target.value }); } })),
                 React.createElement("div", { className: "row" },
                     React.createElement("div", { className: "col-6" },
                         React.createElement("button", { className: 'interaction-style', onClick: this.finishMatch }, "Finish Match")),
@@ -2671,15 +2855,16 @@ class Queue extends React.Component {
         return React.createElement("div", null,
             React.createElement("div", { className: "row" },
                 this.state.popup && this.state.popup,
-                this.state.courtData.map((court, idx) => {
-                    return React.createElement(CourtView, { key: idx, court: court, hasParty: this.state.party !== null, onYes: this.startMatch, onJoin: this.joinMatch });
+                this.state.courtData.map(function (court, idx) {
+                    return React.createElement(CourtView, { key: idx, court: court, hasParty: _this.state.party !== null, onYes: _this.startMatch, onJoin: _this.joinMatch });
                 })),
             React.createElement(MyPartyView, { party: this.state.party, queueTypes: this.state.queueTypes, refresh: this.refreshQueue }),
-            React.createElement("div", { className: "row" }, this.state.queues.map((queue, idx) => {
+            React.createElement("div", { className: "row" }, this.state.queues.map(function (queue, idx) {
                 return React.createElement(SpecificQueueView, { parties: queue.parties, type: queue.type, key: idx });
             })));
-    }
-}
+    };
+    return Queue;
+}(React.Component));
 exports.Queue = Queue;
 
 
@@ -2690,49 +2875,71 @@ exports.Queue = Queue;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class Option {
-    constructor(val, displ) {
+var React = __webpack_require__(2);
+var Option = /** @class */ (function () {
+    function Option(val, displ) {
         this.value = val;
         this.display = displ;
     }
-}
+    return Option;
+}());
 exports.Option = Option;
-const selectFadeOutClassName = 'select-check-fade-out';
-class SelectArea extends React.Component {
-    render() {
-        return React.createElement("span", { className: 'select' }, this.props.options.map((option, idx) => {
-            return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: this.props.name + idx, value: option.value, name: this.props.name, type: 'radio', onChange: (target) => this.props.change(option.value, this.props.name + idx) }),
-                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: this.props.name + idx }, option.display));
-        }));
+var selectFadeOutClassName = 'select-check-fade-out';
+var SelectArea = /** @class */ (function (_super) {
+    __extends(SelectArea, _super);
+    function SelectArea() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class Select extends React.Component {
-    constructor(props) {
-        super(props);
-        this.change = this.change.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.lazyAnimationAdder = this.lazyAnimationAdder.bind(this);
-        this._decideInitialStatus = this._decideInitialStatus.bind(this);
-        this._scrollCondition = this._scrollCondition.bind(this);
-        this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
-        const status = this._decideInitialStatus();
-        const value = this.props.defaultValue !== undefined ? this.props.defaultValue : this.props.options[0].value;
-        this.state = {
+    SelectArea.prototype.render = function () {
+        var _this = this;
+        return React.createElement("span", { className: 'select' }, this.props.options.map(function (option, idx) {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: _this.props.name + idx, value: option.value, name: _this.props.name, type: 'radio', onChange: function (target) { return _this.props.change(option.value, _this.props.name + idx); } }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: _this.props.name + idx }, option.display));
+        }));
+    };
+    return SelectArea;
+}(React.Component));
+var Select = /** @class */ (function (_super) {
+    __extends(Select, _super);
+    function Select(props) {
+        var _this = _super.call(this, props) || this;
+        _this.change = _this.change.bind(_this);
+        _this.handleClickOutside = _this.handleClickOutside.bind(_this);
+        _this.lazyAnimationAdder = _this.lazyAnimationAdder.bind(_this);
+        _this._decideInitialStatus = _this._decideInitialStatus.bind(_this);
+        _this._scrollCondition = _this._scrollCondition.bind(_this);
+        _this.documentResizeUpdate = _this.documentResizeUpdate.bind(_this);
+        var status = _this._decideInitialStatus();
+        var value = _this.props.defaultValue !== undefined ? _this.props.defaultValue : _this.props.options[0].value;
+        _this.state = {
             status: status,
             width: document.documentElement.clientWidth,
             value: value,
         };
-        this.scrollDiv = null;
+        _this.scrollDiv = null;
+        return _this;
     }
-    _scrollCondition() {
+    Select.prototype._scrollCondition = function () {
         return this.state.width < 500 || this.props.override;
-    }
-    _decideInitialStatus() {
+    };
+    Select.prototype._decideInitialStatus = function () {
+        var _this = this;
         if (this.props.defaultValue !== undefined) {
-            const value = this.props.options.find((option) => option.value === this.props.defaultValue);
+            var value = this.props.options.find(function (option) {
+                return option.value === _this.props.defaultValue;
+            });
             if (value === undefined) {
                 return this.props.options[0].display;
             }
@@ -2743,35 +2950,36 @@ class Select extends React.Component {
         else {
             return this.props.options[0].display;
         }
-    }
-    documentResizeUpdate() {
+    };
+    Select.prototype.documentResizeUpdate = function () {
         this.setState({
             width: document.documentElement.clientWidth
         });
-    }
-    componentDidMount() {
+    };
+    Select.prototype.componentDidMount = function () {
+        var _this = this;
         if (this._scrollCondition()) {
             return;
         }
         document.documentElement.addEventListener('resize', this.documentResizeUpdate);
         document.addEventListener('mousedown', this.handleClickOutside);
-        const defaultHeight = 30;
+        var defaultHeight = 30;
         this.scrollDiv.style.height = defaultHeight + "px";
-        this.interval = setInterval(() => {
-            const movableArea = this.innerDiv.scrollTop /
-                (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
-            const offset = this.innerDiv.scrollTop * (1 + movableArea) + 2;
-            this.scrollDiv.style.top = "" + offset + "px";
+        this.interval = setInterval(function () {
+            var movableArea = _this.innerDiv.scrollTop /
+                (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
+            var offset = _this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            _this.scrollDiv.style.top = "" + offset + "px";
         }, 20);
-        const divMove = (e) => {
-            const boundingRect = this.selectDiv.getBoundingClientRect();
-            const fuzz = .2;
-            const height = boundingRect.bottom - boundingRect.top;
-            const bottom = boundingRect.bottom - fuzz * height;
-            const top = boundingRect.top + fuzz * height;
-            const adjusted = Math.max(Math.min(e.clientY, bottom), top);
-            const percentage = (adjusted - top) / (bottom - top);
-            this.innerDiv.scrollTop = percentage * (this.innerDiv.scrollHeight - this.innerDiv.clientHeight);
+        var divMove = function (e) {
+            var boundingRect = _this.selectDiv.getBoundingClientRect();
+            var fuzz = .2;
+            var height = boundingRect.bottom - boundingRect.top;
+            var bottom = boundingRect.bottom - fuzz * height;
+            var top = boundingRect.top + fuzz * height;
+            var adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            var percentage = (adjusted - top) / (bottom - top);
+            _this.innerDiv.scrollTop = percentage * (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
         };
         function mouseUp() {
             window.removeEventListener('mousemove', divMove, true);
@@ -2781,37 +2989,37 @@ class Select extends React.Component {
         }
         this.scrollDiv.addEventListener('mousedown', mouseDown, false);
         window.addEventListener('mouseup', mouseUp, false);
-    }
-    componentWillUnmount() {
+    };
+    Select.prototype.componentWillUnmount = function () {
         if (this._scrollCondition()) {
             return;
         }
         document.removeEventListener('mousedown', this.handleClickOutside);
         document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
         clearInterval(this.interval);
-    }
+    };
     /**
      * Uncheck the input if clicked outside
      * Best to leave the typing generic because typescript does _not_
      * like non-generics with dom.
      */
-    handleClickOutside(event) {
+    Select.prototype.handleClickOutside = function (event) {
         if (this._scrollCondition()) {
             return;
         }
         if (this.inputDiv && !this.wrapper.contains(event.target)) {
             this.inputDiv.checked = false;
         }
-    }
-    lazyAnimationAdder(event) {
+    };
+    Select.prototype.lazyAnimationAdder = function (event) {
         if (this._scrollCondition()) {
             return;
         }
         if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
             this.selectDiv.classList.add(selectFadeOutClassName);
         }
-    }
-    change(value, id) {
+    };
+    Select.prototype.change = function (value, id) {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
@@ -2823,31 +3031,33 @@ class Select extends React.Component {
         }
         else {
             // Cool trick to get the label for the input
-            const elem = document.querySelector('label[for="' + id + '"]');
+            var elem = document.querySelector('label[for="' + id + '"]');
             this.setState({
                 status: elem.innerHTML,
             });
             this.inputDiv.checked = false;
         }
-    }
-    render() {
+    };
+    Select.prototype.render = function () {
+        var _this = this;
         if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
+            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: function (ev) { return _this.change(ev.target.value, null); } }, this.props.options.map(function (option, idx) {
                 return React.createElement(React.Fragment, null,
                     React.createElement("option", { value: option.value }, option.display));
             }));
         }
-        return React.createElement("div", { className: "select-wrapper-div", ref: (input) => this.wrapper = input },
-            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: (input) => this.inputDiv = input }),
+        return React.createElement("div", { className: "select-wrapper-div", ref: function (input) { return _this.wrapper = input; } },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: function (input) { return _this.inputDiv = input; } }),
             React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
-                React.createElement("span", { ref: (input) => this.titleSpan = input, className: "select-title-text" }, this.state.status),
+                React.createElement("span", { ref: function (input) { return _this.titleSpan = input; }, className: "select-title-text" }, this.state.status),
                 React.createElement("b", { className: 'select-arrow' })),
-            React.createElement("div", { className: "select-div", ref: (input) => this.selectDiv = input },
-                React.createElement("div", { className: "inner-select-div", ref: (input) => this.innerDiv = input },
+            React.createElement("div", { className: "select-div", ref: function (input) { return _this.selectDiv = input; } },
+                React.createElement("div", { className: "inner-select-div", ref: function (input) { return _this.innerDiv = input; } },
                     React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
-                    React.createElement("div", { className: "select-scroll", ref: (input) => this.scrollDiv = input }))));
-    }
-}
+                    React.createElement("div", { className: "select-scroll", ref: function (input) { return _this.scrollDiv = input; } }))));
+    };
+    return Select;
+}(React.Component));
 exports.Select = Select;
 
 
@@ -2870,45 +3080,64 @@ module.exports = ReactDOM;
  * To work. Appears in the middle of the screen and darkens
  * The body.
  */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const popupDisabledClass = "popup-disabled";
-const popupScreenFadeClass = 'popup-screen-fade';
-const popupFadeClass = 'popup-fade';
-class PopupProps {
-}
-exports.PopupProps = PopupProps;
-class PopupState {
-}
-class Popup extends React.Component {
-    constructor(props) {
-        super(props);
-        this.close = this.close.bind(this);
+var React = __webpack_require__(2);
+var popupDisabledClass = "popup-disabled";
+var popupScreenFadeClass = 'popup-screen-fade';
+var popupFadeClass = 'popup-fade';
+var PopupProps = /** @class */ (function () {
+    function PopupProps() {
     }
-    componentDidMount() {
+    return PopupProps;
+}());
+exports.PopupProps = PopupProps;
+var PopupState = /** @class */ (function () {
+    function PopupState() {
+    }
+    return PopupState;
+}());
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
+        var _this = _super.call(this, props) || this;
+        _this.close = _this.close.bind(_this);
+        return _this;
+    }
+    Popup.prototype.componentDidMount = function () {
         /* Programatically create a div to overlay everything and animate it in
             Also force the body not to scroll */
         this.screenDiv = document.createElement('div');
         this.screenDiv.className = 'popup-screen';
-        const body = document.querySelector('body');
+        var body = document.querySelector('body');
         body.appendChild(this.screenDiv);
         body.classList.add(popupDisabledClass);
-    }
-    componentWillUnmount() {
+    };
+    Popup.prototype.componentWillUnmount = function () {
         /* Remove the programatic div and let the body scroll */
-        const body = document.querySelector('body');
+        var body = document.querySelector('body');
         body.removeChild(this.screenDiv);
         body.classList.remove(popupDisabledClass);
-    }
-    close() {
+    };
+    Popup.prototype.close = function () {
         /* Animate everything in */
+        var _this = this;
         this.wrapperDiv.classList.add(popupFadeClass);
         this.screenDiv.classList.add(popupScreenFadeClass);
         /* Cool so we can seperate concerns */
-        const refCounter = { count: 0 };
-        const callback = () => {
+        var refCounter = { count: 0 };
+        var callback = function () {
             if (refCounter.count == 1) {
-                this.props.callback();
+                _this.props.callback();
             }
             else {
                 refCounter.count += 1;
@@ -2921,9 +3150,10 @@ class Popup extends React.Component {
          */
         this.wrapperDiv.addEventListener('animationend', callback);
         this.screenDiv.addEventListener('animationend', callback);
-    }
-    render() {
-        return (React.createElement("div", { className: "popup-div", ref: (input) => this.wrapperDiv = input },
+    };
+    Popup.prototype.render = function () {
+        var _this = this;
+        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
             React.createElement("div", { className: "grid row" },
                 React.createElement("div", { className: "row-1" },
                     React.createElement("div", { className: "col-11 popup-title-div" },
@@ -2935,8 +3165,9 @@ class Popup extends React.Component {
                 React.createElement("div", { className: "row-offset-10" },
                     React.createElement("div", { className: "popup-check-button" },
                         React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
-    }
-}
+    };
+    return Popup;
+}(React.Component));
 exports.Popup = Popup;
 
 

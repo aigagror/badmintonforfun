@@ -1632,9 +1632,9 @@ module.exports = defaults;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const MemberView_1 = __webpack_require__(485);
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var MemberView_1 = __webpack_require__(485);
 ReactDOM.render(React.createElement(MemberView_1.MemberView, null), document.querySelector("member-view"));
 
 
@@ -1645,52 +1645,71 @@ ReactDOM.render(React.createElement(MemberView_1.MemberView, null), document.que
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const url = '/api/members/all/';
-class Member extends React.Component {
-    render() {
-        return React.createElement("a", { href: "/profile.html?member_id=" + this.props.id }, this.props.name);
+var React = __webpack_require__(2);
+var axios_1 = __webpack_require__(12);
+var url = '/api/members/all/';
+var Member = /** @class */ (function (_super) {
+    __extends(Member, _super);
+    function Member() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-}
-class MemberView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+    Member.prototype.render = function () {
+        return React.createElement("a", { href: "/profile.html?member_id=" + this.props.id }, this.props.name);
+    };
+    return Member;
+}(React.Component));
+var MemberView = /** @class */ (function (_super) {
+    __extends(MemberView, _super);
+    function MemberView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             members: []
         };
+        return _this;
     }
-    componentDidMount() {
+    MemberView.prototype.componentDidMount = function () {
+        var _this = this;
         axios_1.default.get(url)
-            .then((res) => {
-            const sorted = res.data.members.sort((a, b) => {
-                const cmp = a.first_name.localeCompare(b.first_name);
+            .then(function (res) {
+            var sorted = res.data.members.sort(function (a, b) {
+                var cmp = a.first_name.localeCompare(b.first_name);
                 if (cmp === 0) {
                     return a.last_name.localeCompare(b.last_name);
                 }
                 return cmp;
             });
-            this.setState({
+            _this.setState({
                 members: sorted
             });
         })
-            .catch((res) => {
+            .catch(function (res) {
             console.log(res);
         });
-    }
-    render() {
+    };
+    MemberView.prototype.render = function () {
         if (this.state.members.length === 0) {
             return React.createElement("p", null, "Loading");
         }
         else {
-            return React.createElement("ul", { className: "member-list" }, this.state.members.map((member, idx) => {
+            return React.createElement("ul", { className: "member-list" }, this.state.members.map(function (member, idx) {
                 return React.createElement("li", { key: idx },
                     React.createElement(Member, { name: member.first_name + ' ' + member.last_name, id: member.member_id, key: idx }));
             }));
         }
-    }
-}
+    };
+    return MemberView;
+}(React.Component));
 exports.MemberView = MemberView;
 
 

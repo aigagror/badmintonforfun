@@ -78,9 +78,9 @@ module.exports = React;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(5);
-const InterestedForm_1 = __webpack_require__(298);
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var InterestedForm_1 = __webpack_require__(298);
 ReactDOM.render(React.createElement(InterestedForm_1.InterestedForm, null), document.querySelector("interest-form"));
 
 
@@ -91,17 +91,32 @@ ReactDOM.render(React.createElement(InterestedForm_1.InterestedForm, null), docu
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-class InterestedForm extends React.Component {
-    render() {
+var React = __webpack_require__(2);
+var InterestedForm = /** @class */ (function (_super) {
+    __extends(InterestedForm, _super);
+    function InterestedForm() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    InterestedForm.prototype.render = function () {
         return (React.createElement(React.Fragment, null,
             React.createElement("div", { className: "grid row row-offset-2" },
                 React.createElement("div", { className: "col-offset-4 col-6" },
-                    React.createElement("button", { className: "interaction-style", onClick: () => { window.location.href = '/login'; } }, "Register"))),
+                    React.createElement("button", { className: "interaction-style", onClick: function () { window.location.href = '/login'; } }, "Register"))),
             this.state.popup !== null && this.state.popup));
-    }
-}
+    };
+    return InterestedForm;
+}(React.Component));
 exports.InterestedForm = InterestedForm;
 
 
