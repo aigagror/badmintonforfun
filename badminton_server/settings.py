@@ -143,8 +143,8 @@ AUTHENTICATION_BACKENDS = (
 
 BFF_EMAIL = 'FILL_ME_OUT'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '613791656516-s7k2pbsbosa0c83o8omr0m1p1gp9q8vh.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'Hc8xak_rGLvCMZNaEv_E-8nX'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '98345796653-0783jf0kvm3i3u8eqpg5e11goqmn1qel.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'Og8IhYEUX2xO3lDClDRFb6fJ'
 
 SOCIAL_AUTH_STRATEGY = 'social_django.strategy.DjangoStrategy'
 SOCIAL_AUTH_STORAGE = 'social_django.models.DjangoStorage'

@@ -89,18 +89,18 @@ class TournamentTest(CustomTestCase):
         all_matches = Match.objects.all()
         self.assertEqual(self.original_number_of_matches + 1, len(list(all_matches)))
 
-    @run(path_name='add_member_to_tournament', email=BOARD_MEMBER, method=POST,
+    @run(path_name='register_member_for_tournament_play', email=BOARD_MEMBER, method=POST,
          args={'member_id': 2})
-    def test_add_member_to_tournament(self):
+    def test_register_member_for_tournament_play(self):
         response = self.response
         self.assertGoodResponse(response)
 
         member = Member.objects.get(id=2)
         self.assertTrue(member.in_tournament)
 
-    @run(path_name='add_member_to_tournament', email=BOARD_MEMBER, method=POST,
+    @run(path_name='register_member_for_tournament_play', email=BOARD_MEMBER, method=POST,
          args={'member_id': 3})
-    def test_add_bad_member_to_tournament(self):
+    def test_register_bad_member_to_tournament(self):
         """
         Eddie is already in a tournament
         :return:
@@ -114,18 +114,18 @@ class TournamentTest(CustomTestCase):
         json = response.json()
         self.assertEqual(json['message'], 'Member is already in a tournament')
 
-    @run(path_name='remove_member_from_tournament', email=BOARD_MEMBER, method=POST,
+    @run(path_name='unregister_member_from_tournament_play', email=BOARD_MEMBER, method=POST,
          args={'member_id': 3})
-    def test_remove_member_from_tournament(self):
+    def test_unregister_member_from_tournament_play(self):
         response = self.response
         self.assertGoodResponse(response)
 
         member = Member.objects.get(id=3)
         self.assertFalse(member.in_tournament)
 
-    @run(path_name='remove_member_from_tournament', email=BOARD_MEMBER, method=POST,
+    @run(path_name='unregister_member_from_tournament_play', email=BOARD_MEMBER, method=POST,
          args={'member_id': 2})
-    def test_remove_bad_member_from_tournament(self):
+    def test_unregister_bad_member_from_tournament(self):
         """
         Member (2) was never in a tournament
         :return:
