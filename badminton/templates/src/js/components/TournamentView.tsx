@@ -234,6 +234,19 @@ class TournamentDown extends React.Component<any, any> {
 	}
 }
 
+const convertToDicts = (matches: any) => {
+	const _convertToDicts = (matches: any, idx: number): any => {
+		if (idx > matches.length) {
+			return null;
+		}
+		const lhs = _convertToDicts(matches, idx*2);
+		const rhs = _convertToDicts(matches, idx*2+1);
+		const node = matches[idx-1];
+		return {left_node: lhs, right_node: rhs, id: node.bracket_node_id, matches: node.matches}
+	}
+	return _convertToDicts(matches, 1);
+}
+
 export class TournamentView extends React.Component<any, any> {
 
 	constructor(props: any) {
@@ -269,9 +282,10 @@ export class TournamentView extends React.Component<any, any> {
 					matches: res.data,
 				})			}
 			else {
+				const brackets = convertToDicts(data.tournament.bracket_nodes);
 				this.setState({
 					status: data.status,
-					matches: data.tournament.bracket_nodes,
+					matches: brackets,
 					id: data.tournament.tournament_id,
 				})
 			}

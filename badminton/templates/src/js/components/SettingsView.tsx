@@ -108,8 +108,11 @@ class FileSetting extends React.Component<any, any> {
 
 	render() {
 		return <>
-			<Dropzone onDrop={(files: any) => this.decideFile(files) } multiple={false} maxSize={maxFileSize}>
-	            <p>Drop a picture here!</p>
+			<Dropzone onDrop={(files: any) => this.decideFile(files) } 
+				multiple={false} 
+				maxSize={maxFileSize}
+				className="dropzone-style">
+	            <p>Click to add a picture</p>
 	        </Dropzone>
 	        { this.state.popup && this.state.popup }
 	        </>
@@ -237,7 +240,7 @@ class MemberSettings extends React.Component<any, any> {
 	deleteMember(idx: number) {
 		return () => {
 			const toDelete = this.state.members[idx];
-			axios.post(member_url_delete, objectToFormData({ member_id: toDelete }))
+			axios.post(member_url_delete, objectToFormData({ member_id: toDelete.member_id }))
 			.then((res: any) => {
 				console.log(res);
 				this.performRequest();
@@ -282,7 +285,7 @@ class MemberSettings extends React.Component<any, any> {
 				<div className="col-4 col-es-12">
 				<Select 
 					options={this.state.memberTypes}
-					defaultValue={member.type}
+					defaultValue={member.status}
 					onChange={(role: any) => {this.alterMember(idx, role)}}
 					name={member.member_id}
 					override={true} />
@@ -366,18 +369,16 @@ class CourtSettings extends React.Component<any, any> {
 		<h3>Courts</h3>
 		{
 			this.state.courts.map((court: any, idx: number) => {
+				console.log(court);
 				return <div key={idx} className="row">
-				<div className="col-5 col-es-12">
-				<h4>{court.name}</h4> 
-				</div>
-				<div className="col-4 col-es-12">
+				<div className="col-6 col-es-12">
 				<Select 
 					options={this.state.courtTypes}
 					defaultValue={court.court_type}
 					onChange={(i: any) => {console.log(i)}}
 					name={"courts" + idx} />
 				</div>
-				<div className="col-3 col-es-12">
+				<div className="col-6 col-es-12">
 				<button className="interaction-style" onClick={()=>this.deleteCourt(court.court_id)}>Delete</button>
 				</div>
 				</div>

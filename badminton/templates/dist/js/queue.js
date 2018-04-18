@@ -2719,9 +2719,11 @@ class Select extends React.Component {
         this._scrollCondition = this._scrollCondition.bind(this);
         this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
         const status = this._decideInitialStatus();
+        const value = this.props.defaultValue !== undefined ? this.props.defaultValue : this.props.options[0].value;
         this.state = {
             status: status,
             width: document.documentElement.clientWidth,
+            value: value,
         };
         this.scrollDiv = null;
     }
@@ -2732,7 +2734,7 @@ class Select extends React.Component {
         if (this.props.defaultValue !== undefined) {
             const value = this.props.options.find((option) => option.value === this.props.defaultValue);
             if (value === undefined) {
-                return "";
+                return this.props.options[0].display;
             }
             else {
                 return value.display;
@@ -2813,6 +2815,9 @@ class Select extends React.Component {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
+        this.setState({
+            value: value,
+        });
         if (this._scrollCondition()) {
             return;
         }
@@ -2827,7 +2832,7 @@ class Select extends React.Component {
     }
     render() {
         if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
+            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
                 return React.createElement(React.Fragment, null,
                     React.createElement("option", { value: option.value }, option.display));
             }));

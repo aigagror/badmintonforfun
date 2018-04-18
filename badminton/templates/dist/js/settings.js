@@ -2479,9 +2479,11 @@ class Select extends React.Component {
         this._scrollCondition = this._scrollCondition.bind(this);
         this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
         const status = this._decideInitialStatus();
+        const value = this.props.defaultValue !== undefined ? this.props.defaultValue : this.props.options[0].value;
         this.state = {
             status: status,
             width: document.documentElement.clientWidth,
+            value: value,
         };
         this.scrollDiv = null;
     }
@@ -2492,7 +2494,7 @@ class Select extends React.Component {
         if (this.props.defaultValue !== undefined) {
             const value = this.props.options.find((option) => option.value === this.props.defaultValue);
             if (value === undefined) {
-                return "";
+                return this.props.options[0].display;
             }
             else {
                 return value.display;
@@ -2573,6 +2575,9 @@ class Select extends React.Component {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
+        this.setState({
+            value: value,
+        });
         if (this._scrollCondition()) {
             return;
         }
@@ -2587,7 +2592,7 @@ class Select extends React.Component {
     }
     render() {
         if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
+            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: (ev) => this.change(ev.target.value, null) }, this.props.options.map((option, idx) => {
                 return React.createElement(React.Fragment, null,
                     React.createElement("option", { value: option.value }, option.display));
             }));
@@ -2718,8 +2723,8 @@ class FileSetting extends React.Component {
     }
     render() {
         return React.createElement(React.Fragment, null,
-            React.createElement(react_dropzone_1.default, { onDrop: (files) => this.decideFile(files), multiple: false, maxSize: maxFileSize },
-                React.createElement("p", null, "Drop a picture here!")),
+            React.createElement(react_dropzone_1.default, { onDrop: (files) => this.decideFile(files), multiple: false, maxSize: maxFileSize, className: "dropzone-style" },
+                React.createElement("p", null, "Click to add a picture")),
             this.state.popup && this.state.popup);
     }
 }
@@ -2818,7 +2823,7 @@ class MemberSettings extends React.Component {
     deleteMember(idx) {
         return () => {
             const toDelete = this.state.members[idx];
-            axios_1.default.post(member_url_delete, Utils_1.objectToFormData({ member_id: toDelete }))
+            axios_1.default.post(member_url_delete, Utils_1.objectToFormData({ member_id: toDelete.member_id }))
                 .then((res) => {
                 console.log(res);
                 this.performRequest();
@@ -2859,7 +2864,7 @@ class MemberSettings extends React.Component {
                             " ",
                             member.last_name)),
                     React.createElement("div", { className: "col-4 col-es-12" },
-                        React.createElement(Select_1.Select, { options: this.state.memberTypes, defaultValue: member.type, onChange: (role) => { this.alterMember(idx, role); }, name: member.member_id, override: true })),
+                        React.createElement(Select_1.Select, { options: this.state.memberTypes, defaultValue: member.status, onChange: (role) => { this.alterMember(idx, role); }, name: member.member_id, override: true })),
                     React.createElement("div", { className: "col-3 col-es-12" },
                         React.createElement("button", { onClick: this.deleteMember(idx), className: "interaction-style" }, "Delete")));
             }));
@@ -2929,12 +2934,11 @@ class CourtSettings extends React.Component {
         return React.createElement("div", null,
             React.createElement("h3", null, "Courts"),
             this.state.courts.map((court, idx) => {
+                console.log(court);
                 return React.createElement("div", { key: idx, className: "row" },
-                    React.createElement("div", { className: "col-5 col-es-12" },
-                        React.createElement("h4", null, court.name)),
-                    React.createElement("div", { className: "col-4 col-es-12" },
+                    React.createElement("div", { className: "col-6 col-es-12" },
                         React.createElement(Select_1.Select, { options: this.state.courtTypes, defaultValue: court.court_type, onChange: (i) => { console.log(i); }, name: "courts" + idx })),
-                    React.createElement("div", { className: "col-3 col-es-12" },
+                    React.createElement("div", { className: "col-6 col-es-12" },
                         React.createElement("button", { className: "interaction-style", onClick: () => this.deleteCourt(court.court_id) }, "Delete")));
             }),
             React.createElement("div", { className: "row" },

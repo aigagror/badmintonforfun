@@ -678,9 +678,10 @@ def delete_club_member(dict_delete):
     :param dict_delete:
     :return:
     """
-    print(str(dict_delete))
+    print(dict_delete)
+    
     member_id = dict_delete['member_id']
-    print("Deleting " + member_id)
+    print(member_id)
     return remove_member(member_id)
 
 def schedule_to_dict():

@@ -21,6 +21,7 @@ export interface SelectProps {
 interface SelectState {
     status: string,
     width: number,
+    value: any,
 }
 
 const selectFadeOutClassName = 'select-check-fade-out';
@@ -66,9 +67,11 @@ export class Select extends React.Component<SelectProps, SelectState> {
         this._scrollCondition = this._scrollCondition.bind(this);
         this.documentResizeUpdate = this.documentResizeUpdate.bind(this);
         const status = this._decideInitialStatus();
+        const value = this.props.defaultValue !== undefined ? this.props.defaultValue : this.props.options[0].value;
         this.state = {
             status: status,
             width: document.documentElement.clientWidth,
+            value: value,
         }
         this.scrollDiv = null;
     }
@@ -82,7 +85,7 @@ export class Select extends React.Component<SelectProps, SelectState> {
             const value = this.props.options.find((option: Option) =>
                 option.value === this.props.defaultValue);
             if (value === undefined) {
-                return "";
+                return this.props.options[0].display;
             } else {
                 return value.display;
             }
@@ -178,6 +181,10 @@ export class Select extends React.Component<SelectProps, SelectState> {
 			this.props.onChange(value);
 		}
 
+        this.setState({
+            value: value,
+        })
+
         if (this._scrollCondition()) {
             return;
         } else {
@@ -192,7 +199,7 @@ export class Select extends React.Component<SelectProps, SelectState> {
 
 	render() {
         if (this._scrollCondition()) {
-            return <select className="interaction-style" onChange={(ev: any) => this.change(ev.target.value, null)}>
+            return <select className="interaction-style" value={this.state.value} onChange={(ev: any) => this.change(ev.target.value, null)}>
                 {
                     this.props.options.map((option: Option, idx: number) => {
                         return <>
