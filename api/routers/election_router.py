@@ -10,6 +10,7 @@ from api.models import *
 import datetime
 from api.utils import MemberClass
 from api.routers.router import auth_decorator
+from django.db import connection
 
 @auth_decorator(MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
@@ -29,14 +30,25 @@ def get_election(request):
 
     current_election = election_query[0]
 
-    campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [current_election.id])
+    with connection.cursor() as cursor:
+        query = '''
+        SELECT api_campaign.election_id AS current_election, 
+            api_campaign.campaigner_id AS campaigner, api_campaign.id AS id, job, pitch, 
+            api_interested.first_name AS first_name, api_interested.last_name AS last_name
+        FROM api_campaign 
+        JOIN api_interested ON api_campaign.campaigner_id = api_interested.id
+        WHERE election_id = %s
+        '''
+        cursor.execute(query, [current_election.id])
+        campaigns = dictfetchall(cursor)
+
     campaign_info = []
     for campaign in campaigns:
         # Get the number of votes
-        votes = Vote.objects.raw("SELECT * FROM api_vote WHERE campaign_id = %s", [campaign.id])
+        votes = Vote.objects.raw("SELECT * FROM api_vote WHERE campaign_id = %s", [campaign['id']])
         vote_count = len(list(votes))
         context = {
-            'campaign': serializeModel(campaign),
+            'campaign': campaign,
             'vote_count': vote_count
         }
         campaign_info.append(context)

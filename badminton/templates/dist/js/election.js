@@ -20823,13 +20823,15 @@ class Campaign {
 class CampaignResponse {
 }
 const convertResponseToHierarchy = (res) => {
+    console.log(res);
     const ret = {};
     const order = res.order;
     for (var i of order) {
         ret[i] = [];
     }
-    for (var campaigner of res.campaigns) {
-        ret[campaigner.job].push(campaigner);
+    for (var j of res.campaigns) {
+        let temp = j;
+        ret[temp.campaign.job].push(temp.campaign);
     }
     ret.order = order;
     return ret;

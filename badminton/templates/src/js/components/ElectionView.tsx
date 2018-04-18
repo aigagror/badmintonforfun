@@ -367,14 +367,16 @@ class CampaignResponse {
 }
 
 const convertResponseToHierarchy = (res: CampaignResponse): any => {
+	console.log(res);
 	const ret: any = {};
 	const order = res.order;
 	for (var i of order) {
 		ret[i] = [];
 	}
 
-	for (var campaigner of res.campaigns) {
-		ret[campaigner.job].push(campaigner);
+	for (var j of res.campaigns) {
+		let temp = j as any;
+		ret[temp.campaign.job].push(temp.campaign);
 	}
 	ret.order = order;
 	return ret;
