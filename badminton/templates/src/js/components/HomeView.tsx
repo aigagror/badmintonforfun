@@ -50,13 +50,20 @@ class StatView extends React.Component<any, any> {
 			<tbody>
 			{this.props.stats.map ((game: any, idx: number) => {
 				let playTime = "ongoing";
-				if (game.endDateTime !== null) {
-					const start = (new Date(game.startDateTime)).getTime();
-					const end = (new Date(game.endDateTime)).getTime();
+				const match = game.match;
+				if (match.endDateTime !== null) {
+					const start = (new Date(match.startDateTime)).getTime();
+					const end = (new Date(match.endDateTime)).getTime();
 					const diff = (end - start) / 1000;
 					playTime = Math.floor((diff / 60)) + ":" + (diff % 60);
 				}
-				return <GameView key={idx} myScore={game.my_score} theirScore={game.their_score} playtime={playTime}/>
+				const isTeamA = game.team_A.find((e: any) => e.id === getMemberId()) !== undefined;
+				let my_score = match.scoreB, their_score = match.scoreA;
+				if (isTeamA) {
+					my_score = match.scoreA;
+					their_score = match.scoreB;
+				}
+				return <GameView key={idx} myScore={my_score} theirScore={their_score} playtime={playTime}/>
 			}) }
 			</tbody>
 		</table>

@@ -899,6 +899,88 @@ module.exports = (
 
 /***/ }),
 
+/***/ 213:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Acts as a this wrapper around radio button so that
+ * Styles, animation, and consistency is maintained
+ */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(2);
+var reverseSwirlClass = "radio-swirl-back";
+var RadioButtonState = /** @class */ (function () {
+    function RadioButtonState() {
+    }
+    return RadioButtonState;
+}());
+// Typescript doesn't support variadic types so the props have to be any
+// To forward to the standard input field
+var RadioButton = /** @class */ (function (_super) {
+    __extends(RadioButton, _super);
+    function RadioButton(props) {
+        var _this = _super.call(this, props) || this;
+        _this.clicked = _this.clicked.bind(_this);
+        _this.hover = _this.hover.bind(_this);
+        return _this;
+    }
+    RadioButton.prototype.hover = function (event) {
+        // Must remove or after :hover disappears the
+        // Animation will trigger again
+        // No op to remove a class that does not exist
+        if (event.animationName.includes('reverse')) {
+            this.spanElem.classList.remove(reverseSwirlClass);
+        }
+    };
+    RadioButton.prototype.componentDidMount = function () {
+        // Make sure that the class has the reverse if checked for the first time
+        this.spanElem.addEventListener('animationend', this.hover);
+        this.clicked();
+    };
+    RadioButton.prototype.componentWillUnmount = function () {
+        this.spanElem.removeEventListener('animationend', this.hover);
+    };
+    RadioButton.prototype.clicked = function () {
+        if (this.inputElem.checked) {
+            // We are checking it
+            this.spanElem.classList.add(reverseSwirlClass);
+        }
+    };
+    RadioButton.prototype.render = function () {
+        /* Forward all props using ... to the input field since this is supposed
+         * to be a thin wrapper around it */
+        var _this = this;
+        return React.createElement("label", { className: "radio-container" },
+            React.createElement("input", __assign({}, this.props, { type: "radio", onClick: this.clicked, ref: function (input) { return _this.inputElem = input; } })),
+            React.createElement("span", { className: "radio-checkmark", ref: function (input) { return _this.spanElem = input; } }));
+    };
+    return RadioButton;
+}(React.Component));
+exports.RadioButton = RadioButton;
+
+
+/***/ }),
+
 /***/ 22:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1521,6 +1603,543 @@ module.exports = function spread(callback) {
 
 /***/ }),
 
+/***/ 31:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+
+/***/ }),
+
+/***/ 33:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * This class serves as a resource resolver for classes.
+ * This manages local storage so none of the classes conflict
+ * The classes only need to make sure that their resources are unique
+ * in of themselves.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+var Cookies = __webpack_require__(37);
+/**
+ * Mappings from imported classes to random strings.
+ */
+var obfuscationMappings = {
+    'MailView': 'ysjiUtKPV7',
+};
+/**
+ * Generates key pattern from an instance and an arg
+ * arg being the requested key
+ */
+function _generateKey(instance, arg) {
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
+    return name + obf;
+}
+/**
+ * Returns a string given the class and the key <arg>
+ */
+function getResource(instance, arg) {
+    var key = _generateKey(instance, arg);
+    return localStorage.getItem(key);
+    ;
+}
+exports.getResource = getResource;
+/**
+ * Sets the requested key <arg> of class <instance> to <value>
+ */
+function setResource(instance, arg, value) {
+    var key = _generateKey(instance, arg);
+    localStorage.setItem(key, value);
+}
+exports.setResource = setResource;
+var cookies = new Cookies();
+function isBoardMember() {
+    var ret = cookies.get('is_board_member');
+    return ret == 'true';
+}
+exports.isBoardMember = isBoardMember;
+function getMemberId() {
+    var ret = cookies.get('member_id');
+    return parseInt(ret);
+}
+exports.getMemberId = getMemberId;
+function xsrfCookieName() {
+    return "csrftoken";
+}
+exports.xsrfCookieName = xsrfCookieName;
+function xsrfHeaderName() {
+    return "X-CSRFToken";
+}
+exports.xsrfHeaderName = xsrfHeaderName;
+
+
+/***/ }),
+
+/***/ 37:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Cookies = __webpack_require__(38);
+
+var _Cookies2 = _interopRequireDefault(_Cookies);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _Cookies2.default;
+module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 38:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cookie = __webpack_require__(39);
+
+var _cookie2 = _interopRequireDefault(_cookie);
+
+var _objectAssign = __webpack_require__(31);
+
+var _objectAssign2 = _interopRequireDefault(_objectAssign);
+
+var _utils = __webpack_require__(40);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Cookies = function () {
+  function Cookies(cookies, hooks) {
+    _classCallCheck(this, Cookies);
+
+    this.cookies = parseCookies(cookies);
+    this.hooks = hooks;
+    this.HAS_DOCUMENT_COOKIE = (0, _utils.hasDocumentCookie)();
+  }
+
+  _createClass(Cookies, [{
+    key: '_updateBrowserValues',
+    value: function _updateBrowserValues() {
+      if (!this.HAS_DOCUMENT_COOKIE) {
+        return;
+      }
+
+      this.cookies = _cookie2.default.parse(document.cookie);
+    }
+  }, {
+    key: 'get',
+    value: function get(name) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      this._updateBrowserValues();
+      return readCookie(this.cookies[name], options);
+    }
+  }, {
+    key: 'getAll',
+    value: function getAll() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      this._updateBrowserValues();
+      var result = {};
+
+      for (var name in this.cookies) {
+        result[name] = readCookie(this.cookies[name], options);
+      }
+
+      return result;
+    }
+  }, {
+    key: 'set',
+    value: function set(name, value, options) {
+      if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+        value = JSON.stringify(value);
+      }
+
+      if (this.hooks && this.hooks.onSet) {
+        this.hooks.onSet(name, value, options);
+      }
+
+      this.cookies[name] = value;
+
+      if (this.HAS_DOCUMENT_COOKIE) {
+        document.cookie = _cookie2.default.serialize(name, value, options);
+      }
+    }
+  }, {
+    key: 'remove',
+    value: function remove(name, options) {
+      var finalOptions = options = (0, _objectAssign2.default)({}, options, {
+        expires: new Date(1970, 1, 1, 0, 0, 1),
+        maxAge: 0
+      });
+
+      if (this.hooks && this.hooks.onRemove) {
+        this.hooks.onRemove(name, finalOptions);
+      }
+
+      delete this.cookies[name];
+
+      if (this.HAS_DOCUMENT_COOKIE) {
+        document.cookie = _cookie2.default.serialize(name, '', finalOptions);
+      }
+    }
+  }]);
+
+  return Cookies;
+}();
+
+exports.default = Cookies;
+
+
+function parseCookies(cookies) {
+  if (typeof cookies === 'string') {
+    return _cookie2.default.parse(cookies);
+  } else if ((typeof cookies === 'undefined' ? 'undefined' : _typeof(cookies)) === 'object' && cookies !== null) {
+    return cookies;
+  } else {
+    return {};
+  }
+}
+
+function isParsingCookie(value, doNotParse) {
+  if (typeof doNotParse === 'undefined') {
+    // We guess if the cookie start with { or [, it has been serialized
+    doNotParse = !value || value[0] !== '{' && value[0] !== '[' && value[0] !== '"';
+  }
+
+  return !doNotParse;
+}
+
+function readCookie(value) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (isParsingCookie(value, options.doNotParse)) {
+    try {
+      return JSON.parse(value);
+    } catch (e) {
+      // At least we tried
+    }
+  }
+
+  return value;
+}
+module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 39:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*!
+ * cookie
+ * Copyright(c) 2012-2014 Roman Shtylman
+ * Copyright(c) 2015 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+
+
+
+/**
+ * Module exports.
+ * @public
+ */
+
+exports.parse = parse;
+exports.serialize = serialize;
+
+/**
+ * Module variables.
+ * @private
+ */
+
+var decode = decodeURIComponent;
+var encode = encodeURIComponent;
+var pairSplitRegExp = /; */;
+
+/**
+ * RegExp to match field-content in RFC 7230 sec 3.2
+ *
+ * field-content = field-vchar [ 1*( SP / HTAB ) field-vchar ]
+ * field-vchar   = VCHAR / obs-text
+ * obs-text      = %x80-FF
+ */
+
+var fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/;
+
+/**
+ * Parse a cookie header.
+ *
+ * Parse the given cookie header string into an object
+ * The object has the various cookies as keys(names) => values
+ *
+ * @param {string} str
+ * @param {object} [options]
+ * @return {object}
+ * @public
+ */
+
+function parse(str, options) {
+  if (typeof str !== 'string') {
+    throw new TypeError('argument str must be a string');
+  }
+
+  var obj = {}
+  var opt = options || {};
+  var pairs = str.split(pairSplitRegExp);
+  var dec = opt.decode || decode;
+
+  for (var i = 0; i < pairs.length; i++) {
+    var pair = pairs[i];
+    var eq_idx = pair.indexOf('=');
+
+    // skip things that don't look like key=value
+    if (eq_idx < 0) {
+      continue;
+    }
+
+    var key = pair.substr(0, eq_idx).trim()
+    var val = pair.substr(++eq_idx, pair.length).trim();
+
+    // quoted values
+    if ('"' == val[0]) {
+      val = val.slice(1, -1);
+    }
+
+    // only assign once
+    if (undefined == obj[key]) {
+      obj[key] = tryDecode(val, dec);
+    }
+  }
+
+  return obj;
+}
+
+/**
+ * Serialize data into a cookie header.
+ *
+ * Serialize the a name value pair into a cookie string suitable for
+ * http headers. An optional options object specified cookie parameters.
+ *
+ * serialize('foo', 'bar', { httpOnly: true })
+ *   => "foo=bar; httpOnly"
+ *
+ * @param {string} name
+ * @param {string} val
+ * @param {object} [options]
+ * @return {string}
+ * @public
+ */
+
+function serialize(name, val, options) {
+  var opt = options || {};
+  var enc = opt.encode || encode;
+
+  if (typeof enc !== 'function') {
+    throw new TypeError('option encode is invalid');
+  }
+
+  if (!fieldContentRegExp.test(name)) {
+    throw new TypeError('argument name is invalid');
+  }
+
+  var value = enc(val);
+
+  if (value && !fieldContentRegExp.test(value)) {
+    throw new TypeError('argument val is invalid');
+  }
+
+  var str = name + '=' + value;
+
+  if (null != opt.maxAge) {
+    var maxAge = opt.maxAge - 0;
+    if (isNaN(maxAge)) throw new Error('maxAge should be a Number');
+    str += '; Max-Age=' + Math.floor(maxAge);
+  }
+
+  if (opt.domain) {
+    if (!fieldContentRegExp.test(opt.domain)) {
+      throw new TypeError('option domain is invalid');
+    }
+
+    str += '; Domain=' + opt.domain;
+  }
+
+  if (opt.path) {
+    if (!fieldContentRegExp.test(opt.path)) {
+      throw new TypeError('option path is invalid');
+    }
+
+    str += '; Path=' + opt.path;
+  }
+
+  if (opt.expires) {
+    if (typeof opt.expires.toUTCString !== 'function') {
+      throw new TypeError('option expires is invalid');
+    }
+
+    str += '; Expires=' + opt.expires.toUTCString();
+  }
+
+  if (opt.httpOnly) {
+    str += '; HttpOnly';
+  }
+
+  if (opt.secure) {
+    str += '; Secure';
+  }
+
+  if (opt.sameSite) {
+    var sameSite = typeof opt.sameSite === 'string'
+      ? opt.sameSite.toLowerCase() : opt.sameSite;
+
+    switch (sameSite) {
+      case true:
+        str += '; SameSite=Strict';
+        break;
+      case 'lax':
+        str += '; SameSite=Lax';
+        break;
+      case 'strict':
+        str += '; SameSite=Strict';
+        break;
+      default:
+        throw new TypeError('option sameSite is invalid');
+    }
+  }
+
+  return str;
+}
+
+/**
+ * Try decoding a string using a decoding function.
+ *
+ * @param {string} str
+ * @param {function} decode
+ * @private
+ */
+
+function tryDecode(str, decode) {
+  try {
+    return decode(str);
+  } catch (e) {
+    return str;
+  }
+}
+
+
+/***/ }),
+
 /***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1626,6 +2245,37 @@ module.exports = defaults;
 
 /***/ }),
 
+/***/ 40:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.hasDocumentCookie = hasDocumentCookie;
+exports.cleanCookies = cleanCookies;
+// Can we get/set cookies on document.cookie?
+
+function hasDocumentCookie() {
+  return (typeof document === 'undefined' ? 'undefined' : _typeof(document)) === 'object' && typeof document.cookie === 'string';
+}
+
+//backwards compatibility
+var HAS_DOCUMENT_COOKIE = exports.HAS_DOCUMENT_COOKIE = hasDocumentCookie();
+
+function cleanCookies() {
+  document.cookie.split(';').forEach(function (c) {
+    document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+  });
+}
+
+/***/ }),
+
 /***/ 44:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1649,7 +2299,633 @@ exports.objectToFormData = objectToFormData;
 
 /***/ }),
 
-/***/ 49:
+/***/ 46:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Contains a popup view that need only to be rendered
+ * To work. Appears in the middle of the screen and darkens
+ * The body.
+ */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(2);
+var popupDisabledClass = "popup-disabled";
+var popupScreenFadeClass = 'popup-screen-fade';
+var popupFadeClass = 'popup-fade';
+var PopupProps = /** @class */ (function () {
+    function PopupProps() {
+    }
+    return PopupProps;
+}());
+exports.PopupProps = PopupProps;
+var PopupState = /** @class */ (function () {
+    function PopupState() {
+    }
+    return PopupState;
+}());
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
+        var _this = _super.call(this, props) || this;
+        _this.close = _this.close.bind(_this);
+        return _this;
+    }
+    Popup.prototype.componentDidMount = function () {
+        /* Programatically create a div to overlay everything and animate it in
+            Also force the body not to scroll */
+        this.screenDiv = document.createElement('div');
+        this.screenDiv.className = 'popup-screen';
+        var body = document.querySelector('body');
+        body.appendChild(this.screenDiv);
+        body.classList.add(popupDisabledClass);
+    };
+    Popup.prototype.componentWillUnmount = function () {
+        /* Remove the programatic div and let the body scroll */
+        var body = document.querySelector('body');
+        body.removeChild(this.screenDiv);
+        body.classList.remove(popupDisabledClass);
+    };
+    Popup.prototype.close = function () {
+        /* Animate everything in */
+        var _this = this;
+        this.wrapperDiv.classList.add(popupFadeClass);
+        this.screenDiv.classList.add(popupScreenFadeClass);
+        /* Cool so we can seperate concerns */
+        var refCounter = { count: 0 };
+        var callback = function () {
+            if (refCounter.count == 1) {
+                _this.props.callback();
+            }
+            else {
+                refCounter.count += 1;
+            }
+        };
+        /*
+         * Since there are two animations going on we want to wait
+         * for both of them to end. So we use a reference counter
+         * in the form of a bound object.
+         */
+        this.wrapperDiv.addEventListener('animationend', callback);
+        this.screenDiv.addEventListener('animationend', callback);
+    };
+    Popup.prototype.render = function () {
+        var _this = this;
+        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
+            React.createElement("div", { className: "grid row" },
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-11 popup-title-div" },
+                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-offset-1 col-11" },
+                        React.createElement("p", { className: "popup-message" }, this.props.message),
+                        this.props.children)),
+                React.createElement("div", { className: "row-offset-10" },
+                    React.createElement("div", { className: "popup-check-button" },
+                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
+    };
+    return Popup;
+}(React.Component));
+exports.Popup = Popup;
+
+
+/***/ }),
+
+/***/ 498:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var TournamentView_1 = __webpack_require__(499);
+ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), document.querySelector("tournament-view"));
+
+
+/***/ }),
+
+/***/ 499:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(2);
+var axios_1 = __webpack_require__(12);
+var Select_1 = __webpack_require__(50);
+var Utils_1 = __webpack_require__(44);
+var Popup_1 = __webpack_require__(46);
+var LocalResourceResolver_1 = __webpack_require__(33);
+var RadioButton_1 = __webpack_require__(213);
+axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
+axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
+//axios.post('/api/tournament/members/register', objectToFormData({member_id: 2})).catch((err: any) => console.log(err));
+var tourney_url = '/api/tournament/';
+var columnWidth = 160;
+var rowHeight = 40;
+var rowSpacing = 10;
+var colSpacing = 50;
+var lazyHack = 10000000;
+var svgOffset = 20;
+var calcX = function (col) { return (columnWidth + colSpacing) * col + svgOffset; };
+var calcY = function (col, row, maxCols) {
+    if (col === 0) {
+        return (rowHeight + rowSpacing) * row + col * ((rowHeight + rowSpacing) / 2) + svgOffset;
+    }
+    var numBlocksCenter = Math.pow(2, col);
+    var ytop = calcY(0, row * numBlocksCenter, maxCols);
+    var ybot = calcY(0, (row + 1) * numBlocksCenter - 1, maxCols) + rowHeight;
+    return (ytop + ybot - rowHeight) / 2;
+};
+var Matchup = /** @class */ (function (_super) {
+    __extends(Matchup, _super);
+    function Matchup() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Matchup.prototype.unpackMatch = function (matches) {
+        var match = matches[0];
+        var decide = function (team) {
+            if (team.length == 2) {
+                return team[0].first_name + ' & ' + team[1].first_name;
+            }
+            else if (team.length == 1) {
+                return team[0].first_name + ' ' + team[0].last_name;
+            }
+            else {
+                return 'None';
+            }
+        };
+        var team1 = decide(match.team_A);
+        var team2 = decide(match.team_B);
+        return [match, team1, team2];
+    };
+    Matchup.prototype.render = function () {
+        var _this = this;
+        var extra;
+        var startingX = this.props.x;
+        var startingY = this.props.y + 15;
+        var textStyle = {
+            fill: 'white',
+            stroke: 'white',
+            strokeWidth: 1.5,
+        };
+        if (this.props.data.matches.length === 0) {
+            extra = React.createElement("text", { x: startingX, y: startingY, height: rowHeight, width: columnWidth }, "TBA");
+        }
+        else if (this.props.data.endDateTime === null) {
+            var _a = this.unpackMatch(this.props.data.matches), match = _a[0], team1 = _a[1], team2 = _a[2];
+            extra = React.createElement(React.Fragment, null,
+                React.createElement("text", { x: startingX, y: startingY, style: textStyle }, team1),
+                React.createElement("text", { x: startingX, y: startingY + rowHeight / 2, style: textStyle }, team2));
+        }
+        else {
+            var _b = this.unpackMatch(this.props.data.matches), match = _b[0], team1 = _b[1], team2 = _b[2];
+            var convert = function (num) {
+                if (num < 10) {
+                    return "0" + num;
+                }
+                return "" + num;
+            };
+            extra = React.createElement(React.Fragment, null,
+                React.createElement("text", { x: startingX, y: startingY, style: textStyle }, team1),
+                React.createElement("text", { x: startingX, y: startingY + rowHeight / 2, style: textStyle }, team2),
+                React.createElement("text", { x: startingX + columnWidth - 25, y: startingY, style: textStyle }, this.props.data.team1_score),
+                React.createElement("text", { x: startingX + columnWidth - 25, y: startingY + rowHeight / 2, style: textStyle }, this.props.data.team2_score));
+        }
+        var rectStyle = {
+            fill: 'black',
+            stroke: 'black',
+            strokeWidth: 5,
+        };
+        return (React.createElement(React.Fragment, null,
+            React.createElement("rect", { x: this.props.x, y: this.props.y, width: columnWidth, height: rowHeight, style: rectStyle, className: "tournament-bracket-node", rx: "" + 3, ry: "" + 3, onClick: function () { return _this.props.change(_this.props.data); } }),
+            extra));
+    };
+    return Matchup;
+}(React.Component));
+function height(matchups) {
+    if (matchups === null || Object.keys(matchups).length === 0) {
+        return 0;
+    }
+    var hgt = Math.max(height(matchups.left_node), height(matchups.right_node)) + 1;
+    return hgt;
+}
+var TournamentCell = /** @class */ (function (_super) {
+    __extends(TournamentCell, _super);
+    function TournamentCell(props) {
+        var _this = _super.call(this, props) || this;
+        _this.agglomerateData = _this.agglomerateData.bind(_this);
+        _this._merge = _this._merge.bind(_this);
+        return _this;
+    }
+    TournamentCell.prototype._merge = function (aggCall, toX, toY) {
+        if (aggCall.length === 0) {
+            return [];
+        }
+        var othElems = aggCall[0], _a = aggCall[1], othX = _a[0], othY = _a[1];
+        var offsetX = 6;
+        var midX = othX + columnWidth + offsetX;
+        var midY = othY + rowHeight / 2;
+        var halfX = midX + colSpacing / 2;
+        var offsetY = 9;
+        if (toY < midY) {
+            toY += offsetY;
+        }
+        else {
+            toY -= offsetY;
+        }
+        var lineOpts = {
+            stroke: "black",
+            strokeWidth: 1.5,
+        };
+        return [React.createElement("line", __assign({}, lineOpts, { x1: "" + midX, y1: "" + midY, x2: "" + halfX, y2: "" + midY })),
+            React.createElement("line", __assign({}, lineOpts, { x1: "" + halfX, y1: "" + midY, x2: "" + halfX, y2: "" + toY })),
+            React.createElement("line", __assign({}, lineOpts, { x1: "" + halfX, y1: "" + toY, x2: "" + (toX - offsetX), y2: "" + toY }))].concat(othElems);
+    };
+    TournamentCell.prototype.agglomerateData = function (data, row, col, maxCols) {
+        //elements, root
+        if (data === null || Object.keys(data).length === 0) {
+            return [];
+        }
+        var left_node = data.left_node, right_node = data.right_node, rest = __rest(data, ["left_node", "right_node"]);
+        var x = calcX(col);
+        var y = calcY(col, row, maxCols);
+        var elems = [React.createElement(Matchup, { x: x, y: y, data: rest, change: this.props.change })];
+        var entry = y + rowHeight / 2;
+        if (data.left_node !== null) {
+            var accumulated = this._merge(this.agglomerateData(data.left_node, row * 2, col - 1, maxCols), x, entry);
+            elems = elems.concat(accumulated);
+        }
+        if (data.right_node !== null) {
+            var accumulated = this._merge(this.agglomerateData(data.right_node, row * 2 + 1, col - 1, maxCols), x, entry);
+            elems = elems.concat(accumulated);
+        }
+        return [elems, [x, y]];
+    };
+    TournamentCell.prototype.render = function () {
+        console.log(this.props.matches);
+        var maxHeight = height(this.props.matches);
+        var _a = this.agglomerateData(this.props.matches, 0, maxHeight - 1, maxHeight), elems = _a[0], rest = _a.slice(1);
+        return React.createElement("svg", { width: "" + window.innerWidth, height: "" + window.innerHeight },
+            React.createElement("g", null, elems));
+    };
+    return TournamentCell;
+}(React.Component));
+var TournamentDown = /** @class */ (function (_super) {
+    __extends(TournamentDown, _super);
+    function TournamentDown(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            players: "",
+            type: 'Doubles'
+        };
+        _this.onSubmit = _this.onSubmit.bind(_this);
+        return _this;
+    }
+    TournamentDown.prototype.onSubmit = function (ev) {
+        var data = {
+            num_players: this.state.players,
+            tournament_type: this.state.type,
+        };
+        axios_1.default.post('/api/tournament/create', Utils_1.objectToFormData(data))
+            .then(function (res) {
+            console.log(res);
+        })
+            .catch(function (res) {
+            console.log(res);
+        });
+        ev.preventDefault();
+    };
+    TournamentDown.prototype.render = function () {
+        var _this = this;
+        var opts = [
+            new Select_1.Option('Doubles', 'Doubles'),
+            new Select_1.Option('Singles', 'Singles'),
+        ];
+        return React.createElement("form", { onSubmit: this.onSubmit },
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { className: "col-6" },
+                    React.createElement("input", { type: "text", className: "interaction-style", placeholder: "Number of players", value: this.state.players, onChange: function (ev) { return _this.setState({ players: ev.target.value }); } })),
+                React.createElement("div", { className: "col-6" },
+                    React.createElement(Select_1.Select, { onChange: function (val) { return _this.setState({ type: val }); }, options: opts, name: "emailName", defaultValue: this.state.type }))),
+            React.createElement("button", { type: "submit", className: "interaction-style" }, "Submit"));
+    };
+    return TournamentDown;
+}(React.Component));
+var convertToDicts = function (matches) {
+    var _convertToDicts = function (matches, idx) {
+        if (idx > matches.length) {
+            return null;
+        }
+        var lhs = _convertToDicts(matches, idx * 2);
+        var rhs = _convertToDicts(matches, idx * 2 + 1);
+        var node = matches[idx - 1];
+        return { left_node: lhs, right_node: rhs, id: node.bracket_node_id, matches: node.matches };
+    };
+    return _convertToDicts(matches, 1);
+};
+var TournamentView = /** @class */ (function (_super) {
+    __extends(TournamentView, _super);
+    function TournamentView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            status: null,
+            matches: null,
+        };
+        _this.refresh = _this.refresh.bind(_this);
+        _this.finishTournament = _this.finishTournament.bind(_this);
+        _this.changeMatch = _this.changeMatch.bind(_this);
+        _this.joinTournament = _this.joinTournament.bind(_this);
+        _this.leaveTournament = _this.leaveTournament.bind(_this);
+        return _this;
+    }
+    TournamentView.prototype.finishTournament = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, res, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        data = {
+                            tournament_id: this.state.id,
+                        };
+                        return [4 /*yield*/, axios_1.default.post(tourney_url + 'finish/', Utils_1.objectToFormData(data))];
+                    case 1:
+                        res = _a.sent();
+                        console.log(res);
+                        this.refresh();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    TournamentView.prototype.refresh = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, data, members, brackets, err_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, axios_1.default.get(tourney_url)];
+                    case 1:
+                        res = [_a.sent()][0];
+                        data = res.data;
+                        if (!(data.status === "down")) return [3 /*break*/, 2];
+                        this.setState({
+                            status: data.status,
+                            matches: res.data,
+                        });
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, axios_1.default.get('/api/tournament/members/get/')];
+                    case 3:
+                        members = _a.sent();
+                        brackets = convertToDicts(data.tournament.bracket_nodes);
+                        this.setState({
+                            status: data.status,
+                            matches: brackets,
+                            members: members.data.tournament_members,
+                            id: data.tournament.tournament_id,
+                        });
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        err_2 = _a.sent();
+                        console.log(err_2);
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    TournamentView.prototype.joinTournament = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.post('/api/tournament/members/register', Utils_1.objectToFormData({ member_id: LocalResourceResolver_1.getMemberId() }))];
+                    case 1:
+                        res = _a.sent();
+                        console.log(res);
+                        this.refresh();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_3 = _a.sent();
+                        console.log(err_3);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    TournamentView.prototype.leaveTournament = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default.post('/api/tournament/members/unregister', Utils_1.objectToFormData({ member_id: LocalResourceResolver_1.getMemberId() }))];
+                    case 1:
+                        res = _a.sent();
+                        console.log(res);
+                        this.refresh();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_4 = _a.sent();
+                        console.log(err_4);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    TournamentView.prototype.changeMatch = function (matchObj) {
+        var _this = this;
+        var reset = function () { return _this.setState({ popup: null }); };
+        var popup = null;
+        console.log(matchObj.matches);
+        if (matchObj.matches.length === 0) {
+            // Unassigned case
+            var team_1 = { teamA: new Set(), teamB: new Set() };
+            var callback = function () { return __awaiter(_this, void 0, void 0, function () {
+                var data, res;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, , 2, 3]);
+                            data = {
+                                bracket_node_id: matchObj.id,
+                                team_A: Array.from(team_1.teamA).join(','),
+                                team_B: Array.from(team_1.teamB).join(','),
+                            };
+                            return [4 /*yield*/, axios_1.default.post('/api/tournament/add/match/', Utils_1.objectToFormData(data))];
+                        case 1:
+                            res = _a.sent();
+                            console.log(res);
+                            return [3 /*break*/, 3];
+                        case 2:
+                            reset();
+                            this.refresh();
+                            return [7 /*endfinally*/];
+                        case 3: return [2 /*return*/];
+                    }
+                });
+            }); };
+            popup = React.createElement(Popup_1.Popup, { title: "Assign Teams", callback: callback },
+                React.createElement("div", { style: { height: "100%", overflowY: "scroll" } },
+                    React.createElement("div", { className: "row" },
+                        React.createElement("div", { className: "col-9" }, "Member"),
+                        React.createElement("div", { className: "col-1" }),
+                        React.createElement("div", { className: "col-1" }, "A"),
+                        React.createElement("div", { className: "col-1" }, "B")),
+                    this.state.members.map(function (member, idx) {
+                        return React.createElement("div", { className: "row", key: idx },
+                            React.createElement("div", { className: "col-9" },
+                                member.first_name,
+                                " ",
+                                member.last_name),
+                            React.createElement("div", { className: "col-1" },
+                                React.createElement(RadioButton_1.RadioButton, { defaultChecked: true, name: "" + idx, onChange: function (ev) {
+                                        if (!ev.target.checked)
+                                            return;
+                                        team_1.teamA.delete(member.member_id);
+                                        team_1.teamB.delete(member.member_id);
+                                    } })),
+                            React.createElement("div", { className: "col-1" },
+                                React.createElement(RadioButton_1.RadioButton, { defaultChecked: false, name: "" + idx, onChange: function (ev) {
+                                        if (!ev.target.checked)
+                                            return;
+                                        team_1.teamA.add(member.member_id);
+                                        team_1.teamB.delete(member.member_id);
+                                    } })),
+                            React.createElement("div", { className: "col-1" },
+                                React.createElement(RadioButton_1.RadioButton, { defaultChecked: false, name: "" + idx, onChange: function (ev) {
+                                        if (!ev.target.checked)
+                                            return;
+                                        team_1.teamA.delete(member.member_id);
+                                        team_1.teamB.add(member.member_id);
+                                    } })));
+                    })));
+        }
+        this.setState({ popup: popup });
+    };
+    TournamentView.prototype.componentDidMount = function () {
+        this.refresh();
+    };
+    TournamentView.prototype.render = function () {
+        if (this.state.status === null) {
+            return null;
+        }
+        if (this.state.status === "down") {
+            return React.createElement(TournamentDown, { refresh: this.refresh });
+        }
+        return (React.createElement("div", { className: "tournament-div" },
+            this.state.popup && this.state.popup,
+            React.createElement(TournamentCell, { matches: this.state.matches, change: this.changeMatch }),
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { className: "col-6" },
+                    React.createElement("button", { onClick: this.finishTournament, className: "interaction-style" }, "Finish")),
+                this.state.members.find(function (e) { return e.member_id == LocalResourceResolver_1.getMemberId(); }) === undefined ?
+                    React.createElement("div", { className: "col-6" },
+                        React.createElement("button", { onClick: this.joinTournament, className: "interaction-style" }, "Join")) : React.createElement("div", { className: "col-6" },
+                    React.createElement("button", { onClick: this.leaveTournament, className: "interaction-style" }, "Leave")))));
+    };
+    return TournamentView;
+}(React.Component));
+exports.TournamentView = TournamentView;
+
+
+/***/ }),
+
+/***/ 5:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+
+/***/ 50:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1839,378 +3115,6 @@ var Select = /** @class */ (function (_super) {
 }(React.Component));
 exports.Select = Select;
 
-
-/***/ }),
-
-/***/ 498:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(2);
-var ReactDOM = __webpack_require__(5);
-var TournamentView_1 = __webpack_require__(499);
-ReactDOM.render(React.createElement(TournamentView_1.TournamentView, null), document.querySelector("tournament-view"));
-
-
-/***/ }),
-
-/***/ 499:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
-            t[p[i]] = s[p[i]];
-    return t;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(2);
-var axios_1 = __webpack_require__(12);
-var Select_1 = __webpack_require__(49);
-var Utils_1 = __webpack_require__(44);
-var tourney_url = '/api/tournament/';
-var columnWidth = 160;
-var rowHeight = 40;
-var rowSpacing = 10;
-var colSpacing = 50;
-var lazyHack = 10000000;
-var svgOffset = 20;
-var calcX = function (col) { return (columnWidth + colSpacing) * col + svgOffset; };
-var calcY = function (col, row, maxCols) {
-    if (col === 0) {
-        return (rowHeight + rowSpacing) * row + col * ((rowHeight + rowSpacing) / 2) + svgOffset;
-    }
-    var numBlocksCenter = Math.pow(2, col);
-    var ytop = calcY(0, row * numBlocksCenter, maxCols);
-    var ybot = calcY(0, (row + 1) * numBlocksCenter - 1, maxCols) + rowHeight;
-    return (ytop + ybot - rowHeight) / 2;
-};
-var Matchup = /** @class */ (function (_super) {
-    __extends(Matchup, _super);
-    function Matchup() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Matchup.prototype.render = function () {
-        var _this = this;
-        var extra;
-        var opts = {};
-        var startingX = this.props.x;
-        var startingY = this.props.y + 15;
-        if (this.props.data.state === "undecided") {
-            extra = React.createElement("text", { style: opts, x: startingX, y: startingY, height: rowHeight, width: columnWidth }, "TBA");
-        }
-        else if (this.props.data.state === "decided") {
-            extra = React.createElement(React.Fragment, null,
-                React.createElement("text", { style: opts, x: startingX, y: startingY }, this.props.data.team1),
-                React.createElement("text", { style: opts, x: startingX, y: startingY + rowHeight / 2 }, this.props.data.team2));
-        }
-        else {
-            var convert = function (num) {
-                if (num < 10) {
-                    return "0" + num;
-                }
-                return "" + num;
-            };
-            extra = React.createElement(React.Fragment, null,
-                React.createElement("text", { style: opts, x: startingX, y: startingY }, this.props.data.team1),
-                React.createElement("text", { style: opts, x: startingX, y: startingY + rowHeight / 2 }, this.props.data.team2),
-                React.createElement("text", { style: opts, x: startingX + columnWidth - 25, y: startingY }, this.props.data.team1_score),
-                React.createElement("text", { style: opts, x: startingX + columnWidth - 25, y: startingY + rowHeight / 2 }, this.props.data.team2_score));
-        }
-        var rectStyle = {
-            fill: 'black',
-            stroke: 'black',
-            strokeWidth: 5,
-        };
-        return (React.createElement(React.Fragment, null,
-            React.createElement("rect", { x: this.props.x, y: this.props.y, width: columnWidth, height: rowHeight, style: rectStyle, className: "tournament-bracket-node", rx: "" + 3, ry: "" + 3, onClick: function () { return _this.props.change(_this.props.data); } }),
-            extra));
-    };
-    return Matchup;
-}(React.Component));
-function height(matchups) {
-    if (matchups === null || Object.keys(matchups).length === 0) {
-        return 0;
-    }
-    var hgt = Math.max(height(matchups.left_node), height(matchups.right_node)) + 1;
-    return hgt;
-}
-var TournamentCell = /** @class */ (function (_super) {
-    __extends(TournamentCell, _super);
-    function TournamentCell(props) {
-        var _this = _super.call(this, props) || this;
-        _this.agglomerateData = _this.agglomerateData.bind(_this);
-        _this._merge = _this._merge.bind(_this);
-        return _this;
-    }
-    TournamentCell.prototype._merge = function (aggCall, toX, toY) {
-        if (aggCall.length === 0) {
-            return [];
-        }
-        var othElems = aggCall[0], _a = aggCall[1], othX = _a[0], othY = _a[1];
-        var offsetX = 6;
-        var midX = othX + columnWidth + offsetX;
-        var midY = othY + rowHeight / 2;
-        var halfX = midX + colSpacing / 2;
-        var offsetY = 9;
-        if (toY < midY) {
-            toY += offsetY;
-        }
-        else {
-            toY -= offsetY;
-        }
-        var lineOpts = {
-            stroke: "black",
-            strokeWidth: 1.5,
-        };
-        return [React.createElement("line", __assign({}, lineOpts, { x1: "" + midX, y1: "" + midY, x2: "" + halfX, y2: "" + midY })),
-            React.createElement("line", __assign({}, lineOpts, { x1: "" + halfX, y1: "" + midY, x2: "" + halfX, y2: "" + toY })),
-            React.createElement("line", __assign({}, lineOpts, { x1: "" + halfX, y1: "" + toY, x2: "" + (toX - offsetX), y2: "" + toY }))].concat(othElems);
-    };
-    TournamentCell.prototype.agglomerateData = function (data, row, col, maxCols) {
-        //elements, root
-        if (data === null || Object.keys(data).length === 0) {
-            return [];
-        }
-        var left_node = data.left_node, right_node = data.right_node, rest = __rest(data, ["left_node", "right_node"]);
-        var x = calcX(col);
-        var y = calcY(col, row, maxCols);
-        var elems = [React.createElement(Matchup, { x: x, y: y, data: rest, change: this.props.change })];
-        var entry = y + rowHeight / 2;
-        if (data.left_node !== null) {
-            var accumulated = this._merge(this.agglomerateData(data.left_node, row * 2, col - 1, maxCols), x, entry);
-            elems = elems.concat(accumulated);
-        }
-        if (data.right_node !== null) {
-            var accumulated = this._merge(this.agglomerateData(data.right_node, row * 2 + 1, col - 1, maxCols), x, entry);
-            elems = elems.concat(accumulated);
-        }
-        return [elems, [x, y]];
-    };
-    TournamentCell.prototype.render = function () {
-        console.log(this.props.matches);
-        var maxHeight = height(this.props.matches);
-        var _a = this.agglomerateData(this.props.matches, 0, maxHeight - 1, maxHeight), elems = _a[0], rest = _a.slice(1);
-        return React.createElement("svg", { width: "" + window.innerWidth, height: "" + window.innerHeight },
-            React.createElement("g", null, elems));
-    };
-    return TournamentCell;
-}(React.Component));
-var TournamentDown = /** @class */ (function (_super) {
-    __extends(TournamentDown, _super);
-    function TournamentDown(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
-            players: "",
-            type: 'Doubles'
-        };
-        _this.onSubmit = _this.onSubmit.bind(_this);
-        return _this;
-    }
-    TournamentDown.prototype.onSubmit = function (ev) {
-        var data = {
-            num_players: this.state.players,
-            tournament_type: this.state.type,
-        };
-        axios_1.default.post('/api/tournament/create', Utils_1.objectToFormData(data))
-            .then(function (res) {
-            console.log(res);
-        })
-            .catch(function (res) {
-            console.log(res);
-        });
-        ev.preventDefault();
-    };
-    TournamentDown.prototype.render = function () {
-        var _this = this;
-        var opts = [
-            new Select_1.Option('Doubles', 'Doubles'),
-            new Select_1.Option('Singles', 'Singles'),
-        ];
-        return React.createElement("form", { onSubmit: this.onSubmit },
-            React.createElement("div", { className: "row" },
-                React.createElement("div", { className: "col-6" },
-                    React.createElement("input", { type: "text", className: "interaction-style", placeholder: "Number of players", value: this.state.players, onChange: function (ev) { return _this.setState({ players: ev.target.value }); } })),
-                React.createElement("div", { className: "col-6" },
-                    React.createElement(Select_1.Select, { onChange: function (val) { return _this.setState({ type: val }); }, options: opts, name: "emailName", defaultValue: this.state.type }))),
-            React.createElement("button", { type: "submit", className: "interaction-style" }, "Submit"));
-    };
-    return TournamentDown;
-}(React.Component));
-var convertToDicts = function (matches) {
-    var _convertToDicts = function (matches, idx) {
-        if (idx > matches.length) {
-            return null;
-        }
-        var lhs = _convertToDicts(matches, idx * 2);
-        var rhs = _convertToDicts(matches, idx * 2 + 1);
-        var node = matches[idx - 1];
-        return { left_node: lhs, right_node: rhs, id: node.bracket_node_id, matches: node.matches };
-    };
-    return _convertToDicts(matches, 1);
-};
-var TournamentView = /** @class */ (function (_super) {
-    __extends(TournamentView, _super);
-    function TournamentView(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = {
-            status: null,
-            matches: null,
-        };
-        _this.refresh = _this.refresh.bind(_this);
-        _this.finishTournament = _this.finishTournament.bind(_this);
-        _this.changeMatch = _this.changeMatch.bind(_this);
-        return _this;
-    }
-    TournamentView.prototype.finishTournament = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var data, res, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        data = {
-                            tournament_id: this.state.id,
-                        };
-                        return [4 /*yield*/, axios_1.default.post(tourney_url + 'finish/', Utils_1.objectToFormData(data))];
-                    case 1:
-                        res = _a.sent();
-                        console.log(res);
-                        this.refresh();
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_1 = _a.sent();
-                        console.log(err_1);
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    TournamentView.prototype.refresh = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var res, data, brackets, err_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, axios_1.default.get(tourney_url)];
-                    case 1:
-                        res = _a.sent();
-                        data = res.data;
-                        if (data.status === "down") {
-                            this.setState({
-                                status: data.status,
-                                matches: res.data,
-                            });
-                        }
-                        else {
-                            brackets = convertToDicts(data.tournament.bracket_nodes);
-                            this.setState({
-                                status: data.status,
-                                matches: brackets,
-                                id: data.tournament.tournament_id,
-                            });
-                        }
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_2 = _a.sent();
-                        console.log(err_2);
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    TournamentView.prototype.changeMatch = function (matchObj) {
-        console.log(matchObj);
-    };
-    TournamentView.prototype.componentDidMount = function () {
-        this.refresh();
-    };
-    TournamentView.prototype.render = function () {
-        if (this.state.status === null) {
-            return null;
-        }
-        if (this.state.status === "down") {
-            return React.createElement(TournamentDown, { refresh: this.refresh });
-        }
-        return (React.createElement("div", { className: "tournament-div" },
-            this.state.popup && this.state.popup,
-            React.createElement(TournamentCell, { matches: this.state.matches, change: this.changeMatch }),
-            React.createElement("button", { onClick: this.finishTournament, className: "interaction-style" }, "Finish")));
-    };
-    return TournamentView;
-}(React.Component));
-exports.TournamentView = TournamentView;
-
-
-/***/ }),
-
-/***/ 5:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
 
 /***/ }),
 

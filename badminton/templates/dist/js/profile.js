@@ -899,7 +899,7 @@ module.exports = (
 
 /***/ }),
 
-/***/ 217:
+/***/ 218:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -933,7 +933,7 @@ var ProfileView = /** @class */ (function (_super) {
         var _this = this;
         axios_1.default.get(bio_url, {
             params: {
-                id: this.props.member_id
+                id: this.props.id
             }
         })
             .then(function (res) {
@@ -1705,7 +1705,7 @@ module.exports = defaults;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
 var ReactDOM = __webpack_require__(5);
-var ProfileView_1 = __webpack_require__(217);
+var ProfileView_1 = __webpack_require__(218);
 ReactDOM.render(React.createElement(ProfileView_1.ProfileView, { member_id: member_id }), document.querySelector("profile-view"));
 
 

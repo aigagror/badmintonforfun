@@ -18,7 +18,7 @@ export class ProfileView extends React.Component<any, any> {
 	componentDidMount() {
 		axios.get(bio_url, {
 			params: {
-				id: this.props.member_id
+				id: this.props.id
 			}
 		})
 		.then((res) => {

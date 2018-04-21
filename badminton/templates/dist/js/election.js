@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 299);
+/******/ 	return __webpack_require__(__webpack_require__.s = 300);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1902,7 +1902,7 @@
             try {
                 oldLocale = globalLocale._abbr;
                 var aliasedRequire = require;
-                __webpack_require__(214)("./" + name);
+                __webpack_require__(215)("./" + name);
                 getSetGlobalLocale(oldLocale);
             } catch (e) {}
         }
@@ -6385,8 +6385,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 31 */,
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6483,8 +6482,76 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 33 */,
-/* 34 */
+/* 32 */,
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * This class serves as a resource resolver for classes.
+ * This manages local storage so none of the classes conflict
+ * The classes only need to make sure that their resources are unique
+ * in of themselves.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+var Cookies = __webpack_require__(37);
+/**
+ * Mappings from imported classes to random strings.
+ */
+var obfuscationMappings = {
+    'MailView': 'ysjiUtKPV7',
+};
+/**
+ * Generates key pattern from an instance and an arg
+ * arg being the requested key
+ */
+function _generateKey(instance, arg) {
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
+    return name + obf;
+}
+/**
+ * Returns a string given the class and the key <arg>
+ */
+function getResource(instance, arg) {
+    var key = _generateKey(instance, arg);
+    return localStorage.getItem(key);
+    ;
+}
+exports.getResource = getResource;
+/**
+ * Sets the requested key <arg> of class <instance> to <value>
+ */
+function setResource(instance, arg, value) {
+    var key = _generateKey(instance, arg);
+    localStorage.setItem(key, value);
+}
+exports.setResource = setResource;
+var cookies = new Cookies();
+function isBoardMember() {
+    var ret = cookies.get('is_board_member');
+    return ret == 'true';
+}
+exports.isBoardMember = isBoardMember;
+function getMemberId() {
+    var ret = cookies.get('member_id');
+    return parseInt(ret);
+}
+exports.getMemberId = getMemberId;
+function xsrfCookieName() {
+    return "csrftoken";
+}
+exports.xsrfCookieName = xsrfCookieName;
+function xsrfHeaderName() {
+    return "X-CSRFToken";
+}
+exports.xsrfHeaderName = xsrfHeaderName;
+
+
+/***/ }),
+/* 34 */,
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6544,7 +6611,7 @@ module.exports = invariant;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -6599,117 +6666,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * This class serves as a resource resolver for classes.
- * This manages local storage so none of the classes conflict
- * The classes only need to make sure that their resources are unique
- * in of themselves.
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-var Cookies = __webpack_require__(39);
-/**
- * Mappings from imported classes to random strings.
- */
-var obfuscationMappings = {
-    'MailView': 'ysjiUtKPV7',
-};
-/**
- * Generates key pattern from an instance and an arg
- * arg being the requested key
- */
-function _generateKey(instance, arg) {
-    var name = instance.constructor.name;
-    var obf = obfuscationMappings[name];
-    return name + obf;
-}
-/**
- * Returns a string given the class and the key <arg>
- */
-function getResource(instance, arg) {
-    var key = _generateKey(instance, arg);
-    return localStorage.getItem(key);
-    ;
-}
-exports.getResource = getResource;
-/**
- * Sets the requested key <arg> of class <instance> to <value>
- */
-function setResource(instance, arg, value) {
-    var key = _generateKey(instance, arg);
-    localStorage.setItem(key, value);
-}
-exports.setResource = setResource;
-var cookies = new Cookies();
-function isBoardMember() {
-    var ret = cookies.get('is_board_member');
-    return ret == 'true';
-}
-exports.isBoardMember = isBoardMember;
-function getMemberId() {
-    var ret = cookies.get('member_id');
-    return parseInt(ret);
-}
-exports.getMemberId = getMemberId;
-function xsrfCookieName() {
-    return "csrftoken";
-}
-exports.xsrfCookieName = xsrfCookieName;
-function xsrfHeaderName() {
-    return "X-CSRFToken";
-}
-exports.xsrfHeaderName = xsrfHeaderName;
-
-
-/***/ }),
 /* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * 
- */
-
-function makeEmptyFunction(arg) {
-  return function () {
-    return arg;
-  };
-}
-
-/**
- * This function accepts and discards inputs; it has no side effects. This is
- * primarily useful idiomatically for overridable function endpoints which
- * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
- */
-var emptyFunction = function emptyFunction() {};
-
-emptyFunction.thatReturns = makeEmptyFunction;
-emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-emptyFunction.thatReturnsThis = function () {
-  return this;
-};
-emptyFunction.thatReturnsArgument = function (arg) {
-  return arg;
-};
-
-module.exports = emptyFunction;
-
-/***/ }),
-/* 38 */,
-/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6719,7 +6676,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Cookies = __webpack_require__(40);
+var _Cookies = __webpack_require__(38);
 
 var _Cookies2 = _interopRequireDefault(_Cookies);
 
@@ -6729,7 +6686,7 @@ exports.default = _Cookies2.default;
 module.exports = exports['default'];
 
 /***/ }),
-/* 40 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6743,15 +6700,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _cookie = __webpack_require__(41);
+var _cookie = __webpack_require__(39);
 
 var _cookie2 = _interopRequireDefault(_cookie);
 
-var _objectAssign = __webpack_require__(32);
+var _objectAssign = __webpack_require__(31);
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-var _utils = __webpack_require__(42);
+var _utils = __webpack_require__(40);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6875,7 +6832,7 @@ function readCookie(value) {
 module.exports = exports['default'];
 
 /***/ }),
-/* 41 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7077,7 +7034,7 @@ function tryDecode(str, decode) {
 
 
 /***/ }),
-/* 42 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7107,6 +7064,49 @@ function cleanCookies() {
 }
 
 /***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ */
+
+function makeEmptyFunction(arg) {
+  return function () {
+    return arg;
+  };
+}
+
+/**
+ * This function accepts and discards inputs; it has no side effects. This is
+ * primarily useful idiomatically for overridable function endpoints which
+ * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+ */
+var emptyFunction = function emptyFunction() {};
+
+emptyFunction.thatReturns = makeEmptyFunction;
+emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+emptyFunction.thatReturnsThis = function () {
+  return this;
+};
+emptyFunction.thatReturnsArgument = function (arg) {
+  return arg;
+};
+
+module.exports = emptyFunction;
+
+/***/ }),
+/* 42 */,
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7153,6 +7153,108 @@ exports.objectToFormData = objectToFormData;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+/**
+ * Contains a popup view that need only to be rendered
+ * To work. Appears in the middle of the screen and darkens
+ * The body.
+ */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(2);
+var popupDisabledClass = "popup-disabled";
+var popupScreenFadeClass = 'popup-screen-fade';
+var popupFadeClass = 'popup-fade';
+var PopupProps = /** @class */ (function () {
+    function PopupProps() {
+    }
+    return PopupProps;
+}());
+exports.PopupProps = PopupProps;
+var PopupState = /** @class */ (function () {
+    function PopupState() {
+    }
+    return PopupState;
+}());
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
+        var _this = _super.call(this, props) || this;
+        _this.close = _this.close.bind(_this);
+        return _this;
+    }
+    Popup.prototype.componentDidMount = function () {
+        /* Programatically create a div to overlay everything and animate it in
+            Also force the body not to scroll */
+        this.screenDiv = document.createElement('div');
+        this.screenDiv.className = 'popup-screen';
+        var body = document.querySelector('body');
+        body.appendChild(this.screenDiv);
+        body.classList.add(popupDisabledClass);
+    };
+    Popup.prototype.componentWillUnmount = function () {
+        /* Remove the programatic div and let the body scroll */
+        var body = document.querySelector('body');
+        body.removeChild(this.screenDiv);
+        body.classList.remove(popupDisabledClass);
+    };
+    Popup.prototype.close = function () {
+        /* Animate everything in */
+        var _this = this;
+        this.wrapperDiv.classList.add(popupFadeClass);
+        this.screenDiv.classList.add(popupScreenFadeClass);
+        /* Cool so we can seperate concerns */
+        var refCounter = { count: 0 };
+        var callback = function () {
+            if (refCounter.count == 1) {
+                _this.props.callback();
+            }
+            else {
+                refCounter.count += 1;
+            }
+        };
+        /*
+         * Since there are two animations going on we want to wait
+         * for both of them to end. So we use a reference counter
+         * in the form of a bound object.
+         */
+        this.wrapperDiv.addEventListener('animationend', callback);
+        this.screenDiv.addEventListener('animationend', callback);
+    };
+    Popup.prototype.render = function () {
+        var _this = this;
+        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
+            React.createElement("div", { className: "grid row" },
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-11 popup-title-div" },
+                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-offset-1 col-11" },
+                        React.createElement("p", { className: "popup-message" }, this.props.message),
+                        this.props.children)),
+                React.createElement("div", { className: "row-offset-10" },
+                    React.createElement("div", { className: "popup-check-button" },
+                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
+    };
+    return Popup;
+}(React.Component));
+exports.Popup = Popup;
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -7163,7 +7265,7 @@ exports.objectToFormData = objectToFormData;
 
 
 
-var emptyFunction = __webpack_require__(37);
+var emptyFunction = __webpack_require__(41);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -7218,9 +7320,9 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 47 */,
 /* 48 */,
-/* 49 */
+/* 49 */,
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7412,109 +7514,7 @@ exports.Select = Select;
 
 
 /***/ }),
-/* 50 */,
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * Contains a popup view that need only to be rendered
- * To work. Appears in the middle of the screen and darkens
- * The body.
- */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(2);
-var popupDisabledClass = "popup-disabled";
-var popupScreenFadeClass = 'popup-screen-fade';
-var popupFadeClass = 'popup-fade';
-var PopupProps = /** @class */ (function () {
-    function PopupProps() {
-    }
-    return PopupProps;
-}());
-exports.PopupProps = PopupProps;
-var PopupState = /** @class */ (function () {
-    function PopupState() {
-    }
-    return PopupState;
-}());
-var Popup = /** @class */ (function (_super) {
-    __extends(Popup, _super);
-    function Popup(props) {
-        var _this = _super.call(this, props) || this;
-        _this.close = _this.close.bind(_this);
-        return _this;
-    }
-    Popup.prototype.componentDidMount = function () {
-        /* Programatically create a div to overlay everything and animate it in
-            Also force the body not to scroll */
-        this.screenDiv = document.createElement('div');
-        this.screenDiv.className = 'popup-screen';
-        var body = document.querySelector('body');
-        body.appendChild(this.screenDiv);
-        body.classList.add(popupDisabledClass);
-    };
-    Popup.prototype.componentWillUnmount = function () {
-        /* Remove the programatic div and let the body scroll */
-        var body = document.querySelector('body');
-        body.removeChild(this.screenDiv);
-        body.classList.remove(popupDisabledClass);
-    };
-    Popup.prototype.close = function () {
-        /* Animate everything in */
-        var _this = this;
-        this.wrapperDiv.classList.add(popupFadeClass);
-        this.screenDiv.classList.add(popupScreenFadeClass);
-        /* Cool so we can seperate concerns */
-        var refCounter = { count: 0 };
-        var callback = function () {
-            if (refCounter.count == 1) {
-                _this.props.callback();
-            }
-            else {
-                refCounter.count += 1;
-            }
-        };
-        /*
-         * Since there are two animations going on we want to wait
-         * for both of them to end. So we use a reference counter
-         * in the form of a bound object.
-         */
-        this.wrapperDiv.addEventListener('animationend', callback);
-        this.screenDiv.addEventListener('animationend', callback);
-    };
-    Popup.prototype.render = function () {
-        var _this = this;
-        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
-            React.createElement("div", { className: "grid row" },
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-11 popup-title-div" },
-                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-offset-1 col-11" },
-                        React.createElement("p", { className: "popup-message" }, this.props.message),
-                        this.props.children)),
-                React.createElement("div", { className: "row-offset-10" },
-                    React.createElement("div", { className: "popup-check-button" },
-                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
-    };
-    return Popup;
-}(React.Component));
-exports.Popup = Popup;
-
-
-/***/ }),
+/* 51 */,
 /* 52 */,
 /* 53 */,
 /* 54 */,
@@ -7563,10 +7563,10 @@ module.exports = function(module) {
 
 
 
-var emptyFunction = __webpack_require__(37);
-var invariant = __webpack_require__(34);
-var warning = __webpack_require__(46);
-var assign = __webpack_require__(32);
+var emptyFunction = __webpack_require__(41);
+var invariant = __webpack_require__(35);
+var warning = __webpack_require__(47);
+var assign = __webpack_require__(31);
 
 var ReactPropTypesSecret = __webpack_require__(43);
 var checkPropTypes = __webpack_require__(61);
@@ -8114,8 +8114,8 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(34);
-  var warning = __webpack_require__(46);
+  var invariant = __webpack_require__(35);
+  var warning = __webpack_require__(47);
   var ReactPropTypesSecret = __webpack_require__(43);
   var loggedTypeFailures = {};
 }
@@ -8180,8 +8180,8 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(37);
-var invariant = __webpack_require__(34);
+var emptyFunction = __webpack_require__(41);
+var invariant = __webpack_require__(35);
 var ReactPropTypesSecret = __webpack_require__(43);
 
 module.exports = function() {
@@ -20143,6 +20143,87 @@ if (process.env.NODE_ENV !== 'production') {
 
 "use strict";
 
+/**
+ * Acts as a this wrapper around radio button so that
+ * Styles, animation, and consistency is maintained
+ */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(2);
+var reverseSwirlClass = "radio-swirl-back";
+var RadioButtonState = /** @class */ (function () {
+    function RadioButtonState() {
+    }
+    return RadioButtonState;
+}());
+// Typescript doesn't support variadic types so the props have to be any
+// To forward to the standard input field
+var RadioButton = /** @class */ (function (_super) {
+    __extends(RadioButton, _super);
+    function RadioButton(props) {
+        var _this = _super.call(this, props) || this;
+        _this.clicked = _this.clicked.bind(_this);
+        _this.hover = _this.hover.bind(_this);
+        return _this;
+    }
+    RadioButton.prototype.hover = function (event) {
+        // Must remove or after :hover disappears the
+        // Animation will trigger again
+        // No op to remove a class that does not exist
+        if (event.animationName.includes('reverse')) {
+            this.spanElem.classList.remove(reverseSwirlClass);
+        }
+    };
+    RadioButton.prototype.componentDidMount = function () {
+        // Make sure that the class has the reverse if checked for the first time
+        this.spanElem.addEventListener('animationend', this.hover);
+        this.clicked();
+    };
+    RadioButton.prototype.componentWillUnmount = function () {
+        this.spanElem.removeEventListener('animationend', this.hover);
+    };
+    RadioButton.prototype.clicked = function () {
+        if (this.inputElem.checked) {
+            // We are checking it
+            this.spanElem.classList.add(reverseSwirlClass);
+        }
+    };
+    RadioButton.prototype.render = function () {
+        /* Forward all props using ... to the input field since this is supposed
+         * to be a thin wrapper around it */
+        var _this = this;
+        return React.createElement("label", { className: "radio-container" },
+            React.createElement("input", __assign({}, this.props, { type: "radio", onClick: this.clicked, ref: function (input) { return _this.inputElem = input; } })),
+            React.createElement("span", { className: "radio-checkmark", ref: function (input) { return _this.spanElem = input; } }));
+    };
+    return RadioButton;
+}(React.Component));
+exports.RadioButton = RadioButton;
+
+
+/***/ }),
+/* 214 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -20198,7 +20279,7 @@ exports.EditableTextarea = EditableTextarea;
 
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -20463,10 +20544,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 214;
+webpackContext.id = 215;
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20485,7 +20566,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports) {
 
 var g;
@@ -20512,7 +20593,6 @@ module.exports = g;
 
 
 /***/ }),
-/* 217 */,
 /* 218 */,
 /* 219 */,
 /* 220 */,
@@ -20594,7 +20674,8 @@ module.exports = g;
 /* 296 */,
 /* 297 */,
 /* 298 */,
-/* 299 */
+/* 299 */,
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20602,12 +20683,12 @@ module.exports = g;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
 var ReactDOM = __webpack_require__(5);
-var ElectionView_1 = __webpack_require__(300);
+var ElectionView_1 = __webpack_require__(301);
 ReactDOM.render(React.createElement(ElectionView_1.ElectionView, null), document.querySelector("election-view"));
 
 
 /***/ }),
-/* 300 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20659,14 +20740,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
-var Popup_1 = __webpack_require__(51);
+var Popup_1 = __webpack_require__(46);
 var axios_1 = __webpack_require__(12);
-var RegisterElection_1 = __webpack_require__(301);
-var RadioButton_1 = __webpack_require__(302);
-var LocalResourceResolver_1 = __webpack_require__(36);
-var EditableTextarea_1 = __webpack_require__(213);
+var RegisterElection_1 = __webpack_require__(302);
+var RadioButton_1 = __webpack_require__(213);
+var EditableTextarea_1 = __webpack_require__(214);
 var react_datepicker_1 = __webpack_require__(303);
 var Utils_1 = __webpack_require__(44);
+var LocalResourceResolver_1 = __webpack_require__(33);
+axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
+axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
 var moment = __webpack_require__(0);
 var election_url = '/api/election/get/';
 var election_edit_url = '/api/election/edit/';
@@ -20674,8 +20757,6 @@ var campaign_url = '/api/campaign/';
 var election_create_url = '/api/election/create/';
 var cast_vote_url = '/api/election/vote/';
 var my_vote_url = '/api/election/vote/get/';
-axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
-axios_1.default.defaults.xsrfHeaderName = LocalResourceResolver_1.xsrfHeaderName();
 var LoadingState;
 (function (LoadingState) {
     LoadingState[LoadingState["Loading"] = 0] = "Loading";
@@ -21101,7 +21182,7 @@ exports.ElectionView = ElectionView;
 
 
 /***/ }),
-/* 301 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21153,10 +21234,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
-var Select_1 = __webpack_require__(49);
-var Popup_1 = __webpack_require__(51);
+var Select_1 = __webpack_require__(50);
+var Popup_1 = __webpack_require__(46);
 var axios_1 = __webpack_require__(12);
-var LocalResourceResolver_1 = __webpack_require__(36);
+var LocalResourceResolver_1 = __webpack_require__(33);
 var campaignCreate = '/api/campaign/create';
 var RegisterElectionView = /** @class */ (function (_super) {
     __extends(RegisterElectionView, _super);
@@ -21250,87 +21331,6 @@ exports.RegisterElectionView = RegisterElectionView;
 
 
 /***/ }),
-/* 302 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * Acts as a this wrapper around radio button so that
- * Styles, animation, and consistency is maintained
- */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(2);
-var reverseSwirlClass = "radio-swirl-back";
-var RadioButtonState = /** @class */ (function () {
-    function RadioButtonState() {
-    }
-    return RadioButtonState;
-}());
-// Typescript doesn't support variadic types so the props have to be any
-// To forward to the standard input field
-var RadioButton = /** @class */ (function (_super) {
-    __extends(RadioButton, _super);
-    function RadioButton(props) {
-        var _this = _super.call(this, props) || this;
-        _this.clicked = _this.clicked.bind(_this);
-        _this.hover = _this.hover.bind(_this);
-        return _this;
-    }
-    RadioButton.prototype.hover = function (event) {
-        // Must remove or after :hover disappears the
-        // Animation will trigger again
-        // No op to remove a class that does not exist
-        if (event.animationName.includes('reverse')) {
-            this.spanElem.classList.remove(reverseSwirlClass);
-        }
-    };
-    RadioButton.prototype.componentDidMount = function () {
-        // Make sure that the class has the reverse if checked for the first time
-        this.spanElem.addEventListener('animationend', this.hover);
-        this.clicked();
-    };
-    RadioButton.prototype.componentWillUnmount = function () {
-        this.spanElem.removeEventListener('animationend', this.hover);
-    };
-    RadioButton.prototype.clicked = function () {
-        if (this.inputElem.checked) {
-            // We are checking it
-            this.spanElem.classList.add(reverseSwirlClass);
-        }
-    };
-    RadioButton.prototype.render = function () {
-        /* Forward all props using ... to the input field since this is supposed
-         * to be a thin wrapper around it */
-        var _this = this;
-        return React.createElement("label", { className: "radio-container" },
-            React.createElement("input", __assign({}, this.props, { type: "radio", onClick: this.clicked, ref: function (input) { return _this.inputElem = input; } })),
-            React.createElement("span", { className: "radio-checkmark", ref: function (input) { return _this.spanElem = input; } }));
-    };
-    return RadioButton;
-}(React.Component));
-exports.RadioButton = RadioButton;
-
-
-/***/ }),
 /* 303 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -21340,7 +21340,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames__ = __webpack_require__(36);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_classnames__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_onclickoutside__ = __webpack_require__(304);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_moment__ = __webpack_require__(0);
@@ -24843,12 +24843,12 @@ Manager.defaultProps = {
 
 
 
-var emptyFunction = __webpack_require__(37);
-var invariant = __webpack_require__(34);
-var warning = __webpack_require__(46);
-var assign = __webpack_require__(32);
+var emptyFunction = __webpack_require__(41);
+var invariant = __webpack_require__(35);
+var warning = __webpack_require__(47);
+var assign = __webpack_require__(31);
 
-var ReactPropTypesSecret = __webpack_require__(215);
+var ReactPropTypesSecret = __webpack_require__(216);
 var checkPropTypes = __webpack_require__(308);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
@@ -25394,9 +25394,9 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(34);
-  var warning = __webpack_require__(46);
-  var ReactPropTypesSecret = __webpack_require__(215);
+  var invariant = __webpack_require__(35);
+  var warning = __webpack_require__(47);
+  var ReactPropTypesSecret = __webpack_require__(216);
   var loggedTypeFailures = {};
 }
 
@@ -25460,9 +25460,9 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(37);
-var invariant = __webpack_require__(34);
-var ReactPropTypesSecret = __webpack_require__(215);
+var emptyFunction = __webpack_require__(41);
+var invariant = __webpack_require__(35);
+var ReactPropTypesSecret = __webpack_require__(216);
 
 module.exports = function() {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -28353,7 +28353,7 @@ Popper.Defaults = Defaults;
 
 /* harmony default export */ __webpack_exports__["a"] = (Popper);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(216)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(217)))
 
 /***/ }),
 /* 313 */

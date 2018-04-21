@@ -3,6 +3,12 @@ import axios from 'axios';
 import {Select, Option} from '../common/Select';
 import {objectToFormData} from '../common/Utils';
 import {Popup} from '../common/Popup';
+import { xsrfCookieName, xsrfHeaderName, getMemberId, isBoardMember } from '../common/LocalResourceResolver';
+import {Slider} from '../common/Slider';
+import {RadioButton} from '../common/RadioButton';
+axios.defaults.xsrfCookieName = xsrfCookieName();
+axios.defaults.xsrfHeaderName = xsrfHeaderName();
+//axios.post('/api/tournament/members/register', objectToFormData({member_id: 2})).catch((err: any) => console.log(err));
 const tourney_url = '/api/tournament/';
 
 const columnWidth = 160;
@@ -26,28 +32,47 @@ const calcY = (col: number, row: number, maxCols: number): number => {
 
 class Matchup extends React.Component<any, any> {
 
+	unpackMatch(matches: any) {
+		const match = matches[0];
+		const decide = (team: any) => {
+			if (team.length == 2) {
+				return team[0].first_name + ' & ' + team[1].first_name;
+			} else if (team.length == 1) {
+				return team[0].first_name + ' ' + team[0].last_name;
+			} else {
+				return 'None';
+			}
+		}
+		const team1 = decide(match.team_A);
+		const team2 = decide(match.team_B);
+		return [match, team1, team2]
+	}
 	render() {
 		var extra;
-		const opts = {
-
-		}
 		const startingX = this.props.x;
 		const startingY = this.props.y+15;
-		if (this.props.data.state === "undecided") {
-			extra = <text style={opts} x={startingX} y={startingY} height={rowHeight} width={columnWidth}>
+		const textStyle = {
+			fill: 'white',
+			stroke: 'white',
+			strokeWidth: 1.5,
+		}
+		if (this.props.data.matches.length === 0) {
+			extra = <text x={startingX} y={startingY} height={rowHeight} width={columnWidth}>
 				TBA
 				</text>
 		}
-		else if (this.props.data.state === "decided") {
+		else if (this.props.data.endDateTime === null) {
+			const [match, team1, team2] = this.unpackMatch(this.props.data.matches);
 			extra = <>
-				<text style={opts} x={startingX} y={startingY}>
-				{this.props.data.team1}
+				<text x={startingX} y={startingY} style={textStyle}>
+				{team1}
 				</text>
-				<text style={opts} x={startingX} y={startingY+rowHeight/2}>
-				{this.props.data.team2}
+				<text x={startingX} y={startingY+rowHeight/2} style={textStyle}>
+				{team2}
 				</text>
 				</>
 		} else {
+			const [match, team1, team2] = this.unpackMatch(this.props.data.matches);
 			const convert = (num: number): string => {
 				if (num < 10) {
 					return "0" + num;
@@ -56,16 +81,16 @@ class Matchup extends React.Component<any, any> {
 				return "" + num;
 			}
 			extra = <>
-				<text style={opts} x={startingX} y={startingY}>
-				{this.props.data.team1}
+				<text x={startingX} y={startingY} style={textStyle}>
+				{team1}
 				</text>
-				<text style={opts} x={startingX} y={startingY+rowHeight/2}>
-				{this.props.data.team2}
+				<text x={startingX} y={startingY+rowHeight/2} style={textStyle}>
+				{team2}
 				</text>
-				<text style={opts} x={startingX+columnWidth-25} y={startingY}>
+				<text x={startingX+columnWidth-25} y={startingY} style={textStyle}>
 				{this.props.data.team1_score}
 				</text>
-				<text style={opts} x={startingX+columnWidth-25} y={startingY+rowHeight/2}>
+				<text x={startingX+columnWidth-25} y={startingY+rowHeight/2} style={textStyle}>
 				{this.props.data.team2_score}
 				</text>
 				</>
@@ -255,6 +280,8 @@ export class TournamentView extends React.Component<any, any> {
 		this.refresh = this.refresh.bind(this);
 		this.finishTournament = this.finishTournament.bind(this);
 		this.changeMatch = this.changeMatch.bind(this);
+		this.joinTournament = this.joinTournament.bind(this);
+		this.leaveTournament = this.leaveTournament.bind(this);
 	}
 
 	async finishTournament() {
@@ -272,18 +299,21 @@ export class TournamentView extends React.Component<any, any> {
 
 	async refresh() {
 		try {
-			const res = await axios.get(tourney_url)
+			const [res] = [await axios.get(tourney_url)];
 			const data = res.data;
 			if (data.status === "down") {
 				this.setState({
 					status: data.status,
 					matches: res.data,
-				})			}
+				})
+			}
 			else {
+				const members = await axios.get('/api/tournament/members/get/');
 				const brackets = convertToDicts(data.tournament.bracket_nodes);
 				this.setState({
 					status: data.status,
 					matches: brackets,
+					members: members.data.tournament_members,
 					id: data.tournament.tournament_id,
 				})
 			}
@@ -292,8 +322,100 @@ export class TournamentView extends React.Component<any, any> {
 		}
 	}
 
+	async joinTournament() {
+		try {
+			const res = await axios.post('/api/tournament/members/register', objectToFormData({member_id: getMemberId()}));
+			console.log(res);
+			this.refresh();
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	async leaveTournament() {
+		try {
+			const res = await axios.post('/api/tournament/members/unregister', objectToFormData({member_id: getMemberId()}));
+			console.log(res);
+			this.refresh();
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
 	changeMatch(matchObj: any) {
-		console.log(matchObj);
+		const reset = () => this.setState({popup: null})
+		var popup = null;
+		console.log(matchObj.matches);
+		if (matchObj.matches.length === 0) {
+			// Unassigned case
+			const team: any = {teamA: new Set(), teamB: new Set()}
+			const callback = async () => {
+				try {
+					const data = {
+						bracket_node_id: matchObj.id,
+						team_A: Array.from(team.teamA).join(','),
+						team_B: Array.from(team.teamB).join(','),
+					}
+					const res = await axios.post('/api/tournament/add/match/', objectToFormData(data));
+					console.log(res);
+				} finally {
+					reset();
+					this.refresh();
+				}
+			}
+			popup = <Popup title="Assign Teams" callback={callback}>
+			<div style={{height: "100%", overflowY: "scroll"}} >
+			<div className="row">
+			<div className="col-9">
+			Member
+			</div>
+
+			<div className="col-1">
+			</div>
+			<div className="col-1">
+			A
+			</div>
+			<div className="col-1">
+			B
+			</div>
+			</div>
+			{
+				this.state.members.map((member: any, idx: number) => {
+					return <div className="row" key={idx}>
+						<div className="col-9">
+						{member.first_name} {member.last_name}
+						</div>
+
+						<div className="col-1">
+						<RadioButton defaultChecked={true} name={"" + idx} 
+							onChange={(ev: any) => {
+								if (!ev.target.checked) return;
+								team.teamA.delete(member.member_id);
+								team.teamB.delete(member.member_id);
+							}}/>
+						</div>
+						<div className="col-1">
+						<RadioButton defaultChecked={false} name={"" + idx} onChange={(ev: any) => {
+								if (!ev.target.checked) return;
+								team.teamA.add(member.member_id);
+								team.teamB.delete(member.member_id);
+							}}/>
+						</div>
+						<div className="col-1">
+						<RadioButton defaultChecked={false} name={"" + idx} onChange={(ev: any) => {
+								if (!ev.target.checked) return;
+								team.teamA.delete(member.member_id);
+								team.teamB.add(member.member_id);
+						}}/>
+						</div>
+						</div>
+				})
+			}
+			</div>
+			</Popup>
+		} 
+
+		this.setState({popup:popup});
 	}
 
 	componentDidMount() {
@@ -310,7 +432,20 @@ export class TournamentView extends React.Component<any, any> {
 			<div className="tournament-div">
 			{this.state.popup && this.state.popup}
 			<TournamentCell matches={this.state.matches} change={this.changeMatch} />
+			<div className="row">
+			<div className="col-6">
 			<button onClick={this.finishTournament} className="interaction-style">Finish</button>
+			</div>
+
+			{
+				this.state.members.find((e: any) => e.member_id == getMemberId() ) === undefined ? 
+				<div className="col-6">
+			<button onClick={this.joinTournament} className="interaction-style">Join</button>
+			</div> : <div className="col-6">
+			<button onClick={this.leaveTournament} className="interaction-style">Leave</button>
+			</div>
+			}
+			</div>
 			</div>);
 	}
 }

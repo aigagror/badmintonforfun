@@ -5,10 +5,14 @@ import axios from 'axios';
 import { RegisterElectionView } from "./RegisterElection";
 import { RadioButton } from '../common/RadioButton';
 import { Select, Option } from "../common/Select";
-import { xsrfCookieName, xsrfHeaderName, getMemberId, isBoardMember } from '../common/LocalResourceResolver';
 import { EditableTextarea } from '../common/EditableTextarea';
 import DatePicker from 'react-datepicker';
 import {objectToFormData} from '../common/Utils';
+import { xsrfCookieName, xsrfHeaderName, getMemberId, isBoardMember } from '../common/LocalResourceResolver';
+
+axios.defaults.xsrfCookieName = xsrfCookieName();
+axios.defaults.xsrfHeaderName = xsrfHeaderName();
+
 declare var require: Function;
 const moment = require('moment');
 
@@ -19,8 +23,6 @@ const election_create_url = '/api/election/create/';
 const cast_vote_url = '/api/election/vote/';
 const my_vote_url = '/api/election/vote/get/'
 
-axios.defaults.xsrfCookieName = xsrfCookieName();
-axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 enum LoadingState {
     Loading,

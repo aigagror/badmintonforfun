@@ -420,9 +420,9 @@ export class Queue extends React.Component<any, any> {
 				 vs Team B: {this.state.teamB.map((a : any) => a.name).join(',')} </h4>
 				<div className="court-style">
 					{this.state.teamA.map((a : any, idx: number) => 
-						<div className={"court-a a-team-"+(idx+1)+"-"+this.state.teamA.length}>a.name</div>)}
+						<div className={"court-a-team a-team-"+(idx+1)+"-"+this.state.teamA.length}>{a.name}</div>)}
 					{this.state.teamB.map((a : any, idx: number) => 
-						<div className={"court-a a-team-"+(idx+1)+"-"+this.state.teamB.length}>a.name</div>)}
+						<div className={"court-b-team b-team-"+(idx+1)+"-"+this.state.teamB.length}>{a.name}</div>)}
 				</div>
 				<div className="col-5">
 				<input value={this.state.aScore} className='interaction-style' onChange={(ev: any) => this.setState({aScore: ev.target.value})}></input> 

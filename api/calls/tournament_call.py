@@ -105,28 +105,24 @@ def _build_bracket_dictionary_it(bracket_nodes, max_level):
             bracket_dict = {"bracket_node_id": bracket_node_id}
             matches = Match.objects.raw("SELECT * FROM api_match WHERE bracket_node_id=%s", [bracket_node_id])
             match_info = []
+            query = """
+            SELECT api_playedin.member_id, api_interested.first_name, api_interested.last_name 
+            FROM api_playedin
+            JOIN api_interested ON api_playedin.member_id = api_interested.id
+            WHERE match_id=%s AND team=%s
+            """
             for match in matches:
-                team_a = []
-                a_players = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id=%s AND team=%s",
-                                                 [match.id, "A"])
-                if len(list(a_players)) > 0:
-                    for player in a_players:
-                        team_a.append(player.member_id)
-
-                team_b = []
-                b_players = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id=%s AND team=%s",
-                                                 [match.id, "B"])
-
-                if len(list(b_players)) > 0:
-                    for player in b_players:
-                        team_b.append(player.member_id)
-
+                with connection.cursor() as cursor:
+                    cursor.execute(query, [match.id, "A"])
+                    team_a = dictfetchall(cursor)
+                    cursor.execute(query, [match.id, "B"])
+                    team_b = dictfetchall(cursor)
                 match_dict = {
                     "match_id": match.id,
                     "startDateTime": serializeDateTime(match.startDateTime),
                     "scoreA": match.scoreA,
                     "scoreB": match.scoreB,
-                    "endDateTime": serializeDateTime(match.endDateTime) if match.endDateTime is not None else "None",
+                    "endDateTime": serializeDateTime(match.endDateTime) if match.endDateTime is not None else None,
                     "team_A": team_a,
                     "team_B": team_b
                 }
