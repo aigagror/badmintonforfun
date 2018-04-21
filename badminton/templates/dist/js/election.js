@@ -7153,108 +7153,6 @@ exports.objectToFormData = objectToFormData;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-/**
- * Contains a popup view that need only to be rendered
- * To work. Appears in the middle of the screen and darkens
- * The body.
- */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(2);
-var popupDisabledClass = "popup-disabled";
-var popupScreenFadeClass = 'popup-screen-fade';
-var popupFadeClass = 'popup-fade';
-var PopupProps = /** @class */ (function () {
-    function PopupProps() {
-    }
-    return PopupProps;
-}());
-exports.PopupProps = PopupProps;
-var PopupState = /** @class */ (function () {
-    function PopupState() {
-    }
-    return PopupState;
-}());
-var Popup = /** @class */ (function (_super) {
-    __extends(Popup, _super);
-    function Popup(props) {
-        var _this = _super.call(this, props) || this;
-        _this.close = _this.close.bind(_this);
-        return _this;
-    }
-    Popup.prototype.componentDidMount = function () {
-        /* Programatically create a div to overlay everything and animate it in
-            Also force the body not to scroll */
-        this.screenDiv = document.createElement('div');
-        this.screenDiv.className = 'popup-screen';
-        var body = document.querySelector('body');
-        body.appendChild(this.screenDiv);
-        body.classList.add(popupDisabledClass);
-    };
-    Popup.prototype.componentWillUnmount = function () {
-        /* Remove the programatic div and let the body scroll */
-        var body = document.querySelector('body');
-        body.removeChild(this.screenDiv);
-        body.classList.remove(popupDisabledClass);
-    };
-    Popup.prototype.close = function () {
-        /* Animate everything in */
-        var _this = this;
-        this.wrapperDiv.classList.add(popupFadeClass);
-        this.screenDiv.classList.add(popupScreenFadeClass);
-        /* Cool so we can seperate concerns */
-        var refCounter = { count: 0 };
-        var callback = function () {
-            if (refCounter.count == 1) {
-                _this.props.callback();
-            }
-            else {
-                refCounter.count += 1;
-            }
-        };
-        /*
-         * Since there are two animations going on we want to wait
-         * for both of them to end. So we use a reference counter
-         * in the form of a bound object.
-         */
-        this.wrapperDiv.addEventListener('animationend', callback);
-        this.screenDiv.addEventListener('animationend', callback);
-    };
-    Popup.prototype.render = function () {
-        var _this = this;
-        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
-            React.createElement("div", { className: "grid row" },
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-11 popup-title-div" },
-                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-offset-1 col-11" },
-                        React.createElement("p", { className: "popup-message" }, this.props.message),
-                        this.props.children)),
-                React.createElement("div", { className: "row-offset-10" },
-                    React.createElement("div", { className: "popup-check-button" },
-                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
-    };
-    return Popup;
-}(React.Component));
-exports.Popup = Popup;
-
-
-/***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -7320,9 +7218,9 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
+/* 47 */,
 /* 48 */,
-/* 49 */,
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7514,6 +7412,108 @@ exports.Select = Select;
 
 
 /***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Contains a popup view that need only to be rendered
+ * To work. Appears in the middle of the screen and darkens
+ * The body.
+ */
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(2);
+var popupDisabledClass = "popup-disabled";
+var popupScreenFadeClass = 'popup-screen-fade';
+var popupFadeClass = 'popup-fade';
+var PopupProps = /** @class */ (function () {
+    function PopupProps() {
+    }
+    return PopupProps;
+}());
+exports.PopupProps = PopupProps;
+var PopupState = /** @class */ (function () {
+    function PopupState() {
+    }
+    return PopupState;
+}());
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
+        var _this = _super.call(this, props) || this;
+        _this.close = _this.close.bind(_this);
+        return _this;
+    }
+    Popup.prototype.componentDidMount = function () {
+        /* Programatically create a div to overlay everything and animate it in
+            Also force the body not to scroll */
+        this.screenDiv = document.createElement('div');
+        this.screenDiv.className = 'popup-screen';
+        var body = document.querySelector('body');
+        body.appendChild(this.screenDiv);
+        body.classList.add(popupDisabledClass);
+    };
+    Popup.prototype.componentWillUnmount = function () {
+        /* Remove the programatic div and let the body scroll */
+        var body = document.querySelector('body');
+        body.removeChild(this.screenDiv);
+        body.classList.remove(popupDisabledClass);
+    };
+    Popup.prototype.close = function () {
+        /* Animate everything in */
+        var _this = this;
+        this.wrapperDiv.classList.add(popupFadeClass);
+        this.screenDiv.classList.add(popupScreenFadeClass);
+        /* Cool so we can seperate concerns */
+        var refCounter = { count: 0 };
+        var callback = function () {
+            if (refCounter.count == 1) {
+                _this.props.callback();
+            }
+            else {
+                refCounter.count += 1;
+            }
+        };
+        /*
+         * Since there are two animations going on we want to wait
+         * for both of them to end. So we use a reference counter
+         * in the form of a bound object.
+         */
+        this.wrapperDiv.addEventListener('animationend', callback);
+        this.screenDiv.addEventListener('animationend', callback);
+    };
+    Popup.prototype.render = function () {
+        var _this = this;
+        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
+            React.createElement("div", { className: "grid row" },
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-11 popup-title-div" },
+                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-offset-1 col-11" },
+                        React.createElement("p", { className: "popup-message" }, this.props.message),
+                        this.props.children)),
+                React.createElement("div", { className: "row-offset-10" },
+                    React.createElement("div", { className: "popup-check-button" },
+                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
+    };
+    return Popup;
+}(React.Component));
+exports.Popup = Popup;
+
+
+/***/ }),
 /* 51 */,
 /* 52 */,
 /* 53 */,
@@ -7565,7 +7565,7 @@ module.exports = function(module) {
 
 var emptyFunction = __webpack_require__(41);
 var invariant = __webpack_require__(35);
-var warning = __webpack_require__(47);
+var warning = __webpack_require__(46);
 var assign = __webpack_require__(31);
 
 var ReactPropTypesSecret = __webpack_require__(43);
@@ -8115,7 +8115,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(35);
-  var warning = __webpack_require__(47);
+  var warning = __webpack_require__(46);
   var ReactPropTypesSecret = __webpack_require__(43);
   var loggedTypeFailures = {};
 }
@@ -20740,7 +20740,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
-var Popup_1 = __webpack_require__(46);
 var axios_1 = __webpack_require__(12);
 var RegisterElection_1 = __webpack_require__(302);
 var RadioButton_1 = __webpack_require__(213);
@@ -20839,13 +20838,14 @@ var ElectionCandidate = /** @class */ (function (_super) {
                                     case 0:
                                         if (!ev.target.checked)
                                             return [2 /*return*/];
-                                        data = new FormData();
-                                        data.append('voter', "" + LocalResourceResolver_1.getMemberId());
-                                        data.append('campaign', ev.target.value);
+                                        data = {
+                                            voter: LocalResourceResolver_1.getMemberId(),
+                                            campaign_id: ev.target.value,
+                                        };
                                         _a.label = 1;
                                     case 1:
                                         _a.trys.push([1, 3, , 4]);
-                                        return [4 /*yield*/, axios_1.default.post(cast_vote_url, data)];
+                                        return [4 /*yield*/, axios_1.default.post(cast_vote_url, Utils_1.objectToFormData(data))];
                                     case 2:
                                         res = _a.sent();
                                         return [3 /*break*/, 4];
@@ -20979,33 +20979,16 @@ var ElectionUp = /** @class */ (function (_super) {
             popup: null,
             campaigns: campaigns,
         };
-        _this.submitVotes = _this.submitVotes.bind(_this);
         return _this;
     }
-    ElectionUp.prototype.submitVotes = function (event) {
-        var _this = this;
-        event.preventDefault();
-        for (var key in this.props.order) {
-            var elem = this.props.order[key];
-            console.log("For: " + elem + " Userid: " + event.target[elem].value);
-        }
-        this.setState({
-            popup: React.createElement(Popup_1.Popup, { title: "Submitted!", message: "Submit as many times as you want before the deadline", callback: function () {
-                    _this.setState({ popup: null });
-                } })
-        });
-    };
     ElectionUp.prototype.render = function () {
         var _this = this;
         return (React.createElement(React.Fragment, null,
             React.createElement("div", { className: "grid row-offset-1" },
                 LocalResourceResolver_1.isBoardMember() && React.createElement(ElectionUpBoardEditable, { refresh: this.props.refresh, id: this.props.id, startDate: this.props.startDate, endDate: this.props.endDate }),
-                React.createElement("form", { onSubmit: this.submitVotes },
-                    this.state.campaigns.map(function (campaign, idx) {
-                        return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx, refresh: _this.props.refresh, voted: _this.props.voted });
-                    }),
-                    React.createElement("div", { className: "row row-offset-2" },
-                        React.createElement("button", { className: "interaction-style", type: "submit" }, "Submit Votes"))),
+                React.createElement("form", null, this.state.campaigns.map(function (campaign, idx) {
+                    return React.createElement(ElectionRole, { role: campaign[0], candidates: campaign[1], key: idx, refresh: _this.props.refresh, voted: _this.props.voted });
+                })),
                 this.state.popup !== null && this.state.popup),
             React.createElement(RegisterElection_1.RegisterElectionView, { roles: this.props.order })));
     };
@@ -21234,8 +21217,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
-var Select_1 = __webpack_require__(50);
-var Popup_1 = __webpack_require__(46);
+var Select_1 = __webpack_require__(49);
+var Popup_1 = __webpack_require__(50);
 var axios_1 = __webpack_require__(12);
 var LocalResourceResolver_1 = __webpack_require__(33);
 var campaignCreate = '/api/campaign/create';
@@ -24845,7 +24828,7 @@ Manager.defaultProps = {
 
 var emptyFunction = __webpack_require__(41);
 var invariant = __webpack_require__(35);
-var warning = __webpack_require__(47);
+var warning = __webpack_require__(46);
 var assign = __webpack_require__(31);
 
 var ReactPropTypesSecret = __webpack_require__(216);
@@ -25395,7 +25378,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(35);
-  var warning = __webpack_require__(47);
+  var warning = __webpack_require__(46);
   var ReactPropTypesSecret = __webpack_require__(216);
   var loggedTypeFailures = {};
 }

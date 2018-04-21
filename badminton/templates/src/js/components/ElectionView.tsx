@@ -86,12 +86,12 @@ class ElectionCandidate extends React.Component<any, any> {
 				value={this.props.person.id} defaultChecked={this.props.voted.includes(this.props.person.id)} 
 				onChange={async (ev:any) => {
 					if (!ev.target.checked) return;
-
-					let data = new FormData();
-					data.append('voter', ""+getMemberId());
-					data.append('campaign', ev.target.value);
+					const data = {
+						voter: getMemberId(),
+						campaign_id: ev.target.value,
+					}
 					try {
-						const res = await axios.post(cast_vote_url, data);
+						const res = await axios.post(cast_vote_url, objectToFormData(data));
 					} catch (err) {
 						console.log(err);
 					}
@@ -233,24 +233,8 @@ class ElectionUp extends React.Component<any, any> {
 			popup: null,
 			campaigns: campaigns,
 		}
-		this.submitVotes = this.submitVotes.bind(this);
 	}
-
-	submitVotes(event: any) {
-		event.preventDefault();
-		for(let key in this.props.order) {
-			let elem = this.props.order[key];
-			console.log("For: " + elem + " Userid: " + event.target[elem].value);
-		}
-		this.setState({
-			popup: <Popup title="Submitted!" 
-				message="Submit as many times as you want before the deadline"
-				callback={()=>{
-					this.setState({popup: null});
-				}} />
-		});
-	}
-
+	
 	render() {
 		return (<>
 		<div className="grid row-offset-1">
@@ -261,7 +245,7 @@ class ElectionUp extends React.Component<any, any> {
 			startDate={this.props.startDate}
 			endDate={this.props.endDate} />}
 
-		<form onSubmit={this.submitVotes}>
+		<form >
 		{
 			this.state.campaigns.map((campaign: any, idx: number) => { 
 				return <ElectionRole 
@@ -272,9 +256,6 @@ class ElectionUp extends React.Component<any, any> {
 					voted={this.props.voted}/>
 			})
 		}
-		<div className="row row-offset-2">
-		<button className="interaction-style" type="submit">Submit Votes</button>
-		</div>
 		</form>
 		{ this.state.popup !== null && this.state.popup }
 		</div>

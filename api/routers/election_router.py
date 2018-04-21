@@ -8,7 +8,7 @@ from api.cursor_api import *
 from api.routers.router import restrictRouter
 from api.models import *
 import datetime
-from api.utils import MemberClass
+from api.utils import MemberClass, id_for_member
 from api.routers.router import auth_decorator
 from django.db import connection
 
@@ -41,6 +41,14 @@ def get_election(request):
         '''
         cursor.execute(query, [current_election.id])
         campaigns = dictfetchall(cursor)
+        query = '''
+        SELECT campaign_id
+        FROM api_vote
+        JOIN api_campaign ON api_campaign.id = api_vote.campaign_id
+        WHERE api_campaign.election_id = %s AND api_vote.voter_id = %s
+        '''
+        cursor.execute(query, [current_election.id, id_for_member(request.user.email)])
+        my_votes = [x['campaign_id'] for x in dictfetchall(cursor)]
 
     campaign_info = []
     for campaign in campaigns:
@@ -56,8 +64,9 @@ def get_election(request):
     context = {
         'election': (serializeModel(current_election)),
         'campaigns': campaign_info,
-        "order": list(map(lambda x: x[0], JOBS))
+        "order": [x[0] for x in JOBS],
     }
+    print(context)
     return http_response(context)
 
 

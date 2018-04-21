@@ -132,11 +132,13 @@ def _bypass_template_server(request, template, ensure_cookie=True):
     for key, value in context.items():
         if isinstance(value, list) and len(value) == 1:
             context[key] = value[0]
+    is_board_bool = get_member_class(request.user.email) == MemberClass.BOARD_MEMBER 
+    context['is_board_member'] = is_board_bool
     response = render(request, template, context=context)
     if ensure_cookie:
         email = request.user.email
         response.set_cookie('member_id', str(id_for_member(email)))
-        is_board = "true" if get_member_class(email) == MemberClass.BOARD_MEMBER else "false"
+        is_board = "true" if is_board_bool else "false"
         response.set_cookie('is_board_member', is_board)
     return response
 

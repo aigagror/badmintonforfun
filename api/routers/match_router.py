@@ -51,11 +51,14 @@ def finish_match(request):
     """
 
     member_id = get_member_id_from_email(request.user.email)
-    match_id = get_match_from_member_id(member_id)
+
     dict_post = dict(request.POST.items())
     if not validate_keys(["scoreA", "scoreB"], dict_post):
         return http_response(message='missing keys', code=400)
-
+    if 'match_id' in dict_post:
+        match_id = int(dict_post['match_id'])
+    else:
+        match_id = get_match_from_member_id(member_id)
     return get_finish_match(match_id, dict_post["scoreA"], dict_post["scoreB"])
 
 

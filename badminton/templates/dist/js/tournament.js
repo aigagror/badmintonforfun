@@ -2299,16 +2299,11 @@ exports.objectToFormData = objectToFormData;
 
 /***/ }),
 
-/***/ 46:
+/***/ 49:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-/**
- * Contains a popup view that need only to be rendered
- * To work. Appears in the middle of the screen and darkens
- * The body.
- */
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2321,83 +2316,178 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
-var popupDisabledClass = "popup-disabled";
-var popupScreenFadeClass = 'popup-screen-fade';
-var popupFadeClass = 'popup-fade';
-var PopupProps = /** @class */ (function () {
-    function PopupProps() {
+var Option = /** @class */ (function () {
+    function Option(val, displ) {
+        this.value = val;
+        this.display = displ;
     }
-    return PopupProps;
+    return Option;
 }());
-exports.PopupProps = PopupProps;
-var PopupState = /** @class */ (function () {
-    function PopupState() {
+exports.Option = Option;
+var selectFadeOutClassName = 'select-check-fade-out';
+var SelectArea = /** @class */ (function (_super) {
+    __extends(SelectArea, _super);
+    function SelectArea() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    return PopupState;
-}());
-var Popup = /** @class */ (function (_super) {
-    __extends(Popup, _super);
-    function Popup(props) {
+    SelectArea.prototype.render = function () {
+        var _this = this;
+        return React.createElement("span", { className: 'select' }, this.props.options.map(function (option, idx) {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: _this.props.name + idx, value: option.value, name: _this.props.name, type: 'radio', onChange: function (target) { return _this.props.change(option.value, _this.props.name + idx); } }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: _this.props.name + idx }, option.display));
+        }));
+    };
+    return SelectArea;
+}(React.Component));
+var Select = /** @class */ (function (_super) {
+    __extends(Select, _super);
+    function Select(props) {
         var _this = _super.call(this, props) || this;
-        _this.close = _this.close.bind(_this);
+        _this.change = _this.change.bind(_this);
+        _this.handleClickOutside = _this.handleClickOutside.bind(_this);
+        _this.lazyAnimationAdder = _this.lazyAnimationAdder.bind(_this);
+        _this._decideInitialStatus = _this._decideInitialStatus.bind(_this);
+        _this._scrollCondition = _this._scrollCondition.bind(_this);
+        _this.documentResizeUpdate = _this.documentResizeUpdate.bind(_this);
+        var status = _this._decideInitialStatus();
+        var value = _this.props.defaultValue !== undefined ? _this.props.defaultValue : _this.props.options[0].value;
+        _this.state = {
+            status: status,
+            width: document.documentElement.clientWidth,
+            value: value,
+        };
+        _this.scrollDiv = null;
         return _this;
     }
-    Popup.prototype.componentDidMount = function () {
-        /* Programatically create a div to overlay everything and animate it in
-            Also force the body not to scroll */
-        this.screenDiv = document.createElement('div');
-        this.screenDiv.className = 'popup-screen';
-        var body = document.querySelector('body');
-        body.appendChild(this.screenDiv);
-        body.classList.add(popupDisabledClass);
+    Select.prototype._scrollCondition = function () {
+        return this.state.width < 500 || this.props.override;
     };
-    Popup.prototype.componentWillUnmount = function () {
-        /* Remove the programatic div and let the body scroll */
-        var body = document.querySelector('body');
-        body.removeChild(this.screenDiv);
-        body.classList.remove(popupDisabledClass);
-    };
-    Popup.prototype.close = function () {
-        /* Animate everything in */
+    Select.prototype._decideInitialStatus = function () {
         var _this = this;
-        this.wrapperDiv.classList.add(popupFadeClass);
-        this.screenDiv.classList.add(popupScreenFadeClass);
-        /* Cool so we can seperate concerns */
-        var refCounter = { count: 0 };
-        var callback = function () {
-            if (refCounter.count == 1) {
-                _this.props.callback();
+        if (this.props.defaultValue !== undefined) {
+            var value = this.props.options.find(function (option) {
+                return option.value === _this.props.defaultValue;
+            });
+            if (value === undefined) {
+                return this.props.options[0].display;
             }
             else {
-                refCounter.count += 1;
+                return value.display;
             }
-        };
-        /*
-         * Since there are two animations going on we want to wait
-         * for both of them to end. So we use a reference counter
-         * in the form of a bound object.
-         */
-        this.wrapperDiv.addEventListener('animationend', callback);
-        this.screenDiv.addEventListener('animationend', callback);
+        }
+        else {
+            return this.props.options[0].display;
+        }
     };
-    Popup.prototype.render = function () {
+    Select.prototype.documentResizeUpdate = function () {
+        this.setState({
+            width: document.documentElement.clientWidth
+        });
+    };
+    Select.prototype.componentDidMount = function () {
         var _this = this;
-        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
-            React.createElement("div", { className: "grid row" },
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-11 popup-title-div" },
-                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-offset-1 col-11" },
-                        React.createElement("p", { className: "popup-message" }, this.props.message),
-                        this.props.children)),
-                React.createElement("div", { className: "row-offset-10" },
-                    React.createElement("div", { className: "popup-check-button" },
-                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
+        document.addEventListener('mousedown', this.handleClickOutside);
+        var defaultHeight = 30;
+        this.scrollDiv.style.height = defaultHeight + "px";
+        this.interval = setInterval(function () {
+            var movableArea = _this.innerDiv.scrollTop /
+                (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
+            var offset = _this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            _this.scrollDiv.style.top = "" + offset + "px";
+        }, 20);
+        var divMove = function (e) {
+            var boundingRect = _this.selectDiv.getBoundingClientRect();
+            var fuzz = .2;
+            var height = boundingRect.bottom - boundingRect.top;
+            var bottom = boundingRect.bottom - fuzz * height;
+            var top = boundingRect.top + fuzz * height;
+            var adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            var percentage = (adjusted - top) / (bottom - top);
+            _this.innerDiv.scrollTop = percentage * (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
+        };
+        function mouseUp() {
+            window.removeEventListener('mousemove', divMove, true);
+        }
+        function mouseDown() {
+            window.addEventListener('mousemove', divMove, true);
+        }
+        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
+        window.addEventListener('mouseup', mouseUp, false);
     };
-    return Popup;
+    Select.prototype.componentWillUnmount = function () {
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.removeEventListener('mousedown', this.handleClickOutside);
+        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
+        clearInterval(this.interval);
+    };
+    /**
+     * Uncheck the input if clicked outside
+     * Best to leave the typing generic because typescript does _not_
+     * like non-generics with dom.
+     */
+    Select.prototype.handleClickOutside = function (event) {
+        if (this._scrollCondition()) {
+            return;
+        }
+        if (this.inputDiv && !this.wrapper.contains(event.target)) {
+            this.inputDiv.checked = false;
+        }
+    };
+    Select.prototype.lazyAnimationAdder = function (event) {
+        if (this._scrollCondition()) {
+            return;
+        }
+        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
+            this.selectDiv.classList.add(selectFadeOutClassName);
+        }
+    };
+    Select.prototype.change = function (value, id) {
+        if (this.props.onChange) {
+            this.props.onChange(value);
+        }
+        this.setState({
+            value: value,
+        });
+        if (this._scrollCondition()) {
+            return;
+        }
+        else {
+            // Cool trick to get the label for the input
+            var elem = document.querySelector('label[for="' + id + '"]');
+            this.setState({
+                status: elem.innerHTML,
+            });
+            this.inputDiv.checked = false;
+        }
+    };
+    Select.prototype.render = function () {
+        var _this = this;
+        if (this._scrollCondition()) {
+            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: function (ev) { return _this.change(ev.target.value, null); } }, this.props.options.map(function (option, idx) {
+                return React.createElement(React.Fragment, null,
+                    React.createElement("option", { value: option.value }, option.display));
+            }));
+        }
+        return React.createElement("div", { className: "select-wrapper-div", ref: function (input) { return _this.wrapper = input; } },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: function (input) { return _this.inputDiv = input; } }),
+            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
+                React.createElement("span", { ref: function (input) { return _this.titleSpan = input; }, className: "select-title-text" }, this.state.status),
+                React.createElement("b", { className: 'select-arrow' })),
+            React.createElement("div", { className: "select-div", ref: function (input) { return _this.selectDiv = input; } },
+                React.createElement("div", { className: "inner-select-div", ref: function (input) { return _this.innerDiv = input; } },
+                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
+                    React.createElement("div", { className: "select-scroll", ref: function (input) { return _this.scrollDiv = input; } }))));
+    };
+    return Select;
 }(React.Component));
-exports.Popup = Popup;
+exports.Select = Select;
 
 
 /***/ }),
@@ -2486,9 +2576,9 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
 var axios_1 = __webpack_require__(12);
-var Select_1 = __webpack_require__(50);
+var Select_1 = __webpack_require__(49);
 var Utils_1 = __webpack_require__(44);
-var Popup_1 = __webpack_require__(46);
+var Popup_1 = __webpack_require__(50);
 var LocalResourceResolver_1 = __webpack_require__(33);
 var RadioButton_1 = __webpack_require__(213);
 axios_1.default.defaults.xsrfCookieName = LocalResourceResolver_1.xsrfCookieName();
@@ -2563,8 +2653,8 @@ var Matchup = /** @class */ (function (_super) {
             extra = React.createElement(React.Fragment, null,
                 React.createElement("text", { x: startingX, y: startingY, style: textStyle }, team1),
                 React.createElement("text", { x: startingX, y: startingY + rowHeight / 2, style: textStyle }, team2),
-                React.createElement("text", { x: startingX + columnWidth - 25, y: startingY, style: textStyle }, this.props.data.team1_score),
-                React.createElement("text", { x: startingX + columnWidth - 25, y: startingY + rowHeight / 2, style: textStyle }, this.props.data.team2_score));
+                React.createElement("text", { x: startingX + columnWidth - 25, y: startingY, style: textStyle }, match.scoreA),
+                React.createElement("text", { x: startingX + columnWidth - 25, y: startingY + rowHeight / 2, style: textStyle }, match.scoreB));
         }
         var rectStyle = {
             fill: 'black',
@@ -2829,19 +2919,24 @@ var TournamentView = /** @class */ (function (_super) {
             // Unassigned case
             var team_1 = { teamA: new Set(), teamB: new Set() };
             var callback = function () { return __awaiter(_this, void 0, void 0, function () {
-                var data, res;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
+                var _a, team_A, team_B, data, res;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
                         case 0:
-                            _a.trys.push([0, , 2, 3]);
+                            _b.trys.push([0, , 2, 3]);
+                            _a = [team_1.teamA, team_1.teamB].map(function (e) { return Array.from(e); }), team_A = _a[0], team_B = _a[1];
+                            if (team_A.length === 0 || team_A.length > 2
+                                || team_B.length === 0 || team_B.length > 2) {
+                                return [2 /*return*/];
+                            }
                             data = {
                                 bracket_node_id: matchObj.id,
-                                team_A: Array.from(team_1.teamA).join(','),
-                                team_B: Array.from(team_1.teamB).join(','),
+                                team_A: team_A.join(','),
+                                team_B: team_B.join(','),
                             };
                             return [4 /*yield*/, axios_1.default.post('/api/tournament/add/match/', Utils_1.objectToFormData(data))];
                         case 1:
-                            res = _a.sent();
+                            res = _b.sent();
                             console.log(res);
                             return [3 /*break*/, 3];
                         case 2:
@@ -2888,6 +2983,49 @@ var TournamentView = /** @class */ (function (_super) {
                                     } })));
                     })));
         }
+        else if (matchObj.matches[0].endDateTime === null) {
+            var match_1 = matchObj.matches[0];
+            var teamA = "Team A: " + match_1.team_A.map(function (e) { return e.first_name; }).join(',');
+            var teamB = "Team B: " + match_1.team_B.map(function (e) { return e.first_name; }).join(',');
+            var score_1 = { aScore: 0, bScore: 0 };
+            var onFinish = function () { return __awaiter(_this, void 0, void 0, function () {
+                var data, res, err_5;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 2, 3, 4]);
+                            console.log(score_1);
+                            data = { match_id: match_1.match_id, scoreA: score_1.aScore, scoreB: score_1.bScore };
+                            return [4 /*yield*/, axios_1.default.post('/api/match/finish/', Utils_1.objectToFormData(data))];
+                        case 1:
+                            res = _a.sent();
+                            console.log(res);
+                            return [3 /*break*/, 4];
+                        case 2:
+                            err_5 = _a.sent();
+                            console.log(err_5);
+                            return [3 /*break*/, 4];
+                        case 3:
+                            reset();
+                            this.refresh();
+                            return [7 /*endfinally*/];
+                        case 4: return [2 /*return*/];
+                    }
+                });
+            }); };
+            popup = React.createElement(Popup_1.Popup, { title: "Finish Match", callback: onFinish },
+                React.createElement("div", { className: "row" },
+                    React.createElement("div", { className: "col-6" }, "Team"),
+                    React.createElement("div", { className: "col-6" }, "Score")),
+                React.createElement("div", { className: "row" },
+                    React.createElement("div", { className: "col-6" }, teamA),
+                    React.createElement("div", { className: "col-6" },
+                        React.createElement("input", { className: "interaction-style", onChange: function (e) { score_1.aScore = e.target.value; } }))),
+                React.createElement("div", { className: "row" },
+                    React.createElement("div", { className: "col-6" }, teamB),
+                    React.createElement("div", { className: "col-6" },
+                        React.createElement("input", { className: "interaction-style", onChange: function (e) { score_1.bScore = e.target.value; } }))));
+        }
         this.setState({ popup: popup });
     };
     TournamentView.prototype.componentDidMount = function () {
@@ -2930,6 +3068,11 @@ module.exports = ReactDOM;
 
 "use strict";
 
+/**
+ * Contains a popup view that need only to be rendered
+ * To work. Appears in the middle of the screen and darkens
+ * The body.
+ */
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2942,178 +3085,83 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
-var Option = /** @class */ (function () {
-    function Option(val, displ) {
-        this.value = val;
-        this.display = displ;
+var popupDisabledClass = "popup-disabled";
+var popupScreenFadeClass = 'popup-screen-fade';
+var popupFadeClass = 'popup-fade';
+var PopupProps = /** @class */ (function () {
+    function PopupProps() {
     }
-    return Option;
+    return PopupProps;
 }());
-exports.Option = Option;
-var selectFadeOutClassName = 'select-check-fade-out';
-var SelectArea = /** @class */ (function (_super) {
-    __extends(SelectArea, _super);
-    function SelectArea() {
-        return _super !== null && _super.apply(this, arguments) || this;
+exports.PopupProps = PopupProps;
+var PopupState = /** @class */ (function () {
+    function PopupState() {
     }
-    SelectArea.prototype.render = function () {
-        var _this = this;
-        return React.createElement("span", { className: 'select' }, this.props.options.map(function (option, idx) {
-            return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: _this.props.name + idx, value: option.value, name: _this.props.name, type: 'radio', onChange: function (target) { return _this.props.change(option.value, _this.props.name + idx); } }),
-                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: _this.props.name + idx }, option.display));
-        }));
-    };
-    return SelectArea;
-}(React.Component));
-var Select = /** @class */ (function (_super) {
-    __extends(Select, _super);
-    function Select(props) {
+    return PopupState;
+}());
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
         var _this = _super.call(this, props) || this;
-        _this.change = _this.change.bind(_this);
-        _this.handleClickOutside = _this.handleClickOutside.bind(_this);
-        _this.lazyAnimationAdder = _this.lazyAnimationAdder.bind(_this);
-        _this._decideInitialStatus = _this._decideInitialStatus.bind(_this);
-        _this._scrollCondition = _this._scrollCondition.bind(_this);
-        _this.documentResizeUpdate = _this.documentResizeUpdate.bind(_this);
-        var status = _this._decideInitialStatus();
-        var value = _this.props.defaultValue !== undefined ? _this.props.defaultValue : _this.props.options[0].value;
-        _this.state = {
-            status: status,
-            width: document.documentElement.clientWidth,
-            value: value,
-        };
-        _this.scrollDiv = null;
+        _this.close = _this.close.bind(_this);
         return _this;
     }
-    Select.prototype._scrollCondition = function () {
-        return this.state.width < 500 || this.props.override;
+    Popup.prototype.componentDidMount = function () {
+        /* Programatically create a div to overlay everything and animate it in
+            Also force the body not to scroll */
+        this.screenDiv = document.createElement('div');
+        this.screenDiv.className = 'popup-screen';
+        var body = document.querySelector('body');
+        body.appendChild(this.screenDiv);
+        body.classList.add(popupDisabledClass);
     };
-    Select.prototype._decideInitialStatus = function () {
+    Popup.prototype.componentWillUnmount = function () {
+        /* Remove the programatic div and let the body scroll */
+        var body = document.querySelector('body');
+        body.removeChild(this.screenDiv);
+        body.classList.remove(popupDisabledClass);
+    };
+    Popup.prototype.close = function () {
+        /* Animate everything in */
         var _this = this;
-        if (this.props.defaultValue !== undefined) {
-            var value = this.props.options.find(function (option) {
-                return option.value === _this.props.defaultValue;
-            });
-            if (value === undefined) {
-                return this.props.options[0].display;
+        this.wrapperDiv.classList.add(popupFadeClass);
+        this.screenDiv.classList.add(popupScreenFadeClass);
+        /* Cool so we can seperate concerns */
+        var refCounter = { count: 0 };
+        var callback = function () {
+            if (refCounter.count == 1) {
+                _this.props.callback();
             }
             else {
-                return value.display;
+                refCounter.count += 1;
             }
-        }
-        else {
-            return this.props.options[0].display;
-        }
-    };
-    Select.prototype.documentResizeUpdate = function () {
-        this.setState({
-            width: document.documentElement.clientWidth
-        });
-    };
-    Select.prototype.componentDidMount = function () {
-        var _this = this;
-        if (this._scrollCondition()) {
-            return;
-        }
-        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
-        document.addEventListener('mousedown', this.handleClickOutside);
-        var defaultHeight = 30;
-        this.scrollDiv.style.height = defaultHeight + "px";
-        this.interval = setInterval(function () {
-            var movableArea = _this.innerDiv.scrollTop /
-                (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
-            var offset = _this.innerDiv.scrollTop * (1 + movableArea) + 2;
-            _this.scrollDiv.style.top = "" + offset + "px";
-        }, 20);
-        var divMove = function (e) {
-            var boundingRect = _this.selectDiv.getBoundingClientRect();
-            var fuzz = .2;
-            var height = boundingRect.bottom - boundingRect.top;
-            var bottom = boundingRect.bottom - fuzz * height;
-            var top = boundingRect.top + fuzz * height;
-            var adjusted = Math.max(Math.min(e.clientY, bottom), top);
-            var percentage = (adjusted - top) / (bottom - top);
-            _this.innerDiv.scrollTop = percentage * (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
         };
-        function mouseUp() {
-            window.removeEventListener('mousemove', divMove, true);
-        }
-        function mouseDown() {
-            window.addEventListener('mousemove', divMove, true);
-        }
-        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
-        window.addEventListener('mouseup', mouseUp, false);
+        /*
+         * Since there are two animations going on we want to wait
+         * for both of them to end. So we use a reference counter
+         * in the form of a bound object.
+         */
+        this.wrapperDiv.addEventListener('animationend', callback);
+        this.screenDiv.addEventListener('animationend', callback);
     };
-    Select.prototype.componentWillUnmount = function () {
-        if (this._scrollCondition()) {
-            return;
-        }
-        document.removeEventListener('mousedown', this.handleClickOutside);
-        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
-        clearInterval(this.interval);
-    };
-    /**
-     * Uncheck the input if clicked outside
-     * Best to leave the typing generic because typescript does _not_
-     * like non-generics with dom.
-     */
-    Select.prototype.handleClickOutside = function (event) {
-        if (this._scrollCondition()) {
-            return;
-        }
-        if (this.inputDiv && !this.wrapper.contains(event.target)) {
-            this.inputDiv.checked = false;
-        }
-    };
-    Select.prototype.lazyAnimationAdder = function (event) {
-        if (this._scrollCondition()) {
-            return;
-        }
-        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
-            this.selectDiv.classList.add(selectFadeOutClassName);
-        }
-    };
-    Select.prototype.change = function (value, id) {
-        if (this.props.onChange) {
-            this.props.onChange(value);
-        }
-        this.setState({
-            value: value,
-        });
-        if (this._scrollCondition()) {
-            return;
-        }
-        else {
-            // Cool trick to get the label for the input
-            var elem = document.querySelector('label[for="' + id + '"]');
-            this.setState({
-                status: elem.innerHTML,
-            });
-            this.inputDiv.checked = false;
-        }
-    };
-    Select.prototype.render = function () {
+    Popup.prototype.render = function () {
         var _this = this;
-        if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: function (ev) { return _this.change(ev.target.value, null); } }, this.props.options.map(function (option, idx) {
-                return React.createElement(React.Fragment, null,
-                    React.createElement("option", { value: option.value }, option.display));
-            }));
-        }
-        return React.createElement("div", { className: "select-wrapper-div", ref: function (input) { return _this.wrapper = input; } },
-            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: function (input) { return _this.inputDiv = input; } }),
-            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
-                React.createElement("span", { ref: function (input) { return _this.titleSpan = input; }, className: "select-title-text" }, this.state.status),
-                React.createElement("b", { className: 'select-arrow' })),
-            React.createElement("div", { className: "select-div", ref: function (input) { return _this.selectDiv = input; } },
-                React.createElement("div", { className: "inner-select-div", ref: function (input) { return _this.innerDiv = input; } },
-                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
-                    React.createElement("div", { className: "select-scroll", ref: function (input) { return _this.scrollDiv = input; } }))));
+        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
+            React.createElement("div", { className: "grid row" },
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-11 popup-title-div" },
+                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-offset-1 col-11" },
+                        React.createElement("p", { className: "popup-message" }, this.props.message),
+                        this.props.children)),
+                React.createElement("div", { className: "row-offset-10" },
+                    React.createElement("div", { className: "popup-check-button" },
+                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
     };
-    return Select;
+    return Popup;
 }(React.Component));
-exports.Select = Select;
+exports.Popup = Popup;
 
 
 /***/ }),

@@ -88,10 +88,10 @@ class Matchup extends React.Component<any, any> {
 				{team2}
 				</text>
 				<text x={startingX+columnWidth-25} y={startingY} style={textStyle}>
-				{this.props.data.team1_score}
+				{match.scoreA}
 				</text>
 				<text x={startingX+columnWidth-25} y={startingY+rowHeight/2} style={textStyle}>
-				{this.props.data.team2_score}
+				{match.scoreB}
 				</text>
 				</>
 		}
@@ -351,10 +351,15 @@ export class TournamentView extends React.Component<any, any> {
 			const team: any = {teamA: new Set(), teamB: new Set()}
 			const callback = async () => {
 				try {
+					const [team_A, team_B] = [team.teamA, team.teamB].map((e: any) => Array.from(e));
+					if (team_A.length === 0 || team_A.length > 2 
+						|| team_B.length === 0 || team_B.length > 2) {
+						return;
+					}
 					const data = {
 						bracket_node_id: matchObj.id,
-						team_A: Array.from(team.teamA).join(','),
-						team_B: Array.from(team.teamB).join(','),
+						team_A: team_A.join(','),
+						team_B: team_B.join(','),
 					}
 					const res = await axios.post('/api/tournament/add/match/', objectToFormData(data));
 					console.log(res);
@@ -413,7 +418,55 @@ export class TournamentView extends React.Component<any, any> {
 			}
 			</div>
 			</Popup>
-		} 
+		} else if (matchObj.matches[0].endDateTime === null) {
+			const match = matchObj.matches[0];
+			const teamA = "Team A: " + match.team_A.map((e: any) => e.first_name).join(',')
+			const teamB = "Team B: " + match.team_B.map((e: any) => e.first_name).join(',')
+			const score = {aScore: 0, bScore: 0}
+			const onFinish = async () => {
+				try {
+					console.log(score);
+					const data = {match_id: match.match_id, scoreA: score.aScore, scoreB: score.bScore}
+					const res = await axios.post('/api/match/finish/', objectToFormData(data));
+					console.log(res);
+				} catch(err) {
+					console.log(err);
+				} finally {
+					reset();
+					this.refresh();
+				}
+			}
+			popup = <Popup title="Finish Match" callback={onFinish}>
+				<div className="row">
+				<div className="col-6">
+				Team
+				</div>
+				<div className="col-6">
+				Score
+				</div>
+				</div>	
+
+				<div className="row">
+				<div className="col-6">
+				{teamA}
+				</div>
+				<div className="col-6">
+				<input className="interaction-style" 
+					onChange={(e: any) => { score.aScore=e.target.value } } />
+				</div>
+				</div>	
+
+				<div className="row">
+				<div className="col-6">
+				{teamB}
+				</div>
+				<div className="col-6">
+				<input className="interaction-style" 
+					onChange={(e: any) => { score.bScore=e.target.value} } />
+				</div>
+				</div>	
+			</Popup>	
+		}
 
 		this.setState({popup:popup});
 	}

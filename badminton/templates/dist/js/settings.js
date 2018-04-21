@@ -2394,109 +2394,6 @@ exports.objectToFormData = objectToFormData;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-/**
- * Contains a popup view that need only to be rendered
- * To work. Appears in the middle of the screen and darkens
- * The body.
- */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(2);
-var popupDisabledClass = "popup-disabled";
-var popupScreenFadeClass = 'popup-screen-fade';
-var popupFadeClass = 'popup-fade';
-var PopupProps = /** @class */ (function () {
-    function PopupProps() {
-    }
-    return PopupProps;
-}());
-exports.PopupProps = PopupProps;
-var PopupState = /** @class */ (function () {
-    function PopupState() {
-    }
-    return PopupState;
-}());
-var Popup = /** @class */ (function (_super) {
-    __extends(Popup, _super);
-    function Popup(props) {
-        var _this = _super.call(this, props) || this;
-        _this.close = _this.close.bind(_this);
-        return _this;
-    }
-    Popup.prototype.componentDidMount = function () {
-        /* Programatically create a div to overlay everything and animate it in
-            Also force the body not to scroll */
-        this.screenDiv = document.createElement('div');
-        this.screenDiv.className = 'popup-screen';
-        var body = document.querySelector('body');
-        body.appendChild(this.screenDiv);
-        body.classList.add(popupDisabledClass);
-    };
-    Popup.prototype.componentWillUnmount = function () {
-        /* Remove the programatic div and let the body scroll */
-        var body = document.querySelector('body');
-        body.removeChild(this.screenDiv);
-        body.classList.remove(popupDisabledClass);
-    };
-    Popup.prototype.close = function () {
-        /* Animate everything in */
-        var _this = this;
-        this.wrapperDiv.classList.add(popupFadeClass);
-        this.screenDiv.classList.add(popupScreenFadeClass);
-        /* Cool so we can seperate concerns */
-        var refCounter = { count: 0 };
-        var callback = function () {
-            if (refCounter.count == 1) {
-                _this.props.callback();
-            }
-            else {
-                refCounter.count += 1;
-            }
-        };
-        /*
-         * Since there are two animations going on we want to wait
-         * for both of them to end. So we use a reference counter
-         * in the form of a bound object.
-         */
-        this.wrapperDiv.addEventListener('animationend', callback);
-        this.screenDiv.addEventListener('animationend', callback);
-    };
-    Popup.prototype.render = function () {
-        var _this = this;
-        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
-            React.createElement("div", { className: "grid row" },
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-11 popup-title-div" },
-                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
-                React.createElement("div", { className: "row-1" },
-                    React.createElement("div", { className: "col-offset-1 col-11" },
-                        React.createElement("p", { className: "popup-message" }, this.props.message),
-                        this.props.children)),
-                React.createElement("div", { className: "row-offset-10" },
-                    React.createElement("div", { className: "popup-check-button" },
-                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
-    };
-    return Popup;
-}(React.Component));
-exports.Popup = Popup;
-
-
-/***/ }),
-
-/***/ 47:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -2560,6 +2457,199 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ }),
+
+/***/ 49:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(2);
+var Option = /** @class */ (function () {
+    function Option(val, displ) {
+        this.value = val;
+        this.display = displ;
+    }
+    return Option;
+}());
+exports.Option = Option;
+var selectFadeOutClassName = 'select-check-fade-out';
+var SelectArea = /** @class */ (function (_super) {
+    __extends(SelectArea, _super);
+    function SelectArea() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    SelectArea.prototype.render = function () {
+        var _this = this;
+        return React.createElement("span", { className: 'select' }, this.props.options.map(function (option, idx) {
+            return React.createElement(React.Fragment, null,
+                React.createElement("input", { className: 'select-hidden', key: idx, id: _this.props.name + idx, value: option.value, name: _this.props.name, type: 'radio', onChange: function (target) { return _this.props.change(option.value, _this.props.name + idx); } }),
+                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: _this.props.name + idx }, option.display));
+        }));
+    };
+    return SelectArea;
+}(React.Component));
+var Select = /** @class */ (function (_super) {
+    __extends(Select, _super);
+    function Select(props) {
+        var _this = _super.call(this, props) || this;
+        _this.change = _this.change.bind(_this);
+        _this.handleClickOutside = _this.handleClickOutside.bind(_this);
+        _this.lazyAnimationAdder = _this.lazyAnimationAdder.bind(_this);
+        _this._decideInitialStatus = _this._decideInitialStatus.bind(_this);
+        _this._scrollCondition = _this._scrollCondition.bind(_this);
+        _this.documentResizeUpdate = _this.documentResizeUpdate.bind(_this);
+        var status = _this._decideInitialStatus();
+        var value = _this.props.defaultValue !== undefined ? _this.props.defaultValue : _this.props.options[0].value;
+        _this.state = {
+            status: status,
+            width: document.documentElement.clientWidth,
+            value: value,
+        };
+        _this.scrollDiv = null;
+        return _this;
+    }
+    Select.prototype._scrollCondition = function () {
+        return this.state.width < 500 || this.props.override;
+    };
+    Select.prototype._decideInitialStatus = function () {
+        var _this = this;
+        if (this.props.defaultValue !== undefined) {
+            var value = this.props.options.find(function (option) {
+                return option.value === _this.props.defaultValue;
+            });
+            if (value === undefined) {
+                return this.props.options[0].display;
+            }
+            else {
+                return value.display;
+            }
+        }
+        else {
+            return this.props.options[0].display;
+        }
+    };
+    Select.prototype.documentResizeUpdate = function () {
+        this.setState({
+            width: document.documentElement.clientWidth
+        });
+    };
+    Select.prototype.componentDidMount = function () {
+        var _this = this;
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
+        document.addEventListener('mousedown', this.handleClickOutside);
+        var defaultHeight = 30;
+        this.scrollDiv.style.height = defaultHeight + "px";
+        this.interval = setInterval(function () {
+            var movableArea = _this.innerDiv.scrollTop /
+                (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
+            var offset = _this.innerDiv.scrollTop * (1 + movableArea) + 2;
+            _this.scrollDiv.style.top = "" + offset + "px";
+        }, 20);
+        var divMove = function (e) {
+            var boundingRect = _this.selectDiv.getBoundingClientRect();
+            var fuzz = .2;
+            var height = boundingRect.bottom - boundingRect.top;
+            var bottom = boundingRect.bottom - fuzz * height;
+            var top = boundingRect.top + fuzz * height;
+            var adjusted = Math.max(Math.min(e.clientY, bottom), top);
+            var percentage = (adjusted - top) / (bottom - top);
+            _this.innerDiv.scrollTop = percentage * (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
+        };
+        function mouseUp() {
+            window.removeEventListener('mousemove', divMove, true);
+        }
+        function mouseDown() {
+            window.addEventListener('mousemove', divMove, true);
+        }
+        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
+        window.addEventListener('mouseup', mouseUp, false);
+    };
+    Select.prototype.componentWillUnmount = function () {
+        if (this._scrollCondition()) {
+            return;
+        }
+        document.removeEventListener('mousedown', this.handleClickOutside);
+        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
+        clearInterval(this.interval);
+    };
+    /**
+     * Uncheck the input if clicked outside
+     * Best to leave the typing generic because typescript does _not_
+     * like non-generics with dom.
+     */
+    Select.prototype.handleClickOutside = function (event) {
+        if (this._scrollCondition()) {
+            return;
+        }
+        if (this.inputDiv && !this.wrapper.contains(event.target)) {
+            this.inputDiv.checked = false;
+        }
+    };
+    Select.prototype.lazyAnimationAdder = function (event) {
+        if (this._scrollCondition()) {
+            return;
+        }
+        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
+            this.selectDiv.classList.add(selectFadeOutClassName);
+        }
+    };
+    Select.prototype.change = function (value, id) {
+        if (this.props.onChange) {
+            this.props.onChange(value);
+        }
+        this.setState({
+            value: value,
+        });
+        if (this._scrollCondition()) {
+            return;
+        }
+        else {
+            // Cool trick to get the label for the input
+            var elem = document.querySelector('label[for="' + id + '"]');
+            this.setState({
+                status: elem.innerHTML,
+            });
+            this.inputDiv.checked = false;
+        }
+    };
+    Select.prototype.render = function () {
+        var _this = this;
+        if (this._scrollCondition()) {
+            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: function (ev) { return _this.change(ev.target.value, null); } }, this.props.options.map(function (option, idx) {
+                return React.createElement(React.Fragment, null,
+                    React.createElement("option", { value: option.value }, option.display));
+            }));
+        }
+        return React.createElement("div", { className: "select-wrapper-div", ref: function (input) { return _this.wrapper = input; } },
+            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: function (input) { return _this.inputDiv = input; } }),
+            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
+                React.createElement("span", { ref: function (input) { return _this.titleSpan = input; }, className: "select-title-text" }, this.state.status),
+                React.createElement("b", { className: 'select-arrow' })),
+            React.createElement("div", { className: "select-div", ref: function (input) { return _this.selectDiv = input; } },
+                React.createElement("div", { className: "inner-select-div", ref: function (input) { return _this.innerDiv = input; } },
+                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
+                    React.createElement("div", { className: "select-scroll", ref: function (input) { return _this.scrollDiv = input; } }))));
+    };
+    return Select;
+}(React.Component));
+exports.Select = Select;
+
 
 /***/ }),
 
@@ -2631,8 +2721,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
 var axios_1 = __webpack_require__(12);
 var Slider_1 = __webpack_require__(249);
-var Popup_1 = __webpack_require__(46);
-var Select_1 = __webpack_require__(50);
+var Popup_1 = __webpack_require__(50);
+var Select_1 = __webpack_require__(49);
 var LocalResourceResolver_1 = __webpack_require__(33);
 var LocalResourceResolver_2 = __webpack_require__(33);
 var Utils_1 = __webpack_require__(44);
@@ -3870,6 +3960,11 @@ module.exports = ReactDOM;
 
 "use strict";
 
+/**
+ * Contains a popup view that need only to be rendered
+ * To work. Appears in the middle of the screen and darkens
+ * The body.
+ */
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -3882,178 +3977,83 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
-var Option = /** @class */ (function () {
-    function Option(val, displ) {
-        this.value = val;
-        this.display = displ;
+var popupDisabledClass = "popup-disabled";
+var popupScreenFadeClass = 'popup-screen-fade';
+var popupFadeClass = 'popup-fade';
+var PopupProps = /** @class */ (function () {
+    function PopupProps() {
     }
-    return Option;
+    return PopupProps;
 }());
-exports.Option = Option;
-var selectFadeOutClassName = 'select-check-fade-out';
-var SelectArea = /** @class */ (function (_super) {
-    __extends(SelectArea, _super);
-    function SelectArea() {
-        return _super !== null && _super.apply(this, arguments) || this;
+exports.PopupProps = PopupProps;
+var PopupState = /** @class */ (function () {
+    function PopupState() {
     }
-    SelectArea.prototype.render = function () {
-        var _this = this;
-        return React.createElement("span", { className: 'select' }, this.props.options.map(function (option, idx) {
-            return React.createElement(React.Fragment, null,
-                React.createElement("input", { className: 'select-hidden', key: idx, id: _this.props.name + idx, value: option.value, name: _this.props.name, type: 'radio', onChange: function (target) { return _this.props.change(option.value, _this.props.name + idx); } }),
-                React.createElement("label", { className: "select-label", key: idx * -1 - 1, htmlFor: _this.props.name + idx }, option.display));
-        }));
-    };
-    return SelectArea;
-}(React.Component));
-var Select = /** @class */ (function (_super) {
-    __extends(Select, _super);
-    function Select(props) {
+    return PopupState;
+}());
+var Popup = /** @class */ (function (_super) {
+    __extends(Popup, _super);
+    function Popup(props) {
         var _this = _super.call(this, props) || this;
-        _this.change = _this.change.bind(_this);
-        _this.handleClickOutside = _this.handleClickOutside.bind(_this);
-        _this.lazyAnimationAdder = _this.lazyAnimationAdder.bind(_this);
-        _this._decideInitialStatus = _this._decideInitialStatus.bind(_this);
-        _this._scrollCondition = _this._scrollCondition.bind(_this);
-        _this.documentResizeUpdate = _this.documentResizeUpdate.bind(_this);
-        var status = _this._decideInitialStatus();
-        var value = _this.props.defaultValue !== undefined ? _this.props.defaultValue : _this.props.options[0].value;
-        _this.state = {
-            status: status,
-            width: document.documentElement.clientWidth,
-            value: value,
-        };
-        _this.scrollDiv = null;
+        _this.close = _this.close.bind(_this);
         return _this;
     }
-    Select.prototype._scrollCondition = function () {
-        return this.state.width < 500 || this.props.override;
+    Popup.prototype.componentDidMount = function () {
+        /* Programatically create a div to overlay everything and animate it in
+            Also force the body not to scroll */
+        this.screenDiv = document.createElement('div');
+        this.screenDiv.className = 'popup-screen';
+        var body = document.querySelector('body');
+        body.appendChild(this.screenDiv);
+        body.classList.add(popupDisabledClass);
     };
-    Select.prototype._decideInitialStatus = function () {
+    Popup.prototype.componentWillUnmount = function () {
+        /* Remove the programatic div and let the body scroll */
+        var body = document.querySelector('body');
+        body.removeChild(this.screenDiv);
+        body.classList.remove(popupDisabledClass);
+    };
+    Popup.prototype.close = function () {
+        /* Animate everything in */
         var _this = this;
-        if (this.props.defaultValue !== undefined) {
-            var value = this.props.options.find(function (option) {
-                return option.value === _this.props.defaultValue;
-            });
-            if (value === undefined) {
-                return this.props.options[0].display;
+        this.wrapperDiv.classList.add(popupFadeClass);
+        this.screenDiv.classList.add(popupScreenFadeClass);
+        /* Cool so we can seperate concerns */
+        var refCounter = { count: 0 };
+        var callback = function () {
+            if (refCounter.count == 1) {
+                _this.props.callback();
             }
             else {
-                return value.display;
+                refCounter.count += 1;
             }
-        }
-        else {
-            return this.props.options[0].display;
-        }
-    };
-    Select.prototype.documentResizeUpdate = function () {
-        this.setState({
-            width: document.documentElement.clientWidth
-        });
-    };
-    Select.prototype.componentDidMount = function () {
-        var _this = this;
-        if (this._scrollCondition()) {
-            return;
-        }
-        document.documentElement.addEventListener('resize', this.documentResizeUpdate);
-        document.addEventListener('mousedown', this.handleClickOutside);
-        var defaultHeight = 30;
-        this.scrollDiv.style.height = defaultHeight + "px";
-        this.interval = setInterval(function () {
-            var movableArea = _this.innerDiv.scrollTop /
-                (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
-            var offset = _this.innerDiv.scrollTop * (1 + movableArea) + 2;
-            _this.scrollDiv.style.top = "" + offset + "px";
-        }, 20);
-        var divMove = function (e) {
-            var boundingRect = _this.selectDiv.getBoundingClientRect();
-            var fuzz = .2;
-            var height = boundingRect.bottom - boundingRect.top;
-            var bottom = boundingRect.bottom - fuzz * height;
-            var top = boundingRect.top + fuzz * height;
-            var adjusted = Math.max(Math.min(e.clientY, bottom), top);
-            var percentage = (adjusted - top) / (bottom - top);
-            _this.innerDiv.scrollTop = percentage * (_this.innerDiv.scrollHeight - _this.innerDiv.clientHeight);
         };
-        function mouseUp() {
-            window.removeEventListener('mousemove', divMove, true);
-        }
-        function mouseDown() {
-            window.addEventListener('mousemove', divMove, true);
-        }
-        this.scrollDiv.addEventListener('mousedown', mouseDown, false);
-        window.addEventListener('mouseup', mouseUp, false);
+        /*
+         * Since there are two animations going on we want to wait
+         * for both of them to end. So we use a reference counter
+         * in the form of a bound object.
+         */
+        this.wrapperDiv.addEventListener('animationend', callback);
+        this.screenDiv.addEventListener('animationend', callback);
     };
-    Select.prototype.componentWillUnmount = function () {
-        if (this._scrollCondition()) {
-            return;
-        }
-        document.removeEventListener('mousedown', this.handleClickOutside);
-        document.documentElement.removeEventListener('resize', this.documentResizeUpdate);
-        clearInterval(this.interval);
-    };
-    /**
-     * Uncheck the input if clicked outside
-     * Best to leave the typing generic because typescript does _not_
-     * like non-generics with dom.
-     */
-    Select.prototype.handleClickOutside = function (event) {
-        if (this._scrollCondition()) {
-            return;
-        }
-        if (this.inputDiv && !this.wrapper.contains(event.target)) {
-            this.inputDiv.checked = false;
-        }
-    };
-    Select.prototype.lazyAnimationAdder = function (event) {
-        if (this._scrollCondition()) {
-            return;
-        }
-        if (this.inputDiv.checked && !this.selectDiv.classList.contains(selectFadeOutClassName)) {
-            this.selectDiv.classList.add(selectFadeOutClassName);
-        }
-    };
-    Select.prototype.change = function (value, id) {
-        if (this.props.onChange) {
-            this.props.onChange(value);
-        }
-        this.setState({
-            value: value,
-        });
-        if (this._scrollCondition()) {
-            return;
-        }
-        else {
-            // Cool trick to get the label for the input
-            var elem = document.querySelector('label[for="' + id + '"]');
-            this.setState({
-                status: elem.innerHTML,
-            });
-            this.inputDiv.checked = false;
-        }
-    };
-    Select.prototype.render = function () {
+    Popup.prototype.render = function () {
         var _this = this;
-        if (this._scrollCondition()) {
-            return React.createElement("select", { className: "interaction-style", value: this.state.value, onChange: function (ev) { return _this.change(ev.target.value, null); } }, this.props.options.map(function (option, idx) {
-                return React.createElement(React.Fragment, null,
-                    React.createElement("option", { value: option.value }, option.display));
-            }));
-        }
-        return React.createElement("div", { className: "select-wrapper-div", ref: function (input) { return _this.wrapper = input; } },
-            React.createElement("input", { className: 'select-hidden select-check-toggle', id: this.props.name + "-toggle", name: this.props.name, onChange: this.lazyAnimationAdder, type: 'checkbox', ref: function (input) { return _this.inputDiv = input; } }),
-            React.createElement("label", { className: 'select-label select-toggle', htmlFor: this.props.name + "-toggle" },
-                React.createElement("span", { ref: function (input) { return _this.titleSpan = input; }, className: "select-title-text" }, this.state.status),
-                React.createElement("b", { className: 'select-arrow' })),
-            React.createElement("div", { className: "select-div", ref: function (input) { return _this.selectDiv = input; } },
-                React.createElement("div", { className: "inner-select-div", ref: function (input) { return _this.innerDiv = input; } },
-                    React.createElement(SelectArea, { options: this.props.options, name: this.props.name, change: this.change }),
-                    React.createElement("div", { className: "select-scroll", ref: function (input) { return _this.scrollDiv = input; } }))));
+        return (React.createElement("div", { className: "popup-div", ref: function (input) { return _this.wrapperDiv = input; } },
+            React.createElement("div", { className: "grid row" },
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-11 popup-title-div" },
+                        React.createElement("h4", { className: "popup-title" }, this.props.title))),
+                React.createElement("div", { className: "row-1" },
+                    React.createElement("div", { className: "col-offset-1 col-11" },
+                        React.createElement("p", { className: "popup-message" }, this.props.message),
+                        this.props.children)),
+                React.createElement("div", { className: "row-offset-10" },
+                    React.createElement("div", { className: "popup-check-button" },
+                        React.createElement("button", { className: "popup-button interaction-style row-2", onClick: this.close }, "\u2714"))))));
     };
-    return Select;
+    return Popup;
 }(React.Component));
-exports.Select = Select;
+exports.Popup = Popup;
 
 
 /***/ }),
@@ -4109,7 +4109,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 var emptyFunction = __webpack_require__(41);
 var invariant = __webpack_require__(35);
-var warning = __webpack_require__(47);
+var warning = __webpack_require__(46);
 var assign = __webpack_require__(31);
 
 var ReactPropTypesSecret = __webpack_require__(43);
@@ -4660,7 +4660,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(35);
-  var warning = __webpack_require__(47);
+  var warning = __webpack_require__(46);
   var ReactPropTypesSecret = __webpack_require__(43);
   var loggedTypeFailures = {};
 }
