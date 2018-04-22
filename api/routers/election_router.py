@@ -8,9 +8,11 @@ from api.cursor_api import *
 from api.routers.router import restrictRouter
 from api.models import *
 import datetime
+from api.utils import MemberClass, id_for_member
+from api.routers.router import auth_decorator
+from django.db import connection
 
-
-@csrf_exempt
+@auth_decorator(MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_election(request):
     """
@@ -20,33 +22,61 @@ def get_election(request):
     :param request:
     :return:
     """
-    elections = Election.objects.raw("SELECT * FROM api_election AS election\
-        WHERE election.endDate IS NULL OR election.endDate >= %s\
-        ORDER BY election.date DESC LIMIT 1", [datetime.datetime.now().strftime("%Y%m%d")])
-    if len(list(elections)) == 0:
+
+    election_query = Election.objects.raw("SELECT * FROM api_election WHERE endDate IS NULL OR endDate >= %s", [datetime.date.today()])
+
+    if len(list(election_query)) == 0:
         return HttpResponse(json.dumps({"message":"No current election available", "status": "down"}), content_type="application/json")
 
-    current_election = elections[0]
+    current_election = election_query[0]
 
-    campaigns = Campaign.objects.raw("SELECT * FROM api_campaign WHERE election_id = %s", [current_election.id])
+    with connection.cursor() as cursor:
+        query = '''
+        SELECT api_campaign.election_id AS current_election, 
+            api_campaign.campaigner_id AS campaigner, api_campaign.id AS id, job, pitch, 
+            api_interested.first_name AS first_name, api_interested.last_name AS last_name
+        FROM api_campaign 
+        JOIN api_interested ON api_campaign.campaigner_id = api_interested.id
+        WHERE election_id = %s
+        '''
+        cursor.execute(query, [current_election.id])
+        campaigns = dictfetchall(cursor)
+        query = '''
+        SELECT campaign_id
+        FROM api_vote
+        JOIN api_campaign ON api_campaign.id = api_vote.campaign_id
+        WHERE api_campaign.election_id = %s AND api_vote.voter_id = %s
+        '''
+        cursor.execute(query, [current_election.id, id_for_member(request.user.email)])
+        my_votes = [x['campaign_id'] for x in dictfetchall(cursor)]
+
+    campaign_info = []
+    for campaign in campaigns:
+        # Get the number of votes
+        votes = Vote.objects.raw("SELECT * FROM api_vote WHERE campaign_id = %s", [campaign['id']])
+        vote_count = len(list(votes))
+        context = {
+            'campaign': campaign,
+            'vote_count': vote_count
+        }
+        campaign_info.append(context)
 
     context = {
-        'election': serializeModel(current_election),
-        'campaigns': serializeSetOfModels(campaigns),
-        "order": list(map(lambda x: x[0], JOBS))
+        'election': (serializeModel(current_election)),
+        'campaigns': campaign_info,
+        "order": [x[0] for x in JOBS],
     }
+    print(context)
     return http_response(context)
 
 
-@csrf_exempt
+@auth_decorator(MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST", "DELETE"])
 def edit_election(request):
     """
     POST -- Edits an election
-        Required Keys: id
         Optional Keys: startDate, endDate
     DELETE -- Deletes an election
-        Required Keys: id
     :param request:
     :return:
     """
@@ -84,7 +114,7 @@ def edit_election(request):
         return delete_election(dict_delete[idKey])
 
 
-@csrf_exempt
+@auth_decorator(MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["POST"])
 def electionCreateRouter(request):
     """

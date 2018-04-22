@@ -6,20 +6,21 @@ import { Select } from '../common/Select'
 import { isBoardMember, xsrfCookieName, xsrfHeaderName, getMemberId } from '../common/LocalResourceResolver'
 import { EditableTextarea } from '../common/EditableTextarea';
 import { objectToFormData } from '../common/Utils';
+import DatePicker from 'react-datepicker';
+
+axios.defaults.xsrfCookieName = xsrfCookieName();
+axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 declare var require: Function;
 const moment = require('moment');
 const BigCalendar = require('react-big-calendar');
 BigCalendar.momentLocalizer(moment); // or globalizeLocalizer
 
-const stat_urls = "/api/match/recent/"
+const stat_urls = "/api/match/all_matches_from_member/"
 const announce_url = "/api/announcements/get/";
 const announce_create_url = "/api/announcements/create/";
 const announce_edit_url = "/api/announcements/edit/";
 const announce_delete_url = "/api/announcements/delete/";
-
-axios.defaults.xsrfCookieName = xsrfCookieName();
-axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 class GameView extends React.Component<any, any> {
 	render() {
@@ -49,13 +50,20 @@ class StatView extends React.Component<any, any> {
 			<tbody>
 			{this.props.stats.map ((game: any, idx: number) => {
 				let playTime = "ongoing";
-				if (game.endDateTime !== null) {
-					const start = (new Date(game.startDateTime)).getTime();
-					const end = (new Date(game.endDateTime)).getTime();
+				const match = game.match;
+				if (match.endDateTime !== null) {
+					const start = (new Date(match.startDateTime)).getTime();
+					const end = (new Date(match.endDateTime)).getTime();
 					const diff = (end - start) / 1000;
 					playTime = Math.floor((diff / 60)) + ":" + (diff % 60);
 				}
-				return <GameView key={idx} myScore={game.my_score} theirScore={game.their_score} playtime={playTime}/>
+				const isTeamA = game.team_A.find((e: any) => e.id === getMemberId()) !== undefined;
+				let my_score = match.scoreB, their_score = match.scoreA;
+				if (isTeamA) {
+					my_score = match.scoreA;
+					their_score = match.scoreB;
+				}
+				return <GameView key={idx} myScore={my_score} theirScore={their_score} playtime={playTime}/>
 			}) }
 			</tbody>
 		</table>
@@ -111,6 +119,7 @@ class AnnounceCreator extends React.Component<any, any> {
 				<form onSubmit={this.sendAnnouncement}>
 
 				<div className="row">
+				<h4>Members only! Add a practice</h4>
 				<div className="col-8">
 				<input className="interaction-style" 
 					placeholder="Title" 
@@ -253,9 +262,13 @@ export class HomeView extends React.Component<{}, any> {
 		super(props);
 		this.state = {
 			stats: null,
-			board_member: false
+			board_member: false,
+			sched: [],
+			addDate: moment(),
+			numCourts: "",
 		}
 		this.performRequest = this.performRequest.bind(this)
+		this.sendSchedule = this.sendSchedule.bind(this);
 	}
 
 	componentDidMount() {
@@ -263,43 +276,99 @@ export class HomeView extends React.Component<{}, any> {
 	}
 
 	performRequest(url: string) {
-		axios.get(url + "?id=" + getMemberId())
-			.then((res: any) => {
-				console.log(res.data);
-				this.setState({
-					stats: res.data,
-					board_member: res.data.board_member
-				});
+		const req1 = axios.get(url + "?id=" + getMemberId())
+		const req2 = axios.get('/api/settings/schedule/get')
+		axios.all([req1, req2]).then(axios.spread((res: any, res2: any) => {
+			const events = res2.data.schedule.map((ev: any) => {
+				    return {
+				    	'title': ev.number_of_courts + ' courts',
+	    				'allDay': true,
+					    start: moment(ev.date),
+					    end: moment(ev.date),
+					}
+				})
+			this.setState({
+				stats: res.data,
+				sched: events,
+				board_member: res.data.board_member
 			})
-			.catch((res: any) => {
-				console.log(res);
+		})).catch((res: any) => {
+			console.log(res);
+		})
+
+	}
+
+	async sendSchedule(ev: any) {
+		const dateFormat = "YYYY-MM-DD";
+		try {
+			const body = {
+				schedule: {
+					date: this.state.addDate.format(dateFormat), 
+					number_of_courts: this.state.numCourts
+				}
+			}
+			const data = await axios.post('/api/settings/schedule/edit', {
+				schedule: [{
+					date: this.state.addDate.format(dateFormat), 
+					number_of_courts: this.state.numCourts
+				}]
 			})
+			this.setState({
+				date: moment(),
+				number_of_courts: "",
+			})
+			this.performRequest(stat_urls);
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	render() {
 		if (this.state.stats === null) {
 			return null
 		}
-
-		return (<div className="home-view">
-			<AnnounceView stats={this.state.stats} />
-			<div className="row-offset-2">
-			<BigCalendar
-		      events={[{
-				    id: 1,
-				    title: 'Long Event',
-				    start: new Date(2018, 4, 7),
-				    end: new Date(2018, 4, 10),
-				}]}
+		/*<div className="row-offset-2">
+		<BigCalendar
+		      events={this.state.sched}
 		      views={["month"]}
 			  step={60}
 			  showMultiDayTimes
-			  defaultDate={new Date(2018, 4, 1)}
+			  startAccessor="start"
+      		  endAccessor="end"
 		    />
+		    {isBoardMember() &&
+		    <div className="row row-offset-1">
+		    <div className="col-4">
+		    <DatePicker
+		        selected={this.state.addDate}
+		        onChange={(date: any) => this.setState({addDate:date})}
+		        className="interaction-style"
+		    />
+		    <div className="col-4">
+		    <input 
+		    	className="interaction-style" 
+		    	value={this.state.numCourts}
+		    	onChange={(ev: any) => this.setState({numCourts:ev.target.value})} 
+		    	placeholder="Num Courts"/>
 		    </div>
+
+		    <div className="col-4">
+		    <button 
+		    	type="submit" 
+		    	className="interaction-style" 
+		    	onClick={this.sendSchedule} 
+		    	>Submit</button>
+		    </div>
+		    </div>
+		    </div>}*/
+
+		return (<div className="home-view">
+			<AnnounceView stats={this.state.stats} />
+
 			<div className="row-offset-2">
 	    	<StatView stats={this.state.stats} />
 	    	</div>
+
 	    	<div className="row-offset-2">
 	    	<h2>Profile</h2>
 	    	<ProfileView member_id={getMemberId()} />

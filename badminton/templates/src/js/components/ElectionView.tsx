@@ -5,10 +5,14 @@ import axios from 'axios';
 import { RegisterElectionView } from "./RegisterElection";
 import { RadioButton } from '../common/RadioButton';
 import { Select, Option } from "../common/Select";
-import { xsrfCookieName, xsrfHeaderName, getMemberId } from '../common/LocalResourceResolver';
 import { EditableTextarea } from '../common/EditableTextarea';
 import DatePicker from 'react-datepicker';
 import {objectToFormData} from '../common/Utils';
+import { xsrfCookieName, xsrfHeaderName, getMemberId, isBoardMember } from '../common/LocalResourceResolver';
+
+axios.defaults.xsrfCookieName = xsrfCookieName();
+axios.defaults.xsrfHeaderName = xsrfHeaderName();
+
 declare var require: Function;
 const moment = require('moment');
 
@@ -19,8 +23,6 @@ const election_create_url = '/api/election/create/';
 const cast_vote_url = '/api/election/vote/';
 const my_vote_url = '/api/election/vote/get/'
 
-axios.defaults.xsrfCookieName = xsrfCookieName();
-axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 enum LoadingState {
     Loading,
@@ -70,8 +72,7 @@ class ElectionCandidate extends React.Component<any, any> {
 			email: this.props.person.campaigner,
 		}
 		try {
-			let res = await axios.post(campaign_url, objectToFormData(data));
-			console.log(res);
+			const res = await axios.post(campaign_url, objectToFormData(data));
 		} catch(err) {
 			console.log(err);
 		}
@@ -85,13 +86,12 @@ class ElectionCandidate extends React.Component<any, any> {
 				value={this.props.person.id} defaultChecked={this.props.voted.includes(this.props.person.id)} 
 				onChange={async (ev:any) => {
 					if (!ev.target.checked) return;
-
-					let data = new FormData();
-					data.append('voter', "8");
-					data.append('campaign', ev.target.value);
+					const data = {
+						voter: getMemberId(),
+						campaign_id: ev.target.value,
+					}
 					try {
-						let res = await axios.post(cast_vote_url, data);
-						console.log(res);
+						const res = await axios.post(cast_vote_url, objectToFormData(data));
 					} catch (err) {
 						console.log(err);
 					}
@@ -100,7 +100,9 @@ class ElectionCandidate extends React.Component<any, any> {
 			</div>
 
 			<div className="col-8 row-2 election-label-div">
-			<label htmlFor={""+this.props.person.id} className="election-label">{this.props.person.name}</label>
+			<label htmlFor={""+this.props.person.id} className="election-label">
+				{this.props.person.first_name + ' ' + this.props.person.last_name}
+			</label>
 			</div>
 
 			</div>
@@ -109,7 +111,8 @@ class ElectionCandidate extends React.Component<any, any> {
 			<EditableTextarea 
 				initValue={this.state.pitch} 
 				onSave={this.updateCandidate} 
-				onDelete={this.deleteCandidate} />
+				onDelete={this.deleteCandidate}
+				editableOverride={isBoardMember() || (this.props.person.id !== getMemberId())} />
 			</div>
 			</div>
 			);
@@ -130,8 +133,6 @@ class ElectionRole extends React.Component<any, any> {
 			</div>
 			{
 				this.props.candidates.map((key: any, idx: any) => {
-					console.log(key);
-					console.log(this.props.voted);
 					return <ElectionCandidate 
 						person={key} 
 						role={this.props.role} 
@@ -232,35 +233,19 @@ class ElectionUp extends React.Component<any, any> {
 			popup: null,
 			campaigns: campaigns,
 		}
-		this.submitVotes = this.submitVotes.bind(this);
 	}
-
-	submitVotes(event: any) {
-		event.preventDefault();
-		for(let key in this.props.order) {
-			let elem = this.props.order[key];
-			console.log("For: " + elem + " Userid: " + event.target[elem].value);
-		}
-		this.setState({
-			popup: <Popup title="Submitted!" 
-				message="Submit as many times as you want before the deadline"
-				callback={()=>{
-					this.setState({popup: null});
-				}} />
-		});
-	}
-
+	
 	render() {
 		return (<>
 		<div className="grid row-offset-1">
 
-		<ElectionUpBoardEditable 
+		{isBoardMember() && <ElectionUpBoardEditable 
 			refresh={this.props.refresh}
 			id={this.props.id}
 			startDate={this.props.startDate}
-			endDate={this.props.endDate} />
+			endDate={this.props.endDate} />}
 
-		<form onSubmit={this.submitVotes}>
+		<form >
 		{
 			this.state.campaigns.map((campaign: any, idx: number) => { 
 				return <ElectionRole 
@@ -271,9 +256,6 @@ class ElectionUp extends React.Component<any, any> {
 					voted={this.props.voted}/>
 			})
 		}
-		<div className="row row-offset-2">
-		<button className="interaction-style" type="submit">Submit Votes</button>
-		</div>
 		</form>
 		{ this.state.popup !== null && this.state.popup }
 		</div>
@@ -368,14 +350,16 @@ class CampaignResponse {
 }
 
 const convertResponseToHierarchy = (res: CampaignResponse): any => {
+	console.log(res);
 	const ret: any = {};
 	const order = res.order;
 	for (var i of order) {
 		ret[i] = [];
 	}
 
-	for (var campaigner of res.campaigns) {
-		ret[campaigner.job].push(campaigner);
+	for (var j of res.campaigns) {
+		let temp = j as any;
+		ret[temp.campaign.job].push(temp.campaign);
 	}
 	ret.order = order;
 	return ret;

@@ -20,6 +20,16 @@ QUEUE_TYPE = (
         ('KOTH', 'King of the Hill'),
     )
 
+ELIMINATION_TYPE = (
+    ('SINGLE', 'Single'),
+    ('DOUBLE', 'Double'),
+)
+
+MATCH_TYPE = (
+    ('SINGLES', 'Singles'),
+    ('DOUBLES', 'Doubles'),
+)
+
 TEAMS = (
         ('A', 'A'),
         ('B', 'B'),
@@ -40,24 +50,29 @@ class Party(models.Model):
 
     def __str__(self):
         members = Member.objects.filter(party=self.id)
-        ret = str(self.leader) + ':'
+        ret = ''
         for member in members:
-            ret += ' {}'.format(str(member))
+            ret += '{}'.format(str(member))
         return ret
 
 
 class Court(models.Model):
     queue = models.ForeignKey(Queue, on_delete=models.SET_NULL, null=True, blank=True)
+    match = models.ForeignKey('Match', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return 'Queue: {}, Match: {}'.format(self.queue.type if self.queue is not None else 'None', self.match)
 
 class Tournament(models.Model):
     date = models.DateField('date of tournament', unique=True)
     endDate = models.DateField('end date of tournament', unique=True, null=True, blank=True)
+    elimination_type = models.CharField(max_length=64, choices=ELIMINATION_TYPE, default=ELIMINATION_TYPE[0][0])
+    match_type = models.CharField(max_length=64, choices=MATCH_TYPE, default=MATCH_TYPE[0][0])
 
 class BracketNode(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     level = models.IntegerField()
     sibling_index = models.IntegerField()
-    match = models.ForeignKey('Match', on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         unique_together = (('tournament', 'level', 'sibling_index'),)
@@ -77,16 +92,12 @@ class Member(Interested):
     private = models.BooleanField(default=False)
     dateJoined = models.DateField('date joined')
     party = models.ForeignKey(Party, on_delete=models.SET_NULL, null=True, blank=True)
-    bio = models.CharField(max_length=500, default='', blank=True)
 
-    def clean(self):
-        if self.party is not None:
-            leader = self.party.leader
-            other_party_members = Member.objects.filter(party=self.party)
-            if leader == self:
-                raise ValidationError('Cannot assign member to party that he/she is the party\'s leader')
-            if other_party_members.count() == 3:
-                raise ValidationError('Party is full')
+    in_tournament = models.BooleanField(default=False)
+
+    bio = models.CharField(max_length=500, default='', blank=True)
+    picture = models.TextField(null=True, blank=True)
+
 
 
 class BoardMember(Member):
@@ -122,9 +133,10 @@ class Match(models.Model):
     startDateTime = models.DateTimeField('date time started')
     scoreA = models.IntegerField(default=0, blank=True)
     scoreB = models.IntegerField(default=0, blank=True)
-    court = models.ForeignKey(Court, on_delete=models.SET_NULL, null=True, blank=True)
 
     endDateTime = models.DateTimeField('date time ended', null=True, blank=True)
+
+    bracket_node = models.ForeignKey(BracketNode, related_name='match', on_delete=models.SET_NULL, blank=True, null=True)
 
     def clean(self):
         if self.endDateTime is not None:
@@ -143,7 +155,10 @@ class Match(models.Model):
             elif play.team == TEAMS[1][0]:
                 team_b_members.append(play.member)
 
-        return 'A{}-B{}:{}-{}'.format([str(m) for m in team_a_members], [str(m) for m in team_b_members], self.scoreA, self.scoreB)
+        return 'A|{}{}\tB|{}{}\tTime|{}-{}'.format(self.scoreA, [str(m) for m in team_a_members],
+                                                 self.scoreB, [str(m) for m in team_b_members],
+                                                 self.startDateTime.time().strftime('%H:%M'),
+                                                 self.endDateTime.time().strftime('%H:%M') if self.endDateTime is not None else '')
 
 class PlayedIn(models.Model):
     class Meta:

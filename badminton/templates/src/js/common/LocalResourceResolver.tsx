@@ -45,12 +45,13 @@ export function setResource<T>(instance: T, arg: string, value: string): void {
 const cookies = new Cookies();
 
 export function isBoardMember(): boolean {
-	cookies.set('isBoardMember', 'true');
-	return true;
+	const ret = cookies.get('is_board_member');
+	return ret == 'true';
 }
 
 export function getMemberId(): number {
-	return 8;
+	const ret = cookies.get('member_id');
+	return parseInt(ret);
 }
 
 export function xsrfCookieName(): string {

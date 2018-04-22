@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 494);
+/******/ 	return __webpack_require__(__webpack_require__.s = 496);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -72,7 +72,7 @@
 
 
 var bind = __webpack_require__(7);
-var isBuffer = __webpack_require__(15);
+var isBuffer = __webpack_require__(14);
 
 /*global toString:true*/
 
@@ -419,11 +419,11 @@ module.exports = Cancel;
 /***/ 12:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(14);
+module.exports = __webpack_require__(13);
 
 /***/ }),
 
-/***/ 14:
+/***/ 13:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -431,8 +431,8 @@ module.exports = __webpack_require__(14);
 
 var utils = __webpack_require__(1);
 var bind = __webpack_require__(7);
-var Axios = __webpack_require__(16);
-var defaults = __webpack_require__(5);
+var Axios = __webpack_require__(15);
+var defaults = __webpack_require__(4);
 
 /**
  * Create an instance of Axios
@@ -466,14 +466,14 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(11);
-axios.CancelToken = __webpack_require__(30);
+axios.CancelToken = __webpack_require__(29);
 axios.isCancel = __webpack_require__(10);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(31);
+axios.spread = __webpack_require__(30);
 
 module.exports = axios;
 
@@ -483,7 +483,7 @@ module.exports.default = axios;
 
 /***/ }),
 
-/***/ 15:
+/***/ 14:
 /***/ (function(module, exports) {
 
 /*!
@@ -511,16 +511,16 @@ function isSlowBuffer (obj) {
 
 /***/ }),
 
-/***/ 16:
+/***/ 15:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(5);
+var defaults = __webpack_require__(4);
 var utils = __webpack_require__(1);
-var InterceptorManager = __webpack_require__(25);
-var dispatchRequest = __webpack_require__(26);
+var InterceptorManager = __webpack_require__(24);
+var dispatchRequest = __webpack_require__(25);
 
 /**
  * Create a new instance of Axios
@@ -598,7 +598,7 @@ module.exports = Axios;
 
 /***/ }),
 
-/***/ 17:
+/***/ 16:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -618,7 +618,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 /***/ }),
 
-/***/ 18:
+/***/ 17:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -652,7 +652,7 @@ module.exports = function settle(resolve, reject, response) {
 
 /***/ }),
 
-/***/ 19:
+/***/ 18:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -681,14 +681,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 /***/ }),
 
-/***/ 2:
-/***/ (function(module, exports) {
-
-module.exports = React;
-
-/***/ }),
-
-/***/ 20:
+/***/ 19:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -762,7 +755,14 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 /***/ }),
 
-/***/ 21:
+/***/ 2:
+/***/ (function(module, exports) {
+
+module.exports = React;
+
+/***/ }),
+
+/***/ 20:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -823,7 +823,7 @@ module.exports = function parseHeaders(headers) {
 
 /***/ }),
 
-/***/ 22:
+/***/ 21:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -899,7 +899,7 @@ module.exports = (
 
 /***/ }),
 
-/***/ 23:
+/***/ 22:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -943,7 +943,7 @@ module.exports = btoa;
 
 /***/ }),
 
-/***/ 24:
+/***/ 23:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1004,7 +1004,7 @@ module.exports = (
 
 /***/ }),
 
-/***/ 25:
+/***/ 24:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1064,18 +1064,18 @@ module.exports = InterceptorManager;
 
 /***/ }),
 
-/***/ 26:
+/***/ 25:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(1);
-var transformData = __webpack_require__(27);
+var transformData = __webpack_require__(26);
 var isCancel = __webpack_require__(10);
-var defaults = __webpack_require__(5);
-var isAbsoluteURL = __webpack_require__(28);
-var combineURLs = __webpack_require__(29);
+var defaults = __webpack_require__(4);
+var isAbsoluteURL = __webpack_require__(27);
+var combineURLs = __webpack_require__(28);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -1158,7 +1158,7 @@ module.exports = function dispatchRequest(config) {
 
 /***/ }),
 
-/***/ 27:
+/***/ 26:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1186,7 +1186,7 @@ module.exports = function transformData(data, headers, fns) {
 
 /***/ }),
 
-/***/ 28:
+/***/ 27:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1208,7 +1208,7 @@ module.exports = function isAbsoluteURL(url) {
 
 /***/ }),
 
-/***/ 29:
+/***/ 28:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1226,6 +1226,71 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
     : baseURL;
 };
+
+
+/***/ }),
+
+/***/ 29:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Cancel = __webpack_require__(11);
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  var token = this;
+  executor(function cancel(message) {
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    token.reason = new Cancel(message);
+    resolvePromise(token.reason);
+  });
+}
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+  if (this.reason) {
+    throw this.reason;
+  }
+};
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+CancelToken.source = function source() {
+  var cancel;
+  var token = new CancelToken(function executor(c) {
+    cancel = c;
+  });
+  return {
+    token: token,
+    cancel: cancel
+  };
+};
+
+module.exports = CancelToken;
 
 
 /***/ }),
@@ -1427,71 +1492,6 @@ process.umask = function() { return 0; };
 "use strict";
 
 
-var Cancel = __webpack_require__(11);
-
-/**
- * A `CancelToken` is an object that can be used to request cancellation of an operation.
- *
- * @class
- * @param {Function} executor The executor function.
- */
-function CancelToken(executor) {
-  if (typeof executor !== 'function') {
-    throw new TypeError('executor must be a function.');
-  }
-
-  var resolvePromise;
-  this.promise = new Promise(function promiseExecutor(resolve) {
-    resolvePromise = resolve;
-  });
-
-  var token = this;
-  executor(function cancel(message) {
-    if (token.reason) {
-      // Cancellation has already been requested
-      return;
-    }
-
-    token.reason = new Cancel(message);
-    resolvePromise(token.reason);
-  });
-}
-
-/**
- * Throws a `Cancel` if cancellation has been requested.
- */
-CancelToken.prototype.throwIfRequested = function throwIfRequested() {
-  if (this.reason) {
-    throw this.reason;
-  }
-};
-
-/**
- * Returns an object that contains a new `CancelToken` and a function that, when called,
- * cancels the `CancelToken`.
- */
-CancelToken.source = function source() {
-  var cancel;
-  var token = new CancelToken(function executor(c) {
-    cancel = c;
-  });
-  return {
-    token: token,
-    cancel: cancel
-  };
-};
-
-module.exports = CancelToken;
-
-
-/***/ }),
-
-/***/ 31:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 /**
  * Syntactic sugar for invoking a function and expanding an array for arguments.
  *
@@ -1521,7 +1521,7 @@ module.exports = function spread(callback) {
 
 /***/ }),
 
-/***/ 35:
+/***/ 31:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1619,7 +1619,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 37:
+/***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1631,11 +1631,11 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
  * in of themselves.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var Cookies = __webpack_require__(41);
+var Cookies = __webpack_require__(37);
 /**
  * Mappings from imported classes to random strings.
  */
-const obfuscationMappings = {
+var obfuscationMappings = {
     'MailView': 'ysjiUtKPV7',
 };
 /**
@@ -1643,15 +1643,15 @@ const obfuscationMappings = {
  * arg being the requested key
  */
 function _generateKey(instance, arg) {
-    const name = instance.constructor.name;
-    const obf = obfuscationMappings[name];
+    var name = instance.constructor.name;
+    var obf = obfuscationMappings[name];
     return name + obf;
 }
 /**
  * Returns a string given the class and the key <arg>
  */
 function getResource(instance, arg) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     return localStorage.getItem(key);
     ;
 }
@@ -1660,18 +1660,19 @@ exports.getResource = getResource;
  * Sets the requested key <arg> of class <instance> to <value>
  */
 function setResource(instance, arg, value) {
-    const key = _generateKey(instance, arg);
+    var key = _generateKey(instance, arg);
     localStorage.setItem(key, value);
 }
 exports.setResource = setResource;
-const cookies = new Cookies();
+var cookies = new Cookies();
 function isBoardMember() {
-    cookies.set('isBoardMember', 'true');
-    return true;
+    var ret = cookies.get('is_board_member');
+    return ret == 'true';
 }
 exports.isBoardMember = isBoardMember;
 function getMemberId() {
-    return 8;
+    var ret = cookies.get('member_id');
+    return parseInt(ret);
 }
 exports.getMemberId = getMemberId;
 function xsrfCookieName() {
@@ -1686,14 +1687,7 @@ exports.xsrfHeaderName = xsrfHeaderName;
 
 /***/ }),
 
-/***/ 4:
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-
-/***/ 41:
+/***/ 37:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1703,7 +1697,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Cookies = __webpack_require__(42);
+var _Cookies = __webpack_require__(38);
 
 var _Cookies2 = _interopRequireDefault(_Cookies);
 
@@ -1714,7 +1708,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 42:
+/***/ 38:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1728,15 +1722,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _cookie = __webpack_require__(43);
+var _cookie = __webpack_require__(39);
 
 var _cookie2 = _interopRequireDefault(_cookie);
 
-var _objectAssign = __webpack_require__(35);
+var _objectAssign = __webpack_require__(31);
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-var _utils = __webpack_require__(44);
+var _utils = __webpack_require__(40);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1861,7 +1855,7 @@ module.exports = exports['default'];
 
 /***/ }),
 
-/***/ 43:
+/***/ 39:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2064,122 +2058,14 @@ function tryDecode(str, decode) {
 
 /***/ }),
 
-/***/ 44:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-exports.hasDocumentCookie = hasDocumentCookie;
-exports.cleanCookies = cleanCookies;
-// Can we get/set cookies on document.cookie?
-
-function hasDocumentCookie() {
-  return (typeof document === 'undefined' ? 'undefined' : _typeof(document)) === 'object' && typeof document.cookie === 'string';
-}
-
-//backwards compatibility
-var HAS_DOCUMENT_COOKIE = exports.HAS_DOCUMENT_COOKIE = hasDocumentCookie();
-
-function cleanCookies() {
-  document.cookie.split(';').forEach(function (c) {
-    document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-  });
-}
-
-/***/ }),
-
-/***/ 494:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const ReactDOM = __webpack_require__(4);
-const RankingView_1 = __webpack_require__(495);
-ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.querySelector("ranking-view"));
-
-
-/***/ }),
-
-/***/ 495:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(2);
-const axios_1 = __webpack_require__(12);
-const LocalResourceResolver_1 = __webpack_require__(37);
-const ranking_url = '/api/members/top_players';
-class RanksTable extends React.Component {
-    render() {
-        return React.createElement("table", { className: "stats-table row-offset-1" },
-            React.createElement("thead", { className: "row-3" },
-                React.createElement("tr", null,
-                    React.createElement("th", { className: "col-3 col-es-6" }, "Rank"),
-                    React.createElement("th", { className: "col-3 col-es-6" }, "Name"))),
-            React.createElement("tbody", null, this.props.ranks.map((rank, idx) => {
-                return (React.createElement("tr", { key: idx, className: (LocalResourceResolver_1.getMemberId() === rank.id ? "my-rank " : "") + "row-2" },
-                    React.createElement("td", { className: "col-3 col-es-6" }, idx + 1),
-                    React.createElement("td", { className: "col-3 col-es-6" },
-                        rank.first_name,
-                        " ",
-                        rank.last_name)));
-            })));
-    }
-}
-class RankingView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            ranks: null,
-            loading: true,
-        };
-    }
-    componentDidMount() {
-        this.performRequest();
-    }
-    performRequest() {
-        const regular = this.state.regular;
-        var url = ranking_url;
-        axios_1.default.get(url)
-            .then((res) => {
-            this.setState({
-                ranks: res.data,
-                loading: false,
-            });
-        })
-            .catch((res) => {
-        });
-    }
-    render() {
-        if (this.state.loading === true) {
-            return React.createElement("p", null, "Loading");
-        }
-        return React.createElement(RanksTable, { ranks: this.state.ranks, myRank: this.state.myRanks });
-    }
-}
-exports.RankingView = RankingView;
-
-
-/***/ }),
-
-/***/ 5:
+/***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(1);
-var normalizeHeaderName = __webpack_require__(17);
+var normalizeHeaderName = __webpack_require__(16);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -2277,6 +2163,230 @@ module.exports = defaults;
 
 /***/ }),
 
+/***/ 40:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+exports.hasDocumentCookie = hasDocumentCookie;
+exports.cleanCookies = cleanCookies;
+// Can we get/set cookies on document.cookie?
+
+function hasDocumentCookie() {
+  return (typeof document === 'undefined' ? 'undefined' : _typeof(document)) === 'object' && typeof document.cookie === 'string';
+}
+
+//backwards compatibility
+var HAS_DOCUMENT_COOKIE = exports.HAS_DOCUMENT_COOKIE = hasDocumentCookie();
+
+function cleanCookies() {
+  document.cookie.split(';').forEach(function (c) {
+    document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+  });
+}
+
+/***/ }),
+
+/***/ 496:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(2);
+var ReactDOM = __webpack_require__(5);
+var RankingView_1 = __webpack_require__(497);
+ReactDOM.render(React.createElement(RankingView_1.RankingView, null), document.querySelector("ranking-view"));
+
+
+/***/ }),
+
+/***/ 497:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(2);
+var axios_1 = __webpack_require__(12);
+var LocalResourceResolver_1 = __webpack_require__(33);
+var ranking_url = '/api/rankings/winratio/';
+var ranking_level = '/api/rankings/level/';
+var RanksTableWL = /** @class */ (function (_super) {
+    __extends(RanksTableWL, _super);
+    function RanksTableWL() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RanksTableWL.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement("h4", null, this.props.title),
+            React.createElement("table", { className: "stats-table row-offset-1" },
+                React.createElement("thead", { className: "row-3" },
+                    React.createElement("tr", null,
+                        React.createElement("th", { className: "col-3 col-es-6" }, "Rank"),
+                        React.createElement("th", { className: "col-3 col-es-6" }, "Name"),
+                        React.createElement("th", { className: "col-3 col-es-6" }, "Wins"),
+                        React.createElement("th", { className: "col-3 col-es-6" }, "Total"))),
+                React.createElement("tbody", null, this.props.ranks.map(function (rank, idx) {
+                    return (React.createElement("tr", { key: idx, className: (LocalResourceResolver_1.getMemberId() === rank.id ? "my-rank " : "") + "row-2" },
+                        React.createElement("td", { className: "col-3 col-es-6" }, idx + 1),
+                        React.createElement("td", { className: "col-3 col-es-6" },
+                            rank.first_name,
+                            " ",
+                            rank.last_name),
+                        React.createElement("td", { className: "col-3 col-es-6" }, rank.wins),
+                        React.createElement("td", { className: "col-3 col-es-6" }, rank.total_games)));
+                }))));
+    };
+    return RanksTableWL;
+}(React.Component));
+var RanksTableLevel = /** @class */ (function (_super) {
+    __extends(RanksTableLevel, _super);
+    function RanksTableLevel() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RanksTableLevel.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement("h4", null, this.props.title),
+            React.createElement("table", { className: "stats-table row-offset-1" },
+                React.createElement("thead", { className: "row-3" },
+                    React.createElement("tr", null,
+                        React.createElement("th", { className: "col-3 col-es-6" }, "Rank"),
+                        React.createElement("th", { className: "col-3 col-es-6" }, "Name"),
+                        React.createElement("th", { className: "col-3 col-es-6" }, "Level"))),
+                React.createElement("tbody", null, this.props.ranks.map(function (rank, idx) {
+                    return (React.createElement("tr", { key: idx, className: (LocalResourceResolver_1.getMemberId() === rank.id ? "my-rank " : "") + "row-2" },
+                        React.createElement("td", { className: "col-3 col-es-6" }, idx + 1),
+                        React.createElement("td", { className: "col-3 col-es-6" },
+                            rank.first_name,
+                            " ",
+                            rank.last_name),
+                        React.createElement("td", { className: "col-3 col-es-6" }, rank.level)));
+                }))));
+    };
+    return RanksTableLevel;
+}(React.Component));
+var RankingView = /** @class */ (function (_super) {
+    __extends(RankingView, _super);
+    function RankingView(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            ranks: null,
+            loading: true,
+        };
+        return _this;
+    }
+    RankingView.prototype.componentDidMount = function () {
+        this.performRequest();
+    };
+    RankingView.prototype.performRequest = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var regular, url, _a, res, level, _b, err_1;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        regular = this.state.regular;
+                        url = ranking_url;
+                        _c.label = 1;
+                    case 1:
+                        _c.trys.push([1, 4, , 5]);
+                        return [4 /*yield*/, axios_1.default.get(url)];
+                    case 2:
+                        _b = [_c.sent()];
+                        return [4 /*yield*/, axios_1.default.get(ranking_level)];
+                    case 3:
+                        _a = _b.concat([_c.sent()]), res = _a[0], level = _a[1];
+                        this.setState({
+                            ranks: res.data.rankings,
+                            level: level.data.rankings,
+                            loading: false,
+                        });
+                        return [3 /*break*/, 5];
+                    case 4:
+                        err_1 = _c.sent();
+                        console.log(err_1);
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    RankingView.prototype.render = function () {
+        if (this.state.loading === true) {
+            return React.createElement("p", null, "Loading");
+        }
+        console.log(this.state.ranks);
+        console.log(this.state.level);
+        return React.createElement(React.Fragment, null,
+            React.createElement(RanksTableWL, { ranks: this.state.ranks, myRank: this.state.myRanks, title: "Rankings by Win/Loss" }),
+            React.createElement(RanksTableLevel, { ranks: this.state.level, myRank: this.state.myRanks, title: "Rankings by Level" }));
+    };
+    return RankingView;
+}(React.Component));
+exports.RankingView = RankingView;
+
+
+/***/ }),
+
+/***/ 5:
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+
 /***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2303,12 +2413,12 @@ module.exports = function bind(fn, thisArg) {
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(1);
-var settle = __webpack_require__(18);
-var buildURL = __webpack_require__(20);
-var parseHeaders = __webpack_require__(21);
-var isURLSameOrigin = __webpack_require__(22);
+var settle = __webpack_require__(17);
+var buildURL = __webpack_require__(19);
+var parseHeaders = __webpack_require__(20);
+var isURLSameOrigin = __webpack_require__(21);
 var createError = __webpack_require__(9);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(23);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(22);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -2405,7 +2515,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(24);
+      var cookies = __webpack_require__(23);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -2491,7 +2601,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(19);
+var enhanceError = __webpack_require__(18);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.

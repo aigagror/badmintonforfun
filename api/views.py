@@ -7,8 +7,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout, login
 from django.template import Context, Template
 from django.contrib.auth import logout as auth_logout
-from api.calls.interested_call import get_member_class, MemberClass, add_interested
+from api.calls.interested_call import add_interested
+from api.utils import MemberClass, get_member_class
 from api.routers.router import auth_decorator, restrictRouter, validate_keys
+from django.db import connection
+from api.cursor_api import dictfetchall
+from django.core.mail import send_mail
+from badminton_server.settings import BFF_EMAIL
 
 def sign_in(request):
     url = Template("{% url 'social:begin' 'google-oauth2' %}")
@@ -23,14 +28,17 @@ def logout(request):
 def done(request):
     email = request.user.email
     member_class = get_member_class(email)
+    print(member_class)
     if member_class == MemberClass.OUTSIDE:
         add_interested(request.user)
+        auth_logout(request)
         return redirect('/registered')
     elif member_class == MemberClass.INTERESTED:
+        auth_logout(request)
         return redirect('/registered')
     return redirect('/home')
 
-@auth_decorator(allowed=[MemberClass.OUTSIDE])
+@auth_decorator(allowed=MemberClass.OUTSIDE)
 def test(request):
     return HttpResponse("Hello!")
 
@@ -65,10 +73,13 @@ def emails_for_key(key):
             """
             cursor.execute(query)
             results = dictfetchall(cursor)
+    print(results)
     emails = list(map(lambda x: x['email'], results))
     return emails
 
-@auth_decorator(allowed=[MemberClass.BOARD_MEMBER])
+
+@login_required
+@auth_decorator(allowed=MemberClass.BOARD_MEMBER)
 @restrictRouter(allowed=["GET", "POST"])
 def mail(request):
     if request.method == "GET":
@@ -104,6 +115,13 @@ def mail(request):
         if not validate_keys(keys, request.POST):
             return HttpResponse("Missing key, one of %s".format(','.join(keys)), status=400)
 
-        print(emails_for_key(request.POST[list_mail_key]))
-
-        raise NotImplementedError("Hello")
+        emails = emails_for_key(request.POST[list_mail_key])
+        subject = request.POST[title_mail_key]
+        message = request.POST[body_mail_key]
+        send_mail(
+            subject,
+            message,
+            BFF_EMAIL,
+            emails,
+            fail_silently=False,
+        )

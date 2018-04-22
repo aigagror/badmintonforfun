@@ -4,6 +4,12 @@ import { Slider } from '../common/Slider';
 import { Popup } from '../common/Popup';
 import { Select, Option } from '../common/Select';
 import { isBoardMember } from '../common/LocalResourceResolver';
+import {getResource, setResource, xsrfCookieName, xsrfHeaderName, getMemberId} from '../common/LocalResourceResolver';
+import {objectToFormData} from '../common/Utils';
+import Dropzone from 'react-dropzone';
+
+axios.defaults.xsrfCookieName = xsrfCookieName();
+axios.defaults.xsrfHeaderName = xsrfHeaderName();
 
 enum LoadingState {
     Loading,
@@ -12,6 +18,7 @@ enum LoadingState {
 
 const reg_url = '/api/settings/member/';
 const member_url = '/api/settings/members/all/';
+const member_url_delete = '/api/settings/members/all/delete/';
 const courts_url = '/api/settings/courts/';
 
 class OptionSetting extends React.Component<any, any> {
@@ -56,6 +63,60 @@ class LongTextSetting extends React.Component<any, any> {
 		return <textarea className="interaction-style" name={this.props.data.name} 
 			onChange={(e: any) => this.props.change(e.target.value)} 
 			defaultValue={this.props.data.value} />
+	}
+}
+
+const maxFileSize = 1024 * 1024 * 128;
+class FileSetting extends React.Component<any, any> {
+
+	constructor(props: any) {
+		super(props);
+
+		this.state = {
+			popup: null
+		}
+		this.decideFile = this.decideFile.bind(this);
+		this.getBase64 = this.getBase64.bind(this);
+	}
+	getBase64(file: File): Promise<string> {
+		return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload = () => resolve(reader.result);
+				reader.onerror = error => reject(error);
+			});
+	}
+
+	async decideFile(files: Array<File>) {
+		const reset = () => this.setState({popup:null});
+		if (files.length !== 1) {
+			this.setState({
+				popup: <Popup title="One file" message="Please only select on file" callback={reset} />
+			});
+			return;
+		}
+		const file = files[0];
+
+		try {
+			const encoded = await this.getBase64(file);
+			this.props.change(encoded);
+		} catch(err) {
+			console.log(err);
+		}
+
+	}
+
+	render() {
+		return <>
+			<Dropzone onDrop={(files: any) => this.decideFile(files) } 
+				multiple={false} 
+				maxSize={maxFileSize}
+				className="dropzone-style">
+	            <p>Click to add a picture</p>
+	        </Dropzone>
+	        { this.state.popup && this.state.popup }
+	        </>
+
 	}
 }
 
@@ -118,6 +179,8 @@ class StandardSettings extends React.Component<any, any> {
 			return <TextSetting data={setting} key={key} change={updateFunctor} />
 		} else if (setting.type === "long_text") {
 			return <LongTextSetting data={setting} key={key} change={updateFunctor} />
+		} else if (setting.type === "file") {
+			return <FileSetting data={setting} key={key} change={updateFunctor} />
 		}
 	}
 
@@ -177,9 +240,7 @@ class MemberSettings extends React.Component<any, any> {
 	deleteMember(idx: number) {
 		return () => {
 			const toDelete = this.state.members[idx];
-			axios.delete(member_url, { 
-				data: { members: [toDelete] } 
-			})
+			axios.post(member_url_delete, objectToFormData({ member_id: toDelete.member_id }))
 			.then((res: any) => {
 				console.log(res);
 				this.performRequest();
@@ -192,10 +253,7 @@ class MemberSettings extends React.Component<any, any> {
 
 	alterMember(idx: number, toRole: any) {
 		const toEdit = this.state.members[idx];
-		toEdit.status = toRole
-		axios.post(member_url, { 
-			members: [toEdit]
-		})
+		axios.post(member_url, objectToFormData({member_id: toEdit.member_id, status: toRole}))
 		.then((res: any) => {
 			console.log(res);
 			this.performRequest();
@@ -210,10 +268,16 @@ class MemberSettings extends React.Component<any, any> {
 			return <p>Loading</p>
 		}
 
-		return <>
+		return <div style={{overflowY: 'scroll', height: '500px'}}>
 		<h3>Members</h3>
 		{
-			this.state.members.map((member: any, idx: number) => {
+			this.state.members.sort((a: any, b: any) => {
+					const cmp = a.first_name.localeCompare(b.first_name);
+					if (cmp === 0) {
+						return a.last_name.localeCompare(b.last_name);
+					}
+					return cmp;
+				}).map((member: any, idx: number) => {
 				return <div key={idx} className="row">
 				<div className="col-5 col-es-12">
 				<h4>{member.first_name} {member.last_name}</h4> 
@@ -221,21 +285,22 @@ class MemberSettings extends React.Component<any, any> {
 				<div className="col-4 col-es-12">
 				<Select 
 					options={this.state.memberTypes}
-					defaultValue={member.type}
+					defaultValue={member.status}
 					onChange={(role: any) => {this.alterMember(idx, role)}}
-					name={member.member_id} />
+					name={member.member_id}
+					override={true} />
 				</div>
 				<div className="col-3 col-es-12">
 				<button 
 					onClick={this.deleteMember(idx)} 
-					className="interaction-style">
+					className="interaction-style delete-button">
 					Delete
 				</button>
 				</div>
 				</div>
 			})
 		}
-		</>
+		</div>
 	}
 }
 
@@ -249,16 +314,49 @@ class CourtSettings extends React.Component<any, any> {
 		this.state = {
 			courts: null,
 		}
+		this.performRequest = this.performRequest.bind(this);
+		this.deleteCourt = this.deleteCourt.bind(this);
+		this.addCourt = this.addCourt.bind(this);
 	}
 
-	async componentDidMount() {
+	async performRequest() {
 		try {
 			const res = await axios.get(this.courts_url);
+			const options = res.data.court_types.map((court: any) => new Option(court.value, court.display))
+			const adjustedOptions = [...options, new Option(null, "Free Play")]
 			this.setState({
 				courts: res.data.courts,
+				courtTypes: adjustedOptions,
+				selectedValue: options[0].value,
 			})
 		} catch (ex) {
 			console.log(ex);
+		}
+	}
+
+	componentDidMount() {
+		this.performRequest()
+	}
+
+	async deleteCourt(court_id: any) {
+		try {
+			const datum = await axios.delete(courts_url, {
+				data: JSON.stringify({courts:[{court_id: court_id}]})
+			});
+			console.log(datum.data);
+			this.performRequest();
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	async addCourt(queue_id: any) {
+		try {
+			const datum = await axios.post(courts_url, objectToFormData({courts:[{queue_id: queue_id}]}));
+			console.log(datum.data);
+			this.performRequest();
+		} catch (err) {
+			console.log(err);
 		}
 	}
 
@@ -271,24 +369,35 @@ class CourtSettings extends React.Component<any, any> {
 		<h3>Courts</h3>
 		{
 			this.state.courts.map((court: any, idx: number) => {
+				console.log(court);
 				return <div key={idx} className="row">
-				<div className="col-5 col-es-12">
-				<h4>{court.name}</h4> 
-				</div>
-				<div className="col-4 col-es-12">
+				<div className="col-6 col-es-12">
 				<Select 
 					options={this.state.courtTypes}
-					defaultValue={court.type}
+					defaultValue={court.court_type}
 					onChange={(i: any) => {console.log(i)}}
 					name={"courts" + idx} />
 				</div>
-				<div className="col-3 col-es-12">
-				<button>Delete</button>
+				<div className="col-6 col-es-12">
+				<button className="interaction-style delete-button" onClick={()=>this.deleteCourt(court.court_id)}>Delete</button>
 				</div>
 				</div>
 			})
 		}
-		<button>Add a court</button>
+		<div className="row">
+		<div className="col-6">
+		<Select 
+			options={this.state.courtTypes}
+			defaultValue={this.state.selectedValue}
+			onChange={(i: any) => this.setState({selectedValue: i}) }
+			name="courtsAdd" />
+		</div>
+
+		<div className="col-6">
+		<button className="interaction-style" onClick={() => this.addCourt(this.state.selectedValue)}>Add a court</button>
+		</div>
+
+		</div>
 		</div>
 	}
 }
@@ -324,20 +433,7 @@ export class SettingsView extends React.Component<any, any> {
 	}
 
 	performRequest() {
-		if (isBoardMember()) {
-			axios.get(reg_url)
-			.then((res) => {
-				this.setState({
-					loading: false,
-					regular_settings: <StandardSettings data={res.data}/>,
-				})
-			})
-			.catch((res) => {
-				console.log(res);
-			})
-		}
-		else {
-			axios.get(reg_url)
+		axios.get(reg_url)
 			.then((res) => {
 				this.setState({
 					loading: false,
@@ -348,7 +444,6 @@ export class SettingsView extends React.Component<any, any> {
 			.catch((res) => {
 				console.log(res);
 			})
-		}
 	}
 
 	componentDidMount() {
@@ -367,8 +462,7 @@ export class SettingsView extends React.Component<any, any> {
 		return <div className="election-view">
 	    	{ this.state.regular_settings !== null &&
 	    		this.state.regular_settings }
-
-	    	<BoardSettings />
+	    	{ isBoardMember() && <BoardSettings /> }
 	    </div>
 	}
 }

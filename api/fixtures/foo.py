@@ -1,24 +1,31 @@
-import json
+import pandas
+import datetime
 
-if __name__ == '__main__':
-    interesteds = []
-    data = json.load(open('fixtures.json'))
-    for d in data:
-        if d['model'] == 'api.interested':
-            interesteds.append(d['pk'])
+from api.models import *
 
-    for d in data:
-        if d['model'] == 'api.interested': # Add new pk and move email
-            d['fields']['email'] = d['pk']
-            d['pk'] = interesteds.index(d['pk'])
+data_files = ['api/fixtures/foo.csv', 'api/fixtures/bar.csv']
 
-        if d['model'] == 'api.member' or d['model'] == 'api.boardmember':
-            d['pk'] = interesteds.index(d['pk'])
+for file in data_files:
+    foo = pandas.read_csv(file)
+    for row_index, bar in foo[['email', 'full_name', 'status']].iterrows():
+        name_words = bar.full_name.split()
+        first_name = name_words[0]
+        last_name = name_words[-1]
+        email = bar.email
+        status = bar.status
 
-        if d['model'] == 'api.playedin':
-            d['fields']['member'] = interesteds.index(d['fields']['member'])
+        interested_exists = Interested.objects.filter(email=email).exists()
 
-        if d['model'] == 'api.campaign':
-            d['fields']['campaigner'] =  interesteds.index(d['fields']['campaigner'])
+        if interested_exists == False:
+            # Add him as member or interested
+            if status == 'paid':
+                print('Adding new member {}'.format(email))
+                member = Member(first_name=first_name, last_name=last_name, email=email, dateJoined=datetime.date.today())
+                member.save()
+            else:
+                print('Adding new interested {}'.format(email))
+                interested = Interested(first_name=first_name, last_name=last_name, email=email)
+                interested.save()
 
-    json.dump(data, open('foo.json', 'w'), indent=4)
+        else:
+            print('Ignoring {}'.format(email))

@@ -2,7 +2,7 @@
 
 from api.calls.match_call import *
 from django.contrib.auth.decorators import login_required
-from api.calls.interested_call import get_member_class
+from api.utils import get_member_class
 from badminton_server.settings import LOGIN_URL
 from django.shortcuts import redirect
 
@@ -19,25 +19,20 @@ def restrictRouter(allowed=list(), incomplete=list()):
         return _func
     return _restrictRouter
 
-def auth_decorator(allowed=list()):
+
+def auth_decorator(allowed=None):
     def _auth_decorator(func):
         def _func(request, *args, **kwargs):
             if not request.user.is_authenticated:
-                return redirect(LOGIN_URL)
+                result = redirect(LOGIN_URL)
+                return result
             member_class = get_member_class(request.user.email)
-            print(type(member_class))
-            print(allowed[0])
-            if member_class not in allowed:
+            if member_class.isSuperSet(allowed):
                 return HttpResponse('Not allowed', status=403)
             return func(request, *args, **kwargs)
         return _func
     return _auth_decorator
 
-
-@restrictRouter(allowed=["POST"])
-def sign_in(request):
-    code = dict(request.POST.items())
-    return logged_in(code)
 
 def validate_keys(keys, validate_dict):
     for key in keys:
@@ -45,6 +40,20 @@ def validate_keys(keys, validate_dict):
             return False
 
     return True
+
+
+def get_member_id_from_email(email):
+    members = Interested.objects.raw("SELECT * FROM api_interested WHERE email = %s", [email])
+    if len(list(members)) <= 0:
+        return http_response({}, message="Member does not exist", code=400)
+    member = members[0]
+    return member.id
+
+
+def get_match_from_member_id(member_id):
+    match = find_current_match_by_member(member_id)
+    match_id = (json.loads(match.content.decode('utf8').replace("'", '"')))["match"]["match_id"]
+    return match_id
 
 
 

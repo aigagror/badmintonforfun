@@ -6,57 +6,69 @@ from django.urls import reverse
 from api import cursor_api
 from .custom_test_case import *
 from api.models import *
+from api.calls.election_call import delete_election
 
 
 class VotesTest(CustomTestCase):
-    def create_election_helper(self):
-        election = Election(date=datetime.date.today())
-        election.save()
 
-        campaigner1 = Member(first_name='Eddie', last_name='Huang', dateJoined=datetime.date.today(), email='ezhuang2@illinois.edu')
-        campaigner2 = Member(first_name='Bhuvan', last_name='Venkatesh', dateJoined=datetime.date.today(), email='bhuvan2@illinois.edu')
-        campaigner3 = Member(first_name='Grace', last_name='Shen', dateJoined=datetime.date.today(), email='gshen2@illinois.edu')
-        campaigner4 = Member(first_name='Daniel', last_name='Rong', dateJoined=datetime.date.today(), email='drong4@illinois.edu')
-
-        campaigner1.save()
-        campaigner2.save()
-        campaigner3.save()
-        campaigner4.save()
-
-        campaign1 = Campaign(job='President', campaigner=campaigner1, election=election, pitch='I am Eddie')
-        campaign2 = Campaign(job='President', campaigner=campaigner2, election=election, pitch='I am Bhuvan')
-        campaign3 = Campaign(job='President', campaigner=campaigner3, election=election, pitch='I am Grace')
-        campaign4 = Campaign(job='President', campaigner=campaigner4, election=election, pitch='I am Dan')
-
-        campaign1.save()
-        campaign2.save()
-        campaign3.save()
-        campaign4.save()
-
-        return election
-
-
-
-
+    @run(path_name='cast_vote', email=MEMBER, method=POST, args={'campaign_id': 1})
     def test_cast_votes(self):
-        election = self.create_election_helper()
-
-        campaigns = Campaign.objects.filter(election=election)
-
-        voter = Member(first_name='Some', last_name='Voter', dateJoined=datetime.date.today(), email='voter@illinois.edu')
-        voter.save()
-
-        response = self.client.post(reverse('api:cast_vote'), {'voter': voter.id, 'campaign': campaigns[0].id})
+        """
+        Changing vote from Bhuvan to Eddie since they're both running for president
+        :return:
+        """
+        response = self.response
         self.assertGoodResponse(response)
 
+        vote = Vote.objects.get(voter_id=2)
+        self.assertEqual(vote.campaign_id, 1)
+
+        self.assertEqual(self.original_number_of_votes, len(list(Vote.objects.all())))
+
+    @run(path_name='cast_vote', email=MEMBER, method=POST, args={'campaign_id': 2})
+    def test_update_cast_vote(self):
+        response = self.response
+        self.assertGoodResponse(response)
+
+        # ensure that nothing changed from the first vote cast except the campaign id
+        vote = Vote.objects.get(voter_id=2)
+        self.assertEqual(vote.campaign_id, 2)
+        self.assertEqual(self.original_number_of_votes, len(list(Vote.objects.all())))
+
+    @run(path_name='cast_vote', email=MEMBER, method=POST, args={'campaign_id': 4})
+    def test_cast_vote_on_treasurer(self):
+        # already cast a vote on a president, you can still cast one vote on a treasurer
+        response = self.response
+        self.assertGoodResponse(response)
+
+        votes = Vote.objects.filter(voter_id=2)
+        self.assertEqual(votes[0].campaign_id, 2)
+        self.assertEqual(votes[1].campaign_id, 4)
+
+        # Casted a new vote
+        self.assertEqual(self.original_number_of_votes + 1, len(list(Vote.objects.all())))
+
+    @run(path_name='get_all_votes', email=MEMBER, method=GET, args={})
+    def test_fail_get_all_votes_not_board_member(self):
+        response = self.response
+        self.assertEquals(response.status_code, 403)
+
+    # @run(path_name='get_all_votes', email=BOARD_MEMBER, method=GET, args={})
+    # def test_fail_get_all_votes_no_current_election(self):
+    #     response = delete_election(0)
+    #     self.assertEqual(response.status_code, 200)
+    #
+    #     response = self.response
+    #     self.assertBadResponse(response)
+
+    @run(path_name='get_all_votes', email=BOARD_MEMBER, method=GET, args={})
     def test_get_all_votes(self):
-        response = self.client.get(reverse('api:get_all_votes'))
-        json = response.json()
-        self.assertEqual(json['message'], 'No current election available')
+        response = self.response
+        self.assertGoodResponse(response)
 
-        self.test_cast_votes()
+        all_votes = response.json()["all_votes"]
+        self.assertEqual(len(all_votes), 1)
+        self.assertEqual(all_votes[0]["voter"], 2)
+        self.assertEqual(all_votes[0]["campaign"], 2)
 
-        response = self.client.get(reverse('api:get_all_votes'))
-        json = response.json()
-        votes = json['all_votes']
-        self.assertEqual(len(votes), 1)
+

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import axios from 'axios';
 
-const url = '/api/settings/members/all/';
+const url = '/api/members/all/';
 
 class Member extends React.Component<any, any> {
 	render() {

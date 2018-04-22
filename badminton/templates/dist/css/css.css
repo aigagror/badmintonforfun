@@ -2479,6 +2479,74 @@ input[type="text"] {
   overflow: visible;
   padding-top: 5px;
   padding-bottom: 20px; }
+
+.court-style {
+  height: 200px;
+  background-color: #db950a;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  position: relative; }
+
+.court-style:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left: 2px solid #000000;
+  transform: translate(-50%); }
+
+.queue-party-div {
+  background-color: gray;
+  corner-radius: 5px;
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 5px; }
+
+.court-a-team {
+  position: absolute;
+  left: 10%;
+  width: 30%; }
+
+.court-b-team {
+  position: absolute;
+  right: 10%;
+  width: 30%; }
+
+.team-1-1 {
+  top: 45%; }
+
+.team-1-2 {
+  top: 30%; }
+
+.team-2-2 {
+  top: 60%; }
+
+.dropzone-style {
+  width: 100%;
+  height: 100px;
+  text-align: center;
+  background-color: gray;
+  cursor: pointer;
+  display: table;
+  margin-top: 20px;
+  border-radius: 5px; }
+  .dropzone-style > p {
+    text-align: center;
+    vertical-align: middle;
+    display: table-cell; }
+
+.delete-button {
+  background-color: darkred;
+  color: white; }
+
+.tournament-bracket-node {
+  stroke: white;
+  fill: white;
+  font-family: "Arial";
+  font-size: 16px;
+  cursor: pointer; }
 /* The container */
 .radio-container {
   display: block;
@@ -3828,6 +3896,12 @@ input:checked + .slider:before {
 
 .popup-disabled {
   overflow: hidden; }
+
+.popup-check-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 20%; }
 nav {
   background-color: black;
   color: white;

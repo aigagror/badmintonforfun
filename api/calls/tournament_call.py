@@ -8,10 +8,9 @@ def get_most_recent_tournament():
     Returns the most recent tournament, including the bracket nodes associated with it
     :return:
     """
-    most_recent_tournaments = Tournament.objects.raw("SELECT * FROM api_tournament ORDER BY date LIMIT 1")
+    most_recent_tournaments = Tournament.objects.raw("SELECT * FROM api_tournament ORDER BY date DESC LIMIT 1")
     if len(list(most_recent_tournaments)) == 0:
-        # No tournaments
-        return http_response(message="No tournaments exist", code=400)
+        return http_response({"status":"down"},message="No tournaments exist", code=200)
 
     most_recent_tournament = most_recent_tournaments[0]
     t_id = most_recent_tournament.id
@@ -27,7 +26,7 @@ def get_most_recent_tournament():
 
         max_level = row[0]
 
-    bracket_nodes = _build_bracket_dictionary(tournament_bracket_nodes, max_level, 0, 0)
+    bracket_nodes = _build_bracket_dictionary_it(tournament_bracket_nodes, max_level)
 
     tournament_dict = {
         "tournament": {
@@ -64,26 +63,76 @@ def _build_bracket_dictionary(bracket_nodes, max_level, curr_level, curr_sibling
     right_node = _build_bracket_dictionary(bracket_nodes, max_level, curr_level + 1, 2*curr_sibling_index + 1)
 
     # Form current node information
-    match = curr_bracket_node.match
-    if not match:
+
+    matches = Match.objects.raw("SELECT * FROM api_match WHERE bracket_node_id=%s", [curr_bracket_node.id])
+    if not matches:
         match_info = {}
     else:
-        match_info = {
-            "startDateTime": serializeDateTime(match.startDateTime),
-            "scoreA": match.scoreA,
-            "scoreB": match.scoreB,
-            "court": match.court,
-            "endDateTime": serializeDateTime(match.endDateTime) if match.endDateTime is not None else "None"
-        }
+        match_info = []
+        for match in matches:
+            match_dict = {
+                "match_id": match.id,
+                "startDateTime": serializeDateTime(match.startDateTime),
+                "scoreA": match.scoreA,
+                "scoreB": match.scoreB,
+                "endDateTime": serializeDateTime(match.endDateTime) if match.endDateTime is not None else "None"
+            }
+            match_info.append(match_dict)
 
     ret = {
         "left_node": left_node,
         "right_node": right_node,
-        "match_info": match_info,
+        "matches": match_info,
         "level": curr_level,
         "sibling_index": curr_sibling_index
     }
     return ret
+
+def _build_bracket_dictionary_it(bracket_nodes, max_level):
+    """
+        Start from root, traverse level by level (left -> right)
+
+    :param bracket_nodes:
+    :param max_level:
+    :return:
+    """
+    bracket_node_id = bracket_nodes[0].id
+
+    bracket_list = []
+    for i in range(0, max_level + 1):
+        num_range = 2 ** i
+        for j in range(0, num_range):
+            bracket_dict = {"bracket_node_id": bracket_node_id}
+            matches = Match.objects.raw("SELECT * FROM api_match WHERE bracket_node_id=%s", [bracket_node_id])
+            match_info = []
+            query = """
+            SELECT api_playedin.member_id, api_interested.first_name, api_interested.last_name 
+            FROM api_playedin
+            JOIN api_interested ON api_playedin.member_id = api_interested.id
+            WHERE match_id=%s AND team=%s
+            """
+            for match in matches:
+                with connection.cursor() as cursor:
+                    cursor.execute(query, [match.id, "A"])
+                    team_a = dictfetchall(cursor)
+                    cursor.execute(query, [match.id, "B"])
+                    team_b = dictfetchall(cursor)
+                match_dict = {
+                    "match_id": match.id,
+                    "startDateTime": serializeDateTime(match.startDateTime),
+                    "scoreA": match.scoreA,
+                    "scoreB": match.scoreB,
+                    "endDateTime": serializeDateTime(match.endDateTime) if match.endDateTime is not None else None,
+                    "team_A": team_a,
+                    "team_B": team_b
+                }
+                match_info.append(match_dict)
+            bracket_dict["matches"] = match_info
+            bracket_dict["level"] = i
+            bracket_dict["sibling_index"] = j
+            bracket_list.append(bracket_dict)
+            bracket_node_id += 1
+    return bracket_list
 
 
 def _get_bracket_node(bracket_nodes, level, sibling_index):
@@ -106,18 +155,20 @@ def create_tournament(dict_post):
     date = serializeDate(today)
     num_players = int(dict_post["num_players"])
     tournament_type = dict_post["tournament_type"]
-    if tournament_type == "Doubles":
+    elimination_type = dict_post["elimination_type"]
+
+    if tournament_type == "DOUBLES":
         assert num_players % 4 == 0
-    elif tournament_type == "Singles":
+    elif tournament_type == "SINGLES":
         assert num_players % 2 == 0
     else:
         return http_response(message="Invalid tournament type", code=400)
 
-    num_leaf_matches = int(num_players/2) if tournament_type == "Singles" else int(num_players/4)
+    num_leaf_matches = int(num_players/2) if tournament_type == "SINGLES" else int(num_players/4)
 
     # Add tournament
     new_tournament_id = _get_next_tournament_id()  # We need this for creating the bracket nodes
-    _add_tournament(new_tournament_id, date)
+    resp = _add_tournament(new_tournament_id, date, tournament_type, elimination_type)
 
     # Add empty bracket nodes associated with this new tournament
     # Determine max level
@@ -125,7 +176,7 @@ def create_tournament(dict_post):
     # Add bracket nodes
     _add_bracket_nodes(new_tournament_id, max_level, num_leaf_matches)
 
-    return http_response({}, message="OK")
+    return http_response({})
 
 
 def _add_bracket_nodes(tournament_id, max_level, num_leaf_matches):
@@ -168,12 +219,12 @@ def _get_next_tournament_id():
     return max_id
 
 
-def _add_tournament(new_tournament_id, date):
+def _add_tournament(new_tournament_id, date, tournament_type, elimination_type):
     query = '''
-    INSERT INTO api_tournament (id, date)
-    VALUES (%s, %s);
+    INSERT INTO api_tournament (id, date, match_type, elimination_type)
+    VALUES (%s, %s, %s, %s);
     '''
-    return run_connection(query, new_tournament_id, date)
+    return run_connection(query, new_tournament_id, date, tournament_type, elimination_type)
 
 
 def finish_tournament(dict_post):
@@ -186,3 +237,44 @@ def finish_tournament(dict_post):
     WHERE id=%s;
     '''
     return run_connection(query, endDate, tournament_id)
+
+def add_match_call(bracket_node_id, team_A, team_B):
+    """
+    Create a new match for the specified bracket node.
+    Inserts into Match and PlayedIn.
+    :param bracket_node_id:
+    :param team_A: list of strings representing member ids
+    :param team_B:
+    :return:
+    """
+    # Get the next match id to be used
+    with connection.cursor() as cursor:
+        query = """
+        SELECT COALESCE(MAX(id)+1, 0) AS newID
+        FROM api_match
+        """
+        result = cursor.execute(query)
+        newID = dictfetchall(cursor)[0]['newID']
+
+    query = """
+        INSERT INTO api_match(id, startDateTime, scoreA, scoreB, bracket_node_id) VALUES (%s, %s, 0, 0, %s)
+        """
+    today = datetime.datetime.now()
+    response = run_connection(query, newID, serializeDateTime(today), bracket_node_id)
+
+    for p in team_A:
+        # It seems to be passed as a list of int strings rather than just ints
+        p = int(p)
+        query = """
+           INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
+           """
+        response = run_connection(query, p, "A", newID)
+
+    for p in team_B:
+        p = int(p)
+        query = """
+          INSERT INTO api_playedin(member_id, team, match_id) VALUES (%s, %s, %s)
+          """
+        response = run_connection(query, p, "B", newID)
+
+    return http_response(message="OK", code=200)

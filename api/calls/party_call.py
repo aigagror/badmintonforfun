@@ -1,6 +1,6 @@
 from api.calls.queue_call import get_parties_by_playtime, get_queues as call_get_queues
 from api.routers.router import restrictRouter, validate_keys, run_connection
-from api.models import Party, Member
+from api.models import Party, Member, Court, Match
 from api.cursor_api import *
 
 
@@ -63,15 +63,31 @@ def edit_party(party_id, queue_id=None, add_members=None, remove_members=None):
 
     return http_response({},message="OK")
 
+def party_for_member(member_id):
+    qs = (Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT party_id FROM api_member WHERE interested_ptr_id=%s)", [member_id]))
+    if len(list(qs)) == 0:
+        return None
+    else:
+        return qs[0]
 
 def get_member_party(member_id):
-    query_set = (Party.objects.raw("SELECT * FROM api_party WHERE id = (SELECT party_id FROM api_member WHERE interested_ptr_id=%s)", member_id))
-    if len(list(query_set)) == 0:
-        return http_response({}, message="This member is not part of a party", status=400)
-    party = query_set[0]
+    party = party_for_member(member_id)
+    if party is None:
+        return http_response({'status': 'partyless'}, message="This member is not part of a party")
+    with connection.cursor() as cursor:
+        query = """
+        SELECT id, first_name, last_name
+        FROM api_member 
+        JOIN api_interested ON api_member.interested_ptr_id = api_interested.id 
+        WHERE party_id = %s AND api_interested.id != %s
+        """
+        cursor.execute(query, [party.id, member_id])
+        def join(res): return {'id': res['id'], 'name': (res['first_name'] + ' ' + res['last_name'])}
+        members = list(map(join, dictfetchall(cursor)))
     context = {
         "party_id": party.id,
-        "queue_id": party.queue.type
+        "queue_id": party.queue.type,
+        "members": members,
     }
     return http_response(dict=context)
 
@@ -92,3 +108,64 @@ def party_remove_member(party_id, member_id):
         Party.objects.get(id=party_id).delete()
         return http_response(message="OK")
     return response
+
+def add_members_to_party(party_id, member_ids):
+    """
+    Add a list of members to a specified party
+    :param member_ids: list of members to add to the party
+    :return:
+    """
+    for member_id in member_ids:
+        run_connection("UPDATE api_member SET party_id=%s WHERE interested_ptr_id=%s", party_id, member_id)
+    return http_response(message="OK")
+
+def queue_is_empty_with_open_court(queue_id):
+    """
+    # Check if there are other parties on this queue. If not, for each court associated with
+    # this queue, check if there are matches with NULL endDateTime with the court id. If for a court_id, there
+    # are NO matches with a NULL endDateTime, that means there is no ongoing match on that court. In that case,
+    # return the open court_id. In any other case, return None.
+    :param queue_id:
+    :return: court_id of the open court or None
+    """
+    raw_query = Party.objects.raw("SELECT * FROM api_party WHERE queue_id=%s", [queue_id])
+    queue_is_empty = len(list(raw_query)) == 0
+
+    if queue_is_empty:
+        raw_query = Court.objects.raw("SELECT * FROM api_court WHERE queue_id=%s", [queue_id])
+        courts = list(raw_query)
+        for court in courts:
+            court_is_free = court.match is None
+            if court_is_free:
+                return court.id
+        return None
+
+    else:
+        return None
+
+
+def get_free_members_call(member_id):
+    """
+    GET -- "free members" in this context mean members who are not currently in a party or an ongoing match.
+        This will represent the members who are available to invite to a party.
+        The returned members will exclude the logged in user who made the request.
+    :param: member_id -- The id of the member making the request
+    :return:
+    """
+    with connection.cursor() as cursor:
+        query = """
+        SELECT id, first_name, last_name
+        FROM api_member 
+        JOIN api_interested ON interested_ptr_id = id
+        WHERE party_id IS NULL AND interested_ptr_id <> %s AND interested_ptr_id NOT IN 
+            (SELECT m.interested_ptr_id
+            FROM api_member AS m, api_playedin AS plin, api_match AS match
+            WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=match.id AND match.endDateTime IS NULL)
+        """
+        cursor.execute(query, [member_id])
+        results = dictfetchall(cursor)
+        context = {
+            'free_members': results
+        }
+
+        return HttpResponse(json.dumps(results), content_type='application/json')
