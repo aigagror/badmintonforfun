@@ -132,7 +132,7 @@ def _bypass_template_server(request, template, ensure_cookie=True):
     for key, value in context.items():
         if isinstance(value, list) and len(value) == 1:
             context[key] = value[0]
-    is_board_bool = get_member_class(request.user.email) == MemberClass.BOARD_MEMBER 
+    is_board_bool = get_member_class(request.user.email) == MemberClass.BOARD_MEMBER if hasattr(request.user, 'email') else False
     context['is_board_member'] = is_board_bool
     response = render(request, template, context=context)
     if ensure_cookie:
