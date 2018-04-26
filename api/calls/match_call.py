@@ -53,7 +53,9 @@ def join_match(match_id, member_id, team):
         return http_response({}, message="Cannot join this match, there are already 4 people in it!", code=400)
 
     current_match = find_current_match_by_member(member_id)
-    if current_match.status_code == 200:
+    content = current_match.content.decode()
+    json_obj = json.loads(content)
+    if current_match.status_code == 200 and json_obj["status"] != "idle":
         return http_response({}, message="Member is already in a match", code=400)
 
     if _is_finished_match(match_id):
@@ -204,7 +206,7 @@ def find_current_match_by_member(id):
                                             "scoreB": result["scoreB"], "teamA": teamA, "teamB": teamB}}
             return http_response(match_json)
         else:
-            return http_response({'status':'idle'}, message="Couldn't find a current match for this member. Are you sure this member is in a match?")
+            return http_response({'status':'idle', 'match': {}}, message="Couldn't find a current match for this member. Are you sure this member is in a match?", code=200)
 
 
 def _get_winners(match):
