@@ -1,6 +1,7 @@
+from api.calls import match_call
 from api.calls.queue_call import get_queue_type, refresh_all_queues
 from api.models import Court, Match, PlayedIn, TEAMS
-from api.cursor_api import http_response
+from api.cursor_api import *
 
 def get_courts_call():
     """
@@ -21,6 +22,8 @@ def get_courts_call():
     }
     :return:
     """
+    _hard_refresh()  # Get rid of bad matches
+
     ret = {}
     courts_dict = []
     courts = Court.objects.raw("SELECT * FROM api_court")
@@ -55,3 +58,29 @@ def get_courts_call():
     refresh_all_queues()
 
     return http_response(dict=ret)
+
+
+def _hard_refresh():
+    """
+    Makes sure there are no empty matches (no members are in it) and no unfinished matches
+    that are not on the court.
+    :return:
+    """
+
+    # Get rid of matches that nobody is playing in
+    query1 = """
+    SELECT * FROM api_match WHERE id NOT IN (SELECT match_id FROM api_playedin)
+    """
+    empty_matches = Match.objects.raw(query1)
+    for empty_match in list(empty_matches):
+        match_call.delete_match(empty_match.id)
+
+    # Get rid of unfinished matches that aren't on the court
+    query2 = """
+    SELECT * FROM api_match WHERE endDateTime IS NULL AND api_match.id NOT IN 
+    (SELECT match_id FROM api_court WHERE match_id NOT NULL)
+    """
+
+    bad_unfinished_matches = Match.objects.raw(query2)
+    for bad_unfinished_match in list(bad_unfinished_matches):
+        match_call.delete_match(bad_unfinished_match.id)
