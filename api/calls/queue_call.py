@@ -202,16 +202,15 @@ def get_parties_by_playtime(queue_type):
         FROM ((api_queue AS queue) INNER JOIN api_party AS party ON party.queue_id=queue.id) AS q
         WHERE q.type=%s) AS parties ON parties.id=member.party_id)) AS mp ON playedin.member_id=mp.member_id) AS mm
         ON mm.match_id=m.id
-        WHERE m.startDateTime LIKE ? AND m.endDateTime LIKE ?
         GROUP BY mm.mid) AS full_party
         GROUP BY full_party.p_id
         ORDER BY avg_time ASC
         '''
 
-        cursor.execute(query_full_playtime, [queue_type, '%'+serDate+'%', '%'+serDate+'%'])
-        print("result of queue query")
+        cursor.execute(query_full_playtime, [queue_type])
+        # print("result of queue query")
         parties = dictfetchall(cursor)
-        print(parties)
+        # print(parties)
 
         for p in parties:
             party_dict = {"party_id": p["pid"], "avg_time": p["avg_time"]}
@@ -221,8 +220,8 @@ def get_parties_by_playtime(queue_type):
             party_dict["member_ids"] = [m["interested_ptr_id"] for m in members]
             first_parties.append(party_dict)
 
-        print("FIRST PARTIES!!!")
-        print(first_parties)
+        # print("FIRST PARTIES!!!")
+        # print(first_parties)
         return http_response({"id": get_queue_by_type(queue_type)["id"], "type": queue_type, "parties": first_parties})
 
 
