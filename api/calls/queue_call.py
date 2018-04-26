@@ -5,6 +5,7 @@ import api.datetime_extension
 from api.cursor_api import *
 from api.models import Queue, Party, Member, Court, Match
 from api.cursor_api import http_response, dictfetchall, run_connection, serializeDateTime
+import pytz
 from operator import itemgetter
 
 """
@@ -208,9 +209,9 @@ def get_parties_by_playtime(queue_type):
         '''
 
         cursor.execute(query_full_playtime, [queue_type, '%'+serDate+'%', '%'+serDate+'%'])
-        # print("result of queue query")
+        print("result of queue query")
         parties = dictfetchall(cursor)
-        # print(parties)
+        print(parties)
 
         for p in parties:
             party_dict = {"party_id": p["pid"], "avg_time": p["avg_time"]}
@@ -220,8 +221,8 @@ def get_parties_by_playtime(queue_type):
             party_dict["member_ids"] = [m["interested_ptr_id"] for m in members]
             first_parties.append(party_dict)
 
-        # print("FIRST PARTIES!!!")
-        # print(first_parties)
+        print("FIRST PARTIES!!!")
+        print(first_parties)
         return http_response({"id": get_queue_by_type(queue_type)["id"], "type": queue_type, "parties": first_parties})
 
 
