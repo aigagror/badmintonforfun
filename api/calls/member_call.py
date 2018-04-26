@@ -16,6 +16,7 @@ def get_all_members():
         'members': members_list
     }
 
+    print("finished getting all members")
     return http_response(context)
 
 
@@ -33,4 +34,6 @@ def member_profile(member_id):
         if len(res) == 0:
             return HttpResponse('Member id {} not found'.format(member_id), status=400)
         results = res[0]
+
+    print("finished getting one particular member at " + str(member_id))
     return HttpResponse(json.dumps(results), status=200, content_type="application/json")

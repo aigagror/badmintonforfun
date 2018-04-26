@@ -605,6 +605,7 @@ module.exports = Axios;
 
 
 var utils = __webpack_require__(1);
+var utils = __webpack_require__(1);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -933,7 +934,7 @@ var ProfileView = /** @class */ (function (_super) {
         var _this = this;
         axios_1.default.get(bio_url, {
             params: {
-                id: this.props.id
+                id: this.props.member_id
             }
         })
             .then(function (res) {

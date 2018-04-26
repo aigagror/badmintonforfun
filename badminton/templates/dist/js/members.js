@@ -1704,7 +1704,7 @@ var MemberView = /** @class */ (function (_super) {
         else {
             return React.createElement("ul", { className: "member-list" }, this.state.members.map(function (member, idx) {
                 return React.createElement("li", { key: idx },
-                    React.createElement(Member, { name: member.first_name + ' ' + member.last_name, id: member.member_id, key: idx }));
+                    React.createElement(Member, { name: member.first_name + ' ' + member.last_name, id: member.id, key: idx }));
             }));
         }
     };

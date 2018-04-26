@@ -50,7 +50,7 @@ def cast_vote(request):
     return response
 
 
-@auth_decorator(MemberClass.BOARD_MEMBER)
+@auth_decorator(MemberClass.MEMBER)
 @restrictRouter(allowed=["GET"])
 def get_votes_from_member(request, voter_id):
     """

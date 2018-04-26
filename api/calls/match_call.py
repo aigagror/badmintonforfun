@@ -53,7 +53,9 @@ def join_match(match_id, member_id, team):
         return http_response({}, message="Cannot join this match, there are already 4 people in it!", code=400)
 
     current_match = find_current_match_by_member(member_id)
-    if current_match.status_code == 200:
+    content = current_match.content.decode()
+    json_obj = json.loads(content)
+    if current_match.status_code == 200 and json_obj["status"] != "idle":
         return http_response({}, message="Member is already in a match", code=400)
 
     if _is_finished_match(match_id):
@@ -100,10 +102,13 @@ def leave_match(match_id, member_id):
 
 def delete_match(id):
     """
-        Delete a match, as well as the playedin relationship
+        Delete a match, as well as the playedin relationship. Update the court relationship
     :param id:
     :return:
     """
+    query = "UPDATE api_court SET match_id = NULL WHERE match_id=%s"
+    run_connection(query, id)
+
     playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s", [id])
     for p in playedins:
         query = """
@@ -201,7 +206,7 @@ def find_current_match_by_member(id):
                                             "scoreB": result["scoreB"], "teamA": teamA, "teamB": teamB}}
             return http_response(match_json)
         else:
-            return http_response({'status':'idle'}, message="Couldn't find a current match for this member. Are you sure this member is in a match?")
+            return http_response({'status':'idle', 'match': {}}, message="Couldn't find a current match for this member. Are you sure this member is in a match?", code=200)
 
 
 def _get_winners(match):
@@ -259,12 +264,19 @@ def finish_match(id, scoreA, scoreB):
     #check if this match is a ranked match
     if _is_ranked_match(id):
         # Reward the winners by giving 10 points to their level
-        winning_team = "A" if scoreA > scoreB else "B"
+        if match.scoreA > match.scoreB:
+            winning_team = "A"
+        else:
+            winning_team = "B"
         _reward_winning_team(match.id, winning_team, 10)
 
-    query = "UPDATE api_match SET endDateTime=datetime('now') WHERE id=%s"
+    today = datetime.datetime.now()
+    serializedDate = serializeDateTime(today)
+    query = "UPDATE api_match SET endDateTime=%s WHERE id=%s"
 
-    response = run_connection(query, id)
+    response = run_connection(query, serializedDate, id)
+    if response.status_code == 400:
+        return http_response(message='Cannot update end date time!', code=400)
 
     # Check if this match belongs to a tournament. If so, we may need to update the tournament too
     tournament_id = _is_tournament_match(match.id)
@@ -323,15 +335,28 @@ def _reward_winning_team(match_id, winning_team, points):
     :param points:
     :return:
     """
-    query = """
+
+    query_full = '''
     UPDATE api_member
-    SET level=level+%s
-    WHERE interested_ptr_id IN 
-    (SELECT m.interested_ptr_id 
-    FROM api_member AS m, api_playedin AS plin, api_match
-    WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=%s AND plin.team=%s)
-    """
-    return run_connection(query, points, match_id, winning_team)
+    SET level = level+%s
+    WHERE api_member.interested_ptr_id IN 
+    (SELECT playedin.member_id
+        FROM api_playedin AS playedin
+        WHERE playedin.match_id=%s AND playedin.team=%s)
+    '''
+
+    # with connection.cursor() as cursor:
+    #     query = '''
+    #     SELECT playedin.member_id
+    #     FROM api_playedin AS playedin
+    #     WHERE playedin.match_id=%s AND playedin.team=%s
+    # '''
+    #
+    #     cursor.execute(query, [match_id, winning_team])
+    #     # print("hello friends and family")
+    #     # print(dictfetchall(cursor))
+
+    return run_connection(query_full, points, match_id, winning_team)
 
 def _get_parent_node(tournament_id, curr_level, index):
     parent_index = index // 2
