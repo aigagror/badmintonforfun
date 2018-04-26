@@ -26,7 +26,7 @@ def view_member_profile(request):
 @auth_decorator(MemberClass.MEMBER)
 def get_profile(request):
 
-    member_id = id_for_member(request.user.email)
+    member_id = request.GET.get('id', None)
     return member_profile(member_id)
 
 

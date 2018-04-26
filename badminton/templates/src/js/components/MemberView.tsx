@@ -45,7 +45,7 @@ export class MemberView extends React.Component<any, any> {
 				{
 					this.state.members.map((member: any, idx: any) => {
 						return <li key={idx}><Member name={member.first_name + ' ' + member.last_name} 
-							id={member.member_id} key={idx}/></li>
+							id={member.id} key={idx}/></li>
 					})
 				}
 			</ul>

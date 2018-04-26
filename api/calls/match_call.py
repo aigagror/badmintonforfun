@@ -262,9 +262,13 @@ def finish_match(id, scoreA, scoreB):
         winning_team = "A" if scoreA > scoreB else "B"
         _reward_winning_team(match.id, winning_team, 10)
 
-    query = "UPDATE api_match SET endDateTime=datetime('now') WHERE id=%s"
+    today = datetime.datetime.now()
+    serializedDate = serializeDateTime(today)
+    query = "UPDATE api_match SET endDateTime=%s WHERE id=%s"
 
-    response = run_connection(query, id)
+    response = run_connection(query, serializedDate, id)
+    if response.status_code == 400:
+        return http_response(message='Cannot update end date time!', code=400)
 
     # Check if this match belongs to a tournament. If so, we may need to update the tournament too
     tournament_id = _is_tournament_match(match.id)

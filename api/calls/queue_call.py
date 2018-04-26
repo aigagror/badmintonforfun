@@ -212,7 +212,8 @@ def dequeue_party_to_court_call(queue_type):
     queue_courts = Court.objects.raw("SELECT * FROM api_court WHERE queue_id = %s", [queue.id])
     if len(list(queue_courts)) == 0:
         return http_response({}, message='No courts available for this queue', code=400)
-    found_available_court = False;
+
+    found_available_court = False
     for court in queue_courts:
         if court.match is None:
             # Found an empty court

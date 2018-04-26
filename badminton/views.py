@@ -127,8 +127,10 @@ def _bypass_template_server(request, template, ensure_cookie=True):
     # Flatten lists because django gives you query params
     # in lists regardless
     context = dict()
-    if request.GET:
-        context = dict(request.GET)
+    if request.method == "GET":
+        context = {'member_id': request.GET.get('member_id')}
+        if context["member_id"] is None:
+            context = dict()
     for key, value in context.items():
         if isinstance(value, list) and len(value) == 1:
             context[key] = value[0]
