@@ -207,7 +207,7 @@ class CustomTestCase(TestCase):
         """
 
 
-        now = datetime.datetime.now(tz=api.datetime_extension.utc)
+        now = datetime.datetime.now(tz=api.datetime_extension.cst)
 
 
         # Create a tournament bracket with all of the children having a match
@@ -313,7 +313,7 @@ class CustomTestCase(TestCase):
         grace = Member.objects.get(first_name='Grace')
         joshua = Member.objects.get(first_name='Joshua')
 
-        now = datetime.datetime.now(tz=api.datetime_extension.utc)
+        now = datetime.datetime.now(tz=api.datetime_extension.cst)
         finished_matches = []
 
         # Finished matches

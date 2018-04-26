@@ -1,9 +1,11 @@
 import datetime
 import json
 
+import api.datetime_extension
 from api.cursor_api import *
 from api.models import Queue, Party, Member, Court, Match
 from api.cursor_api import http_response, dictfetchall, run_connection, serializeDateTime
+import pytz
 from operator import itemgetter
 
 """
@@ -82,58 +84,146 @@ def get_parties_by_playtime(queue_type):
     :return:
     """
     with connection.cursor() as cursor:
-        query_members_on_queue = "SELECT DISTINCT api_member.interested_ptr_id AS member_id, api_member.party_id\
-                FROM api_party, api_member, api_queue \
-                WHERE api_party.id=api_member.party_id AND api_queue.type=%s AND api_party.queue_id=api_queue.id"
+        # query_members_on_queue = "SELECT DISTINCT api_member.interested_ptr_id AS member_id, api_member.party_id\
+        #         FROM api_party, api_member, api_queue \
+        #         WHERE api_party.id=api_member.party_id AND api_queue.type=%s AND api_party.queue_id=api_queue.id"
+        #
+        # cursor.execute(query_members_on_queue, [queue_type])
+        # party_members = dictfetchall(cursor)
+        #
+        # query_members_playtime = '''SELECT party_members.member_id, SUM(play_time) AS member_play_time FROM
+        #                             (SELECT api_playedin.member_id, api_match.id AS match_id,
+        #                             (julianday(api_match.endDateTime)-julianday(api_match.startDateTime))*8640.0
+        #                             AS play_time
+        #                             FROM api_match, api_playedin
+        #                             WHERE api_playedin.member_id IN
+        #                             (SELECT DISTINCT api_member.interested_ptr_id AS member_id
+        #                             FROM api_party, api_member, api_queue
+        #                             WHERE api_party.id=api_member.party_id AND api_queue.type=%s
+        #                             AND api_party.queue_id=api_queue.id) AND api_match.id=api_playedin.match_id
+        #                             GROUP BY api_playedin.member_id, api_match.id) AS party_members
+        #                             GROUP BY party_members.member_id
+        #                             ORDER BY play_time ASC
+        #                              '''
+        #
+        # cursor.execute(query_members_playtime, [queue_type])
+        # members_with_playtime = dictfetchall(cursor)
+        #
+        # save_parties = []
+        # parties = []
+        # for i in party_members:
+        #     if i["party_id"] not in save_parties:
+        #         party_dict = {}
+        #         save_parties.append(i["party_id"])
+        #         party_dict["party_id"] = i["party_id"]
+        #         party_list = []
+        #         for k in party_members:
+        #             if k["party_id"] == party_dict["party_id"]:
+        #                 party_list.append(k["member_id"])
+        #         party_dict["member_ids"] = party_list
+        #         party_dict["avg_time"] = 0
+        #         parties.append(party_dict)
+        #
+        # for i in members_with_playtime:
+        #     for j in parties:
+        #         if i["member_id"] in j["member_ids"] and i["member_play_time"] is not None:
+        #             j["avg_time"] += i["member_play_time"]
+        #
+        # for i in parties:
+        #     i["avg_time"] /= len(i["member_ids"])
+        #
+        # parties = sorted(parties, key=itemgetter('avg_time'))
+        # serialized_queue = get_queue_by_type(queue_type)
+        # return http_response({"id": serialized_queue["id"], "type": serialized_queue["type"],
+        #                       "parties": parties}, message='OK')
 
-        cursor.execute(query_members_on_queue, [queue_type])
-        party_members = dictfetchall(cursor)
+        # query_parties_on_queue = '''
+        # SELECT party.id
+        # FROM ((api_queue AS queue) INNER JOIN api_party AS party ON party.queue_id=queue.id) AS q
+        # WHERE q.type=%s
+        # '''
+        #
+        # query_members_in_parties_by_playtime = '''
+        # SELECT member.interested_ptr_id AS member_id, member.party_id AS party_id
+        # FROM ((api_member AS member) INNER JOIN (SELECT party.id
+        # FROM ((api_queue AS queue) INNER JOIN api_party AS party ON party.queue_id=queue.id) AS q
+        # WHERE q.type=%s) AS parties ON parties.id=member.party_id)
+        # '''
+        #
+        # query_all_by_playtime = '''
+        # SELECT mp.member_id AS mid, playedin.match_id AS match_id
+        # FROM (api_playedin AS playedin) INNER JOIN
+        # (SELECT member.interested_ptr_id AS member_id, member.party_id AS party_id
+        # FROM ((api_member AS member) INNER JOIN (SELECT party.id
+        # FROM ((api_queue AS queue) INNER JOIN api_party AS party ON party.queue_id=queue.id) AS q
+        # WHERE q.type=%s) AS parties ON parties.id=member.party_id)) AS mp ON playedin.member_id=mp.member_id'''
 
-        query_members_playtime = '''SELECT party_members.member_id, SUM(play_time) AS member_play_time FROM
-                                    (SELECT api_playedin.member_id, api_match.id AS match_id,
-                                    (julianday(api_match.endDateTime)-julianday(api_match.startDateTime))*8640.0
-                                    AS play_time
-                                    FROM api_match, api_playedin
-                                    WHERE api_playedin.member_id IN
-                                    (SELECT DISTINCT api_member.interested_ptr_id AS member_id
-                                    FROM api_party, api_member, api_queue
-                                    WHERE api_party.id=api_member.party_id AND api_queue.type=%s
-                                    AND api_party.queue_id=api_queue.id) AND api_match.id=api_playedin.match_id
-                                    GROUP BY api_playedin.member_id, api_match.id) AS party_members
-                                    GROUP BY party_members.member_id
-                                    ORDER BY play_time ASC 
-                                     '''
+        date = datetime.datetime.now(tz=api.datetime_extension.cst)
+        serDate = serializeDate(date)
 
-        cursor.execute(query_members_playtime, [queue_type])
-        members_with_playtime = dictfetchall(cursor)
+        query_match_times = '''
+        SELECT SUM((julianday(m.endDateTime)-julianday(m.startDateTime)))*8640.0 AS play_time, mm.mid AS memb_id,
+        mm.party_id AS p_id
+        FROM api_match AS m INNER JOIN 
+        (SELECT mp.member_id AS mid, playedin.match_id AS match_id, mp.party_id AS party_id
+        FROM (api_playedin AS playedin) INNER JOIN 
+        (SELECT member.interested_ptr_id AS member_id, member.party_id AS party_id
+        FROM ((api_member AS member) INNER JOIN (SELECT party.id
+        FROM ((api_queue AS queue) INNER JOIN api_party AS party ON party.queue_id=queue.id) AS q
+        WHERE q.type=%s) AS parties ON parties.id=member.party_id)) AS mp ON playedin.member_id=mp.member_id) AS mm
+        ON mm.match_id=m.id
+        GROUP BY mm.party_id
+        '''
 
-        save_parties = []
-        parties = []
-        for i in party_members:
-            if i["party_id"] not in save_parties:
-                party_dict = {}
-                save_parties.append(i["party_id"])
-                party_dict["party_id"] = i["party_id"]
-                party_list = []
-                for k in party_members:
-                    if k["party_id"] == party_dict["party_id"]:
-                        party_list.append(k["member_id"])
-                party_dict["member_ids"] = party_list
-                party_dict["avg_time"] = 0
-                parties.append(party_dict)
+        cursor.execute(query_match_times, [queue_type])
+        orig_parties = dictfetchall(cursor)
+        # print(orig_parties)
 
-        for i in members_with_playtime:
-            for j in parties:
-                if i["member_id"] in j["member_ids"] and i["member_play_time"] is not None:
-                    j["avg_time"] += i["member_play_time"]
+        first_parties = []
+        for p in orig_parties:
+            if p["play_time"] is None:
+                party_dict = {"party_id": p["p_id"], "avg_time": 0}
+                cursor.execute("SELECT member.interested_ptr_id FROM api_member AS member WHERE member.party_id = %s", [p["p_id"]])
+                members = dictfetchall(cursor)
+                party_dict["member_ids"] = [m["interested_ptr_id"] for m in members]
+                first_parties.append(party_dict)
 
-        for i in parties:
-            i["avg_time"] /= len(i["member_ids"])
 
-        parties = sorted(parties, key=itemgetter('avg_time'))
-        serialized_queue = get_queue_by_type(queue_type)
-        return http_response({"id": serialized_queue["id"], "type": serialized_queue["type"],
-                              "parties": parties}, message='OK')
+        print(first_parties)
+        query_full_playtime = '''
+        SELECT AVG(full_party.play_time) AS avg_time, full_party.p_id AS pid FROM
+        (SELECT SUM((julianday(m.endDateTime)-julianday(m.startDateTime)))*8640.0 AS play_time, mm.mid AS memb_id,
+        mm.party_id AS p_id
+        FROM api_match AS m INNER JOIN 
+        (SELECT mp.member_id AS mid, playedin.match_id AS match_id, mp.party_id AS party_id
+        FROM (api_playedin AS playedin) INNER JOIN 
+        (SELECT member.interested_ptr_id AS member_id, member.party_id AS party_id
+        FROM ((api_member AS member) INNER JOIN (SELECT party.id
+        FROM ((api_queue AS queue) INNER JOIN api_party AS party ON party.queue_id=queue.id) AS q
+        WHERE q.type=%s) AS parties ON parties.id=member.party_id)) AS mp ON playedin.member_id=mp.member_id) AS mm
+        ON mm.match_id=m.id
+        WHERE m.startDateTime LIKE ? AND m.endDateTime LIKE ?
+        GROUP BY mm.mid) AS full_party
+        GROUP BY full_party.p_id
+        ORDER BY avg_time ASC
+        '''
+
+        cursor.execute(query_full_playtime, [queue_type, '%'+serDate+'%', '%'+serDate+'%'])
+        print("result of queue query")
+        parties = dictfetchall(cursor)
+        print(parties)
+
+        for p in parties:
+            party_dict = {"party_id": p["pid"], "avg_time": p["avg_time"]}
+            cursor.execute("SELECT member.interested_ptr_id FROM api_member AS member WHERE member.party_id = %s",
+                           [p["pid"]])
+            members = dictfetchall(cursor)
+            party_dict["member_ids"] = [m["interested_ptr_id"] for m in members]
+            first_parties.append(party_dict)
+
+        print("FIRST PARTIES!!!")
+        print(first_parties)
+        return http_response({"id": get_queue_by_type(queue_type)["id"], "type": queue_type, "parties": first_parties})
 
 
 def delete_queue(id):
@@ -238,7 +328,7 @@ def dequeue_party_to_court_call(queue_type):
             largest_id = max([match.id for match in all_matches]) if len(list(all_matches)) > 0 else -1
             id_of_new_match = largest_id + 1
 
-            now = datetime.datetime.now()
+            now = datetime.datetime.now(tz=api.datetime_extension.cst)
 
             response = run_connection(
                 "INSERT INTO api_match(id, startDateTime, scoreA, scoreB) VALUES (%s, %s, 0, 0)",
