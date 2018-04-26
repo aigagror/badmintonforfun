@@ -100,10 +100,13 @@ def leave_match(match_id, member_id):
 
 def delete_match(id):
     """
-        Delete a match, as well as the playedin relationship
+        Delete a match, as well as the playedin relationship. Update the court relationship
     :param id:
     :return:
     """
+    query = "UPDATE api_court SET match_id = NULL WHERE match_id=%s"
+    run_connection(query, id)
+
     playedins = PlayedIn.objects.raw("SELECT * FROM api_playedin WHERE match_id = %s", [id])
     for p in playedins:
         query = """
