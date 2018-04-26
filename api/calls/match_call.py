@@ -264,7 +264,10 @@ def finish_match(id, scoreA, scoreB):
     #check if this match is a ranked match
     if _is_ranked_match(id):
         # Reward the winners by giving 10 points to their level
-        winning_team = "A" if scoreA > scoreB else "B"
+        if match.scoreA > match.scoreB:
+            winning_team = "A"
+        else:
+            winning_team = "B"
         _reward_winning_team(match.id, winning_team, 10)
 
     today = datetime.datetime.now()
@@ -332,15 +335,28 @@ def _reward_winning_team(match_id, winning_team, points):
     :param points:
     :return:
     """
-    query = """
+
+    query_full = '''
     UPDATE api_member
-    SET level=level+%s
-    WHERE interested_ptr_id IN 
-    (SELECT m.interested_ptr_id 
-    FROM api_member AS m, api_playedin AS plin, api_match
-    WHERE m.interested_ptr_id=plin.member_id AND plin.match_id=%s AND plin.team=%s)
-    """
-    return run_connection(query, points, match_id, winning_team)
+    SET level = level+%s
+    WHERE api_member.interested_ptr_id IN 
+    (SELECT playedin.member_id
+        FROM api_playedin AS playedin
+        WHERE playedin.match_id=%s AND playedin.team=%s)
+    '''
+
+    # with connection.cursor() as cursor:
+    #     query = '''
+    #     SELECT playedin.member_id
+    #     FROM api_playedin AS playedin
+    #     WHERE playedin.match_id=%s AND playedin.team=%s
+    # '''
+    #
+    #     cursor.execute(query, [match_id, winning_team])
+    #     # print("hello friends and family")
+    #     # print(dictfetchall(cursor))
+
+    return run_connection(query_full, points, match_id, winning_team)
 
 def _get_parent_node(tournament_id, curr_level, index):
     parent_index = index // 2
